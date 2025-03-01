@@ -1,0 +1,11 @@
+# Wykluczenie wirtualnego środowiska
+venv/
+.venv/
+
+# Wykluczenie plików systemowych
+__pycache__/
+*.pyc
+*.pyo
+
+# Wykluczenie plików konfiguracyjnych
+.env
