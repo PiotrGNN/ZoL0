@@ -10,35 +10,38 @@ Możesz użyć dowolnego zestawu tych funkcji w swoim pipeline, w zależności o
 """
 
 import logging
+
 import numpy as np
 import pandas as pd
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s [%(levelname)s] %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+
 
 # -------------------- Podstawowe funkcje (z poprzedniego pliku) --------------------
 def add_rsi(df: pd.DataFrame, period: int = 14) -> pd.DataFrame:
     """
     Dodaje kolumnę 'rsi' do DataFrame z cenami w kolumnie 'close'.
     """
-    delta = df['close'].diff()
+    delta = df["close"].diff()
     gain = (delta.where(delta > 0, 0)).rolling(window=period, min_periods=period).mean()
     loss = (-delta.where(delta < 0, 0)).rolling(window=period, min_periods=period).mean()
     rs = gain / loss.replace({0: np.nan})
     rsi = 100 - (100 / (1 + rs))
-    df['rsi'] = rsi
+    df["rsi"] = rsi
     return df
+
 
 def add_macd(df: pd.DataFrame, fast: int = 12, slow: int = 26, signal: int = 9) -> pd.DataFrame:
     """
     Dodaje kolumny 'macd' i 'macd_signal' do DataFrame z cenami w kolumnie 'close'.
     """
-    df['ema_fast'] = df['close'].ewm(span=fast, adjust=False).mean()
-    df['ema_slow'] = df['close'].ewm(span=slow, adjust=False).mean()
-    df['macd'] = df['ema_fast'] - df['ema_slow']
-    df['macd_signal'] = df['macd'].ewm(span=signal, adjust=False).mean()
+    df["ema_fast"] = df["close"].ewm(span=fast, adjust=False).mean()
+    df["ema_slow"] = df["close"].ewm(span=slow, adjust=False).mean()
+    df["macd"] = df["ema_fast"] - df["ema_slow"]
+    df["macd_signal"] = df["macd"].ewm(span=signal, adjust=False).mean()
     return df
+
 
 def feature_pipeline(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -49,6 +52,7 @@ def feature_pipeline(df: pd.DataFrame) -> pd.DataFrame:
     # Możesz usunąć kolumny tymczasowe, np. 'ema_fast', 'ema_slow', jeśli nie chcesz ich w finalnym DF
     # df.drop(['ema_fast', 'ema_slow'], axis=1, inplace=True)
     return df
+
 
 # -------------------- Zaawansowane funkcje (nowe) --------------------
 def compute_rsi(prices: pd.Series, window: int = 14) -> pd.Series:
@@ -61,8 +65,8 @@ def compute_rsi(prices: pd.Series, window: int = 14) -> pd.Series:
         gain = delta.clip(lower=0)
         loss = -delta.clip(upper=0)
 
-        avg_gain = gain.ewm(alpha=1/window, min_periods=window).mean()
-        avg_loss = loss.ewm(alpha=1/window, min_periods=window).mean()
+        avg_gain = gain.ewm(alpha=1 / window, min_periods=window).mean()
+        avg_loss = loss.ewm(alpha=1 / window, min_periods=window).mean()
 
         rs = avg_gain / avg_loss.replace({0: np.nan})
         rsi = 100 - (100 / (1 + rs))
@@ -72,7 +76,13 @@ def compute_rsi(prices: pd.Series, window: int = 14) -> pd.Series:
         logging.error("Błąd przy obliczaniu RSI: %s", e)
         raise
 
-def compute_macd(prices: pd.Series, fast_period: int = 12, slow_period: int = 26, signal_period: int = 9) -> pd.DataFrame:
+
+def compute_macd(
+    prices: pd.Series,
+    fast_period: int = 12,
+    slow_period: int = 26,
+    signal_period: int = 9,
+) -> pd.DataFrame:
     """
     Oblicza MACD, linię sygnału oraz histogram.
     Zwraca DataFrame z kolumnami 'MACD', 'Signal', 'Histogram'.
@@ -84,16 +94,18 @@ def compute_macd(prices: pd.Series, fast_period: int = 12, slow_period: int = 26
         signal = macd.ewm(span=signal_period, adjust=False).mean()
         histogram = macd - signal
 
-        df_macd = pd.DataFrame({
-            'MACD': macd,
-            'Signal': signal,
-            'Histogram': histogram
-        })
-        logging.info("MACD obliczone (fast=%d, slow=%d, signal=%d).", fast_period, slow_period, signal_period)
+        df_macd = pd.DataFrame({"MACD": macd, "Signal": signal, "Histogram": histogram})
+        logging.info(
+            "MACD obliczone (fast=%d, slow=%d, signal=%d).",
+            fast_period,
+            slow_period,
+            signal_period,
+        )
         return df_macd
     except Exception as e:
         logging.error("Błąd przy obliczaniu MACD: %s", e)
         raise
+
 
 def compute_bollinger_bands(prices: pd.Series, window: int = 20, num_std: float = 2.0) -> pd.DataFrame:
     """
@@ -106,16 +118,13 @@ def compute_bollinger_bands(prices: pd.Series, window: int = 20, num_std: float 
         upper = middle + num_std * std
         lower = middle - num_std * std
 
-        bands = pd.DataFrame({
-            'Middle': middle,
-            'Upper': upper,
-            'Lower': lower
-        })
+        bands = pd.DataFrame({"Middle": middle, "Upper": upper, "Lower": lower})
         logging.info("Bollinger Bands obliczone (okno=%d, odch.std=%.2f).", window, num_std)
         return bands
     except Exception as e:
         logging.error("Błąd przy obliczaniu Bollinger Bands: %s", e)
         raise
+
 
 def log_price_transformation(prices: pd.Series) -> pd.Series:
     """
@@ -128,6 +137,7 @@ def log_price_transformation(prices: pd.Series) -> pd.Series:
     except Exception as e:
         logging.error("Błąd przy transformacji logarytmicznej cen: %s", e)
         raise
+
 
 def create_lag_features(df: pd.DataFrame, column: str, lags: list = [1, 2, 3]) -> pd.DataFrame:
     """
@@ -144,6 +154,7 @@ def create_lag_features(df: pd.DataFrame, column: str, lags: list = [1, 2, 3]) -
         logging.error("Błąd przy tworzeniu cech lag: %s", e)
         raise
 
+
 def compute_moving_average(prices: pd.Series, window: int = 10) -> pd.Series:
     """
     Oblicza średnią kroczącą dla serii cen.
@@ -156,7 +167,10 @@ def compute_moving_average(prices: pd.Series, window: int = 10) -> pd.Series:
         logging.error("Błąd przy obliczaniu średniej kroczącej: %s", e)
         raise
 
-def adaptive_feature_selection(df: pd.DataFrame, target_column: str, volatility_threshold: float = 0.02) -> pd.DataFrame:
+
+def adaptive_feature_selection(
+    df: pd.DataFrame, target_column: str, volatility_threshold: float = 0.02
+) -> pd.DataFrame:
     """
     Dobiera cechy dynamicznie w zależności od zmienności rynku.
     Jeżeli zmienność przekracza próg, dodaje cechy lag, MA, RSI, MACD.
@@ -183,6 +197,7 @@ def adaptive_feature_selection(df: pd.DataFrame, target_column: str, volatility_
         logging.error("Błąd w adaptive_feature_selection: %s", e)
         raise
 
+
 def validate_data(df: pd.DataFrame) -> bool:
     """
     Weryfikuje jakość danych: sprawdza brakujące wartości oraz typy kolumn.
@@ -200,6 +215,7 @@ def validate_data(df: pd.DataFrame) -> bool:
     except Exception as e:
         logging.error("Błąd podczas walidacji danych: %s", e)
         raise
+
 
 # -------------------- Przykładowe użycie --------------------
 if __name__ == "__main__":

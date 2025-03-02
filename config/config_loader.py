@@ -1,159 +1,168 @@
 """
-config_loader.py
-----------------
-Moduł do ładowania konfiguracji z różnych formatów (JSON, YAML, INI) oraz zmiennych środowiskowych.
-Obsługuje cache, walidację i priorytet ładowania.
+strategy_optimizer.py
+---------------------
+Moduł analizujący wyniki strategii handlowych i proponujący modyfikacje parametrów.
 """
 
-import os
-import json
-import yaml
-import configparser
 import logging
-from dotenv import load_dotenv, dotenv_values
-from typing import Any, Dict, List, Optional
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from scipy.optimize import minimize
+from typing import Dict, Any, List
 
 # Konfiguracja logowania
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
 
-class ConfigLoader:
+def optimize_portfolio_markowitz(returns: pd.DataFrame, risk_free_rate: float = 0.0) -> Dict[str, Any]:
     """
-    Klasa do ładowania konfiguracji z plików (JSON, YAML, INI) i zmiennych środowiskowych.
-    Obsługuje priorytetowe ładowanie danych oraz cache.
+    Optymalizuje portfel przy użyciu metody Markowitza.
+
+    Parameters:
+        returns (pd.DataFrame): DataFrame z historycznymi zwrotami poszczególnych aktywów.
+        risk_free_rate (float): Wolna od ryzyka stopa zwrotu.
+
+    Returns:
+        dict: Słownik zawierający optymalne wagi, oczekiwany zwrot, ryzyko i Sharpe Ratio.
     """
+    n_assets = returns.shape[1]
+    mean_returns = returns.mean()
+    cov_matrix = returns.cov()
 
-    def __init__(self, config_files: Optional[List[str]] = None, env_prefix: str = "", cache_enabled: bool = True):
-        self.config_files = config_files or []
-        self.env_prefix = env_prefix
-        self.cache_enabled = cache_enabled
-        self._config_cache: Optional[Dict[str, Any]] = None
+    def portfolio_performance(weights):
+        port_return = np.dot(weights, mean_returns)
+        port_std = np.sqrt(np.dot(weights.T, np.dot(cov_matrix, weights)))
+        sharpe = (port_return - risk_free_rate) / port_std if port_std != 0 else 0
+        return port_return, port_std, sharpe
 
-    def load(self, force_refresh: bool = False) -> Dict[str, Any]:
-        """Ładuje konfigurację z plików i zmiennych środowiskowych, scala je i waliduje."""
-        if self.cache_enabled and self._config_cache is not None and not force_refresh:
-            logging.info("Ładowanie konfiguracji z cache.")
-            return self._config_cache
+    def negative_sharpe(weights):
+        return -portfolio_performance(weights)[2]
 
-        config: Dict[str, Any] = {}
+    constraints = {"type": "eq", "fun": lambda x: np.sum(x) - 1}
+    bounds = tuple((0, 1) for _ in range(n_assets))
+    initial_guess = np.full(n_assets, 1.0 / n_assets)
 
-        # Ładowanie plików konfiguracyjnych
-        for filepath in self.config_files:
-            try:
-                file_config = self._load_from_file(filepath)
-                logging.info("Załadowano konfigurację z pliku: %s", filepath)
-                config = self._merge_configs(config, file_config)
-            except Exception as e:
-                logging.error("Błąd przy ładowaniu pliku %s: %s", filepath, e)
-
-        # Ładowanie zmiennych środowiskowych
-        env_config = self._load_from_env()
-        if env_config:
-            logging.info("Załadowano konfigurację ze zmiennych środowiskowych.")
-            config = self._merge_configs(config, env_config)
-
-        # Normalizacja kluczy (małe litery)
-        config = {key.lower(): value for key, value in config.items()}
-
-        # Usunięcie duplikatów
-        config = self._remove_duplicates(config)
-
-        self.validate_config(config)
-
-        if self.cache_enabled:
-            self._config_cache = config
-
-        return config
-
-    def _load_from_file(self, filepath: str) -> Dict[str, Any]:
-        """Ładuje konfigurację z plików JSON, YAML lub INI."""
-        if not os.path.exists(filepath):
-            raise FileNotFoundError(f"Plik konfiguracyjny nie istnieje: {filepath}")
-
-        try:
-            with open(filepath, "r", encoding="utf-8") as f:
-                if filepath.lower().endswith((".yaml", ".yml")):
-                    return yaml.safe_load(f) or {}
-                elif filepath.lower().endswith(".json"):
-                    return json.load(f) or {}
-                elif filepath.lower().endswith(".ini"):
-                    config = configparser.ConfigParser()
-                    config.read_file(f)
-                    return {section: dict(config.items(section)) for section in config.sections()}
-                else:
-                    raise ValueError("Nieobsługiwany format pliku. Obsługiwane formaty: JSON, YAML, INI.")
-        except (json.JSONDecodeError, yaml.YAMLError, configparser.Error) as e:
-            logging.error("Błąd parsowania pliku konfiguracyjnego %s: %s", filepath, e)
-            return {}
-
-    def _load_from_env(self) -> Dict[str, Any]:
-        """Ładuje zmienne środowiskowe zaczynające się od podanego prefiksu."""
-        config: Dict[str, Any] = {}
-
-        # Próba załadowania .env (jeśli istnieje)
-        if os.path.exists(".env"):
-            try:
-                dotenv_values(".env")
-                load_dotenv()
-                logging.info("Załadowano plik .env")
-            except Exception as e:
-                logging.warning("Nie udało się poprawnie sparsować .env: %s", e)
-
-        prefix = self.env_prefix.upper()
-        for key, value in os.environ.items():
-            if key.startswith(prefix):
-                config_key = key[len(prefix):].lstrip("_").lower()
-                config[config_key] = self._cast_value(value)
-        return config
-
-    def _cast_value(self, value: str) -> Any:
-        """Konwertuje wartość zmiennej środowiskowej na int, float lub bool."""
-        if not value:
-            return None
-        if value.lower() in ("true", "false"):
-            return value.lower() == "true"
-        for cast in (int, float):
-            try:
-                return cast(value)
-            except ValueError:
-                continue
-        return value
-
-    def _merge_configs(self, base: Dict[str, Any], override: Dict[str, Any]) -> Dict[str, Any]:
-        """Scala dwie konfiguracje, gdzie wartości z 'override' nadpisują te z 'base'."""
-        merged = base.copy()
-        for key, value in override.items():
-            if key in merged and isinstance(merged[key], dict) and isinstance(value, dict):
-                merged[key] = self._merge_configs(merged[key], value)
-            else:
-                merged[key] = value
-        return merged
-
-    def _remove_duplicates(self, config: Dict[str, Any]) -> Dict[str, Any]:
-        """Usuwa duplikaty kluczy (np. DATABASE i database)."""
-        keys_to_remove = [key for key in config if key.lower() in config and key.upper() in config]
-        for key in keys_to_remove:
-            logging.warning(f"Usuwanie duplikatu konfiguracji: {key}")
-            del config[key]
-        return config
-
-    def validate_config(self, config: Dict[str, Any]) -> None:
-        """Waliduje konfigurację i dodaje brakujące sekcje z wartościami domyślnymi."""
-        required_defaults = {
-            "database": {"host": "localhost", "port": 5432, "user": "user", "password": "password", "name": "default_db"},
-            "trading": {"commission": 0.001, "spread": 0.0005, "slippage": 0.0005},
+    result = minimize(
+        negative_sharpe,
+        initial_guess,
+        method="SLSQP",
+        bounds=bounds,
+        constraints=constraints,
+    )
+    if result.success:
+        opt_weights = result.x
+        port_return, port_std, sharpe = portfolio_performance(opt_weights)
+        logging.info("Optymalizacja Markowitza zakończona sukcesem.")
+        return {
+            "weights": opt_weights,
+            "expected_return": port_return,
+            "risk": port_std,
+            "sharpe_ratio": sharpe,
         }
-
-        for key, default_value in required_defaults.items():
-            if key not in config:
-                logging.warning("Brak sekcji '%s'. Dodajemy domyślną konfigurację.", key)
-                config[key] = default_value
-
-        logging.info("Walidacja konfiguracji zakończona sukcesem.")
+    else:
+        logging.error("Optymalizacja Markowitza nie powiodła się.")
+        raise ValueError("Optymalizacja portfela nie powiodła się.")
 
 
-# -------------------- Testy jednostkowe --------------------
+def optimize_portfolio_genetic(returns: pd.DataFrame, population_size: int = 50, generations: int = 100) -> Dict[str, Any]:
+    """
+    Optymalizuje portfel przy użyciu uproszczonej optymalizacji genetycznej.
+
+    Parameters:
+        returns (pd.DataFrame): DataFrame z historycznymi zwrotami poszczególnych aktywów.
+        population_size (int): Rozmiar populacji.
+        generations (int): Liczba generacji.
+
+    Returns:
+        dict: Słownik zawierający optymalne wagi, oczekiwany zwrot, ryzyko oraz Sharpe Ratio.
+    """
+    n_assets = returns.shape[1]
+    mean_returns = returns.mean()
+    cov_matrix = returns.cov()
+
+    def fitness(weights):
+        port_return = np.dot(weights, mean_returns)
+        port_std = np.sqrt(np.dot(weights.T, np.dot(cov_matrix, weights)))
+        return port_return / port_std if port_std != 0 else 0
+
+    population = [np.random.dirichlet(np.ones(n_assets)) for _ in range(population_size)]
+
+    for gen in range(generations):
+        fitness_scores = np.array([fitness(ind) for ind in population])
+        selected_indices = fitness_scores.argsort()[-(population_size // 2):]
+        selected = [population[i] for i in selected_indices]
+
+        offspring = []
+        while len(offspring) < population_size - len(selected):
+            parents = np.random.choice(selected, 2, replace=False)
+            child = (parents[0] + parents[1]) / 2.0 + np.random.normal(0, 0.05, size=n_assets)
+            child = np.clip(child, 0, None)
+            child /= child.sum() if child.sum() != 0 else 1
+            offspring.append(child)
+
+        population = selected + offspring
+
+        if gen % 10 == 0:
+            logging.info("Generacja %d, najlepsze fitness: %.4f", gen, np.max(fitness_scores))
+
+    best_index = np.argmax(fitness_scores)
+    opt_weights = population[best_index]
+    port_return = np.dot(opt_weights, mean_returns)
+    port_std = np.sqrt(np.dot(opt_weights.T, np.dot(cov_matrix, opt_weights)))
+    sharpe = port_return / port_std if port_std != 0 else 0
+    logging.info("Optymalizacja genetyczna zakończona sukcesem.")
+    return {
+        "weights": opt_weights,
+        "expected_return": port_return,
+        "risk": port_std,
+        "sharpe_ratio": sharpe,
+    }
+
+
+def generate_report(optimization_results: List[Dict[str, Any]]):
+    """
+    Generuje wizualizację i raport porównawczy wyników optymalizacji strategii.
+
+    Parameters:
+        optimization_results (list): Lista wyników optymalizacji z metod Markowitza i genetycznej.
+    """
+    try:
+        df_results = pd.DataFrame(optimization_results)
+        logging.info("Raport optymalizacji:\n%s", df_results)
+
+        plt.figure(figsize=(8, 6))
+        plt.bar(df_results["method"], df_results["sharpe_ratio"], color="blue")
+        plt.xlabel("Metoda optymalizacji")
+        plt.ylabel("Sharpe Ratio")
+        plt.title("Porównanie metod optymalizacji portfela")
+        plt.tight_layout()
+        plt.savefig("./reports/strategy_optimization_report.png")
+        plt.close()
+        logging.info("Raport zapisany w: ./reports/strategy_optimization_report.png")
+    except Exception as e:
+        logging.error("Błąd przy generowaniu raportu optymalizacji: %s", e)
+        raise
+
+
 if __name__ == "__main__":
-    loader = ConfigLoader(config_files=["config.json", "config.yaml"], env_prefix="MYAPP")
-    config = loader.load()
-    print(json.dumps(config, indent=4, ensure_ascii=False))
+    try:
+        np.random.seed(42)
+        dates = pd.date_range(start="2020-01-01", periods=252, freq="B")
+        returns_data = np.random.normal(0.001, 0.02, size=(252, 4))
+        returns_df = pd.DataFrame(returns_data, index=dates, columns=["Asset_A", "Asset_B", "Asset_C", "Asset_D"])
+
+        markowitz_result = optimize_portfolio_markowitz(returns_df)
+        genetic_result = optimize_portfolio_genetic(returns_df)
+
+        optimization_results = [
+            {"method": "Markowitz", **markowitz_result},
+            {"method": "Genetic", **genetic_result},
+        ]
+
+        generate_report(optimization_results)
+
+        logging.info("Moduł strategy_optimizer.py zakończony sukcesem.")
+    except Exception as e:
+        logging.error("Błąd w module strategy_optimizer.py: %s", e)
+        raise

@@ -12,28 +12,25 @@ oraz funkcje testowe do weryfikacji skuteczności wykrywania anomalii w różnyc
 """
 
 import logging
-import numpy as np
-import pandas as pd
-
-from sklearn.ensemble import IsolationForest
-from sklearn.model_selection import GridSearchCV
-from sklearn.cluster import DBSCAN
-
-import tensorflow as tf
-from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Input, Dense
-from tensorflow.keras.callbacks import EarlyStopping
-
 import smtplib
 from email.message import EmailMessage
 
+import numpy as np
+import pandas as pd
+from sklearn.cluster import DBSCAN
+from sklearn.ensemble import IsolationForest
+from sklearn.model_selection import GridSearchCV
+from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.layers import Dense, Input
+from tensorflow.keras.models import Model
+
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s [%(levelname)s] %(message)s',
-                    handlers=[
-                        logging.FileHandler("anomaly_detection.log"),
-                        logging.StreamHandler()
-                    ])
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[logging.FileHandler("anomaly_detection.log"), logging.StreamHandler()],
+)
+
 
 class AnomalyDetector:
     def __init__(self, contamination=0.01, random_state=42):
@@ -50,13 +47,13 @@ class AnomalyDetector:
         try:
             logging.info("Rozpoczynam strojenie IsolationForest...")
             param_grid = {
-                'n_estimators': [50, 100, 150],
-                'max_samples': ['auto', 0.8, 1.0],
-                'contamination': [self.contamination],
-                'bootstrap': [False, True]
+                "n_estimators": [50, 100, 150],
+                "max_samples": ["auto", 0.8, 1.0],
+                "contamination": [self.contamination],
+                "bootstrap": [False, True],
             }
             model = IsolationForest(random_state=self.random_state)
-            grid = GridSearchCV(estimator=model, param_grid=param_grid, cv=3, scoring='accuracy')
+            grid = GridSearchCV(estimator=model, param_grid=param_grid, cv=3, scoring="accuracy")
             grid.fit(X)
             logging.info("Najlepsze parametry: %s", grid.best_params_)
             self.isolation_forest = grid.best_estimator_
@@ -71,8 +68,9 @@ class AnomalyDetector:
         try:
             if self.isolation_forest is None:
                 logging.info("Dopasowywanie IsolationForest z domyślnymi parametrami...")
-                self.isolation_forest = IsolationForest(contamination=self.contamination,
-                                                        random_state=self.random_state)
+                self.isolation_forest = IsolationForest(
+                    contamination=self.contamination, random_state=self.random_state
+                )
             else:
                 logging.info("Dopasowywanie wcześniej strojonego modelu IsolationForest...")
             self.isolation_forest.fit(X)
@@ -89,7 +87,11 @@ class AnomalyDetector:
             if self.isolation_forest is None:
                 raise ValueError("Model IsolationForest nie został dopasowany.")
             predictions = self.isolation_forest.predict(X)
-            logging.info("IsolationForest wykrył %d anomalii na %d próbkach.", np.sum(predictions == -1), len(predictions))
+            logging.info(
+                "IsolationForest wykrył %d anomalii na %d próbkach.",
+                np.sum(predictions == -1),
+                len(predictions),
+            )
             return predictions
         except Exception as e:
             logging.error("Błąd przy wykrywaniu anomalii za pomocą IsolationForest: %s", e)
@@ -117,7 +119,11 @@ class AnomalyDetector:
                 raise ValueError("Model DBSCAN nie został dopasowany.")
             predictions = self.dbscan.fit_predict(X)
             anomalies = (predictions == -1).astype(int)
-            logging.info("DBSCAN wykrył %d anomalii na %d próbkach.", np.sum(anomalies), len(anomalies))
+            logging.info(
+                "DBSCAN wykrył %d anomalii na %d próbkach.",
+                np.sum(anomalies),
+                len(anomalies),
+            )
             return anomalies
         except Exception as e:
             logging.error("Błąd przy wykrywaniu anomalii za pomocą DBSCAN: %s", e)
@@ -130,10 +136,10 @@ class AnomalyDetector:
         try:
             logging.info("Budowanie modelu autoenkodera...")
             input_layer = Input(shape=(input_dim,))
-            encoded = Dense(encoding_dim, activation='relu')(input_layer)
-            decoded = Dense(input_dim, activation='sigmoid')(encoded)
+            encoded = Dense(encoding_dim, activation="relu")(input_layer)
+            decoded = Dense(input_dim, activation="sigmoid")(encoded)
             self.autoencoder = Model(inputs=input_layer, outputs=decoded)
-            self.autoencoder.compile(optimizer='adam', loss='mse')
+            self.autoencoder.compile(optimizer="adam", loss="mse")
             logging.info("Model autoenkodera został pomyślnie zbudowany.")
         except Exception as e:
             logging.error("Błąd przy budowaniu autoenkodera: %s", e)
@@ -147,13 +153,16 @@ class AnomalyDetector:
             if self.autoencoder is None:
                 self.build_autoencoder(input_dim=X.shape[1])
             logging.info("Trening autoenkodera...")
-            early_stop = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
-            self.autoencoder.fit(X, X,
-                                 epochs=epochs,
-                                 batch_size=batch_size,
-                                 validation_split=validation_split,
-                                 callbacks=[early_stop],
-                                 verbose=1)
+            early_stop = EarlyStopping(monitor="val_loss", patience=5, restore_best_weights=True)
+            self.autoencoder.fit(
+                X,
+                X,
+                epochs=epochs,
+                batch_size=batch_size,
+                validation_split=validation_split,
+                callbacks=[early_stop],
+                verbose=1,
+            )
         except Exception as e:
             logging.error("Błąd podczas treningu autoenkodera: %s", e)
             raise
@@ -172,8 +181,12 @@ class AnomalyDetector:
             if threshold is None:
                 threshold = np.mean(mse) + 3 * np.std(mse)
             predictions = np.where(mse > threshold, -1, 1)
-            logging.info("Autoenkoder wykrył %d anomalii na %d próbkach przy threshold = %f.", 
-                         np.sum(predictions == -1), len(predictions), threshold)
+            logging.info(
+                "Autoenkoder wykrył %d anomalii na %d próbkach przy threshold = %f.",
+                np.sum(predictions == -1),
+                len(predictions),
+                threshold,
+            )
             return predictions, mse
         except Exception as e:
             logging.error("Błąd przy wykrywaniu anomalii za pomocą autoenkodera: %s", e)
@@ -194,9 +207,9 @@ class AnomalyDetector:
 
             msg = EmailMessage()
             msg.set_content(message)
-            msg['Subject'] = subject
-            msg['From'] = smtp_user
-            msg['To'] = recipient_email
+            msg["Subject"] = subject
+            msg["From"] = smtp_user
+            msg["To"] = recipient_email
 
             with smtplib.SMTP(smtp_server, smtp_port) as server:
                 server.starttls()
@@ -207,7 +220,9 @@ class AnomalyDetector:
             logging.error("Błąd podczas wysyłania alertu e-mail: %s", e)
             # W środowisku produkcyjnym można nie przerywać działania w przypadku błędu wysyłki alertu.
 
+
 # --------------------- Funkcje Testowe ---------------------
+
 
 def test_anomaly_detection():
     """
@@ -223,7 +238,7 @@ def test_anomaly_detection():
         df = pd.DataFrame(X, columns=[f"feature_{i}" for i in range(10)])
 
         detector = AnomalyDetector(contamination=0.05)
-        
+
         # Test IsolationForest
         detector.tune_isolation_forest(df.values)
         detector.fit_isolation_forest(df.values)
@@ -240,11 +255,12 @@ def test_anomaly_detection():
         detector.fit_autoencoder(df.values, epochs=20, batch_size=16, validation_split=0.1)
         predictions_ae, mse = detector.detect_anomalies_autoencoder(df.values)
         logging.info("Test Autoenkodera: wykryto %d anomalii.", np.sum(predictions_ae == -1))
-        
+
         logging.info("Wszystkie testy zakończone pomyślnie.")
     except Exception as e:
         logging.error("Testy nie powiodły się: %s", e)
         raise
+
 
 if __name__ == "__main__":
     test_anomaly_detection()

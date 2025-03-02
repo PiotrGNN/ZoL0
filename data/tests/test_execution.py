@@ -9,66 +9,99 @@ Testy jednostkowe dla modułów:
 Testy weryfikują poprawność komunikacji z giełdą (przy użyciu mocków lub sandbox), obsługę błędów, wysyłanie zleceń oraz synchronizację między modułami.
 """
 
-import os
-import unittest
 import logging
-import numpy as np
-import pandas as pd
+import unittest
 
-# Konfiguracja logowania do testów
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s [%(levelname)s] %(message)s')
-
-# Zakładamy, że moduły znajdują się w odpowiednich folderach
 from exchange_connector import ExchangeConnector
 from order_execution import OrderExecution
 from trade_executor import TradeExecutor
 
+# Konfiguracja logowania do testów
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+
+# Zakładamy, że moduły znajdują się w odpowiednich folderach
+
+
 class DummyExchangeConnector(ExchangeConnector):
     """Dummy connector symulujący interakcję z API giełdowym."""
+
     def __init__(self):
         # Używamy przykładowych kluczy, ale nie wykonujemy rzeczywistych zapytań
-        super().__init__(exchange="binance", api_key="dummy_key", api_secret="dummy_secret", base_url="https://api.binance.com")
-    
+        super().__init__(
+            exchange="binance",
+            api_key="dummy_key",
+            api_secret="dummy_secret",
+            base_url="https://api.binance.com",
+        )
+
     def _request(self, method: str, endpoint: str, params: dict = None, signed: bool = False) -> dict:
         # Zwracamy przykładowe dane dla testów
         if endpoint == "/api/v3/klines":
             # Symulujemy dane świecowe
-            return [[1620000000000, "30000", "31000", "29500", "30500", "1000", "1620003599999", "30500000", "100", "500", "15250000", "0"]]
+            return [
+                [
+                    1620000000000,
+                    "30000",
+                    "31000",
+                    "29500",
+                    "30500",
+                    "1000",
+                    "1620003599999",
+                    "30500000",
+                    "100",
+                    "500",
+                    "15250000",
+                    "0",
+                ]
+            ]
         elif endpoint == "/api/v3/order":
             # Symulujemy odpowiedź zlecenia
-            return {"orderId": 12345, "status": "FILLED", "symbol": params.get("symbol", "UNKNOWN")}
+            return {
+                "orderId": 12345,
+                "status": "FILLED",
+                "symbol": params.get("symbol", "UNKNOWN"),
+            }
         elif endpoint == "/api/v3/order" and method == "GET":
             # Symulujemy status zlecenia
             return {"orderId": params.get("orderId"), "status": "FILLED"}
         else:
             return {}
 
+
 class DummyOrderExecution(OrderExecution):
     """Dummy OrderExecution wykorzystujący DummyExchangeConnector."""
+
     def __init__(self, connector):
         super().__init__(connector, max_retries=1, retry_delay=0.1)
 
+
 class DummyAccountManager:
     """Dummy manager konta do symulacji stanu konta."""
+
     def get_account_status(self):
         return {"balance": 10000}
+
     def has_sufficient_funds(self, action, quantity, price):
         return True
 
+
 class DummyRiskManager:
     """Dummy risk manager symulujący akceptację transakcji."""
+
     def is_trade_allowed(self, symbol, quantity):
         return True
 
+
 class DummyTradeExecutor(TradeExecutor):
     """Dummy TradeExecutor używający dummy komponentów."""
+
     def __init__(self):
         dummy_connector = DummyExchangeConnector()
         dummy_order_exec = DummyOrderExecution(dummy_connector)
         dummy_account = DummyAccountManager()
         dummy_risk = DummyRiskManager()
         super().__init__(dummy_order_exec, dummy_account, dummy_risk)
+
 
 class TestExecutionModules(unittest.TestCase):
     def setUp(self):
@@ -88,18 +121,36 @@ class TestExecutionModules(unittest.TestCase):
 
     def test_trade_executor_execute_trade(self):
         # Testujemy wykonanie transakcji przy użyciu dummy sygnałów
-        signal = {"symbol": "BTCUSDT", "action": "BUY", "proposed_quantity": 0.001, "price": 30500, "order_type": "MARKET"}
+        signal = {
+            "symbol": "BTCUSDT",
+            "action": "BUY",
+            "proposed_quantity": 0.001,
+            "price": 30500,
+            "order_type": "MARKET",
+        }
         result = self.trade_exec.execute_trade(signal)
         self.assertIn("status", result, "Wynik transakcji powinien zawierać status.")
         self.assertEqual(result["status"], "executed", "Transakcja powinna być wykonana (executed).")
 
     def test_trade_executor_execute_trades(self):
         signals = [
-            {"symbol": "BTCUSDT", "action": "BUY", "proposed_quantity": 0.001, "price": 30500, "order_type": "MARKET"},
-            {"symbol": "ETHUSDT", "action": "SELL", "proposed_quantity": 0.01, "order_type": "MARKET"}
+            {
+                "symbol": "BTCUSDT",
+                "action": "BUY",
+                "proposed_quantity": 0.001,
+                "price": 30500,
+                "order_type": "MARKET",
+            },
+            {
+                "symbol": "ETHUSDT",
+                "action": "SELL",
+                "proposed_quantity": 0.01,
+                "order_type": "MARKET",
+            },
         ]
         results = self.trade_exec.execute_trades(signals)
         self.assertEqual(len(results), 2, "Powinny być przetworzone dwa sygnały transakcyjne.")
+
 
 if __name__ == "__main__":
     unittest.main()

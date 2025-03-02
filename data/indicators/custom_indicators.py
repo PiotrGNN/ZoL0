@@ -13,11 +13,12 @@ Funkcjonalności:
 """
 
 import logging
+
 import numpy as np
 import pandas as pd
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
 
 def calculate_obv(prices: pd.Series, volumes: pd.Series) -> pd.Series:
@@ -58,8 +59,8 @@ def calculate_vwap(df: pd.DataFrame) -> pd.Series:
         pd.Series: Wartości VWAP.
     """
     try:
-        typical_price = (df['high'] + df['low'] + df['close']) / 3.0
-        vwap = (typical_price * df['volume']).cumsum() / df['volume'].cumsum()
+        typical_price = (df["high"] + df["low"] + df["close"]) / 3.0
+        vwap = (typical_price * df["volume"]).cumsum() / df["volume"].cumsum()
         logging.info("VWAP obliczone pomyślnie.")
         return vwap
     except Exception as e:
@@ -88,16 +89,22 @@ def calculate_zscore(series: pd.Series) -> pd.Series:
         raise
 
 
-def fuzzy_hybrid_signal(price_series: pd.Series, obv_series: pd.Series, zscore_series: pd.Series,
-                        price_threshold: float = 0.01, obv_threshold: float = 0.05, zscore_threshold: float = 1.0) -> pd.Series:
+def fuzzy_hybrid_signal(
+    price_series: pd.Series,
+    obv_series: pd.Series,
+    zscore_series: pd.Series,
+    price_threshold: float = 0.01,
+    obv_threshold: float = 0.05,
+    zscore_threshold: float = 1.0,
+) -> pd.Series:
     """
     Generuje hybrydowy sygnał tradingowy przy użyciu logiki fuzzy, łącząc sygnały z ceny, OBV oraz Z-Score.
-    
+
     Mechanizm:
     - Jeśli zmiana ceny przekracza price_threshold, generowany jest sygnał.
     - Jeśli OBV wykazuje znaczącą zmianę (przekraczając obv_threshold), sygnał jest wzmocniony.
     - Wartość Z-Score powyżej zscore_threshold sugeruje ekstremalne warunki.
-    
+
     Wynik:
     - Sygnał "1" sugeruje kupno, "-1" sugeruje sprzedaż, "0" brak jednoznacznego sygnału.
 
@@ -118,22 +125,22 @@ def fuzzy_hybrid_signal(price_series: pd.Series, obv_series: pd.Series, zscore_s
         # Oblicz różnicę w OBV
         obv_change = obv_series.diff().fillna(0) / obv_series.replace(0, np.nan)
         obv_change = obv_change.fillna(0)
-        
+
         # Ustal wagi dla poszczególnych wskaźników (można dostosować lub ułatwić testy A/B)
         price_weight = 0.5
         obv_weight = 0.3
         zscore_weight = 0.2
-        
+
         # Normalizujemy wskaźniki: sygnał kupna (+1) lub sprzedaży (-1)
         price_signal = price_change.apply(lambda x: 1 if x > price_threshold else (-1 if x < -price_threshold else 0))
         obv_signal = obv_change.apply(lambda x: 1 if x > obv_threshold else (-1 if x < -obv_threshold else 0))
-        zscore_signal = zscore_series.apply(lambda x: 1 if x > zscore_threshold else (-1 if x < -zscore_threshold else 0))
-        
+        zscore_signal = zscore_series.apply(
+            lambda x: (1 if x > zscore_threshold else (-1 if x < -zscore_threshold else 0))
+        )
+
         # Łączymy sygnały z wagami
-        combined_score = (price_weight * price_signal +
-                          obv_weight * obv_signal +
-                          zscore_weight * zscore_signal)
-        
+        combined_score = price_weight * price_signal + obv_weight * obv_signal + zscore_weight * zscore_signal
+
         # Interpretacja hybrydowego sygnału: jeśli wynik > 0, sygnał kupna; < 0, sygnał sprzedaży; 0 - neutralny.
         hybrid_signal = combined_score.apply(lambda x: 1 if x > 0 else (-1 if x < 0 else 0))
         logging.info("Hybrydowy sygnał tradingowy obliczony pomyślnie.")
@@ -141,6 +148,7 @@ def fuzzy_hybrid_signal(price_series: pd.Series, obv_series: pd.Series, zscore_s
     except Exception as e:
         logging.error("Błąd przy generowaniu hybrydowego sygnału: %s", e)
         raise
+
 
 # -------------------- Przykładowe testy jednostkowe --------------------
 def unit_test_custom_indicators():
@@ -154,29 +162,37 @@ def unit_test_custom_indicators():
         prices = pd.Series(np.linspace(100, 150, 100), index=dates)
         volumes = pd.Series(np.random.randint(1000, 2000, size=100), index=dates)
         df = pd.DataFrame({"close": prices, "high": prices + 5, "low": prices - 5, "volume": volumes})
-        
+
         # Test OBV
         obv = calculate_obv(prices, volumes)
         assert len(obv) == len(prices), "Długość OBV nie zgadza się z długością cen."
-        
+
         # Test VWAP
         vwap = calculate_vwap(df)
         assert len(vwap) == len(df), "Długość VWAP nie zgadza się z długością danych."
-        
+
         # Test Z-Score
         zscore = calculate_zscore(prices)
         assert not zscore.isnull().any(), "Z-Score zawiera wartości null."
-        
+
         # Test sygnału hybrydowego
-        hybrid = fuzzy_hybrid_signal(prices, obv, zscore, price_threshold=0.005, obv_threshold=0.01, zscore_threshold=0.5)
+        hybrid = fuzzy_hybrid_signal(
+            prices,
+            obv,
+            zscore,
+            price_threshold=0.005,
+            obv_threshold=0.01,
+            zscore_threshold=0.5,
+        )
         assert set(hybrid.unique()).issubset({-1, 0, 1}), "Hybrydowy sygnał zawiera nieoczekiwane wartości."
-        
+
         logging.info("Testy jednostkowe modułu custom_indicators.py zakończone sukcesem.")
     except AssertionError as ae:
         logging.error("AssertionError w testach jednostkowych: %s", ae)
     except Exception as e:
         logging.error("Błąd w testach jednostkowych modułu custom_indicators.py: %s", e)
         raise
+
 
 if __name__ == "__main__":
     try:

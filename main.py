@@ -20,33 +20,26 @@ Kod zgodny z najlepszymi praktykami:
   - Integracja z systemami monitoringu i AI
 """
 
+import logging
 import os
 import sys
-import logging
-import argparse
-import time
 import threading
+import time
 from datetime import datetime
-from typing import Any, Dict, Optional
 
-import pandas as pd
+from ai_models.ai_optimizer import StrategyOptimizer
+from ai_models.anomaly_detection import AnomalyDetector
+
+# Moduły AI
+from ai_models.reinforcement_learning import ReinforcementLearner
+from ai_models.sentiment_analysis import SentimentAnalyzer
+from ai_models.trend_prediction import TrendPredictor
 
 # Moduły systemu
 from config.settings import CONFIG
-from data.data.historical_data import HistoricalDataManager
-from data.optimization.backtesting import backtest_strategy, example_strategy
 from data.execution.exchange_connector import ExchangeConnector
 from data.execution.order_execution import OrderExecution
 from data.execution.trade_executor import TradeExecutor
-
-# Moduły AI
-from ai_models.feature_engineering import feature_pipeline
-from ai_models.model_training import ModelTrainer
-from ai_models.reinforcement_learning import ReinforcementLearner
-from ai_models.sentiment_analysis import SentimentAnalyzer
-from ai_models.anomaly_detection import AnomalyDetector
-from ai_models.trend_prediction import TrendPredictor
-from ai_models.ai_optimizer import StrategyOptimizer
 
 
 def setup_logging() -> None:
@@ -65,8 +58,8 @@ def setup_logging() -> None:
         format="%(asctime)s [%(levelname)s] %(message)s",
         handlers=[
             logging.FileHandler(log_file, encoding="utf-8"),
-            logging.StreamHandler(sys.stdout)
-        ]
+            logging.StreamHandler(sys.stdout),
+        ],
     )
     logging.info("✅ Logowanie skonfigurowane. Plik logów: %s", log_file)
 
@@ -106,20 +99,27 @@ def initialize_trading_modules(environment: str, exchange: str) -> TradeExecutor
         api_secret = os.getenv(f"{exchange.upper()}_API_SECRET")
 
         base_url = (
-            "https://api.binance.com" if exchange == "binance" and environment == "production"
-            else "https://testnet.binance.vision" if exchange == "binance"
-            else "https://api.bybit.com" if exchange == "bybit" and environment == "production"
-            else "https://testnet.bybit.com"
+            "https://api.binance.com"
+            if exchange == "binance" and environment == "production"
+            else (
+                "https://testnet.binance.vision"
+                if exchange == "binance"
+                else (
+                    "https://api.bybit.com"
+                    if exchange == "bybit" and environment == "production"
+                    else "https://testnet.bybit.com"
+                )
+            )
         )
 
-        logging.info("🔹 Używamy giełdy: %s, środowisko: %s, endpoint: %s", exchange, environment, base_url)
-
-        connector = ExchangeConnector(
-            exchange=exchange,
-            api_key=api_key,
-            api_secret=api_secret,
-            base_url=base_url
+        logging.info(
+            "🔹 Używamy giełdy: %s, środowisko: %s, endpoint: %s",
+            exchange,
+            environment,
+            base_url,
         )
+
+        connector = ExchangeConnector(exchange=exchange, api_key=api_key, api_secret=api_secret, base_url=base_url)
 
         order_executor = OrderExecution(connector)
         trade_executor = TradeExecutor(order_executor, None, None)
@@ -173,7 +173,7 @@ def main() -> None:
 
         # Inicjalizacja modułów
         trading_manager = initialize_trading_modules(environment, exchange)
-        ai_modules = initialize_ai_modules()
+        initialize_ai_modules()
 
         # Wielowątkowość – AI i trading działają równolegle
         ai_thread = threading.Thread(target=ai_analysis_loop, daemon=True)

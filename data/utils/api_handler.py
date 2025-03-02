@@ -10,19 +10,20 @@ Funkcjonalności:
 - Zawiera logowanie na poziomie debug oraz info dla lepszej diagnostyki.
 """
 
+import logging
 import os
 import time
-import logging
-import requests
 from functools import lru_cache
 
+import requests
+
 # Konfiguracja logowania
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s [%(levelname)s] %(message)s')
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s [%(levelname)s] %(message)s")
 
 DEFAULT_TIMEOUT = 5  # sekundy
 MAX_RETRIES = 3
 BACKOFF_FACTOR = 2
+
 
 class APIHandler:
     def __init__(self, api_key: str = None, base_url: str = None):
@@ -56,7 +57,12 @@ class APIHandler:
         delay = 1  # początkowe opóźnienie
         while attempt < MAX_RETRIES:
             try:
-                logging.debug("Wysyłanie żądania GET do %s z parametrami: %s (próba %d)", url, params, attempt + 1)
+                logging.debug(
+                    "Wysyłanie żądania GET do %s z parametrami: %s (próba %d)",
+                    url,
+                    params,
+                    attempt + 1,
+                )
                 response = requests.get(url, headers=self.headers, params=params, timeout=DEFAULT_TIMEOUT)
                 response.raise_for_status()
                 data = response.json()
@@ -87,8 +93,19 @@ class APIHandler:
         delay = 1
         while attempt < MAX_RETRIES:
             try:
-                logging.debug("Wysyłanie żądania POST do %s z danymi: %s (próba %d)", url, json_data or data, attempt + 1)
-                response = requests.post(url, headers=self.headers, data=data, json=json_data, timeout=DEFAULT_TIMEOUT)
+                logging.debug(
+                    "Wysyłanie żądania POST do %s z danymi: %s (próba %d)",
+                    url,
+                    json_data or data,
+                    attempt + 1,
+                )
+                response = requests.post(
+                    url,
+                    headers=self.headers,
+                    data=data,
+                    json=json_data,
+                    timeout=DEFAULT_TIMEOUT,
+                )
                 response.raise_for_status()
                 res_data = response.json()
                 logging.debug("Otrzymano odpowiedź: %s", res_data)
@@ -100,6 +117,7 @@ class APIHandler:
                 delay *= BACKOFF_FACTOR
         logging.error("Przekroczono maksymalną liczbę prób dla żądania POST do %s.", url)
         raise Exception(f"Nie udało się uzyskać odpowiedzi z {url}")
+
 
 # -------------------- Testy jednostkowe --------------------
 if __name__ == "__main__":

@@ -11,13 +11,14 @@ Funkcjonalności:
 """
 
 import logging
+
 import numpy as np
 import pandas as pd
 from scipy.stats import norm
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s [%(levelname)s] %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+
 
 class PortfolioRiskManager:
     """
@@ -115,9 +116,10 @@ class PortfolioRiskManager:
         """
         inv_volatility = 1 / asset_volatility
         weights = inv_volatility / inv_volatility.sum()
-        scaled_weights = weights * target_risk / np.sqrt(np.sum((weights ** 2) * (asset_volatility ** 2)))
+        scaled_weights = weights * target_risk / np.sqrt(np.sum((weights**2) * (asset_volatility**2)))
         logging.info("Optymalna alokacja kapitału:\n%s", scaled_weights)
         return scaled_weights
+
 
 # -------------------- Przykładowe użycie --------------------
 if __name__ == "__main__":
@@ -125,11 +127,14 @@ if __name__ == "__main__":
         # Tworzenie przykładowych danych cenowych
         np.random.seed(42)
         dates = pd.date_range(start="2023-01-01", periods=252)
-        price_data = pd.DataFrame({
-            "Asset_A": np.cumprod(1 + np.random.normal(0, 0.02, 252)),
-            "Asset_B": np.cumprod(1 + np.random.normal(0, 0.015, 252)),
-            "Asset_C": np.cumprod(1 + np.random.normal(0, 0.01, 252))
-        }, index=dates)
+        price_data = pd.DataFrame(
+            {
+                "Asset_A": np.cumprod(1 + np.random.normal(0, 0.02, 252)),
+                "Asset_B": np.cumprod(1 + np.random.normal(0, 0.015, 252)),
+                "Asset_C": np.cumprod(1 + np.random.normal(0, 0.01, 252)),
+            },
+            index=dates,
+        )
 
         # Inicjalizacja menedżera ryzyka portfela
         portfolio_manager = PortfolioRiskManager(confidence_level=0.95, risk_free_rate=0.01)

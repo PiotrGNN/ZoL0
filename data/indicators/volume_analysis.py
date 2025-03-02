@@ -13,12 +13,12 @@ Funkcjonalności:
 """
 
 import logging
+
 import numpy as np
 import pandas as pd
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s [%(levelname)s] %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
 
 def calculate_obv(prices: pd.Series, volumes: pd.Series) -> pd.Series:
@@ -57,11 +57,11 @@ def calculate_cmf(df: pd.DataFrame, period: int = 20) -> pd.Series:
     """
     try:
         # Obliczenie Money Flow Multiplier
-        mfm = ((df['close'] - df['low']) - (df['high'] - df['close'])) / (df['high'] - df['low']).replace(0, np.nan)
+        mfm = ((df["close"] - df["low"]) - (df["high"] - df["close"])) / (df["high"] - df["low"]).replace(0, np.nan)
         # Obliczenie Money Flow Volume
-        mfv = mfm * df['volume']
+        mfv = mfm * df["volume"]
         # Suma Money Flow Volume i wolumenu
-        cmf = mfv.rolling(window=period, min_periods=1).sum() / df['volume'].rolling(window=period, min_periods=1).sum()
+        cmf = mfv.rolling(window=period, min_periods=1).sum() / df["volume"].rolling(window=period, min_periods=1).sum()
         logging.info("CMF obliczone pomyślnie dla okresu %d.", period)
         return cmf.fillna(0)
     except Exception as e:
@@ -80,9 +80,9 @@ def calculate_vwap(df: pd.DataFrame) -> pd.Series:
         pd.Series: Wartości VWAP.
     """
     try:
-        typical_price = (df['high'] + df['low'] + df['close']) / 3.0
-        cumulative_tp_volume = (typical_price * df['volume']).cumsum()
-        cumulative_volume = df['volume'].cumsum()
+        typical_price = (df["high"] + df["low"] + df["close"]) / 3.0
+        cumulative_tp_volume = (typical_price * df["volume"]).cumsum()
+        cumulative_volume = df["volume"].cumsum()
         vwap = cumulative_tp_volume / cumulative_volume
         logging.info("VWAP obliczone pomyślnie.")
         return vwap
@@ -108,7 +108,11 @@ def detect_volume_anomalies(volumes: pd.Series, threshold: float = 2.0) -> pd.Se
         std_vol = volumes.std()
         z_scores = (volumes - mean_vol) / std_vol
         anomalies = z_scores.abs() > threshold
-        logging.info("Wykryto %d anomalii wolumenowych przy progu %.2f.", anomalies.sum(), threshold)
+        logging.info(
+            "Wykryto %d anomalii wolumenowych przy progu %.2f.",
+            anomalies.sum(),
+            threshold,
+        )
         return anomalies
     except Exception as e:
         logging.error("Błąd przy wykrywaniu anomalii wolumenowych: %s", e)
@@ -128,7 +132,7 @@ def accumulation_distribution_signal(df: pd.DataFrame, period: int = 14) -> pd.S
         pd.Series: Sygnał: 1 dla akumulacji, -1 dla dystrybucji, 0 dla braku jednoznacznego sygnału.
     """
     try:
-        obv = calculate_obv(df['close'], df['volume'])
+        obv = calculate_obv(df["close"], df["volume"])
         obv_change = obv.diff(periods=period).fillna(0)
         # Jeśli zmiana OBV jest dodatnia, sugeruje akumulację; ujemna - dystrybucję
         signal = obv_change.apply(lambda x: 1 if x > 0 else (-1 if x < 0 else 0))
@@ -149,15 +153,15 @@ if __name__ == "__main__":
             "high": np.linspace(100, 150, 100),
             "low": np.linspace(95, 145, 100),
             "close": np.linspace(98, 148, 100) + np.random.normal(0, 2, 100),
-            "volume": np.random.randint(1000, 3000, 100)
+            "volume": np.random.randint(1000, 3000, 100),
         }
         df = pd.DataFrame(data)
         df.set_index("timestamp", inplace=True)
 
-        obv = calculate_obv(df['close'], df['volume'])
+        obv = calculate_obv(df["close"], df["volume"])
         cmf = calculate_cmf(df, period=14)
         vwap = calculate_vwap(df)
-        anomalies = detect_volume_anomalies(df['volume'], threshold=2.5)
+        anomalies = detect_volume_anomalies(df["volume"], threshold=2.5)
         acc_dist_signal = accumulation_distribution_signal(df, period=7)
 
         logging.info("Przykładowa analiza wolumenu zakończona pomyślnie.")

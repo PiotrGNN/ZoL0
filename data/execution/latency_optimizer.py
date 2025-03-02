@@ -10,24 +10,25 @@ Funkcjonalności:
 - Logowanie i generowanie raportów z historii opóźnień, ułatwiających długoterminową optymalizację strategii.
 """
 
-import time
 import logging
-import requests
+import time
 from statistics import mean
 
+import requests
+
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s [%(levelname)s] %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
 DEFAULT_ENDPOINT = "https://api.binance.com/api/v3/time"
 RETRY_COUNT = 3
 TIMEOUT = 5
 
+
 class LatencyOptimizer:
     def __init__(self, endpoints: list = None):
         """
         Inicjalizacja modułu LatencyOptimizer.
-        
+
         Parameters:
             endpoints (list): Lista endpointów API do testowania. Jeśli None, używa domyślnego endpointu Binance.
         """
@@ -35,14 +36,14 @@ class LatencyOptimizer:
             endpoints = [DEFAULT_ENDPOINT]
         self.endpoints = endpoints
         self.latency_history = {endpoint: [] for endpoint in endpoints}
-    
+
     def measure_latency(self, endpoint: str) -> float:
         """
         Mierzy opóźnienie (RTT) dla danego endpointu.
-        
+
         Parameters:
             endpoint (str): URL endpointu.
-            
+
         Returns:
             float: Zmierzony RTT w sekundach.
         """
@@ -55,9 +56,9 @@ class LatencyOptimizer:
                 end = time.time()
                 latency = end - start
                 latencies.append(latency)
-                logging.info("Pomiar RTT %d dla %s: %.4f s", i+1, endpoint, latency)
+                logging.info("Pomiar RTT %d dla %s: %.4f s", i + 1, endpoint, latency)
             except requests.exceptions.RequestException as e:
-                logging.warning("Błąd przy pomiarze RTT (próba %d): %s", i+1, e)
+                logging.warning("Błąd przy pomiarze RTT (próba %d): %s", i + 1, e)
         if latencies:
             avg_latency = mean(latencies)
             self.latency_history[endpoint].append(avg_latency)
@@ -65,12 +66,12 @@ class LatencyOptimizer:
             return avg_latency
         else:
             logging.error("Nie udało się zmierzyć opóźnienia dla %s", endpoint)
-            return float('inf')
-    
+            return float("inf")
+
     def test_endpoints(self) -> dict:
         """
         Testuje wszystkie dostępne endpointy i zwraca ich średnie opóźnienia.
-        
+
         Returns:
             dict: Słownik z endpointami jako kluczami i średnim RTT jako wartościami.
         """
@@ -79,23 +80,27 @@ class LatencyOptimizer:
             avg_latency = self.measure_latency(endpoint)
             results[endpoint] = avg_latency
         return results
-    
+
     def recommend_best_endpoint(self) -> str:
         """
         Rekomenduje najlepszy endpoint na podstawie zmierzonych opóźnień.
-        
+
         Returns:
             str: URL endpointu z najniższym średnim opóźnieniem.
         """
         results = self.test_endpoints()
         best_endpoint = min(results, key=results.get)
-        logging.info("Rekomendowany endpoint: %s z RTT: %.4f s", best_endpoint, results[best_endpoint])
+        logging.info(
+            "Rekomendowany endpoint: %s z RTT: %.4f s",
+            best_endpoint,
+            results[best_endpoint],
+        )
         return best_endpoint
-    
+
     def generate_latency_report(self, report_path: str):
         """
         Generuje raport z historii pomiarów opóźnień i zapisuje go do pliku.
-        
+
         Parameters:
             report_path (str): Ścieżka do pliku raportu (np. 'latency_report.txt').
         """
@@ -118,20 +123,21 @@ class LatencyOptimizer:
             logging.error("Błąd przy generowaniu raportu opóźnień: %s", e)
             raise
 
+
 # -------------------- Przykładowe użycie --------------------
 if __name__ == "__main__":
     try:
         # Przykładowa lista endpointów - można dodać więcej lub zmodyfikować
         endpoints = [
             "https://api.binance.com/api/v3/time",
-            "https://api.binance.com/api/v3/exchangeInfo"  # przykładowy dodatkowy endpoint
+            "https://api.binance.com/api/v3/exchangeInfo",  # przykładowy dodatkowy endpoint
         ]
         optimizer = LatencyOptimizer(endpoints=endpoints)
-        
+
         # Rekomendacja najlepszego endpointu
         best_endpoint = optimizer.recommend_best_endpoint()
         logging.info("Najlepszy endpoint: %s", best_endpoint)
-        
+
         # Generowanie raportu z historii opóźnień
         optimizer.generate_latency_report("latency_report.txt")
     except Exception as e:

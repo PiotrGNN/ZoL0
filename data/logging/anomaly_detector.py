@@ -11,22 +11,27 @@ Funkcjonalności:
 - Zawiera testy jednostkowe sprawdzające wykrywanie anomalii.
 """
 
-import os
 import logging
+import os
+
 import numpy as np
 import pandas as pd
-
-from sklearn.ensemble import IsolationForest
 from sklearn.cluster import KMeans
+from sklearn.ensemble import IsolationForest
 
 # Konfiguracja logowania
 LOG_DIR = "./logs"
 os.makedirs(LOG_DIR, exist_ok=True)
 HEAD_FILE = os.path.join(LOG_DIR, "HEAD")
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s [%(levelname)s] %(message)s',
-                    handlers=[logging.FileHandler(os.path.join(LOG_DIR, "anomaly_detector.log")),
-                              logging.StreamHandler()])
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler(os.path.join(LOG_DIR, "anomaly_detector.log")),
+        logging.StreamHandler(),
+    ],
+)
+
 
 def update_head(log_id: str):
     """
@@ -43,14 +48,15 @@ def update_head(log_id: str):
         logging.error("Błąd przy aktualizacji pliku HEAD: %s", e)
         raise
 
+
 def detect_anomalies_zscore(data: pd.Series, threshold: float = 3.0) -> pd.Series:
     """
     Wykrywa anomalie w serii danych za pomocą metody z-score.
-    
+
     Parameters:
         data (pd.Series): Serie danych (np. ceny, wolumen).
         threshold (float): Próg z-score; wartości z-score > threshold (lub < -threshold) są uznawane za anomalie.
-    
+
     Returns:
         pd.Series: Boolean Series, gdzie True oznacza wykrytą anomalię.
     """
@@ -61,14 +67,15 @@ def detect_anomalies_zscore(data: pd.Series, threshold: float = 3.0) -> pd.Serie
     logging.info("Wykryto %d anomalii przy progu z-score %.2f.", anomalies.sum(), threshold)
     return anomalies
 
+
 def detect_anomalies_isolation_forest(df: pd.DataFrame, contamination: float = 0.01) -> pd.Series:
     """
     Wykrywa anomalie przy użyciu modelu Isolation Forest.
-    
+
     Parameters:
         df (pd.DataFrame): Dane wejściowe (numeryczne).
         contamination (float): Procent danych uznawany za anomalie.
-    
+
     Returns:
         pd.Series: Etykiety: 1 dla normalnych, -1 dla anomalii.
     """
@@ -81,15 +88,16 @@ def detect_anomalies_isolation_forest(df: pd.DataFrame, contamination: float = 0
         logging.error("Błąd przy wykrywaniu anomalii za pomocą Isolation Forest: %s", e)
         raise
 
+
 def detect_anomalies_kmeans(data: pd.Series, n_clusters: int = 2) -> pd.Series:
     """
     Wykrywa anomalie przy użyciu algorytmu K-Means.
     Zakłada, że jeden z klastrów reprezentuje dane anomalne.
-    
+
     Parameters:
         data (pd.Series): Dane wejściowe (jednowymiarowe).
         n_clusters (int): Liczba klastrów.
-    
+
     Returns:
         pd.Series: Boolean Series, gdzie True oznacza wykrytą anomalię.
     """
@@ -107,10 +115,11 @@ def detect_anomalies_kmeans(data: pd.Series, n_clusters: int = 2) -> pd.Series:
         logging.error("Błąd przy wykrywaniu anomalii za pomocą K-Means: %s", e)
         raise
 
+
 def early_warning_notification(anomaly_details: dict):
     """
     Mechanizm wczesnego ostrzegania – symuluje wysłanie powiadomienia (np. e-mail, SMS) przez logowanie.
-    
+
     Parameters:
         anomaly_details (dict): Szczegóły wykrytych anomalii.
     """
@@ -120,6 +129,7 @@ def early_warning_notification(anomaly_details: dict):
     except Exception as e:
         logging.error("Błąd przy wysyłaniu powiadomienia: %s", e)
         raise
+
 
 # -------------------- Testy jednostkowe --------------------
 def unit_test_anomaly_detector():
@@ -135,37 +145,38 @@ def unit_test_anomaly_detector():
         normal_data[20] = 150
         normal_data[50] = 50
         data_series = pd.Series(normal_data)
-        
+
         # Test z-score
         anomalies_z = detect_anomalies_zscore(data_series, threshold=3.0)
         assert anomalies_z.sum() >= 2, "Z-Score nie wykrył oczekiwanych anomalii."
-        
+
         # Test Isolation Forest
         df = pd.DataFrame({"value": data_series})
         preds = detect_anomalies_isolation_forest(df, contamination=0.05)
         assert (preds == -1).sum() >= 2, "Isolation Forest nie wykrył oczekiwanych anomalii."
-        
+
         # Test K-Means
         anomalies_km = detect_anomalies_kmeans(data_series, n_clusters=2)
         assert anomalies_km.sum() >= 1, "K-Means nie wykrył oczekiwanych anomalii."
-        
+
         # Test powiadomienia – symulujemy wysłanie alertu
         anomaly_details = {
             "z_score_anomalies": int(anomalies_z.sum()),
             "isolation_forest_anomalies": int((preds == -1).sum()),
-            "kmeans_anomalies": int(anomalies_km.sum())
+            "kmeans_anomalies": int(anomalies_km.sum()),
         }
         early_warning_notification(anomaly_details)
-        
+
         # Aktualizacja pliku HEAD
         update_head("anomaly_detector_test")
-        
+
         logging.info("Testy jednostkowe anomaly_detector.py zakończone sukcesem.")
     except AssertionError as ae:
         logging.error("AssertionError w testach jednostkowych: %s", ae)
     except Exception as e:
         logging.error("Błąd w testach jednostkowych anomaly_detector.py: %s", e)
         raise
+
 
 if __name__ == "__main__":
     try:

@@ -4,7 +4,7 @@ zrobcsv.py
 Skrypt do konwersji danych z różnych formatów (JSON, Excel, XML) do formatu CSV.
 
 Funkcjonalności:
-- Automatyczne wykrywanie kolumn i mapowanie ich na standardowy schemat: 
+- Automatyczne wykrywanie kolumn i mapowanie ich na standardowy schemat:
   timestamp, open, high, low, close, volume.
 - Walidacja struktury danych oraz logowanie błędów w razie niezgodności formatu.
 - Przetwarzanie dużych plików w trybie streamingowym (np. przy użyciu iteratorów w Pandas).
@@ -12,64 +12,66 @@ Funkcjonalności:
 - Testy jednostkowe weryfikujące poprawność konwersji.
 """
 
+import argparse
+import json
+import logging
 import os
 import sys
-import json
-import argparse
-import logging
-import pandas as pd
 import xml.etree.ElementTree as ET
 
+import pandas as pd
+
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s [%(levelname)s] %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
 # Standardowy schemat kolumn
 STANDARD_COLUMNS = ["timestamp", "open", "high", "low", "close", "volume"]
 
+
 def detect_file_format(file_path: str) -> str:
     """
     Wykrywa format pliku na podstawie rozszerzenia.
-    
+
     Parameters:
         file_path (str): Ścieżka do pliku.
-        
+
     Returns:
         str: Format pliku ('json', 'excel', 'xml', 'csv').
     """
     ext = os.path.splitext(file_path)[1].lower()
-    if ext in ['.json']:
-        return 'json'
-    elif ext in ['.xls', '.xlsx']:
-        return 'excel'
-    elif ext in ['.xml']:
-        return 'xml'
-    elif ext in ['.csv']:
-        return 'csv'
+    if ext in [".json"]:
+        return "json"
+    elif ext in [".xls", ".xlsx"]:
+        return "excel"
+    elif ext in [".xml"]:
+        return "xml"
+    elif ext in [".csv"]:
+        return "csv"
     else:
         raise ValueError(f"Nieobsługiwany format pliku: {ext}")
+
 
 def load_data(file_path: str, file_format: str, chunksize: int = None) -> pd.DataFrame:
     """
     Ładuje dane z pliku do DataFrame.
-    
+
     Parameters:
         file_path (str): Ścieżka do pliku.
         file_format (str): Format pliku.
         chunksize (int, optional): Rozmiar partii dla trybu streamingowym.
-    
+
     Returns:
         pd.DataFrame: Załadowane dane.
     """
     try:
-        if file_format == 'csv':
+        if file_format == "csv":
             if chunksize:
                 # Ładuj w trybie streamingowym i połącz wyniki
                 chunks = pd.read_csv(file_path, chunksize=chunksize)
                 df = pd.concat(chunks, ignore_index=True)
             else:
                 df = pd.read_csv(file_path)
-        elif file_format == 'json':
+        elif file_format == "json":
             # Zakładamy, że plik jest w formacie JSON lub JSON Lines
             try:
                 # Próbujemy załadować jako JSON Lines
@@ -79,9 +81,9 @@ def load_data(file_path: str, file_format: str, chunksize: int = None) -> pd.Dat
                 with open(file_path, "r", encoding="utf-8") as f:
                     data = json.load(f)
                 df = pd.json_normalize(data)
-        elif file_format == 'excel':
+        elif file_format == "excel":
             df = pd.read_excel(file_path)
-        elif file_format == 'xml':
+        elif file_format == "xml":
             # Ładowanie XML i konwersja na listę słowników
             tree = ET.parse(file_path)
             root = tree.getroot()
@@ -100,14 +102,15 @@ def load_data(file_path: str, file_format: str, chunksize: int = None) -> pd.Dat
         logging.error("Błąd przy ładowaniu danych z %s: %s", file_path, e)
         raise
 
+
 def map_columns(df: pd.DataFrame) -> pd.DataFrame:
     """
     Mapuje kolumny wejściowe na standardowy schemat:
     timestamp, open, high, low, close, volume.
-    
+
     Parameters:
         df (pd.DataFrame): DataFrame z danymi wejściowymi.
-    
+
     Returns:
         pd.DataFrame: DataFrame z przemapowanymi kolumnami.
     """
@@ -134,10 +137,17 @@ def map_columns(df: pd.DataFrame) -> pd.DataFrame:
         logging.error("Błąd przy mapowaniu kolumn: %s", e)
         raise
 
-def convert_to_csv(input_file: str, output_file: str, delimiter: str = ",", encoding: str = "utf-8", chunksize: int = None):
+
+def convert_to_csv(
+    input_file: str,
+    output_file: str,
+    delimiter: str = ",",
+    encoding: str = "utf-8",
+    chunksize: int = None,
+):
     """
     Konwertuje dane z pliku wejściowego (JSON, Excel, XML, CSV) do formatu CSV według standardowego schematu.
-    
+
     Parameters:
         input_file (str): Ścieżka do pliku wejściowego.
         output_file (str): Ścieżka, pod którą zapisany zostanie plik CSV.
@@ -155,6 +165,7 @@ def convert_to_csv(input_file: str, output_file: str, delimiter: str = ",", enco
         logging.error("Błąd podczas konwersji do CSV: %s", e)
         raise
 
+
 # -------------------- Testy jednostkowe --------------------
 def unit_test_conversion():
     """
@@ -163,14 +174,27 @@ def unit_test_conversion():
     konwertuje je do CSV, a następnie sprawdza poprawność przemapowania kolumn.
     """
     import tempfile
-    import numpy as np
 
     # Przykładowe dane
     sample_data = [
-        {"timestamp": "2023-01-01 09:30:00", "open": 100, "high": 105, "low": 99, "close": 104, "volume": 1500},
-        {"timestamp": "2023-01-02 09:30:00", "open": 104, "high": 110, "low": 102, "close": 109, "volume": 2000}
+        {
+            "timestamp": "2023-01-01 09:30:00",
+            "open": 100,
+            "high": 105,
+            "low": 99,
+            "close": 104,
+            "volume": 1500,
+        },
+        {
+            "timestamp": "2023-01-02 09:30:00",
+            "open": 104,
+            "high": 110,
+            "low": 102,
+            "close": 109,
+            "volume": 2000,
+        },
     ]
-    
+
     # Test JSON
     with tempfile.NamedTemporaryFile(mode="w+", suffix=".json", delete=False) as temp_json:
         json.dump(sample_data, temp_json)
@@ -188,7 +212,7 @@ def unit_test_conversion():
         temp_excel_path = temp_excel.name
     df_sample = pd.DataFrame(sample_data)
     df_sample.to_excel(temp_excel_path, index=False)
-    
+
     with tempfile.NamedTemporaryFile(mode="w+", suffix=".csv", delete=False) as temp_csv2:
         temp_csv_path2 = temp_csv2.name
 
@@ -225,22 +249,44 @@ def unit_test_conversion():
     os.remove(temp_csv_path3)
     logging.info("Testy jednostkowe konwersji zakończone sukcesem.")
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Konwertuje dane z JSON, Excel, XML do formatu CSV.")
     parser.add_argument("input_file", type=str, help="Ścieżka do pliku wejściowego.")
     parser.add_argument("output_file", type=str, help="Ścieżka do pliku CSV wyjściowego.")
-    parser.add_argument("--delimiter", type=str, default=",", help="Separator w pliku CSV (domyślnie ',').")
-    parser.add_argument("--encoding", type=str, default="utf-8", help="Kodowanie pliku CSV (domyślnie 'utf-8').")
-    parser.add_argument("--chunksize", type=int, default=None, help="Rozmiar partii do przetwarzania dużych plików.")
+    parser.add_argument(
+        "--delimiter",
+        type=str,
+        default=",",
+        help="Separator w pliku CSV (domyślnie ',').",
+    )
+    parser.add_argument(
+        "--encoding",
+        type=str,
+        default="utf-8",
+        help="Kodowanie pliku CSV (domyślnie 'utf-8').",
+    )
+    parser.add_argument(
+        "--chunksize",
+        type=int,
+        default=None,
+        help="Rozmiar partii do przetwarzania dużych plików.",
+    )
 
     args = parser.parse_args()
-    
+
     try:
-        convert_to_csv(args.input_file, args.output_file, delimiter=args.delimiter, encoding=args.encoding, chunksize=args.chunksize)
+        convert_to_csv(
+            args.input_file,
+            args.output_file,
+            delimiter=args.delimiter,
+            encoding=args.encoding,
+            chunksize=args.chunksize,
+        )
     except Exception as e:
         logging.error("Konwersja zakończona błędem: %s", e)
         sys.exit(1)
-    
+
     # Opcjonalnie, uruchom testy jednostkowe
     try:
         unit_test_conversion()

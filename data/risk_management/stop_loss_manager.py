@@ -13,15 +13,16 @@ Funkcjonalności:
 
 import logging
 import time
-import random
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
+
 import requests
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s [%(levelname)s] %(message)s',
-                    handlers=[logging.FileHandler("order_execution.log"),
-                              logging.StreamHandler()])
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[logging.FileHandler("order_execution.log"), logging.StreamHandler()],
+)
 
 
 class AdvancedOrderExecution:
@@ -29,7 +30,13 @@ class AdvancedOrderExecution:
     Klasa obsługująca składanie i zarządzanie zleceniami na giełdzie.
     """
 
-    def __init__(self, api_url: str, api_key: str, max_slippage: float = 0.005, retry_attempts: int = 3):
+    def __init__(
+        self,
+        api_url: str,
+        api_key: str,
+        max_slippage: float = 0.005,
+        retry_attempts: int = 3,
+    ):
         """
         Inicjalizacja modułu realizacji zleceń.
 
@@ -65,11 +72,17 @@ class AdvancedOrderExecution:
                 return response.json()
             except requests.RequestException as e:
                 logging.error("Błąd API (%s) - próba %d: %s", endpoint, attempt + 1, e)
-                time.sleep(2 ** attempt)  # Wykładnicze opóźnienie
+                time.sleep(2**attempt)  # Wykładnicze opóźnienie
         return None
 
-    def place_order(self, order_type: str, symbol: str, quantity: float, price: Optional[float] = None,
-                    stop_price: Optional[float] = None) -> Optional[Dict[str, Any]]:
+    def place_order(
+        self,
+        order_type: str,
+        symbol: str,
+        quantity: float,
+        price: Optional[float] = None,
+        stop_price: Optional[float] = None,
+    ) -> Optional[Dict[str, Any]]:
         """
         Składa zlecenie na giełdzie.
 
@@ -141,8 +154,14 @@ class AdvancedOrderExecution:
             logging.error("Błąd pobierania statusu zlecenia %s.", order_id)
         return response
 
-    def execute_trade(self, order_type: str, symbol: str, quantity: float, target_price: Optional[float] = None,
-                      stop_loss: Optional[float] = None) -> Optional[Dict[str, Any]]:
+    def execute_trade(
+        self,
+        order_type: str,
+        symbol: str,
+        quantity: float,
+        target_price: Optional[float] = None,
+        stop_loss: Optional[float] = None,
+    ) -> Optional[Dict[str, Any]]:
         """
         Realizuje zlecenie z mechanizmem kontroli ryzyka.
 

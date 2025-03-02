@@ -9,13 +9,13 @@ Funkcjonalności:
 - Zawiera funkcje do monitorowania czasu wykonania zapytań oraz logowanie kluczowych operacji.
 """
 
-import sqlite3
 import logging
+import sqlite3
 import time
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s [%(levelname)s] %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+
 
 class DatabaseManager:
     def __init__(self, db_path: str):
@@ -49,7 +49,7 @@ class DatabaseManager:
             query (str): Zapytanie SQL.
             params (tuple): Parametry do zapytania.
             commit (bool): Czy zatwierdzić zmiany po wykonaniu zapytania.
-        
+
         Returns:
             list: Lista wierszy wynikowych jako słowniki.
         """
@@ -99,6 +99,7 @@ class DatabaseManager:
         if self.conn:
             self.conn.close()
             logging.info("Połączenie z bazą danych zostało zamknięte.")
+
 
 # Przykładowe użycie i testy
 if __name__ == "__main__":

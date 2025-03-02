@@ -14,18 +14,19 @@ Funkcjonalności:
 """
 
 import logging
+
 import numpy as np
 import pandas as pd
-from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
+from sklearn.preprocessing import MinMaxScaler, RobustScaler, StandardScaler
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s [%(levelname)s] %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+
 
 class DataScaler:
     """
     Klasa do skalowania danych przy użyciu różnych metod.
-    
+
     Parametry:
         method (str): Metoda skalowania. Dozwolone wartości:
                       'standard'  - StandardScaler (standaryzacja),
@@ -34,12 +35,13 @@ class DataScaler:
                       'log'       - Log-scaling (przy dużej zmienności, transformacja logarytmiczna).
         fill_value (float): Wartość, którą używamy do wypełniania brakujących danych (np. mediana).
     """
+
     def __init__(self, method: str = "standard", fill_value: float = None):
         self.method = method.lower()
         self.fill_value = fill_value  # Jeśli None, mediana zostanie obliczona automatycznie.
         self.scaler = None  # Będzie inicjalizowany w metodzie fit.
         logging.info("Inicjalizacja DataScaler z metodą: %s", self.method)
-    
+
     def _fill_missing(self, data):
         """
         Wypełnia brakujące wartości w danych medianą.
@@ -59,7 +61,7 @@ class DataScaler:
     def fit(self, data):
         """
         Dopasowuje wybrany scaler do danych.
-        
+
         Parameters:
             data (pd.DataFrame lub np.ndarray): Dane wejściowe.
         """
@@ -86,10 +88,10 @@ class DataScaler:
     def transform(self, data):
         """
         Transformuje dane przy użyciu dopasowanego scalera.
-        
+
         Parameters:
             data (pd.DataFrame lub np.ndarray): Dane wejściowe.
-            
+
         Returns:
             Przetransformowane dane w tym samym formacie co wejściowe.
         """
@@ -107,10 +109,10 @@ class DataScaler:
     def fit_transform(self, data):
         """
         Dopasowuje scaler do danych i jednocześnie transformuje dane.
-        
+
         Parameters:
             data (pd.DataFrame lub np.ndarray): Dane wejściowe.
-            
+
         Returns:
             Przetransformowane dane.
         """
@@ -120,10 +122,10 @@ class DataScaler:
     def inverse_transform(self, data):
         """
         Odwraca transformację danych.
-        
+
         Parameters:
             data (pd.DataFrame lub np.ndarray): Przetransformowane dane.
-            
+
         Returns:
             Dane w oryginalnej skali.
         """
@@ -136,6 +138,7 @@ class DataScaler:
             raise ValueError(f"Nieobsługiwana metoda skalowania: {self.method}")
         logging.info("Inverse transformacja danych zakończona.")
         return original
+
 
 # -------------------- Testy jednostkowe --------------------
 def unit_test_scaling():
@@ -163,6 +166,7 @@ def unit_test_scaling():
             relative_error = np.mean(np.abs((df_data.values - recovered) / df_data.values))
             logging.info("Metoda log, względny błąd inverse transform: %.4f", relative_error)
             assert relative_error < 0.05, "Względny błąd za wysoki dla log scaling"
+
 
 if __name__ == "__main__":
     try:

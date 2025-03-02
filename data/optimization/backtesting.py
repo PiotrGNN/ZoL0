@@ -16,17 +16,16 @@ Funkcjonalności:
 Uwaga: Przykładowa implementacja; strategia tradingowa jest symulowana przez funkcję przykładową.
 """
 
-import os
 import logging
+import os
+from concurrent.futures import ThreadPoolExecutor
+from typing import Any, Callable, Dict, List, Tuple
+
 import numpy as np
 import pandas as pd
-from datetime import datetime
-from concurrent.futures import ThreadPoolExecutor
-from typing import Any, Dict, Callable, List, Tuple
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s [%(levelname)s] %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
 # Import modułu trade_logger (zakładamy, że jest w ścieżce data/logging/)
 try:
@@ -35,21 +34,23 @@ except ImportError:
     TradeLogger = None
     logging.warning("Nie znaleziono modułu trade_logger. Logowanie transakcji będzie ograniczone.")
 
+
 def calculate_cagr(initial_value: float, final_value: float, years: float) -> float:
     """
     Oblicza CAGR (Compound Annual Growth Rate).
-    
+
     Parameters:
         initial_value (float): Kapitał początkowy.
         final_value (float): Kapitał końcowy.
         years (float): Liczba lat (może być ułamkiem).
-    
+
     Returns:
         float: Wartość CAGR.
     """
     if initial_value <= 0 or years <= 0:
         return 0.0
     return (final_value / initial_value) ** (1 / years) - 1
+
 
 def calculate_max_drawdown(equity_curve: pd.Series) -> float:
     """
@@ -67,6 +68,7 @@ def calculate_max_drawdown(equity_curve: pd.Series) -> float:
     drawdowns = (equity_curve - cumulative_max) / cumulative_max
     return float(drawdowns.min())
 
+
 def calculate_sharpe_ratio(returns: pd.Series, risk_free_rate: float = 0.0) -> float:
     """
     Oblicza Sharpe Ratio przy założeniu stopy wolnej od ryzyka (domyślnie 0).
@@ -82,6 +84,7 @@ def calculate_sharpe_ratio(returns: pd.Series, risk_free_rate: float = 0.0) -> f
         return 0.0
     excess_returns = returns - risk_free_rate
     return float(excess_returns.mean() / excess_returns.std() * np.sqrt(252))
+
 
 def walk_forward_split(df: pd.DataFrame, n_splits: int) -> List[Tuple[pd.DataFrame, pd.DataFrame]]:
     """
@@ -107,7 +110,7 @@ def walk_forward_split(df: pd.DataFrame, n_splits: int) -> List[Tuple[pd.DataFra
     split_period = max(1, total_period // n_splits)
     splits = []
     for i in range(n_splits):
-        train_end = df.index[0] + pd.Timedelta(days=(i+1)*split_period)
+        train_end = df.index[0] + pd.Timedelta(days=(i + 1) * split_period)
         test_end = train_end + pd.Timedelta(days=split_period)
 
         train_data = df[df.index <= train_end]
@@ -118,13 +121,14 @@ def walk_forward_split(df: pd.DataFrame, n_splits: int) -> List[Tuple[pd.DataFra
             logging.info("Pominięto fold %d: train_data lub test_data jest puste.", i + 1)
     return splits
 
+
 def run_strategy(
     strategy_func: Callable[[pd.DataFrame], Dict[Any, int]],
     train_data: pd.DataFrame,
     test_data: pd.DataFrame,
     commission: float = 0.001,
     spread: float = 0.0005,
-    slippage: float = 0.0005
+    slippage: float = 0.0005,
 ) -> Dict[str, Any]:
     """
     Uruchamia strategię na danych testowych.
@@ -151,7 +155,7 @@ def run_strategy(
     signals = strategy_func(test_data)
 
     for time_point, row in test_data.iterrows():
-        price = row.get('close', None)
+        price = row.get("close", None)
         if price is None:
             equity_curve.append(capital)
             continue
@@ -161,11 +165,7 @@ def run_strategy(
             # Otwieramy pozycję long
             positions = 1
             entry_price = price * (1 + spread + slippage)
-            trade_log.append({
-                "timestamp": time_point,
-                "action": "BUY",
-                "price": entry_price
-            })
+            trade_log.append({"timestamp": time_point, "action": "BUY", "price": entry_price})
         elif signal == -1 and positions == 1:
             # Zamykamy pozycję long
             exit_price = price * (1 - spread - slippage)
@@ -174,12 +174,14 @@ def run_strategy(
             capital += profit
             positions = 0
             entry_price = None
-            trade_log.append({
-                "timestamp": time_point,
-                "action": "SELL",
-                "price": exit_price,
-                "profit": profit
-            })
+            trade_log.append(
+                {
+                    "timestamp": time_point,
+                    "action": "SELL",
+                    "price": exit_price,
+                    "profit": profit,
+                }
+            )
         equity_curve.append(capital)
 
     if len(test_data) > 0:
@@ -189,7 +191,7 @@ def run_strategy(
         test_duration_years = 0.0
 
     cagr = calculate_cagr(initial_capital, capital, test_duration_years) if test_duration_years > 0 else 0.0
-    equity_series = pd.Series(equity_curve, index=test_data.index[:len(equity_curve)])
+    equity_series = pd.Series(equity_curve, index=test_data.index[: len(equity_curve)])
     max_dd = calculate_max_drawdown(equity_series)
     returns = equity_series.pct_change().dropna()
     sharpe = calculate_sharpe_ratio(returns)
@@ -199,8 +201,9 @@ def run_strategy(
         "CAGR": cagr,
         "max_drawdown": max_dd,
         "Sharpe_ratio": sharpe,
-        "trade_log": trade_log
+        "trade_log": trade_log,
     }
+
 
 def backtest_strategy(
     strategy_func: Callable[[pd.DataFrame], Dict[Any, int]],
@@ -208,7 +211,7 @@ def backtest_strategy(
     n_splits: int = 5,
     commission: float = 0.001,
     spread: float = 0.0005,
-    slippage: float = 0.0005
+    slippage: float = 0.0005,
 ) -> Dict[str, Any]:
     """
     Przeprowadza backtesting strategii za pomocą walk-forward analysis oraz równoległego testowania.
@@ -237,7 +240,7 @@ def backtest_strategy(
             test_data,
             commission=commission,
             spread=spread,
-            slippage=slippage
+            slippage=slippage,
         )
 
     # Równoległe przetwarzanie przy użyciu ThreadPoolExecutor
@@ -252,7 +255,7 @@ def backtest_strategy(
             "average_CAGR": 0.0,
             "average_max_drawdown": 0.0,
             "average_Sharpe_ratio": 0.0,
-            "individual_results": []
+            "individual_results": [],
         }
 
     cagr_list = [res["CAGR"] for res in results_list]
@@ -263,11 +266,12 @@ def backtest_strategy(
         "average_CAGR": float(np.mean(cagr_list)),
         "average_max_drawdown": float(np.mean(mdd_list)),
         "average_Sharpe_ratio": float(np.mean(sharpe_list)),
-        "individual_results": results_list
+        "individual_results": results_list,
     }
 
     logging.info("Backtesting zakończony. Raport: %s", report)
     return report
+
 
 def example_strategy(df: pd.DataFrame) -> Dict[Any, int]:
     """
@@ -283,14 +287,14 @@ def example_strategy(df: pd.DataFrame) -> Dict[Any, int]:
               1 oznacza sygnał kupna, -1 sygnał sprzedaży, 0 brak sygnału.
     """
     signals: Dict[Any, int] = {}
-    if 'close' not in df.columns:
+    if "close" not in df.columns:
         logging.error("Brak kolumny 'close' w DataFrame. Strategia nie może generować sygnałów.")
         return signals
 
-    sma = df['close'].rolling(window=10, min_periods=1).mean()
+    sma = df["close"].rolling(window=10, min_periods=1).mean()
 
     for idx, row in df.iterrows():
-        close_price = row.get('close', None)
+        close_price = row.get("close", None)
         if close_price is None:
             signals[idx] = 0
             continue
@@ -305,6 +309,7 @@ def example_strategy(df: pd.DataFrame) -> Dict[Any, int]:
 
     return signals
 
+
 # -------------------- Przykładowe użycie --------------------
 if __name__ == "__main__":
     try:
@@ -314,8 +319,8 @@ if __name__ == "__main__":
             raise FileNotFoundError(f"Brak pliku: {data_file}")
 
         df = pd.read_csv(data_file)
-        df['timestamp'] = pd.to_datetime(df['timestamp'])
-        df.set_index('timestamp', inplace=True)
+        df["timestamp"] = pd.to_datetime(df["timestamp"])
+        df.set_index("timestamp", inplace=True)
 
         report = backtest_strategy(
             example_strategy,
@@ -323,11 +328,12 @@ if __name__ == "__main__":
             n_splits=5,
             commission=0.001,
             spread=0.0005,
-            slippage=0.0005
+            slippage=0.0005,
         )
 
         # Zapis raportu do pliku JSON
         import json
+
         os.makedirs("./reports", exist_ok=True)
         report_path = "./reports/backtesting_report.json"
         with open(report_path, "w") as f:

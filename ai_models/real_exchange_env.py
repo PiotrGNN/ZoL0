@@ -12,20 +12,31 @@ Funkcjonalności:
 """
 
 import logging
-import requests
-import time
 import random
+import time
 from datetime import datetime
 
+import requests
+
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s [%(levelname)s] %(message)s',
-                    handlers=[logging.FileHandler("real_exchange_env.log"),
-                              logging.StreamHandler()])
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[logging.FileHandler("real_exchange_env.log"), logging.StreamHandler()],
+)
+
 
 class RealExchangeEnv:
-    def __init__(self, api_url, api_key, initial_capital=10000, leverage=1.0, margin_call_threshold=0.2,
-                 commission_rate=0.001, slippage_range=0.05):
+    def __init__(
+        self,
+        api_url,
+        api_key,
+        initial_capital=10000,
+        leverage=1.0,
+        margin_call_threshold=0.2,
+        commission_rate=0.001,
+        slippage_range=0.05,
+    ):
         """
         Inicjalizacja środowiska rzeczywistego.
 
@@ -64,7 +75,7 @@ class RealExchangeEnv:
     def get_real_time_price(self):
         """
         Pobiera cenę w czasie rzeczywistym z API giełdowego.
-        
+
         Returns:
             float: Aktualna cena.
         """
@@ -86,7 +97,11 @@ class RealExchangeEnv:
         self.position = 0
         self.entry_price = None
         self.current_price = self.get_real_time_price()
-        logging.info("Reset środowiska: Kapitał=%.2f, Cena=%.2f", self.current_capital, self.current_price)
+        logging.info(
+            "Reset środowiska: Kapitał=%.2f, Cena=%.2f",
+            self.current_capital,
+            self.current_price,
+        )
         return self._get_state()
 
     def _get_state(self):
@@ -94,7 +109,7 @@ class RealExchangeEnv:
         return {
             "price": self.current_price,
             "capital": self.current_capital,
-            "position": self.position
+            "position": self.position,
         }
 
     def step(self, action):
@@ -125,7 +140,9 @@ class RealExchangeEnv:
                     self.entry_price = effective_price
                     logging.info("BUY: Otwarta pozycja long @ %.2f", effective_price)
                 elif self.position == -1:
-                    reward = (self.entry_price - effective_price) * self.leverage - (effective_price * self.commission_rate)
+                    reward = (self.entry_price - effective_price) * self.leverage - (
+                        effective_price * self.commission_rate
+                    )
                     self.current_capital += reward
                     logging.info("BUY: Zamknięcie short, otwarcie long, reward=%.2f", reward)
                     self.position = 1
@@ -136,7 +153,9 @@ class RealExchangeEnv:
                     self.entry_price = effective_price
                     logging.info("SELL: Otwarta pozycja short @ %.2f", effective_price)
                 elif self.position == 1:
-                    reward = (effective_price - self.entry_price) * self.leverage - (effective_price * self.commission_rate)
+                    reward = (effective_price - self.entry_price) * self.leverage - (
+                        effective_price * self.commission_rate
+                    )
                     self.current_capital += reward
                     logging.info("SELL: Zamknięcie long, otwarcie short, reward=%.2f", reward)
                     self.position = -1
@@ -152,7 +171,11 @@ class RealExchangeEnv:
 
             # Sprawdzenie margin call
             if self.position != 0:
-                unrealized_loss = (self.entry_price - effective_price) * self.leverage if self.position == 1 else (effective_price - self.entry_price) * self.leverage
+                unrealized_loss = (
+                    (self.entry_price - effective_price) * self.leverage
+                    if self.position == 1
+                    else (effective_price - self.entry_price) * self.leverage
+                )
                 if (unrealized_loss / self.initial_capital) > self.margin_call_threshold:
                     logging.warning("Margin Call! Zamknięcie pozycji.")
                     reward -= unrealized_loss
@@ -163,7 +186,16 @@ class RealExchangeEnv:
             self.log_transaction(action, effective_price, reward)
 
             done = self.current_capital <= 0
-            return self._get_state(), reward, done, {"action": action, "effective_price": effective_price, "capital": self.current_capital}
+            return (
+                self._get_state(),
+                reward,
+                done,
+                {
+                    "action": action,
+                    "effective_price": effective_price,
+                    "capital": self.current_capital,
+                },
+            )
 
         except Exception as e:
             logging.error("Błąd w metodzie step: %s", e)
@@ -179,6 +211,7 @@ class RealExchangeEnv:
             logging.info("Transakcja zapisana: %s", log_entry.strip())
         except Exception as e:
             logging.error("Błąd zapisu transakcji: %s", e)
+
 
 # -------------------- Przykładowe użycie --------------------
 if __name__ == "__main__":

@@ -9,17 +9,19 @@ Zawiera funkcje i klasy umożliwiające:
 - Obsługę wyjątków i automatyczne raportowanie błędów, aby eksperymenty nie przerywały pracy systemu.
 """
 
-import os
 import json
 import logging
-from datetime import datetime
+import os
 import random
+from datetime import datetime
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s [%(levelname)s] %(message)s',
-                    handlers=[logging.FileHandler("ropmer_temp.log"),
-                              logging.StreamHandler()])
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[logging.FileHandler("ropmer_temp.log"), logging.StreamHandler()],
+)
+
 
 class ExperimentManager:
     """
@@ -37,8 +39,11 @@ class ExperimentManager:
         self.save_dir = save_dir
         self.enable_experiments = enable_experiments
         os.makedirs(self.save_dir, exist_ok=True)
-        logging.info("ExperimentManager zainicjalizowany. save_dir: '%s', enable_experiments: %s",
-                     self.save_dir, self.enable_experiments)
+        logging.info(
+            "ExperimentManager zainicjalizowany. save_dir: '%s', enable_experiments: %s",
+            self.save_dir,
+            self.enable_experiments,
+        )
 
     def tag_experiment(self, name, hyperparams=None):
         """
@@ -101,6 +106,7 @@ class ExperimentManager:
         except Exception as e:
             logging.error("Błąd przy zapisie wyniku eksperymentu '%s': %s", tag, e)
 
+
 # Przykładowa funkcja eksperymentalna
 def experimental_indicator(data, param=1):
     """
@@ -118,21 +124,22 @@ def experimental_indicator(data, param=1):
     indicator_value = sum(data) * param / len(data)
     return {"indicator_value": indicator_value, "param_used": param}
 
+
 # Przykładowa konfiguracja eksperymentalna
 if __name__ == "__main__":
     # Inicjalizacja managera eksperymentów
     exp_manager = ExperimentManager(save_dir="saved_models", enable_experiments=True)
-    
+
     # Przygotowanie przykładowych danych
     sample_data = [random.uniform(0, 100) for _ in range(50)]
-    
+
     # Uruchomienie eksperymentu z tagowaniem hiperparametrów
     result = exp_manager.run_experiment(
         name="sample_indicator",
         experiment_func=experimental_indicator,
         data=sample_data,
         param=2,
-        hyperparams={"param": 2}
+        hyperparams={"param": 2},
     )
-    
+
     logging.info("Wynik eksperymentu: %s", result)
