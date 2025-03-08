@@ -25,7 +25,9 @@ DEFAULT_PARAMS = {
 }
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 class RealTimeOptimizer:
@@ -39,7 +41,9 @@ class RealTimeOptimizer:
         self.params = initial_params or DEFAULT_PARAMS.copy()
         self.lock = threading.Lock()
         self.last_update_time = time.time()
-        logging.info("RealTimeOptimizer zainicjalizowany z parametrami: %s", self.params)
+        logging.info(
+            "RealTimeOptimizer zainicjalizowany z parametrami: %s", self.params
+        )
 
     def update_parameters(self, market_data: dict, strategy_performance: dict):
         """
@@ -53,16 +57,24 @@ class RealTimeOptimizer:
             # Przykładowa logika: jeśli zmienność jest wysoka, zwiększ próg wejścia, aby unikać fałszywych sygnałów.
             volatility = market_data.get("volatility", 0)
             if volatility > 0.02:
-                self.params["entry_threshold"] = min(self.params["entry_threshold"] * 1.1, 0.05)
+                self.params["entry_threshold"] = min(
+                    self.params["entry_threshold"] * 1.1, 0.05
+                )
             else:
-                self.params["entry_threshold"] = max(self.params["entry_threshold"] * 0.95, 0.005)
+                self.params["entry_threshold"] = max(
+                    self.params["entry_threshold"] * 0.95, 0.005
+                )
 
             # Jeśli strategia generuje duże straty (przekracza dzienny limit), zwiększ próg wyjścia.
             current_drawdown = strategy_performance.get("drawdown", 0)
             if current_drawdown > self.params["daily_loss_limit"]:
-                self.params["exit_threshold"] = min(self.params["exit_threshold"] * 1.2, 0.05)
+                self.params["exit_threshold"] = min(
+                    self.params["exit_threshold"] * 1.2, 0.05
+                )
             else:
-                self.params["exit_threshold"] = max(self.params["exit_threshold"] * 0.9, 0.001)
+                self.params["exit_threshold"] = max(
+                    self.params["exit_threshold"] * 0.9, 0.001
+                )
 
             self.last_update_time = time.time()
             logging.info("Parametry zaktualizowane: %s", self.params)
@@ -84,9 +96,13 @@ class RealTimeOptimizer:
         with self.lock:
             self.params = DEFAULT_PARAMS.copy()
             self.last_update_time = time.time()
-            logging.warning("Parametry zostały zresetowane do ustawień domyślnych: %s", self.params)
+            logging.warning(
+                "Parametry zostały zresetowane do ustawień domyślnych: %s", self.params
+            )
 
-    def monitor_and_optimize(self, market_data_stream, strategy_performance_stream, check_interval: int = 60):
+    def monitor_and_optimize(
+        self, market_data_stream, strategy_performance_stream, check_interval: int = 60
+    ):
         """
         Monitoruje dane rynkowe oraz wyniki strategii i okresowo aktualizuje parametry.
 

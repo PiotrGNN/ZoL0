@@ -17,7 +17,9 @@ from statistics import mean
 import requests
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 DEFAULT_ENDPOINT = "https://api.binance.com/api/v3/time"
 RETRY_COUNT = 3

@@ -22,7 +22,9 @@ from ..data_storage import DataStorage
 
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 class HistoricalDataManager:
@@ -82,7 +84,9 @@ class HistoricalDataManager:
             pd.DataFrame: Wczytane dane.
         """
         if not self.data_storage:
-            msg = "DataStorage nie został zainicjalizowany, brak ścieżki do bazy danych."
+            msg = (
+                "DataStorage nie został zainicjalizowany, brak ścieżki do bazy danych."
+            )
             logging.error(msg)
             raise ValueError(msg)
         try:
@@ -129,7 +133,9 @@ class HistoricalDataManager:
             table_name (str): Nazwa tabeli, do której dane mają być dodane.
         """
         if not self.data_storage:
-            msg = "DataStorage nie został zainicjalizowany, brak ścieżki do bazy danych."
+            msg = (
+                "DataStorage nie został zainicjalizowany, brak ścieżki do bazy danych."
+            )
             logging.error(msg)
             raise ValueError(msg)
         try:
@@ -165,7 +171,9 @@ class HistoricalDataManager:
             # Ustalony minimalny odstęp (przykładowo 1 minuta lub 1 dzień - zależy od danych)
             min_diff = time_diffs.min()
             if min_diff > pd.Timedelta(minutes=1):
-                logging.warning("Wykryto duże odstępy czasowe między rekordami: %s", min_diff)
+                logging.warning(
+                    "Wykryto duże odstępy czasowe między rekordami: %s", min_diff
+                )
             # Sprawdzenie spójności wolumenu – przykładowa walidacja: wolumeny nie mogą być ujemne
             if (df["volume"] < 0).any():
                 msg = "Wolumen zawiera ujemne wartości."
@@ -234,7 +242,9 @@ def unit_test_historical_data_manager():
         manager.update_csv(df_new)
 
         df_updated = pd.read_csv(temp_csv)
-        assert "2023-01-04" in df_updated["timestamp"].iloc[-1], "Nowy rekord nie został dodany."
+        assert (
+            "2023-01-04" in df_updated["timestamp"].iloc[-1]
+        ), "Nowy rekord nie został dodany."
         logging.info("Test aktualizacji CSV zakończony sukcesem.")
 
         # Sprzątanie

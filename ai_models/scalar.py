@@ -20,7 +20,9 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler, RobustScaler, StandardScaler
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 class DataScaler:
@@ -38,7 +40,9 @@ class DataScaler:
 
     def __init__(self, method: str = "standard", fill_value: float = None):
         self.method = method.lower()
-        self.fill_value = fill_value  # Jeśli None, mediana zostanie obliczona automatycznie.
+        self.fill_value = (
+            fill_value  # Jeśli None, mediana zostanie obliczona automatycznie.
+        )
         self.scaler = None  # Będzie inicjalizowany w metodzie fit.
         logging.info("Inicjalizacja DataScaler z metodą: %s", self.method)
 
@@ -55,7 +59,9 @@ class DataScaler:
                 self.fill_value = np.nanmedian(data)
             filled = np.where(np.isnan(data), self.fill_value, data)
         else:
-            raise ValueError("Obsługiwany format danych to pandas DataFrame lub numpy ndarray.")
+            raise ValueError(
+                "Obsługiwany format danych to pandas DataFrame lub numpy ndarray."
+            )
         return filled
 
     def fit(self, data):
@@ -159,12 +165,20 @@ def unit_test_scaling():
         # Sprawdzamy, czy średni błąd między oryginalnymi danymi a odzyskanymi danymi jest niewielki
         error = np.abs(df_data.values - recovered)
         mean_error = np.mean(error)
-        logging.info("Metoda: %s, średni błąd inverse transform: %.4f", method, mean_error)
-        assert mean_error < 1e-5 or method == "log", f"Błąd zbyt wysoki dla metody {method}"
+        logging.info(
+            "Metoda: %s, średni błąd inverse transform: %.4f", method, mean_error
+        )
+        assert (
+            mean_error < 1e-5 or method == "log"
+        ), f"Błąd zbyt wysoki dla metody {method}"
         # Dla log skalowania, błąd może być większy z uwagi na offset, więc sprawdzamy względną zgodność
         if method == "log":
-            relative_error = np.mean(np.abs((df_data.values - recovered) / df_data.values))
-            logging.info("Metoda log, względny błąd inverse transform: %.4f", relative_error)
+            relative_error = np.mean(
+                np.abs((df_data.values - recovered) / df_data.values)
+            )
+            logging.info(
+                "Metoda log, względny błąd inverse transform: %.4f", relative_error
+            )
             assert relative_error < 0.05, "Względny błąd za wysoki dla log scaling"
 
 

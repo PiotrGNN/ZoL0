@@ -20,7 +20,9 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error
 from sklearn.model_selection import KFold
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 class ModelTuner:
@@ -72,13 +74,19 @@ class ModelTuner:
         params = {}
         for param, space in self.param_space.items():
             if space["type"] == "int":
-                params[param] = trial.suggest_int(param, space["low"], space["high"], step=space.get("step", 1))
+                params[param] = trial.suggest_int(
+                    param, space["low"], space["high"], step=space.get("step", 1)
+                )
             elif space["type"] == "float":
                 # Jeśli parametr floatowy ma krok, używamy suggest_discrete_uniform
                 if "step" in space and space["step"] is not None:
-                    params[param] = trial.suggest_discrete_uniform(param, space["low"], space["high"], space["step"])
+                    params[param] = trial.suggest_discrete_uniform(
+                        param, space["low"], space["high"], space["step"]
+                    )
                 else:
-                    params[param] = trial.suggest_float(param, space["low"], space["high"])
+                    params[param] = trial.suggest_float(
+                        param, space["low"], space["high"]
+                    )
             elif space["type"] == "categorical":
                 params[param] = trial.suggest_categorical(param, space["choices"])
             else:
@@ -88,7 +96,9 @@ class ModelTuner:
         model = self.model_class(**params)
 
         # Walidacja krzyżowa
-        cv = KFold(n_splits=self.cv_splits, shuffle=True, random_state=self.random_state)
+        cv = KFold(
+            n_splits=self.cv_splits, shuffle=True, random_state=self.random_state
+        )
         scores = []
         for train_index, val_index in cv.split(self.X):
             X_train, X_val = self.X.iloc[train_index], self.X.iloc[val_index]
@@ -178,7 +188,11 @@ if __name__ == "__main__":
                 "feature2": np.random.uniform(0, 1, data_size),
             }
         )
-        y = X["feature1"] * 2.0 + X["feature2"] * (-1.0) + np.random.normal(0, 0.1, data_size)
+        y = (
+            X["feature1"] * 2.0
+            + X["feature2"] * (-1.0)
+            + np.random.normal(0, 0.1, data_size)
+        )
 
         # Definicja przestrzeni hiperparametrów dla RandomForestRegressor
         param_space = {

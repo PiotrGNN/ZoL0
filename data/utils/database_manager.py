@@ -14,7 +14,9 @@ import sqlite3
 import time
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 class DatabaseManager:
@@ -67,7 +69,9 @@ class DatabaseManager:
                 results = cursor.fetchall()
                 return [dict(row) for row in results]
             except sqlite3.OperationalError as e:
-                logging.warning("Błąd operacyjny przy zapytaniu (próba %d): %s", attempt, e)
+                logging.warning(
+                    "Błąd operacyjny przy zapytaniu (próba %d): %s", attempt, e
+                )
                 time.sleep(delay)
                 delay *= 2
             except Exception as e:

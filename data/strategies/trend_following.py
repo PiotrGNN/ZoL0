@@ -18,7 +18,9 @@ import numpy as np
 import pandas as pd
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 def compute_adx(df: pd.DataFrame, period: int = 14) -> pd.Series:
@@ -48,21 +50,29 @@ def compute_adx(df: pd.DataFrame, period: int = 14) -> pd.Series:
     down_move = low.diff().abs()
     plus_dm = np.where((up_move > down_move) & (up_move > 0), up_move, 0.0)
     minus_dm = np.where((down_move > up_move) & (down_move > 0), down_move, 0.0)
-    plus_dm = pd.Series(plus_dm, index=df.index).rolling(window=period, min_periods=1).sum()
-    minus_dm = pd.Series(minus_dm, index=df.index).rolling(window=period, min_periods=1).sum()
+    plus_dm = (
+        pd.Series(plus_dm, index=df.index).rolling(window=period, min_periods=1).sum()
+    )
+    minus_dm = (
+        pd.Series(minus_dm, index=df.index).rolling(window=period, min_periods=1).sum()
+    )
 
     # Oblicz kierunkowe wskaźniki
     plus_di = 100 * (plus_dm / atr)
     minus_di = 100 * (minus_dm / atr)
 
     # Oblicz DX i ADX
-    dx = (abs(plus_di - minus_di) / (plus_di + minus_di)).replace([np.inf, -np.inf], 0) * 100
+    dx = (abs(plus_di - minus_di) / (plus_di + minus_di)).replace(
+        [np.inf, -np.inf], 0
+    ) * 100
     adx = dx.rolling(window=period, min_periods=1).mean()
     logging.info("Obliczono ADX dla okresu %d.", period)
     return adx
 
 
-def compute_macd(series: pd.Series, fast: int = 12, slow: int = 26, signal: int = 9) -> pd.DataFrame:
+def compute_macd(
+    series: pd.Series, fast: int = 12, slow: int = 26, signal: int = 9
+) -> pd.DataFrame:
     """
     Oblicza MACD, linię sygnału i histogram.
 
@@ -80,11 +90,15 @@ def compute_macd(series: pd.Series, fast: int = 12, slow: int = 26, signal: int 
     macd = ema_fast - ema_slow
     signal_line = macd.ewm(span=signal, adjust=False).mean()
     histogram = macd - signal_line
-    logging.info("Obliczono MACD dla okresów fast: %d, slow: %d, signal: %d.", fast, slow, signal)
+    logging.info(
+        "Obliczono MACD dla okresów fast: %d, slow: %d, signal: %d.", fast, slow, signal
+    )
     return pd.DataFrame({"MACD": macd, "Signal": signal_line, "Histogram": histogram})
 
 
-def compute_price_channels(df: pd.DataFrame, window: int = 20) -> (pd.Series, pd.Series):
+def compute_price_channels(
+    df: pd.DataFrame, window: int = 20
+) -> (pd.Series, pd.Series):
     """
     Oblicza Price Channels, czyli poziomy wsparcia i oporu na podstawie najwyższych i najniższych cen w okresie.
 
@@ -138,9 +152,13 @@ def generate_trend_following_signal(
     # Warunki do generowania sygnałów
     strong_trend = adx >= adx_threshold
     # Trend wzrostowy: MACD powyżej threshold i cena blisko dolnego kanału (potencjalne wejście na korektę)
-    buy_signal = (macd_df["MACD"] > macd_threshold) & (close - lower_channel < (upper_channel - lower_channel) * 0.2)
+    buy_signal = (macd_df["MACD"] > macd_threshold) & (
+        close - lower_channel < (upper_channel - lower_channel) * 0.2
+    )
     # Trend spadkowy: MACD poniżej threshold i cena blisko górnego kanału
-    sell_signal = (macd_df["MACD"] < macd_threshold) & (upper_channel - close < (upper_channel - lower_channel) * 0.2)
+    sell_signal = (macd_df["MACD"] < macd_threshold) & (
+        upper_channel - close < (upper_channel - lower_channel) * 0.2
+    )
 
     # Upewnij się, że mamy wystarczający wolumen
     if avg_volume < liquidity_threshold:
@@ -153,11 +171,15 @@ def generate_trend_following_signal(
     signal[strong_trend & buy_signal] = 1
     signal[strong_trend & sell_signal] = -1
 
-    logging.info("Wygenerowano sygnał trend following na podstawie ADX, MACD i Price Channels.")
+    logging.info(
+        "Wygenerowano sygnał trend following na podstawie ADX, MACD i Price Channels."
+    )
     return signal
 
 
-def apply_trailing_stop(current_price: float, entry_price: float, trailing_pct: float = 0.05) -> float:
+def apply_trailing_stop(
+    current_price: float, entry_price: float, trailing_pct: float = 0.05
+) -> float:
     """
     Oblicza poziom trailing stop loss.
 
@@ -206,7 +228,9 @@ def unit_test_trend_following():
             liquidity_threshold=1000,
         )
         # Sprawdzamy, czy sygnał zawiera wartości -1, 0 lub 1
-        assert set(signal.unique()).issubset({-1, 0, 1}), "Sygnały muszą być -1, 0 lub 1."
+        assert set(signal.unique()).issubset(
+            {-1, 0, 1}
+        ), "Sygnały muszą być -1, 0 lub 1."
 
         logging.info("Testy jednostkowe trend_following.py zakończone sukcesem.")
     except AssertionError as ae:

@@ -15,7 +15,9 @@ import time
 import requests
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 class ExchangeConnector:
@@ -29,7 +31,9 @@ class ExchangeConnector:
         base_url (str): Bazowy URL API giełdy.
     """
 
-    def __init__(self, exchange: str, api_key: str, api_secret: str, base_url: str = None):
+    def __init__(
+        self, exchange: str, api_key: str, api_secret: str, base_url: str = None
+    ):
         self.exchange = exchange.lower()
         self.api_key = api_key
         self.api_secret = api_secret
@@ -51,7 +55,9 @@ class ExchangeConnector:
         }
         url = defaults.get(self.exchange)
         if not url:
-            raise ValueError(f"Domyślny URL nie zdefiniowany dla giełdy: {self.exchange}")
+            raise ValueError(
+                f"Domyślny URL nie zdefiniowany dla giełdy: {self.exchange}"
+            )
         return url
 
     def _sign_payload(self, query_string: str) -> str:
@@ -71,7 +77,9 @@ class ExchangeConnector:
         ).hexdigest()
         return signature
 
-    def _request(self, method: str, endpoint: str, params: dict = None, signed: bool = False) -> dict:
+    def _request(
+        self, method: str, endpoint: str, params: dict = None, signed: bool = False
+    ) -> dict:
         """
         Wykonuje zapytanie HTTP do API giełdowego z obsługą rate limiting, retry oraz podpisywania.
 
@@ -100,7 +108,10 @@ class ExchangeConnector:
                 response.raise_for_status()
                 data = response.json()
                 # Logowanie maskując wrażliwe dane
-                masked_params = {k: ("***" if k in ["signature", "timestamp"] else v) for k, v in params.items()}
+                masked_params = {
+                    k: ("***" if k in ["signature", "timestamp"] else v)
+                    for k, v in params.items()
+                }
                 logging.info(
                     "Zapytanie %s %s z parametrami %s zakończone sukcesem.",
                     method,
@@ -118,7 +129,9 @@ class ExchangeConnector:
                     raise
                 time.sleep(2)
 
-    def get_market_data(self, symbol: str, interval: str = "1m", limit: int = 100) -> dict:
+    def get_market_data(
+        self, symbol: str, interval: str = "1m", limit: int = 100
+    ) -> dict:
         """
         Pobiera dane rynkowe dla określonego symbolu i interwału.
 
@@ -136,7 +149,9 @@ class ExchangeConnector:
             return self._request("GET", endpoint, params, signed=False)
         else:
             # Implementacje dla innych giełd mogą się różnić
-            raise NotImplementedError(f"get_market_data nie jest zaimplementowane dla giełdy: {self.exchange}")
+            raise NotImplementedError(
+                f"get_market_data nie jest zaimplementowane dla giełdy: {self.exchange}"
+            )
 
     def place_order(
         self,
@@ -174,7 +189,9 @@ class ExchangeConnector:
                 params["timeInForce"] = "GTC"
             return self._request("POST", endpoint, params, signed=True)
         else:
-            raise NotImplementedError(f"place_order nie jest zaimplementowane dla giełdy: {self.exchange}")
+            raise NotImplementedError(
+                f"place_order nie jest zaimplementowane dla giełdy: {self.exchange}"
+            )
 
 
 # -------------------- Przykładowe użycie --------------------
@@ -185,7 +202,9 @@ if __name__ == "__main__":
         API_KEY = "your_api_key_here"
         API_SECRET = "your_api_secret_here"
 
-        connector = ExchangeConnector(exchange=EXCHANGE, api_key=API_KEY, api_secret=API_SECRET)
+        connector = ExchangeConnector(
+            exchange=EXCHANGE, api_key=API_KEY, api_secret=API_SECRET
+        )
 
         # Pobranie danych rynkowych dla BTCUSDT, interwał 1m, limit 5
         market_data = connector.get_market_data("BTCUSDT", interval="1m", limit=5)

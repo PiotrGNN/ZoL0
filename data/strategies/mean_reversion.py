@@ -17,7 +17,9 @@ import numpy as np
 import pandas as pd
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 def compute_sma(series: pd.Series, window: int = 20) -> pd.Series:
@@ -54,7 +56,9 @@ def compute_zscore(series: pd.Series, window: int = 20) -> pd.Series:
     return zscore.fillna(0)
 
 
-def compute_bollinger_bands(series: pd.Series, window: int = 20, num_std: float = 2) -> pd.DataFrame:
+def compute_bollinger_bands(
+    series: pd.Series, window: int = 20, num_std: float = 2
+) -> pd.DataFrame:
     """
     Oblicza Bollinger Bands dla danej serii cen.
 
@@ -160,7 +164,9 @@ def unit_test_mean_reversion():
         volume = np.random.randint(1000, 1500, 50)
         df = pd.DataFrame({"close": close_prices, "volume": volume}, index=dates)
 
-        signal = generate_mean_reversion_signal(df, window=10, zscore_threshold=1.5, volume_filter=1100)
+        signal = generate_mean_reversion_signal(
+            df, window=10, zscore_threshold=1.5, volume_filter=1100
+        )
         # Sprawdzamy, czy sygnały przy dużych odchyleniach są generowane
         if signal.abs().sum() == 0:
             raise AssertionError("Brak wygenerowanych sygnałów mean reversion.")
@@ -168,7 +174,9 @@ def unit_test_mean_reversion():
         # Test integracji z risk management: przyjmujemy, że mamy long, więc sygnał kupna powinien być neutralizowany
         adjusted = risk_management_integration(signal, current_position=1)
         if (adjusted == 1).any():
-            raise AssertionError("Sygnał kupna nie został zneutralizowany przy posiadaniu long.")
+            raise AssertionError(
+                "Sygnał kupna nie został zneutralizowany przy posiadaniu long."
+            )
 
         logging.info("Testy jednostkowe mean_reversion.py zakończone sukcesem.")
     except AssertionError as ae:

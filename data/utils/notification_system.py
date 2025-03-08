@@ -15,7 +15,9 @@ import time
 from collections import defaultdict
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 class NotificationSystem:
@@ -43,7 +45,9 @@ class NotificationSystem:
             self.last_reset_time = current_time
             logging.info("Rate limit został zresetowany.")
 
-    def send_notification(self, channel: str, message: str, format: str = "text") -> bool:
+    def send_notification(
+        self, channel: str, message: str, format: str = "text"
+    ) -> bool:
         """
         Wysyła powiadomienie przez wybrany kanał.
 
@@ -57,7 +61,9 @@ class NotificationSystem:
         """
         self._reset_rate_limit()
         if self.sent_counts[channel] >= self.rate_limit:
-            logging.warning("Limit powiadomień dla kanału '%s' został osiągnięty.", channel)
+            logging.warning(
+                "Limit powiadomień dla kanału '%s' został osiągnięty.", channel
+            )
             return False
 
         # Tutaj symulujemy wysyłkę powiadomienia.
@@ -85,20 +91,28 @@ if __name__ == "__main__":
     try:
         # Przykładowa konfiguracja powiadomień
         config = {
-            "slack": {"webhook_url": "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"},
+            "slack": {
+                "webhook_url": "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"
+            },
             "email": {"smtp_server": "smtp.example.com", "from": "noreply@example.com"},
             "sms": {"api_key": "dummy_sms_api_key"},
         }
         notifier = NotificationSystem(config=config, rate_limit=3)
 
         # Przykładowe wysyłanie powiadomień
-        notifier.send_notification("slack", "Testowe powiadomienie z NotificationSystem.", format="markdown")
-        notifier.send_notification("email", "<h1>Alert</h1><p>Testowe powiadomienie e-mail.</p>", format="html")
+        notifier.send_notification(
+            "slack", "Testowe powiadomienie z NotificationSystem.", format="markdown"
+        )
+        notifier.send_notification(
+            "email", "<h1>Alert</h1><p>Testowe powiadomienie e-mail.</p>", format="html"
+        )
         notifier.send_notification("sms", "Testowe powiadomienie SMS.", format="text")
 
         # Przekroczenie limitu powiadomień
         for _ in range(4):
-            notifier.send_notification("sms", "Dodatkowe powiadomienie SMS.", format="text")
+            notifier.send_notification(
+                "sms", "Dodatkowe powiadomienie SMS.", format="text"
+            )
 
     except Exception as e:
         logging.error("Błąd w module notification_system.py: %s", e)

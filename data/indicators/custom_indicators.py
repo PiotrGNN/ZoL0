@@ -18,7 +18,9 @@ import numpy as np
 import pandas as pd
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 def calculate_obv(prices: pd.Series, volumes: pd.Series) -> pd.Series:
@@ -132,17 +134,29 @@ def fuzzy_hybrid_signal(
         zscore_weight = 0.2
 
         # Normalizujemy wskaźniki: sygnał kupna (+1) lub sprzedaży (-1)
-        price_signal = price_change.apply(lambda x: 1 if x > price_threshold else (-1 if x < -price_threshold else 0))
-        obv_signal = obv_change.apply(lambda x: 1 if x > obv_threshold else (-1 if x < -obv_threshold else 0))
+        price_signal = price_change.apply(
+            lambda x: 1 if x > price_threshold else (-1 if x < -price_threshold else 0)
+        )
+        obv_signal = obv_change.apply(
+            lambda x: 1 if x > obv_threshold else (-1 if x < -obv_threshold else 0)
+        )
         zscore_signal = zscore_series.apply(
-            lambda x: (1 if x > zscore_threshold else (-1 if x < -zscore_threshold else 0))
+            lambda x: (
+                1 if x > zscore_threshold else (-1 if x < -zscore_threshold else 0)
+            )
         )
 
         # Łączymy sygnały z wagami
-        combined_score = price_weight * price_signal + obv_weight * obv_signal + zscore_weight * zscore_signal
+        combined_score = (
+            price_weight * price_signal
+            + obv_weight * obv_signal
+            + zscore_weight * zscore_signal
+        )
 
         # Interpretacja hybrydowego sygnału: jeśli wynik > 0, sygnał kupna; < 0, sygnał sprzedaży; 0 - neutralny.
-        hybrid_signal = combined_score.apply(lambda x: 1 if x > 0 else (-1 if x < 0 else 0))
+        hybrid_signal = combined_score.apply(
+            lambda x: 1 if x > 0 else (-1 if x < 0 else 0)
+        )
         logging.info("Hybrydowy sygnał tradingowy obliczony pomyślnie.")
         return hybrid_signal
     except Exception as e:
@@ -161,7 +175,9 @@ def unit_test_custom_indicators():
         dates = pd.date_range(start="2023-01-01", periods=100, freq="D")
         prices = pd.Series(np.linspace(100, 150, 100), index=dates)
         volumes = pd.Series(np.random.randint(1000, 2000, size=100), index=dates)
-        df = pd.DataFrame({"close": prices, "high": prices + 5, "low": prices - 5, "volume": volumes})
+        df = pd.DataFrame(
+            {"close": prices, "high": prices + 5, "low": prices - 5, "volume": volumes}
+        )
 
         # Test OBV
         obv = calculate_obv(prices, volumes)
@@ -184,9 +200,13 @@ def unit_test_custom_indicators():
             obv_threshold=0.01,
             zscore_threshold=0.5,
         )
-        assert set(hybrid.unique()).issubset({-1, 0, 1}), "Hybrydowy sygnał zawiera nieoczekiwane wartości."
+        assert set(hybrid.unique()).issubset(
+            {-1, 0, 1}
+        ), "Hybrydowy sygnał zawiera nieoczekiwane wartości."
 
-        logging.info("Testy jednostkowe modułu custom_indicators.py zakończone sukcesem.")
+        logging.info(
+            "Testy jednostkowe modułu custom_indicators.py zakończone sukcesem."
+        )
     except AssertionError as ae:
         logging.error("AssertionError w testach jednostkowych: %s", ae)
     except Exception as e:

@@ -17,7 +17,9 @@ import logging
 import numpy as np
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 class MarketEnvironment:
@@ -139,7 +141,9 @@ class MarketEnvironment:
                     # Zamknięcie pozycji short i otwarcie long
                     reward = self._calculate_reward(price)
                     self.current_capital += reward
-                    logging.info("Zamknięcie short i otwarcie long, nagroda: %f", reward)
+                    logging.info(
+                        "Zamknięcie short i otwarcie long, nagroda: %f", reward
+                    )
                     self.position = 1
                     self.entry_price = price
                 else:
@@ -153,7 +157,9 @@ class MarketEnvironment:
                     # Zamknięcie pozycji long i otwarcie short
                     reward = self._calculate_reward(price)
                     self.current_capital += reward
-                    logging.info("Zamknięcie long i otwarcie short, nagroda: %f", reward)
+                    logging.info(
+                        "Zamknięcie long i otwarcie short, nagroda: %f", reward
+                    )
                     self.position = -1
                     self.entry_price = price
                 else:
@@ -167,7 +173,15 @@ class MarketEnvironment:
 
             # Aktualizacja stanu: przejście do następnego kroku
             self.current_step += 1
-            done = self.current_step >= (len(self.data) if self.data is not None else len(self.simulated_prices)) - 1
+            done = (
+                self.current_step
+                >= (
+                    len(self.data)
+                    if self.data is not None
+                    else len(self.simulated_prices)
+                )
+                - 1
+            )
 
             next_state = self._get_state()
             info = {
@@ -240,5 +254,7 @@ if __name__ == "__main__":
         # Przykładowo: strategia losowa
         action = np.random.choice(["buy", "sell", "hold"])
         next_state, reward, done, info = env.step(action)
-        print(f"Krok: {info['step']}, Akcja: {info['action']}, Nagroda: {reward:.2f}, Kapitał: {info['capital']:.2f}")
+        print(
+            f"Krok: {info['step']}, Akcja: {info['action']}, Nagroda: {reward:.2f}, Kapitał: {info['capital']:.2f}"
+        )
     logging.info("Symulacja zakończona.")

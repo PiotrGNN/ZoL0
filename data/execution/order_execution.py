@@ -16,7 +16,9 @@ import logging
 import time
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 class OrderExecution:
@@ -33,7 +35,9 @@ class OrderExecution:
         self.max_retries = max_retries
         self.retry_delay = retry_delay
 
-    def send_order(self, symbol, side, order_type, quantity, price=None, time_in_force="GTC"):
+    def send_order(
+        self, symbol, side, order_type, quantity, price=None, time_in_force="GTC"
+    ):
         """
         Wysyła zlecenie do giełdy i monitoruje jego status.
 
@@ -85,7 +89,9 @@ class OrderExecution:
                     logging.info("Zlecenie wysłane pomyślnie: %s", order_response)
                     return order_response
                 else:
-                    logging.warning("Zlecenie nie zostało potwierdzone: %s", order_response)
+                    logging.warning(
+                        "Zlecenie nie zostało potwierdzone: %s", order_response
+                    )
                     raise Exception("Brak potwierdzenia zlecenia")
             except Exception as e:
                 attempt += 1
@@ -126,9 +132,13 @@ class OrderExecution:
                 if status_response.get("status") in ["FILLED", "CANCELED", "REJECTED"]:
                     return status_response
             except Exception as e:
-                logging.error("Błąd przy sprawdzaniu statusu zlecenia %s: %s", order_id, e)
+                logging.error(
+                    "Błąd przy sprawdzaniu statusu zlecenia %s: %s", order_id, e
+                )
             if time.time() - start_time > timeout:
-                logging.warning("Upłynął limit czasu monitorowania zlecenia %s.", order_id)
+                logging.warning(
+                    "Upłynął limit czasu monitorowania zlecenia %s.", order_id
+                )
                 return {"status": "TIMEOUT", "orderId": order_id}
             time.sleep(poll_interval)
 
@@ -143,7 +153,9 @@ if __name__ == "__main__":
         API_KEY = "your_api_key_here"
         API_SECRET = "your_api_secret_here"
 
-        connector = ExchangeConnector(exchange=EXCHANGE, api_key=API_KEY, api_secret=API_SECRET)
+        connector = ExchangeConnector(
+            exchange=EXCHANGE, api_key=API_KEY, api_secret=API_SECRET
+        )
         executor = OrderExecution(connector)
 
         # Przykładowe wysłanie zlecenia LIMIT (zakomentuj, aby nie wysłać rzeczywistego zlecenia)

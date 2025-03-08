@@ -24,7 +24,9 @@ from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 class HyperparameterTuner:
@@ -71,7 +73,9 @@ class HyperparameterTuner:
         Returns:
             tuple: (najlepsze hiperparametry, najlepszy wynik metryki)
         """
-        logging.info("Rozpoczynam tuning hiperparametrów metodą: %s", self.search_method)
+        logging.info(
+            "Rozpoczynam tuning hiperparametrów metodą: %s", self.search_method
+        )
         if self.search_method == "grid":
             tuner = GridSearchCV(
                 estimator=self.model_class(),
@@ -108,7 +112,9 @@ class HyperparameterTuner:
             )
         elif self.search_method == "bayesian":
             if not OPTUNA_AVAILABLE:
-                raise ImportError("Optuna nie jest zainstalowana. Zainstaluj ją, aby używać bayesian optimization.")
+                raise ImportError(
+                    "Optuna nie jest zainstalowana. Zainstaluj ją, aby używać bayesian optimization."
+                )
             study = optuna.create_study(
                 direction="minimize",
                 sampler=optuna.samplers.TPESampler(seed=self.random_state),
@@ -118,9 +124,13 @@ class HyperparameterTuner:
                 params = {}
                 for key, space in self.param_space.items():
                     if space["type"] == "int":
-                        params[key] = trial.suggest_int(key, space["low"], space["high"], step=space.get("step", 1))
+                        params[key] = trial.suggest_int(
+                            key, space["low"], space["high"], step=space.get("step", 1)
+                        )
                     elif space["type"] == "float":
-                        params[key] = trial.suggest_float(key, space["low"], space["high"])
+                        params[key] = trial.suggest_float(
+                            key, space["low"], space["high"]
+                        )
                     elif space["type"] == "categorical":
                         params[key] = trial.suggest_categorical(key, space["choices"])
                     else:

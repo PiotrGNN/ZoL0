@@ -1,197 +1,202 @@
 """
 portfolio_risk.py
 -----------------
-Moduł oceniający ryzyko portfela inwestycyjnego w oparciu o różne klasy aktywów i korelacje.
+Zaawansowany moduł zarządzania ryzykiem portfela inwestycyjnego.
 
 Funkcjonalności:
-- Implementacja metod oceny ryzyka, takich jak VaR (Value at Risk), CVaR (Conditional VaR),
-  symulacje Monte Carlo oraz podejście parametryczne.
-- Uwzględnienie historycznej oraz bieżącej zmienności i korelacji (np. z wykorzystaniem rolling window).
-- Funkcje oceny dywersyfikacji, np. wskaźnik Herfindahla-Hirschmana, oraz rekomendacje dotyczące rebalansowania portfela.
-- Integracja z systemem alertów – powiadomienie w razie przekroczenia dopuszczalnego poziomu VaR.
-- Zawiera testy jednostkowe i wydajnościowe w celu weryfikacji poprawności obliczeń.
+- Obliczanie współczynników Sharpe'a i Sortino.
+- Analiza korelacji aktywów i optymalizacja dywersyfikacji.
+- Monitorowanie wartości narażonej na ryzyko (Value at Risk - VaR).
+- Dynamiczna alokacja kapitału na podstawie zmienności i ryzyka rynkowego.
 """
 
 import logging
 
 import numpy as np
 import pandas as pd
+from scipy.stats import norm
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
-def calculate_var(returns: pd.Series, confidence_level: float = 0.95) -> float:
+class PortfolioRiskManager:
     """
-    Oblicza Value at Risk (VaR) portfela na podstawie historycznych zwrotów.
-
-    Parameters:
-        returns (pd.Series): Serie zwrotów portfela.
-        confidence_level (float): Poziom ufności, np. 0.95 dla 95%.
-
-    Returns:
-        float: Obliczone VaR (ujemna wartość oznaczająca stratę).
+    Klasa do zarządzania ryzykiem portfela. Oblicza kluczowe wskaźniki ryzyka i dostosowuje alokację kapitału.
     """
-    var = np.percentile(returns, (1 - confidence_level) * 100)
-    logging.info("Obliczono VaR przy poziomie ufności %.2f: %.4f", confidence_level, var)
-    return var
 
+    def __init__(self, confidence_level: float = 0.95, risk_free_rate: float = 0.01):
+        """
+        Inicjalizuje menedżera ryzyka portfela.
 
-def calculate_cvar(returns: pd.Series, confidence_level: float = 0.95) -> float:
-    """
-    Oblicza Conditional Value at Risk (CVaR) portfela.
+        Parameters:
+            confidence_level (float): Poziom ufności dla obliczeń VaR (np. 95%).
+            risk_free_rate (float): Stopa wolna od ryzyka dla obliczeń Sharpe'a i Sortino.
+        """
+        self.confidence_level = confidence_level
+        self.risk_free_rate = risk_free_rate
 
-    Parameters:
-        returns (pd.Series): Serie zwrotów portfela.
-        confidence_level (float): Poziom ufności, np. 0.95.
+    def calculate_sharpe_ratio(self, returns: pd.Series) -> float:
+        """
+        Oblicza współczynnik Sharpe'a.
 
-    Returns:
-        float: Obliczone CVaR.
-    """
-    var = calculate_var(returns, confidence_level)
-    cvar = returns[returns <= var].mean()
-    logging.info("Obliczono CVaR przy poziomie ufności %.2f: %.4f", confidence_level, cvar)
-    return cvar
+        Parameters:
+            returns (pd.Series): Dzienna stopa zwrotu portfela.
 
+        Returns:
+            float: Wartość współczynnika Sharpe'a.
+        """
+        returns = returns.dropna()
+        if returns.empty:
+            logging.warning("Brak danych do obliczenia Sharpe Ratio.")
+            return 0.0
 
-def monte_carlo_var(
-    returns: pd.Series,
-    num_simulations: int = 1000,
-    horizon: int = 1,
-    confidence_level: float = 0.95,
-) -> float:
-    """
-    Oblicza VaR przy użyciu symulacji Monte Carlo.
+        excess_return = returns.mean() - self.risk_free_rate
+        std_dev = returns.std()
+        sharpe_ratio = excess_return / std_dev if std_dev > 0 else 0.0
+        logging.info("Sharpe Ratio: %.4f", sharpe_ratio)
+        return sharpe_ratio
 
-    Parameters:
-        returns (pd.Series): Historyczne zwroty portfela.
-        num_simulations (int): Liczba symulacji.
-        horizon (int): Horyzont czasowy w dniach.
-        confidence_level (float): Poziom ufności.
+    def calculate_sortino_ratio(self, returns: pd.Series) -> float:
+        """
+        Oblicza współczynnik Sortino.
 
-    Returns:
-        float: Obliczone VaR.
-    """
-    mean_return = returns.mean()
-    std_return = returns.std()
+        Parameters:
+            returns (pd.Series): Dzienna stopa zwrotu portfela.
 
-    simulated_returns = np.random.normal(mean_return, std_return, (num_simulations, horizon))
-    simulated_portfolio_returns = simulated_returns.sum(axis=1)
-    var_mc = np.percentile(simulated_portfolio_returns, (1 - confidence_level) * 100)
-    logging.info("Monte Carlo VaR przy poziomie ufności %.2f: %.4f", confidence_level, var_mc)
-    return var_mc
+        Returns:
+            float: Wartość współczynnika Sortino.
+        """
+        returns = returns.dropna()
+        if returns.empty:
+            logging.warning("Brak danych do obliczenia Sortino Ratio.")
+            return 0.0
 
-
-def herfindahl_index(weights: np.ndarray) -> float:
-    """
-    Oblicza wskaźnik Herfindahla-Hirschmana dla dywersyfikacji portfela.
-
-    Parameters:
-        weights (np.ndarray): Wagi poszczególnych aktywów w portfelu.
-
-    Returns:
-        float: Wskaźnik koncentracji (im wyższy, tym większa koncentracja).
-    """
-    hh_index = np.sum(np.square(weights))
-    logging.info("Obliczono wskaźnik Herfindahla-Hirschmana: %.4f", hh_index)
-    return hh_index
-
-
-def recommend_rebalancing(hh_index: float, threshold: float = 0.2) -> str:
-    """
-    Rekomenduje rebalansowanie portfela na podstawie wskaźnika Herfindahla-Hirschmana.
-
-    Parameters:
-        hh_index (float): Obliczony wskaźnik HH.
-        threshold (float): Próg, powyżej którego portfel jest zbyt skoncentrowany.
-
-    Returns:
-        str: Rekomendacja ("Rebalance" lub "Hold").
-    """
-    if hh_index > threshold:
-        recommendation = "Rebalance"
-    else:
-        recommendation = "Hold"
-    logging.info(
-        "Rekomendacja rebalansowania: %s (HH index: %.4f, threshold: %.4f)",
-        recommendation,
-        hh_index,
-        threshold,
-    )
-    return recommendation
-
-
-def assess_portfolio_risk(
-    returns: pd.DataFrame, rolling_window: int = 30, confidence_level: float = 0.95
-) -> pd.DataFrame:
-    """
-    Ocena ryzyka portfela na podstawie rolling window.
-
-    Parameters:
-        returns (pd.DataFrame): DataFrame zawierający zwroty poszczególnych aktywów.
-        rolling_window (int): Okres w dniach do obliczeń rolling.
-        confidence_level (float): Poziom ufności.
-
-    Returns:
-        pd.DataFrame: DataFrame z kolumnami 'VaR' i 'CVaR' obliczonymi w rolling window.
-    """
-    var_series = returns.rolling(window=rolling_window).apply(
-        lambda x: calculate_var(pd.Series(x), confidence_level), raw=False
-    )
-    cvar_series = returns.rolling(window=rolling_window).apply(
-        lambda x: calculate_cvar(pd.Series(x), confidence_level), raw=False
-    )
-    risk_df = pd.DataFrame({"VaR": var_series, "CVaR": cvar_series})
-    logging.info("Rolling risk assessment ukończony dla okna %d.", rolling_window)
-    return risk_df
-
-
-# -------------------- Testy jednostkowe --------------------
-def unit_test_portfolio_risk():
-    """
-    Testy jednostkowe dla modułu portfolio_risk.py.
-    Generuje przykładowe dane zwrotów i weryfikuje poprawność obliczeń VaR, CVaR, Monte Carlo VaR,
-    wskaźnika Herfindahla-Hirschmana oraz rekomendacji rebalansowania.
-    """
-    try:
-        np.random.seed(42)
-        # Generujemy przykładowe zwroty portfela (dla 252 dni)
-        returns = pd.Series(np.random.normal(0.001, 0.02, 252))
-
-        var_value = calculate_var(returns, confidence_level=0.95)
-        cvar_value = calculate_cvar(returns, confidence_level=0.95)
-        var_mc_value = monte_carlo_var(returns, num_simulations=1000, horizon=1, confidence_level=0.95)
-
-        # Test wskaźnika Herfindahla-Hirschmana dla przykładowych wag
-        weights = np.array([0.25, 0.25, 0.25, 0.25])
-        hh = herfindahl_index(weights)
-        recommendation = recommend_rebalancing(hh, threshold=0.3)
-
-        # Test oceny ryzyka rolling window
-        returns_df = pd.DataFrame(
-            {
-                "Asset_A": np.random.normal(0.001, 0.02, 252),
-                "Asset_B": np.random.normal(0.001, 0.025, 252),
-                "Asset_C": np.random.normal(0.001, 0.015, 252),
-            },
-            index=pd.date_range(start="2022-01-01", periods=252, freq="B"),
+        excess_return = returns.mean() - self.risk_free_rate
+        downside_deviation = returns[returns < self.risk_free_rate].std()
+        sortino_ratio = (
+            excess_return / downside_deviation if downside_deviation > 0 else 0.0
         )
-        risk_df = assess_portfolio_risk(returns_df.mean(axis=1), rolling_window=30, confidence_level=0.95)
+        logging.info("Sortino Ratio: %.4f", sortino_ratio)
+        return sortino_ratio
 
-        assert var_value < 0, "VaR powinien być wartością ujemną."
-        assert cvar_value <= var_value, "CVaR powinien być mniejszy lub równy VaR (bardziej negatywny)."
-        assert hh >= 0 and hh <= 1, "HH Index powinien mieścić się w przedziale [0, 1]."
-        logging.info("Testy jednostkowe portfolio_risk.py zakończone sukcesem.")
-    except AssertionError as ae:
-        logging.error("AssertionError w testach portfolio_risk.py: %s", ae)
-    except Exception as e:
-        logging.error("Błąd w testach portfolio_risk.py: %s", e)
-        raise
+    def calculate_var(self, returns: pd.Series, portfolio_value: float) -> float:
+        """
+        Oblicza wartość narażoną na ryzyko (Value at Risk - VaR) metodą parametryczną.
+
+        Parameters:
+            returns (pd.Series): Dzienna stopa zwrotu portfela.
+            portfolio_value (float): Aktualna wartość portfela.
+
+        Returns:
+            float: Wartość VaR (ujemna wartość oznacza stratę).
+        """
+        returns = returns.dropna()
+        if returns.empty:
+            logging.warning("Brak danych do obliczenia VaR.")
+            return 0.0
+
+        std_dev = returns.std()
+        z_score = norm.ppf(1 - self.confidence_level)
+        var = portfolio_value * (z_score * std_dev)
+
+        logging.info(
+            "Value at Risk (%.1f%% confidence): %.2f", self.confidence_level * 100, var
+        )
+        return var
+
+    def calculate_correlation_matrix(self, price_data: pd.DataFrame) -> pd.DataFrame:
+        """
+        Oblicza macierz korelacji między aktywami w portfelu.
+
+        Parameters:
+            price_data (pd.DataFrame): Dane cenowe aktywów (w kolumnach).
+
+        Returns:
+            pd.DataFrame: Macierz korelacji.
+        """
+        if not isinstance(price_data, pd.DataFrame) or price_data.empty:
+            raise ValueError("price_data musi być niepustym DataFrame!")
+
+        returns = price_data.pct_change().dropna()
+        if returns.empty:
+            logging.warning(
+                "Brak wystarczających danych do obliczenia macierzy korelacji."
+            )
+            return pd.DataFrame()
+
+        correlation_matrix = returns.corr()
+        logging.info("Macierz korelacji:\n%s", correlation_matrix)
+        return correlation_matrix
+
+    def optimal_allocation(
+        self, asset_volatility: pd.Series, target_risk: float = 0.02
+    ) -> pd.Series:
+        """
+        Oblicza optymalną alokację kapitału w portfelu na podstawie zmienności aktywów.
+
+        Parameters:
+            asset_volatility (pd.Series): Zmienność każdego aktywa.
+            target_risk (float): Poziom docelowego ryzyka portfela.
+
+        Returns:
+            pd.Series: Proporcjonalna alokacja kapitału w poszczególne aktywa.
+        """
+        if not isinstance(asset_volatility, pd.Series) or asset_volatility.empty:
+            raise ValueError("asset_volatility musi być niepustym Series!")
+
+        asset_volatility = asset_volatility.replace(
+            0, np.nan
+        ).dropna()  # Zapobiegaj dzieleniu przez 0
+
+        if asset_volatility.empty:
+            logging.warning("Brak ważnych danych do obliczenia alokacji kapitału.")
+            return pd.Series()
+
+        inv_volatility = 1 / asset_volatility
+        weights = inv_volatility / inv_volatility.sum()
+        scaled_weights = weights * (
+            target_risk / np.sqrt(np.sum(weights**2 * asset_volatility**2))
+        )
+
+        logging.info("Optymalna alokacja kapitału:\n%s", scaled_weights)
+        return scaled_weights
 
 
+# -------------------- Przykładowe użycie --------------------
 if __name__ == "__main__":
     try:
-        unit_test_portfolio_risk()
+        np.random.seed(42)
+        dates = pd.date_range(start="2023-01-01", periods=252)
+        price_data = pd.DataFrame(
+            {
+                "Asset_A": np.cumprod(1 + np.random.normal(0, 0.02, 252)),
+                "Asset_B": np.cumprod(1 + np.random.normal(0, 0.015, 252)),
+                "Asset_C": np.cumprod(1 + np.random.normal(0, 0.01, 252)),
+            },
+            index=dates,
+        )
+
+        portfolio_manager = PortfolioRiskManager(
+            confidence_level=0.95, risk_free_rate=0.01
+        )
+
+        returns = price_data.pct_change().dropna()
+        portfolio_value = 100000
+
+        sharpe_ratio = portfolio_manager.calculate_sharpe_ratio(returns.mean(axis=1))
+        sortino_ratio = portfolio_manager.calculate_sortino_ratio(returns.mean(axis=1))
+        var = portfolio_manager.calculate_var(returns.mean(axis=1), portfolio_value)
+        correlation_matrix = portfolio_manager.calculate_correlation_matrix(price_data)
+
+        asset_volatility = returns.std()
+        allocation = portfolio_manager.optimal_allocation(
+            asset_volatility, target_risk=0.02
+        )
+
+        logging.info("Finalna analiza ryzyka portfela zakończona sukcesem.")
     except Exception as e:
-        logging.error("Testy jednostkowe portfolio_risk.py nie powiodły się: %s", e)
+        logging.error("Błąd w PortfolioRiskManager: %s", e)
         raise

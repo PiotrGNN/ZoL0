@@ -51,7 +51,9 @@ class AdvancedOrderExecution:
         self.max_slippage = max_slippage
         self.retry_attempts = retry_attempts
 
-    def _send_request(self, endpoint: str, payload: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    def _send_request(
+        self, endpoint: str, payload: Dict[str, Any]
+    ) -> Optional[Dict[str, Any]]:
         """
         Wysyła żądanie do API giełdy i obsługuje błędy sieciowe.
 
@@ -106,7 +108,9 @@ class AdvancedOrderExecution:
 
         elif order_type in ("stop_loss", "trailing_stop"):
             if stop_price is None:
-                logging.error("Zlecenie STOP-LOSS i TRAILING STOP wymaga ceny aktywacji.")
+                logging.error(
+                    "Zlecenie STOP-LOSS i TRAILING STOP wymaga ceny aktywacji."
+                )
                 return None
             payload["stop_price"] = stop_price
 
@@ -182,7 +186,9 @@ class AdvancedOrderExecution:
 
         if order_type == "limit" and target_price:
             if abs((target_price - current_price) / current_price) > self.max_slippage:
-                logging.warning("Zlecenie LIMIT nie zostało złożone: przekroczony dopuszczalny poślizg.")
+                logging.warning(
+                    "Zlecenie LIMIT nie zostało złożone: przekroczony dopuszczalny poślizg."
+                )
                 return None
 
         response = self.place_order(order_type, symbol, quantity, target_price)
@@ -220,7 +226,9 @@ if __name__ == "__main__":
         order_executor = AdvancedOrderExecution(api_url, api_key)
 
         # Przykładowe składanie zlecenia
-        order_executor.execute_trade("limit", "BTCUSDT", 0.1, target_price=50000, stop_loss=49000)
+        order_executor.execute_trade(
+            "limit", "BTCUSDT", 0.1, target_price=50000, stop_loss=49000
+        )
 
     except Exception as e:
         logging.error("Błąd w module AdvancedOrderExecution: %s", e)

@@ -29,12 +29,10 @@ from datetime import datetime
 
 from ai_models.ai_optimizer import StrategyOptimizer
 from ai_models.anomaly_detection import AnomalyDetector
-
 # Moduły AI
 from ai_models.reinforcement_learning import ReinforcementLearner
 from ai_models.sentiment_analysis import SentimentAnalyzer
 from ai_models.trend_prediction import TrendPredictor
-
 # Moduły systemu
 from config.settings import CONFIG
 from data.execution.exchange_connector import ExchangeConnector
@@ -119,12 +117,16 @@ def initialize_trading_modules(environment: str, exchange: str) -> TradeExecutor
             base_url,
         )
 
-        connector = ExchangeConnector(exchange=exchange, api_key=api_key, api_secret=api_secret, base_url=base_url)
+        connector = ExchangeConnector(
+            exchange=exchange, api_key=api_key, api_secret=api_secret, base_url=base_url
+        )
 
         order_executor = OrderExecution(connector)
         trade_executor = TradeExecutor(order_executor, None, None)
 
-        logging.info("✅ Moduły tradingowe zainicjalizowane (%s, %s).", exchange, environment)
+        logging.info(
+            "✅ Moduły tradingowe zainicjalizowane (%s, %s).", exchange, environment
+        )
         return trade_executor
     except Exception as e:
         logging.error("❌ Błąd inicjalizacji modułów tradingowych: %s", e)
@@ -177,7 +179,9 @@ def main() -> None:
 
         # Wielowątkowość – AI i trading działają równolegle
         ai_thread = threading.Thread(target=ai_analysis_loop, daemon=True)
-        trading_thread = threading.Thread(target=trading_loop, args=(trading_manager,), daemon=True)
+        trading_thread = threading.Thread(
+            target=trading_loop, args=(trading_manager,), daemon=True
+        )
 
         ai_thread.start()
         trading_thread.start()

@@ -15,7 +15,9 @@ import time
 from collections import OrderedDict
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 class CacheEntry:
@@ -29,7 +31,9 @@ class CacheEntry:
 
 
 class CacheManager:
-    def __init__(self, max_size: int = 128, default_ttl: int = 300, strategy: str = "LRU"):
+    def __init__(
+        self, max_size: int = 128, default_ttl: int = 300, strategy: str = "LRU"
+    ):
         """
         Inicjalizuje CacheManager.
 
@@ -109,13 +113,17 @@ class CacheManager:
         """
         while len(self.cache) > self.max_size:
             removed_key, removed_entry = self.cache.popitem(last=False)
-            logging.info("Cache przekroczony limit. Usunięto najstarszy wpis: %s", removed_key)
+            logging.info(
+                "Cache przekroczony limit. Usunięto najstarszy wpis: %s", removed_key
+            )
 
     def clear_expired(self):
         """
         Usuwa wszystkie wygasłe wpisy z cache.
         """
-        keys_to_delete = [key for key, entry in self.cache.items() if entry.is_expired()]
+        keys_to_delete = [
+            key for key, entry in self.cache.items() if entry.is_expired()
+        ]
         for key in keys_to_delete:
             del self.cache[key]
             logging.debug("Usunięto wygasły wpis dla klucza: %s", key)
@@ -134,27 +142,37 @@ if __name__ == "__main__":
 
     class TestCacheManager(unittest.TestCase):
         def setUp(self):
-            self.cache = CacheManager(max_size=5, default_ttl=2)  # Krótki TTL dla testów
+            self.cache = CacheManager(
+                max_size=5, default_ttl=2
+            )  # Krótki TTL dla testów
 
         def test_set_and_get(self):
             self.cache.set("a", 1)
-            self.assertEqual(self.cache.get("a"), 1, "Wartość dla klucza 'a' powinna być 1.")
+            self.assertEqual(
+                self.cache.get("a"), 1, "Wartość dla klucza 'a' powinna być 1."
+            )
 
         def test_expiration(self):
             self.cache.set("b", 2, ttl=1)  # TTL = 1 sekunda
             time.sleep(1.1)
-            self.assertIsNone(self.cache.get("b"), "Wpis dla klucza 'b' powinien wygasnąć.")
+            self.assertIsNone(
+                self.cache.get("b"), "Wpis dla klucza 'b' powinien wygasnąć."
+            )
 
         def test_capacity(self):
             # Dodajemy 6 wpisów, max_size = 5, więc najstarszy powinien zostać usunięty.
             for i in range(6):
                 self.cache.set(f"key{i}", i)
-            self.assertEqual(self.cache.cache_size(), 5, "Rozmiar cache powinien wynosić 5.")
+            self.assertEqual(
+                self.cache.cache_size(), 5, "Rozmiar cache powinien wynosić 5."
+            )
 
         def test_delete(self):
             self.cache.set("c", 3)
             self.cache.delete("c")
-            self.assertIsNone(self.cache.get("c"), "Wpis dla klucza 'c' powinien zostać usunięty.")
+            self.assertIsNone(
+                self.cache.get("c"), "Wpis dla klucza 'c' powinien zostać usunięty."
+            )
 
         def test_clear_expired(self):
             self.cache.set("d", 4, ttl=1)
@@ -165,6 +183,8 @@ if __name__ == "__main__":
                 self.cache.get("d"),
                 "Wpis dla klucza 'd' powinien zostać usunięty po wygaśnięciu.",
             )
-            self.assertEqual(self.cache.get("e"), 5, "Wpis dla klucza 'e' powinien nadal istnieć.")
+            self.assertEqual(
+                self.cache.get("e"), 5, "Wpis dla klucza 'e' powinien nadal istnieć."
+            )
 
     unittest.main()

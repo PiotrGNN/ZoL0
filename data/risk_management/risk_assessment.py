@@ -18,7 +18,9 @@ import numpy as np
 import pandas as pd
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 def calculate_max_drawdown(equity_curve: pd.Series) -> float:
@@ -56,7 +58,9 @@ def calculate_volatility(returns: pd.Series, annualize: bool = True) -> float:
     return vol
 
 
-def calculate_sharpe_ratio(returns: pd.Series, risk_free_rate: float = 0.0, annualize: bool = True) -> float:
+def calculate_sharpe_ratio(
+    returns: pd.Series, risk_free_rate: float = 0.0, annualize: bool = True
+) -> float:
     """
     Oblicza Sharpe Ratio dla portfela.
 
@@ -69,14 +73,20 @@ def calculate_sharpe_ratio(returns: pd.Series, risk_free_rate: float = 0.0, annu
         float: Sharpe Ratio.
     """
     excess_returns = returns - risk_free_rate
-    sharpe = excess_returns.mean() / excess_returns.std() if excess_returns.std() != 0 else 0.0
+    sharpe = (
+        excess_returns.mean() / excess_returns.std()
+        if excess_returns.std() != 0
+        else 0.0
+    )
     if annualize:
         sharpe *= np.sqrt(252)
     logging.info("Obliczono Sharpe Ratio: %.4f", sharpe)
     return sharpe
 
 
-def calculate_sortino_ratio(returns: pd.Series, risk_free_rate: float = 0.0, annualize: bool = True) -> float:
+def calculate_sortino_ratio(
+    returns: pd.Series, risk_free_rate: float = 0.0, annualize: bool = True
+) -> float:
     """
     Oblicza Sortino Ratio dla portfela.
 
@@ -136,7 +146,9 @@ def stress_test_portfolio(equity_curve: pd.Series, shock: float = 0.2) -> dict:
     return {"shocked_curve": shocked_curve, "new_max_drawdown": new_max_dd}
 
 
-def generate_risk_report(equity_curve: pd.Series, returns: pd.Series, risk_free_rate: float = 0.0) -> dict:
+def generate_risk_report(
+    equity_curve: pd.Series, returns: pd.Series, risk_free_rate: float = 0.0
+) -> dict:
     """
     Generuje kompleksowy raport ryzyka portfela.
 
@@ -185,7 +197,9 @@ def unit_test_risk_assessment():
         assert sharpe is not None, "Sharpe Ratio nie może być None."
         assert sortino is not None, "Sortino Ratio nie może być None."
         assert calmar is not None, "Calmar Ratio nie może być None."
-        assert "new_max_drawdown" in stress, "Wynik stres testu powinien zawierać new_max_drawdown."
+        assert (
+            "new_max_drawdown" in stress
+        ), "Wynik stres testu powinien zawierać new_max_drawdown."
 
         logging.info("Testy jednostkowe risk_assessment.py zakończone sukcesem.")
     except AssertionError as ae:

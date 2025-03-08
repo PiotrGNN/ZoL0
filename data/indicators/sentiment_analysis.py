@@ -22,7 +22,9 @@ except ImportError as e:
     ) from e
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 class SentimentAnalysis:
@@ -34,9 +36,13 @@ class SentimentAnalysis:
             model_name (str, optional): Nazwa modelu Transformer do analizy sentymentu.
                                         Domyślnie używany jest "distilbert-base-uncased-finetuned-sst-2-english".
         """
-        self.model_name = model_name or "distilbert-base-uncased-finetuned-sst-2-english"
+        self.model_name = (
+            model_name or "distilbert-base-uncased-finetuned-sst-2-english"
+        )
         try:
-            self.nlp: Pipeline = pipeline("sentiment-analysis", model=self.model_name, tokenizer=self.model_name)
+            self.nlp: Pipeline = pipeline(
+                "sentiment-analysis", model=self.model_name, tokenizer=self.model_name
+            )
             logging.info("Załadowano model sentymentu: %s", self.model_name)
         except Exception as e:
             logging.error("Błąd przy ładowaniu modelu sentymentu: %s", e)
@@ -58,8 +64,14 @@ class SentimentAnalysis:
             if result and isinstance(result, list) and "label" in result[0]:
                 label = result[0]["label"]
                 score = result[0]["score"]
-                mapped = "POSITIVE" if label.upper() in ["POSITIVE", "LABEL_1"] else "NEGATIVE"
-                logging.info('Analiza tekstu: "%s" -> %s (score: %.4f)', text, mapped, score)
+                mapped = (
+                    "POSITIVE"
+                    if label.upper() in ["POSITIVE", "LABEL_1"]
+                    else "NEGATIVE"
+                )
+                logging.info(
+                    'Analiza tekstu: "%s" -> %s (score: %.4f)', text, mapped, score
+                )
                 return {mapped: score}
             else:
                 logging.warning("Nieoczekiwany format wyniku dla tekstu: %s", text)
@@ -84,7 +96,9 @@ class SentimentAnalysis:
             results.append(result)
         return results
 
-    def aggregate_sentiment(self, texts: List[str], weights: Optional[List[float]] = None) -> Dict[str, float]:
+    def aggregate_sentiment(
+        self, texts: List[str], weights: Optional[List[float]] = None
+    ) -> Dict[str, float]:
         """
         Agreguje wyniki sentymentu z listy tekstów. Umożliwia przypisanie wag do poszczególnych tekstów.
 
@@ -128,7 +142,9 @@ class SentimentAnalysis:
         try:
             shift = {
                 key: abs(current_sentiment.get(key, 0) - previous_sentiment.get(key, 0))
-                for key in set(current_sentiment.keys()).union(previous_sentiment.keys())
+                for key in set(current_sentiment.keys()).union(
+                    previous_sentiment.keys()
+                )
             }
             max_shift = max(shift.values()) if shift else 0.0
             if max_shift >= shift_threshold:

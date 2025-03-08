@@ -31,7 +31,9 @@ except ImportError:
     tf = None
 
 # Konfiguracja logowania (opcjonalnie może być zastąpione przez setup_logging w main.py)
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 class ModelTrainer:
@@ -71,7 +73,9 @@ class ModelTrainer:
             logging.info("Trening z wykorzystaniem GPU/TPU (o ile jest dostępne).")
             # Możesz tu włączyć strategię tf.distribute.MirroredStrategy() itp.
 
-    def walk_forward_split(self, X: pd.DataFrame, y: pd.Series, n_splits: int = 5) -> List[tuple]:
+    def walk_forward_split(
+        self, X: pd.DataFrame, y: pd.Series, n_splits: int = 5
+    ) -> List[tuple]:
         """
         Dzieli dane przy użyciu walk-forward validation.
 
@@ -119,12 +123,16 @@ class ModelTrainer:
                     callbacks = []
                     if self.early_stopping_params:
                         callbacks.append(EarlyStopping(**self.early_stopping_params))
-                    checkpoint_path = os.path.join(self.saved_model_dir, f"{self.model_name}_fold{fold}.h5")
+                    checkpoint_path = os.path.join(
+                        self.saved_model_dir, f"{self.model_name}_fold{fold}.h5"
+                    )
                     callbacks.append(
                         ModelCheckpoint(
                             checkpoint_path,
                             save_best_only=True,
-                            monitor=self.early_stopping_params.get("monitor", "val_loss"),
+                            monitor=self.early_stopping_params.get(
+                                "monitor", "val_loss"
+                            ),
                             verbose=1,
                         )
                     )
@@ -160,7 +168,9 @@ class ModelTrainer:
 
                 # Jeśli online learning i model wspiera partial_fit
                 if self.online_learning and hasattr(self.model, "partial_fit"):
-                    logging.info("Aktualizacja modelu metodą partial_fit (online learning).")
+                    logging.info(
+                        "Aktualizacja modelu metodą partial_fit (online learning)."
+                    )
                     # Przekazujemy dane walidacyjne do partial_fit
                     self.model.partial_fit(X_val, y_val)
 
@@ -184,7 +194,9 @@ class ModelTrainer:
         """
         try:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            model_filename = os.path.join(self.saved_model_dir, f"{self.model_name}_{timestamp}")
+            model_filename = os.path.join(
+                self.saved_model_dir, f"{self.model_name}_{timestamp}"
+            )
 
             if tf is not None and isinstance(self.model, tf.keras.Model):
                 model_filename += ".h5"
@@ -214,7 +226,11 @@ if __name__ == "__main__":
             },
             index=dates,
         )
-        y = X["feature1"] * 1.5 + X["feature2"] * (-2.0) + np.random.normal(0, 0.5, size=500)
+        y = (
+            X["feature1"] * 1.5
+            + X["feature2"] * (-2.0)
+            + np.random.normal(0, 0.5, size=500)
+        )
 
         # Przykład użycia z modelem scikit-learn (np. RandomForestRegressor)
         from sklearn.ensemble import RandomForestRegressor

@@ -17,7 +17,9 @@ import numpy as np
 import pandas as pd
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 def clean_data(df: pd.DataFrame, fill_method: str = "median") -> pd.DataFrame:
@@ -75,7 +77,9 @@ def compute_log_returns(df: pd.DataFrame, price_col: str = "close") -> pd.Series
         raise
 
 
-def detect_outliers(df: pd.DataFrame, column: str, threshold: float = 3.0) -> pd.DataFrame:
+def detect_outliers(
+    df: pd.DataFrame, column: str, threshold: float = 3.0
+) -> pd.DataFrame:
     """
     Wykrywa outliery w określonej kolumnie, wykorzystując metodę z-score.
 
@@ -163,11 +167,15 @@ def preprocess_pipeline(
         # Detekcja outlierów w kolumnie z cenami
         df_outliers = detect_outliers(df_clean, price_col, threshold=outlier_threshold)
         # Winsoryzacja cen, jeśli są outliery
-        df_clean[price_col] = winsorize_series(df_clean[price_col], limits=winsorize_limits)
+        df_clean[price_col] = winsorize_series(
+            df_clean[price_col], limits=winsorize_limits
+        )
 
         # Obliczenie logarytmicznych zwrotów
         log_returns = compute_log_returns(df_clean, price_col=price_col)
-        df_clean = df_clean.iloc[1:].copy()  # Usuwamy pierwszy wiersz, dla którego nie ma log-return
+        df_clean = df_clean.iloc[
+            1:
+        ].copy()  # Usuwamy pierwszy wiersz, dla którego nie ma log-return
         df_clean["log_return"] = log_returns.values
 
         logging.info("Pipeline przetwarzania danych zakończony pomyślnie.")
@@ -205,7 +213,9 @@ def unit_test_preprocessing():
             winsorize_limits=(0.05, 0.05),
         )
         # Sprawdzenie, czy kolumna 'log_return' jest obecna
-        assert "log_return" in df_processed.columns, "Brak kolumny 'log_return' po przetwarzaniu."
+        assert (
+            "log_return" in df_processed.columns
+        ), "Brak kolumny 'log_return' po przetwarzaniu."
         logging.info("Testy jednostkowe dla data_preprocessing.py zakończone sukcesem.")
     except AssertionError as ae:
         logging.error("Błąd w testach jednostkowych: %s", ae)

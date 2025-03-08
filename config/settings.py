@@ -13,7 +13,8 @@ from typing import Any, Dict
 
 from dotenv import load_dotenv
 
-from .config_loader import ConfigLoader  # Import względny, dopasuj do swojej struktury projektu
+from .config_loader import \
+    ConfigLoader  # Import względny, dopasuj do swojej struktury projektu
 
 # -----------------------------------
 # 1. Wczytanie zmiennych z pliku .env
@@ -23,7 +24,9 @@ load_dotenv()
 # -----------------------------------
 # 2. Konfiguracja wstępna logowania
 # -----------------------------------
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 # -----------------------------------
 # 3. Określenie środowiska
@@ -115,7 +118,9 @@ default_settings: Dict[str, Any] = {
 # -----------------------------------
 # 5. Wybór ustawień dla aktualnego środowiska
 # -----------------------------------
-env_settings: Dict[str, Any] = default_settings.get(APP_ENV, default_settings["development"])
+env_settings: Dict[str, Any] = default_settings.get(
+    APP_ENV, default_settings["development"]
+)
 
 # -----------------------------------
 # 6. Ładowanie dodatkowych ustawień z plików JSON/YAML przy pomocy ConfigLoader

@@ -20,7 +20,9 @@ from tensorflow.keras.layers import Dense, Input
 from tensorflow.keras.optimizers import Adam
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 # Sprawdzenie dostępności GPU
 gpus = tf.config.list_physical_devices("GPU")
@@ -191,7 +193,9 @@ def train_dqn(agent, env, episodes=1000, max_steps=500):
             if done:
                 break
 
-        logging.info("Epizod %d: Reward: %.2f, Epsilon: %.4f", e + 1, total_reward, agent.epsilon)
+        logging.info(
+            "Epizod %d: Reward: %.2f, Epsilon: %.4f", e + 1, total_reward, agent.epsilon
+        )
 
     agent.save("dqn_trained_model.h5")
 

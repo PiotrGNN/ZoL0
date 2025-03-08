@@ -22,7 +22,9 @@ except ImportError as e:
     ) from e
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 class SentimentAnalyzer:
@@ -42,8 +44,12 @@ class SentimentAnalyzer:
         """
         self.model_name = model_name or "cardiffnlp/twitter-roberta-base-sentiment"
         try:
-            self.nlp: Pipeline = pipeline("sentiment-analysis", model=self.model_name, tokenizer=self.model_name)
-            logging.info("Model sentiment analysis '%s' został załadowany.", self.model_name)
+            self.nlp: Pipeline = pipeline(
+                "sentiment-analysis", model=self.model_name, tokenizer=self.model_name
+            )
+            logging.info(
+                "Model sentiment analysis '%s' został załadowany.", self.model_name
+            )
         except Exception as e:
             logging.error("Błąd podczas ładowania modelu '%s': %s", self.model_name, e)
             raise

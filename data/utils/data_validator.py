@@ -15,7 +15,9 @@ import numpy as np
 import pandas as pd
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 def validate_columns(df: pd.DataFrame, required_columns: list) -> bool:
@@ -111,7 +113,9 @@ def validate_numeric_ranges(df: pd.DataFrame, range_constraints: dict) -> bool:
             logging.error("Kolumna %s zawiera wartości większe niż %s.", col, max_val)
             valid = False
     if valid:
-        logging.info("Wszystkie wartości numeryczne mieszczą się w określonych zakresach.")
+        logging.info(
+            "Wszystkie wartości numeryczne mieszczą się w określonych zakresach."
+        )
     return valid
 
 
@@ -133,7 +137,11 @@ if __name__ == "__main__":
 
         def test_validate_columns(self):
             self.assertTrue(validate_columns(self.df, ["timestamp", "price", "volume"]))
-            self.assertFalse(validate_columns(self.df, ["timestamp", "price", "volume", "missing_col"]))
+            self.assertFalse(
+                validate_columns(
+                    self.df, ["timestamp", "price", "volume", "missing_col"]
+                )
+            )
 
         def test_validate_data_types(self):
             # Zakładamy, że timestamp powinien być datetime64, price float, volume int

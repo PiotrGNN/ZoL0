@@ -15,7 +15,9 @@ import logging
 import time
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 class TradeExecutor:
@@ -56,8 +58,12 @@ class TradeExecutor:
 
             # Synchronizacja stanu konta
             self.account_manager.get_account_status()
-            if not self.account_manager.has_sufficient_funds(action, proposed_quantity, proposed_price):
-                logging.warning("Niewystarczające środki dla sygnału %s %s.", action, symbol)
+            if not self.account_manager.has_sufficient_funds(
+                action, proposed_quantity, proposed_price
+            ):
+                logging.warning(
+                    "Niewystarczające środki dla sygnału %s %s.", action, symbol
+                )
                 return {"status": "rejected", "reason": "Insufficient funds"}
 
             # Wysłanie zlecenia za pomocą modułu order_executor

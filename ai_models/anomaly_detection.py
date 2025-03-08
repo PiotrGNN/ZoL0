@@ -53,7 +53,9 @@ class AnomalyDetector:
                 "bootstrap": [False, True],
             }
             model = IsolationForest(random_state=self.random_state)
-            grid = GridSearchCV(estimator=model, param_grid=param_grid, cv=3, scoring="accuracy")
+            grid = GridSearchCV(
+                estimator=model, param_grid=param_grid, cv=3, scoring="accuracy"
+            )
             grid.fit(X)
             logging.info("Najlepsze parametry: %s", grid.best_params_)
             self.isolation_forest = grid.best_estimator_
@@ -67,12 +69,16 @@ class AnomalyDetector:
         """
         try:
             if self.isolation_forest is None:
-                logging.info("Dopasowywanie IsolationForest z domyślnymi parametrami...")
+                logging.info(
+                    "Dopasowywanie IsolationForest z domyślnymi parametrami..."
+                )
                 self.isolation_forest = IsolationForest(
                     contamination=self.contamination, random_state=self.random_state
                 )
             else:
-                logging.info("Dopasowywanie wcześniej strojonego modelu IsolationForest...")
+                logging.info(
+                    "Dopasowywanie wcześniej strojonego modelu IsolationForest..."
+                )
             self.isolation_forest.fit(X)
         except Exception as e:
             logging.error("Błąd podczas dopasowywania IsolationForest: %s", e)
@@ -94,7 +100,9 @@ class AnomalyDetector:
             )
             return predictions
         except Exception as e:
-            logging.error("Błąd przy wykrywaniu anomalii za pomocą IsolationForest: %s", e)
+            logging.error(
+                "Błąd przy wykrywaniu anomalii za pomocą IsolationForest: %s", e
+            )
             raise
 
     def fit_dbscan(self, X, eps=0.5, min_samples=5):
@@ -153,7 +161,9 @@ class AnomalyDetector:
             if self.autoencoder is None:
                 self.build_autoencoder(input_dim=X.shape[1])
             logging.info("Trening autoenkodera...")
-            early_stop = EarlyStopping(monitor="val_loss", patience=5, restore_best_weights=True)
+            early_stop = EarlyStopping(
+                monitor="val_loss", patience=5, restore_best_weights=True
+            )
             self.autoencoder.fit(
                 X,
                 X,
@@ -243,7 +253,9 @@ def test_anomaly_detection():
         detector.tune_isolation_forest(df.values)
         detector.fit_isolation_forest(df.values)
         predictions_if = detector.detect_anomalies_isolation_forest(df.values)
-        logging.info("Test IsolationForest: wykryto %d anomalii.", np.sum(predictions_if == -1))
+        logging.info(
+            "Test IsolationForest: wykryto %d anomalii.", np.sum(predictions_if == -1)
+        )
 
         # Test DBSCAN
         detector.fit_dbscan(df.values, eps=3, min_samples=5)
@@ -252,9 +264,13 @@ def test_anomaly_detection():
 
         # Test Autoenkodera
         detector.build_autoencoder(input_dim=df.shape[1], encoding_dim=5)
-        detector.fit_autoencoder(df.values, epochs=20, batch_size=16, validation_split=0.1)
+        detector.fit_autoencoder(
+            df.values, epochs=20, batch_size=16, validation_split=0.1
+        )
         predictions_ae, mse = detector.detect_anomalies_autoencoder(df.values)
-        logging.info("Test Autoenkodera: wykryto %d anomalii.", np.sum(predictions_ae == -1))
+        logging.info(
+            "Test Autoenkodera: wykryto %d anomalii.", np.sum(predictions_ae == -1)
+        )
 
         logging.info("Wszystkie testy zakończone pomyślnie.")
     except Exception as e:

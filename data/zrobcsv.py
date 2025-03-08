@@ -22,7 +22,9 @@ import xml.etree.ElementTree as ET
 import pandas as pd
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 # Standardowy schemat kolumn
 STANDARD_COLUMNS = ["timestamp", "open", "high", "low", "close", "volume"]
@@ -196,29 +198,41 @@ def unit_test_conversion():
     ]
 
     # Test JSON
-    with tempfile.NamedTemporaryFile(mode="w+", suffix=".json", delete=False) as temp_json:
+    with tempfile.NamedTemporaryFile(
+        mode="w+", suffix=".json", delete=False
+    ) as temp_json:
         json.dump(sample_data, temp_json)
         temp_json_path = temp_json.name
 
-    with tempfile.NamedTemporaryFile(mode="w+", suffix=".csv", delete=False) as temp_csv:
+    with tempfile.NamedTemporaryFile(
+        mode="w+", suffix=".csv", delete=False
+    ) as temp_csv:
         temp_csv_path = temp_csv.name
 
     convert_to_csv(temp_json_path, temp_csv_path)
     df_json_csv = pd.read_csv(temp_csv_path)
-    assert set(df_json_csv.columns) == set(STANDARD_COLUMNS), "JSON konwersja - kolumny nie są zgodne ze standardem."
+    assert set(df_json_csv.columns) == set(
+        STANDARD_COLUMNS
+    ), "JSON konwersja - kolumny nie są zgodne ze standardem."
 
     # Test Excel
-    with tempfile.NamedTemporaryFile(mode="w+", suffix=".xlsx", delete=False) as temp_excel:
+    with tempfile.NamedTemporaryFile(
+        mode="w+", suffix=".xlsx", delete=False
+    ) as temp_excel:
         temp_excel_path = temp_excel.name
     df_sample = pd.DataFrame(sample_data)
     df_sample.to_excel(temp_excel_path, index=False)
 
-    with tempfile.NamedTemporaryFile(mode="w+", suffix=".csv", delete=False) as temp_csv2:
+    with tempfile.NamedTemporaryFile(
+        mode="w+", suffix=".csv", delete=False
+    ) as temp_csv2:
         temp_csv_path2 = temp_csv2.name
 
     convert_to_csv(temp_excel_path, temp_csv_path2)
     df_excel_csv = pd.read_csv(temp_csv_path2)
-    assert set(df_excel_csv.columns) == set(STANDARD_COLUMNS), "Excel konwersja - kolumny nie są zgodne ze standardem."
+    assert set(df_excel_csv.columns) == set(
+        STANDARD_COLUMNS
+    ), "Excel konwersja - kolumny nie są zgodne ze standardem."
 
     # Test XML
     # Tworzymy prosty XML ze strukturą odpowiadającą sample_data
@@ -229,16 +243,22 @@ def unit_test_conversion():
             xml_content += f"<{key}>{value}</{key}>"
         xml_content += "</record>"
     xml_content += "</root>"
-    with tempfile.NamedTemporaryFile(mode="w+", suffix=".xml", delete=False) as temp_xml:
+    with tempfile.NamedTemporaryFile(
+        mode="w+", suffix=".xml", delete=False
+    ) as temp_xml:
         temp_xml.write(xml_content)
         temp_xml_path = temp_xml.name
 
-    with tempfile.NamedTemporaryFile(mode="w+", suffix=".csv", delete=False) as temp_csv3:
+    with tempfile.NamedTemporaryFile(
+        mode="w+", suffix=".csv", delete=False
+    ) as temp_csv3:
         temp_csv_path3 = temp_csv3.name
 
     convert_to_csv(temp_xml_path, temp_csv_path3)
     df_xml_csv = pd.read_csv(temp_csv_path3)
-    assert set(df_xml_csv.columns) == set(STANDARD_COLUMNS), "XML konwersja - kolumny nie są zgodne ze standardem."
+    assert set(df_xml_csv.columns) == set(
+        STANDARD_COLUMNS
+    ), "XML konwersja - kolumny nie są zgodne ze standardem."
 
     # Sprzątanie tymczasowych plików
     os.remove(temp_json_path)
@@ -251,9 +271,13 @@ def unit_test_conversion():
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Konwertuje dane z JSON, Excel, XML do formatu CSV.")
+    parser = argparse.ArgumentParser(
+        description="Konwertuje dane z JSON, Excel, XML do formatu CSV."
+    )
     parser.add_argument("input_file", type=str, help="Ścieżka do pliku wejściowego.")
-    parser.add_argument("output_file", type=str, help="Ścieżka do pliku CSV wyjściowego.")
+    parser.add_argument(
+        "output_file", type=str, help="Ścieżka do pliku CSV wyjściowego."
+    )
     parser.add_argument(
         "--delimiter",
         type=str,

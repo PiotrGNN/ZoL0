@@ -64,11 +64,15 @@ def detect_anomalies_zscore(data: pd.Series, threshold: float = 3.0) -> pd.Serie
     std_val = data.std()
     z_scores = (data - mean_val) / std_val
     anomalies = z_scores.abs() > threshold
-    logging.info("Wykryto %d anomalii przy progu z-score %.2f.", anomalies.sum(), threshold)
+    logging.info(
+        "Wykryto %d anomalii przy progu z-score %.2f.", anomalies.sum(), threshold
+    )
     return anomalies
 
 
-def detect_anomalies_isolation_forest(df: pd.DataFrame, contamination: float = 0.01) -> pd.Series:
+def detect_anomalies_isolation_forest(
+    df: pd.DataFrame, contamination: float = 0.01
+) -> pd.Series:
     """
     Wykrywa anomalie przy użyciu modelu Isolation Forest.
 
@@ -153,7 +157,9 @@ def unit_test_anomaly_detector():
         # Test Isolation Forest
         df = pd.DataFrame({"value": data_series})
         preds = detect_anomalies_isolation_forest(df, contamination=0.05)
-        assert (preds == -1).sum() >= 2, "Isolation Forest nie wykrył oczekiwanych anomalii."
+        assert (
+            preds == -1
+        ).sum() >= 2, "Isolation Forest nie wykrył oczekiwanych anomalii."
 
         # Test K-Means
         anomalies_km = detect_anomalies_kmeans(data_series, n_clusters=2)

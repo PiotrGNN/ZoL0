@@ -15,7 +15,9 @@ import numpy as np
 import pandas as pd
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 # -------------------- Podstawowe funkcje (z poprzedniego pliku) --------------------
@@ -25,14 +27,18 @@ def add_rsi(df: pd.DataFrame, period: int = 14) -> pd.DataFrame:
     """
     delta = df["close"].diff()
     gain = (delta.where(delta > 0, 0)).rolling(window=period, min_periods=period).mean()
-    loss = (-delta.where(delta < 0, 0)).rolling(window=period, min_periods=period).mean()
+    loss = (
+        (-delta.where(delta < 0, 0)).rolling(window=period, min_periods=period).mean()
+    )
     rs = gain / loss.replace({0: np.nan})
     rsi = 100 - (100 / (1 + rs))
     df["rsi"] = rsi
     return df
 
 
-def add_macd(df: pd.DataFrame, fast: int = 12, slow: int = 26, signal: int = 9) -> pd.DataFrame:
+def add_macd(
+    df: pd.DataFrame, fast: int = 12, slow: int = 26, signal: int = 9
+) -> pd.DataFrame:
     """
     Dodaje kolumny 'macd' i 'macd_signal' do DataFrame z cenami w kolumnie 'close'.
     """
@@ -107,7 +113,9 @@ def compute_macd(
         raise
 
 
-def compute_bollinger_bands(prices: pd.Series, window: int = 20, num_std: float = 2.0) -> pd.DataFrame:
+def compute_bollinger_bands(
+    prices: pd.Series, window: int = 20, num_std: float = 2.0
+) -> pd.DataFrame:
     """
     Oblicza Bollinger Bands na podstawie serii cen.
     Zwraca DataFrame z kolumnami 'Middle', 'Upper', 'Lower'.
@@ -119,7 +127,9 @@ def compute_bollinger_bands(prices: pd.Series, window: int = 20, num_std: float 
         lower = middle - num_std * std
 
         bands = pd.DataFrame({"Middle": middle, "Upper": upper, "Lower": lower})
-        logging.info("Bollinger Bands obliczone (okno=%d, odch.std=%.2f).", window, num_std)
+        logging.info(
+            "Bollinger Bands obliczone (okno=%d, odch.std=%.2f).", window, num_std
+        )
         return bands
     except Exception as e:
         logging.error("Błąd przy obliczaniu Bollinger Bands: %s", e)
@@ -139,7 +149,9 @@ def log_price_transformation(prices: pd.Series) -> pd.Series:
         raise
 
 
-def create_lag_features(df: pd.DataFrame, column: str, lags: list = [1, 2, 3]) -> pd.DataFrame:
+def create_lag_features(
+    df: pd.DataFrame, column: str, lags: list = [1, 2, 3]
+) -> pd.DataFrame:
     """
     Tworzy cechy opóźnione (lag features) dla wskazanej kolumny.
     """
@@ -180,13 +192,21 @@ def adaptive_feature_selection(
         price_std = df[target_column].pct_change().std()
         logging.info("Zmienność (std) cen: %f", price_std)
         if price_std > volatility_threshold:
-            logging.info("Zmienność przekracza próg. Dodawanie cech opóźnionych i wskaźników technicznych.")
+            logging.info(
+                "Zmienność przekracza próg. Dodawanie cech opóźnionych i wskaźników technicznych."
+            )
             # Dodaj cechy lag
-            df_selected = create_lag_features(df_selected, target_column, lags=[1, 2, 3])
+            df_selected = create_lag_features(
+                df_selected, target_column, lags=[1, 2, 3]
+            )
             # Dodaj średnią kroczącą
-            df_selected[f"{target_column}_ma_10"] = compute_moving_average(df_selected[target_column], window=10)
+            df_selected[f"{target_column}_ma_10"] = compute_moving_average(
+                df_selected[target_column], window=10
+            )
             # Dodaj RSI
-            df_selected[f"{target_column}_rsi"] = compute_rsi(df_selected[target_column], window=14)
+            df_selected[f"{target_column}_rsi"] = compute_rsi(
+                df_selected[target_column], window=14
+            )
             # Dodaj MACD
             macd_df = compute_macd(df_selected[target_column])
             df_selected = pd.concat([df_selected, macd_df], axis=1)
@@ -222,7 +242,9 @@ if __name__ == "__main__":
     try:
         # Przykładowe dane
         dates = pd.date_range(start="2023-01-01", periods=100, freq="D")
-        prices = pd.Series(np.random.uniform(50, 150, size=100), index=dates, name="close")
+        prices = pd.Series(
+            np.random.uniform(50, 150, size=100), index=dates, name="close"
+        )
         df_example = pd.DataFrame(prices)
 
         # Walidacja danych
@@ -238,7 +260,9 @@ if __name__ == "__main__":
         bollinger_df = compute_bollinger_bands(df_example["close"])
         df_example = pd.concat([df_example, bollinger_df], axis=1)
         df_example["log_close"] = log_price_transformation(df_example["close"])
-        df_features = adaptive_feature_selection(df_example, "close", volatility_threshold=0.02)
+        df_features = adaptive_feature_selection(
+            df_example, "close", volatility_threshold=0.02
+        )
 
         logging.info("Przykładowe dane z cechami:\n%s", df_features.head())
     except Exception as e:

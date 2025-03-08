@@ -5,17 +5,22 @@ Moduł analizujący wyniki strategii handlowych i proponujący modyfikacje param
 """
 
 import logging
+from typing import Any, Dict, List
+
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from scipy.optimize import minimize
-from typing import Dict, Any, List
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
-def optimize_portfolio_markowitz(returns: pd.DataFrame, risk_free_rate: float = 0.0) -> Dict[str, Any]:
+def optimize_portfolio_markowitz(
+    returns: pd.DataFrame, risk_free_rate: float = 0.0
+) -> Dict[str, Any]:
     """
     Optymalizuje portfel przy użyciu metody Markowitza.
 
@@ -65,7 +70,9 @@ def optimize_portfolio_markowitz(returns: pd.DataFrame, risk_free_rate: float = 
         raise ValueError("Optymalizacja portfela nie powiodła się.")
 
 
-def optimize_portfolio_genetic(returns: pd.DataFrame, population_size: int = 50, generations: int = 100) -> Dict[str, Any]:
+def optimize_portfolio_genetic(
+    returns: pd.DataFrame, population_size: int = 50, generations: int = 100
+) -> Dict[str, Any]:
     """
     Optymalizuje portfel przy użyciu uproszczonej optymalizacji genetycznej.
 
@@ -86,17 +93,21 @@ def optimize_portfolio_genetic(returns: pd.DataFrame, population_size: int = 50,
         port_std = np.sqrt(np.dot(weights.T, np.dot(cov_matrix, weights)))
         return port_return / port_std if port_std != 0 else 0
 
-    population = [np.random.dirichlet(np.ones(n_assets)) for _ in range(population_size)]
+    population = [
+        np.random.dirichlet(np.ones(n_assets)) for _ in range(population_size)
+    ]
 
     for gen in range(generations):
         fitness_scores = np.array([fitness(ind) for ind in population])
-        selected_indices = fitness_scores.argsort()[-(population_size // 2):]
+        selected_indices = fitness_scores.argsort()[-(population_size // 2) :]
         selected = [population[i] for i in selected_indices]
 
         offspring = []
         while len(offspring) < population_size - len(selected):
             parents = np.random.choice(selected, 2, replace=False)
-            child = (parents[0] + parents[1]) / 2.0 + np.random.normal(0, 0.05, size=n_assets)
+            child = (parents[0] + parents[1]) / 2.0 + np.random.normal(
+                0, 0.05, size=n_assets
+            )
             child = np.clip(child, 0, None)
             child /= child.sum() if child.sum() != 0 else 1
             offspring.append(child)
@@ -104,7 +115,9 @@ def optimize_portfolio_genetic(returns: pd.DataFrame, population_size: int = 50,
         population = selected + offspring
 
         if gen % 10 == 0:
-            logging.info("Generacja %d, najlepsze fitness: %.4f", gen, np.max(fitness_scores))
+            logging.info(
+                "Generacja %d, najlepsze fitness: %.4f", gen, np.max(fitness_scores)
+            )
 
     best_index = np.argmax(fitness_scores)
     opt_weights = population[best_index]
@@ -150,7 +163,11 @@ if __name__ == "__main__":
         np.random.seed(42)
         dates = pd.date_range(start="2020-01-01", periods=252, freq="B")
         returns_data = np.random.normal(0.001, 0.02, size=(252, 4))
-        returns_df = pd.DataFrame(returns_data, index=dates, columns=["Asset_A", "Asset_B", "Asset_C", "Asset_D"])
+        returns_df = pd.DataFrame(
+            returns_data,
+            index=dates,
+            columns=["Asset_A", "Asset_B", "Asset_C", "Asset_D"],
+        )
 
         markowitz_result = optimize_portfolio_markowitz(returns_df)
         genetic_result = optimize_portfolio_genetic(returns_df)

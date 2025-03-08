@@ -16,10 +16,14 @@ import logging
 import numpy as np
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
-def fixed_fractional_position_size(capital: float, risk_per_trade: float, stop_loss_distance: float) -> float:
+def fixed_fractional_position_size(
+    capital: float, risk_per_trade: float, stop_loss_distance: float
+) -> float:
     """
     Oblicza rozmiar pozycji przy użyciu metody fixed fractional.
 
@@ -41,7 +45,9 @@ def fixed_fractional_position_size(capital: float, risk_per_trade: float, stop_l
     return position_size
 
 
-def kelly_criterion_position_size(win_rate: float, win_loss_ratio: float, capital: float) -> float:
+def kelly_criterion_position_size(
+    win_rate: float, win_loss_ratio: float, capital: float
+) -> float:
     """
     Oblicza rozmiar pozycji przy użyciu kryterium Kelly'ego.
 
@@ -67,7 +73,9 @@ def kelly_criterion_position_size(win_rate: float, win_loss_ratio: float, capita
     return position_size
 
 
-def risk_parity_position_size(volatilities: np.ndarray, total_capital: float) -> np.ndarray:
+def risk_parity_position_size(
+    volatilities: np.ndarray, total_capital: float
+) -> np.ndarray:
     """
     Oblicza rozmiary pozycji dla wielu aktywów przy użyciu zasady risk parity.
 
@@ -108,7 +116,9 @@ def dynamic_position_size(
     Returns:
         float: Optymalny rozmiar pozycji.
     """
-    base_size = fixed_fractional_position_size(capital, risk_per_trade, stop_loss_distance)
+    base_size = fixed_fractional_position_size(
+        capital, risk_per_trade, stop_loss_distance
+    )
     # Przykładowa logika: gdy zmienność jest wysoka, zmniejsz rozmiar pozycji proporcjonalnie
     adjustment_factor = 1 / (1 + market_volatility)
     dynamic_size = base_size * adjustment_factor
@@ -132,23 +142,33 @@ def unit_test_position_sizing():
         capital = 10000
         risk_per_trade = 0.02  # 2%
         stop_loss_distance = 50  # jednostki ceny
-        pos_size_fixed = fixed_fractional_position_size(capital, risk_per_trade, stop_loss_distance)
-        assert pos_size_fixed > 0, "Fixed fractional position size powinien być dodatni."
+        pos_size_fixed = fixed_fractional_position_size(
+            capital, risk_per_trade, stop_loss_distance
+        )
+        assert (
+            pos_size_fixed > 0
+        ), "Fixed fractional position size powinien być dodatni."
 
         # Test Kelly criterion
         win_rate = 0.55
         win_loss_ratio = 2.0
-        pos_size_kelly = kelly_criterion_position_size(win_rate, win_loss_ratio, capital)
+        pos_size_kelly = kelly_criterion_position_size(
+            win_rate, win_loss_ratio, capital
+        )
         assert pos_size_kelly >= 0, "Kelly criterion position size nie może być ujemny."
 
         # Test risk parity
         volatilities = np.array([0.1, 0.2, 0.15, 0.25])
         pos_sizes_risk_parity = risk_parity_position_size(volatilities, capital)
-        assert np.isclose(np.sum(pos_sizes_risk_parity), capital), "Suma pozycji risk parity musi być równa kapitałowi."
+        assert np.isclose(
+            np.sum(pos_sizes_risk_parity), capital
+        ), "Suma pozycji risk parity musi być równa kapitałowi."
 
         # Test dynamic position sizing
         market_volatility = 0.05  # np. ATR
-        pos_size_dynamic = dynamic_position_size(capital, risk_per_trade, stop_loss_distance, market_volatility)
+        pos_size_dynamic = dynamic_position_size(
+            capital, risk_per_trade, stop_loss_distance, market_volatility
+        )
         assert pos_size_dynamic > 0, "Dynamic position size powinien być dodatni."
 
         logging.info("Testy jednostkowe dla position_sizing.py zakończone sukcesem.")

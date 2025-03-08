@@ -21,7 +21,9 @@ from datetime import datetime
 from functools import lru_cache
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 # Ścieżki domyślne
 DEFAULT_DB_PATH = "./data/historical_data.db"
@@ -166,7 +168,9 @@ class DataStorage:
             self.conn.commit()
             logging.info("Wstawiono rekord do tabeli %s: %s", table_name, record)
         except Exception as e:
-            logging.error("Błąd przy wstawianiu rekordu do tabeli %s: %s", table_name, e)
+            logging.error(
+                "Błąd przy wstawianiu rekordu do tabeli %s: %s", table_name, e
+            )
             raise
 
     def read_records(self, table_name: str, conditions: str = None) -> list:
@@ -215,7 +219,9 @@ class DataStorage:
                 conditions,
             )
         except Exception as e:
-            logging.error("Błąd przy aktualizacji rekordów w tabeli %s: %s", table_name, e)
+            logging.error(
+                "Błąd przy aktualizacji rekordów w tabeli %s: %s", table_name, e
+            )
             raise
 
     def delete_record(self, table_name: str, conditions: str):
@@ -254,7 +260,9 @@ class DataStorage:
                 shutil.copy2(self.db_path, backup_path)
                 logging.info("Utworzono backup bazy danych: %s", backup_path)
             else:
-                logging.warning("Plik bazy danych nie istnieje, backup nie został wykonany.")
+                logging.warning(
+                    "Plik bazy danych nie istnieje, backup nie został wykonany."
+                )
         except Exception as e:
             logging.error("Błąd podczas tworzenia backupu bazy danych: %s", e)
             raise
@@ -273,7 +281,9 @@ class DataStorage:
                     self.conn.close()
                 shutil.copy2(backup_file, self.db_path)
                 self._connect_db()
-                logging.info("Baza danych została odtworzona z backupu: %s", backup_file)
+                logging.info(
+                    "Baza danych została odtworzona z backupu: %s", backup_file
+                )
             else:
                 logging.error("Plik backupu nie istnieje: %s", backup_file)
         except Exception as e:
@@ -290,7 +300,9 @@ if __name__ == "__main__":
 
         # Przykład: tworzenie tabeli dla danych świecowych
         table_name = "candles"
-        schema = "(timestamp TEXT, open REAL, high REAL, low REAL, close REAL, volume REAL)"
+        schema = (
+            "(timestamp TEXT, open REAL, high REAL, low REAL, close REAL, volume REAL)"
+        )
         ds.create_table(table_name, schema)
 
         # Wstawianie przykładowego rekordu
@@ -309,7 +321,9 @@ if __name__ == "__main__":
         logging.info("Rekordy w tabeli '%s': %s", table_name, records)
 
         # Aktualizacja rekordu (przykład aktualizacji ceny zamknięcia)
-        ds.update_record(table_name, {"close": 16580}, "WHERE timestamp = '2023-01-01 00:00:00'")
+        ds.update_record(
+            table_name, {"close": 16580}, "WHERE timestamp = '2023-01-01 00:00:00'"
+        )
         updated_records = ds.read_records(table_name)
         logging.info("Zaktualizowane rekordy: %s", updated_records)
 
@@ -331,7 +345,8 @@ if __name__ == "__main__":
         ds.update_csv(
             csv_file,
             headers,
-            rows + [["2023-01-01 00:02:00", "16580", "16650", "16560", "16620", "400.0"]],
+            rows
+            + [["2023-01-01 00:02:00", "16580", "16650", "16560", "16620", "400.0"]],
         )
         updated_csv_data = ds.read_csv(csv_file)
         logging.info("Zaktualizowane dane z pliku CSV: %s", updated_csv_data)

@@ -74,7 +74,9 @@ class TradeLogger:
             self.log_buffer.append(trade_info)
             logging.info("Zarejestrowano transakcję: %s", trade_info)
             # Aktualizacja pliku HEAD
-            self._update_head(trade_info["timestamp"], trade_info.get("order_id", "N/A"))
+            self._update_head(
+                trade_info["timestamp"], trade_info.get("order_id", "N/A")
+            )
             if len(self.log_buffer) >= self.log_buffer_size:
                 self.flush_logs()
         except Exception as e:
@@ -102,7 +104,9 @@ class TradeLogger:
         try:
             if not self.log_buffer:
                 return
-            report_file = os.path.join(self.report_dir, f"trade_report_{int(time.time())}.csv")
+            report_file = os.path.join(
+                self.report_dir, f"trade_report_{int(time.time())}.csv"
+            )
             fieldnames = [
                 "timestamp",
                 "symbol",

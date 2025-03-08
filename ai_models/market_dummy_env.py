@@ -12,7 +12,9 @@ import logging
 import numpy as np
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 class MarketDummyEnv:
@@ -106,7 +108,9 @@ class MarketDummyEnv:
         """
         try:
             # Symulacja losowej zmiany ceny
-            price_change = np.random.normal(loc=0, scale=self.volatility / self.liquidity)
+            price_change = np.random.normal(
+                loc=0, scale=self.volatility / self.liquidity
+            )
             # Poślizg cenowy i spread
             slippage_effect = np.random.uniform(-self.slippage, self.slippage)
             self.current_price += price_change + slippage_effect
@@ -120,7 +124,9 @@ class MarketDummyEnv:
                     effective_price = self.current_price * (1 + self.spread)
                     self.position = 1
                     self.entry_price = effective_price
-                    logging.info("BUY: Otwarcie pozycji long przy cenie: %f", effective_price)
+                    logging.info(
+                        "BUY: Otwarcie pozycji long przy cenie: %f", effective_price
+                    )
                 elif self.position == -1:
                     # Zamknięcie pozycji short i otwarcie long
                     effective_price = self.current_price * (1 - self.spread)
@@ -142,7 +148,9 @@ class MarketDummyEnv:
                     effective_price = self.current_price * (1 - self.spread)
                     self.position = -1
                     self.entry_price = effective_price
-                    logging.info("SELL: Otwarcie pozycji short przy cenie: %f", effective_price)
+                    logging.info(
+                        "SELL: Otwarcie pozycji short przy cenie: %f", effective_price
+                    )
                 elif self.position == 1:
                     # Zamknięcie pozycji long i otwarcie short
                     effective_price = self.current_price * (1 + self.spread)
@@ -166,7 +174,9 @@ class MarketDummyEnv:
                 elif self.position == -1:
                     effective_price = self.current_price * (1 - self.spread)
                     reward = self.entry_price - effective_price
-                logging.info("HOLD: Pozycja utrzymywana, niezrealizowany reward: %f", reward)
+                logging.info(
+                    "HOLD: Pozycja utrzymywana, niezrealizowany reward: %f", reward
+                )
             else:
                 raise ValueError("Nieznana akcja: {}".format(action))
 

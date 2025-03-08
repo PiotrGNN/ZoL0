@@ -19,7 +19,9 @@ import numpy as np
 import pandas as pd
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 class DynamicStrategySwitcher:
@@ -41,7 +43,9 @@ class DynamicStrategySwitcher:
             self.hysteresis_threshold,
         )
 
-    def analyze_market_conditions(self, market_data: pd.DataFrame, sentiment: dict) -> dict:
+    def analyze_market_conditions(
+        self, market_data: pd.DataFrame, sentiment: dict
+    ) -> dict:
         """
         Analizuje warunki rynkowe na podstawie danych, zwraca metryki, które będą podstawą do przełączenia strategii.
 
@@ -54,9 +58,9 @@ class DynamicStrategySwitcher:
         """
         # Przykładowa analiza trendu: obliczenie wskaźnika trendu jako procentowa zmiana ceny w ostatnim okresie
         recent_period = market_data.tail(20)
-        price_change = (recent_period["close"].iloc[-1] - recent_period["close"].iloc[0]) / recent_period["close"].iloc[
-            0
-        ]
+        price_change = (
+            recent_period["close"].iloc[-1] - recent_period["close"].iloc[0]
+        ) / recent_period["close"].iloc[0]
 
         # Zmienność: odchylenie standardowe procentowych zmian ceny
         pct_change = market_data["close"].pct_change().dropna()
@@ -166,9 +170,13 @@ def unit_test_dynamic_strategy_switcher():
         # Symulujemy zmianę warunków na bardziej negatywne
         time.sleep(6)  # Aby cooldown wygasł
         strategy2 = switcher.switch_strategy(market_data, sentiment_negative)
-        assert strategy2 != strategy1, "Strategia nie została zmieniona pomimo zmiany warunków."
+        assert (
+            strategy2 != strategy1
+        ), "Strategia nie została zmieniona pomimo zmiany warunków."
 
-        logging.info("Testy jednostkowe dynamic_strategy_switcher.py zakończone sukcesem.")
+        logging.info(
+            "Testy jednostkowe dynamic_strategy_switcher.py zakończone sukcesem."
+        )
     except AssertionError as ae:
         logging.error("AssertionError w testach dynamic_strategy_switcher.py: %s", ae)
     except Exception as e:
@@ -180,5 +188,7 @@ if __name__ == "__main__":
     try:
         unit_test_dynamic_strategy_switcher()
     except Exception as e:
-        logging.error("Testy jednostkowe dynamic_strategy_switcher.py nie powiodły się: %s", e)
+        logging.error(
+            "Testy jednostkowe dynamic_strategy_switcher.py nie powiodły się: %s", e
+        )
         raise

@@ -89,7 +89,9 @@ class RealExchangeEnv:
         except Exception as e:
             logging.error("Błąd pobierania ceny z API: %s", e)
             fallback_price = self.current_price or 100.0
-            return fallback_price * (1 + random.uniform(-0.01, 0.01))  # Symulowany ruch ceny
+            return fallback_price * (
+                1 + random.uniform(-0.01, 0.01)
+            )  # Symulowany ruch ceny
 
     def reset(self):
         """Resetuje środowisko do stanu początkowego."""
@@ -144,7 +146,9 @@ class RealExchangeEnv:
                         effective_price * self.commission_rate
                     )
                     self.current_capital += reward
-                    logging.info("BUY: Zamknięcie short, otwarcie long, reward=%.2f", reward)
+                    logging.info(
+                        "BUY: Zamknięcie short, otwarcie long, reward=%.2f", reward
+                    )
                     self.position = 1
                     self.entry_price = effective_price
             elif action == "sell":
@@ -157,7 +161,9 @@ class RealExchangeEnv:
                         effective_price * self.commission_rate
                     )
                     self.current_capital += reward
-                    logging.info("SELL: Zamknięcie long, otwarcie short, reward=%.2f", reward)
+                    logging.info(
+                        "SELL: Zamknięcie long, otwarcie short, reward=%.2f", reward
+                    )
                     self.position = -1
                     self.entry_price = effective_price
             elif action == "hold":
@@ -176,7 +182,9 @@ class RealExchangeEnv:
                     if self.position == 1
                     else (effective_price - self.entry_price) * self.leverage
                 )
-                if (unrealized_loss / self.initial_capital) > self.margin_call_threshold:
+                if (
+                    unrealized_loss / self.initial_capital
+                ) > self.margin_call_threshold:
                     logging.warning("Margin Call! Zamknięcie pozycji.")
                     reward -= unrealized_loss
                     self.current_capital -= unrealized_loss
@@ -215,7 +223,9 @@ class RealExchangeEnv:
 
 # -------------------- Przykładowe użycie --------------------
 if __name__ == "__main__":
-    env = RealExchangeEnv(api_url="https://api.exchange.example.com/price", api_key="your_api_key_here")
+    env = RealExchangeEnv(
+        api_url="https://api.exchange.example.com/price", api_key="your_api_key_here"
+    )
     state = env.reset()
     for _ in range(50):
         action = random.choice(["buy", "sell", "hold"])

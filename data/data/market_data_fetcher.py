@@ -20,7 +20,9 @@ import pandas as pd
 import requests
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 # Domyślne ustawienia API
 API_BASE_URL = "https://api.exampleexchange.com"  # Przykładowy URL API
@@ -61,7 +63,9 @@ class MarketDataFetcher:
         url = f"{API_BASE_URL}{endpoint}"
         for attempt in range(1, MAX_RETRIES + 1):
             try:
-                response = requests.get(url, headers=self.headers, params=params, timeout=DEFAULT_TIMEOUT)
+                response = requests.get(
+                    url, headers=self.headers, params=params, timeout=DEFAULT_TIMEOUT
+                )
                 response.raise_for_status()
                 data = response.json()
                 logging.info("Pobrano dane z %s (próba %d)", url, attempt)
@@ -74,11 +78,15 @@ class MarketDataFetcher:
                     e,
                 )
                 if attempt == MAX_RETRIES:
-                    logging.error("Przekroczono maksymalną liczbę prób. Żądanie nie powiodło się.")
+                    logging.error(
+                        "Przekroczono maksymalną liczbę prób. Żądanie nie powiodło się."
+                    )
                     raise
                 time.sleep(RETRY_DELAY)
 
-    def fetch_data(self, symbol: str, interval: str = "1m", limit: int = 100) -> pd.DataFrame:
+    def fetch_data(
+        self, symbol: str, interval: str = "1m", limit: int = 100
+    ) -> pd.DataFrame:
         """
         Pobiera dane rynkowe dla określonej pary walutowej i interwału.
 
@@ -98,7 +106,9 @@ class MarketDataFetcher:
         # Konwersja timestamp na datetime
         if "timestamp" in df.columns:
             df["timestamp"] = pd.to_datetime(df["timestamp"])
-        logging.info("Dane dla %s (%s) pobrane, liczba rekordów: %d", symbol, interval, len(df))
+        logging.info(
+            "Dane dla %s (%s) pobrane, liczba rekordów: %d", symbol, interval, len(df)
+        )
         return df
 
     def save_data_csv(self, df: pd.DataFrame, symbol: str, interval: str):
@@ -200,7 +210,9 @@ if __name__ == "__main__":
         # Użyj swojego klucza API
         API_KEY = "your_api_key_here"
         # Pobierz dane dla symboli w interwale 1m, limit 100 rekordów
-        fetch_data_for_symbols(symbols, interval="1m", limit=100, api_key=API_KEY, output_mode="csv")
+        fetch_data_for_symbols(
+            symbols, interval="1m", limit=100, api_key=API_KEY, output_mode="csv"
+        )
     except Exception as e:
         logging.error("Błąd w module market_data_fetcher.py: %s", e)
         raise

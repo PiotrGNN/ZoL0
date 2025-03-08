@@ -67,7 +67,9 @@ class ErrorLogger:
             logging.info("Integracja z Sentry aktywowana.")
         else:
             if notify_critical:
-                logging.warning("Powiadomienia krytyczne są włączone, ale Sentry nie jest skonfigurowane.")
+                logging.warning(
+                    "Powiadomienia krytyczne są włączone, ale Sentry nie jest skonfigurowane."
+                )
 
     def log_info(self, message: str):
         logging.info(mask_sensitive_data(message))

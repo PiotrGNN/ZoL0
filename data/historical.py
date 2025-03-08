@@ -19,7 +19,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 def compute_statistics(df: pd.DataFrame) -> dict:
@@ -90,7 +92,9 @@ def plot_candlestick(df: pd.DataFrame, output_path: str):
         plt.close()
         logging.info("Wykres świecowy zapisany w: %s", output_path)
     except ImportError as ie:
-        logging.error("Biblioteka mplfinance nie jest zainstalowana. Zainstaluj ją używając 'pip install mplfinance'.")
+        logging.error(
+            "Biblioteka mplfinance nie jest zainstalowana. Zainstaluj ją używając 'pip install mplfinance'."
+        )
         raise
     except Exception as e:
         logging.error("Błąd przy generowaniu wykresu świecowego: %s", e)
@@ -118,22 +122,34 @@ def generate_report(
     """
     try:
         report_lines = []
-        report_lines.append("<html><head><meta charset='utf-8'><title>Raport Historyczny</title></head><body>")
-        report_lines.append(f"<h1>Raport Historyczny - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</h1>")
+        report_lines.append(
+            "<html><head><meta charset='utf-8'><title>Raport Historyczny</title></head><body>"
+        )
+        report_lines.append(
+            f"<h1>Raport Historyczny - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</h1>"
+        )
         if start_date and end_date:
             report_lines.append(f"<h2>Zakres analizy: {start_date} - {end_date}</h2>")
         report_lines.append("<h2>Statystyki:</h2>")
         report_lines.append("<ul>")
-        report_lines.append(f"<li>Średnia cena zamknięcia: {stats.get('mean_close', 'N/A'):.2f}</li>")
-        report_lines.append(f"<li>Odchylenie standardowe ceny zamknięcia: {stats.get('std_close', 'N/A'):.2f}</li>")
-        report_lines.append(f"<li>Max Drawdown: {stats.get('max_drawdown', 'N/A'):.2%}</li>")
+        report_lines.append(
+            f"<li>Średnia cena zamknięcia: {stats.get('mean_close', 'N/A'):.2f}</li>"
+        )
+        report_lines.append(
+            f"<li>Odchylenie standardowe ceny zamknięcia: {stats.get('std_close', 'N/A'):.2f}</li>"
+        )
+        report_lines.append(
+            f"<li>Max Drawdown: {stats.get('max_drawdown', 'N/A'):.2%}</li>"
+        )
         report_lines.append("</ul>")
         report_lines.append("<h2>Korelacje:</h2>")
         report_lines.append("<pre>")
         report_lines.append(str(stats.get("correlations", {})))
         report_lines.append("</pre>")
         report_lines.append("<h2>Wykres świecowy:</h2>")
-        report_lines.append(f"<img src='{os.path.basename(chart_path)}' alt='Wykres świecowy' style='max-width:100%;'>")
+        report_lines.append(
+            f"<img src='{os.path.basename(chart_path)}' alt='Wykres świecowy' style='max-width:100%;'>"
+        )
         report_lines.append("</body></html>")
 
         # Zapis raportu
@@ -174,7 +190,9 @@ if __name__ == "__main__":
 
         # Wygenerowanie raportu HTML
         report_path = "./data/historical_report.html"
-        generate_report(df_filtered.copy(), stats, chart_path, report_path, start_date, end_date)
+        generate_report(
+            df_filtered.copy(), stats, chart_path, report_path, start_date, end_date
+        )
 
         logging.info("Analiza historyczna zakończona sukcesem.")
     except Exception as e:

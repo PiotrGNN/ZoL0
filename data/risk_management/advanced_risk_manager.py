@@ -16,7 +16,9 @@ import logging
 import numpy as np
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 class AdvancedRiskManager:
@@ -183,7 +185,9 @@ if __name__ == "__main__":
         take_profit = risk_manager.calculate_take_profit(stop_loss)
 
         # Obliczenie wielkości pozycji
-        position_size = risk_manager.determine_position_size(account_balance=10000, stop_loss=stop_loss, asset_price=50)
+        position_size = risk_manager.determine_position_size(
+            account_balance=10000, stop_loss=stop_loss, asset_price=50
+        )
 
         # Dynamiczna dźwignia
         leverage = risk_manager.adjust_leverage(market_conditions)

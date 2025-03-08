@@ -1,227 +1,179 @@
 """
-advanced_order_execution.py
----------------------------
-Zaawansowany moduł realizacji zleceń handlowych.
+stop_loss_manager.py
+--------------------
+Moduł zarządzania mechanizmami stop-loss.
 
 Funkcjonalności:
-- Obsługa różnych typów zleceń: Market, Limit, Stop-Loss, Trailing Stop.
-- Mechanizmy minimalizowania poślizgu cenowego i optymalizacja kosztów transakcyjnych.
-- Współpraca z modułami zarządzania ryzykiem (risk_management) i strategii (strategies).
-- Integracja z API giełdy oraz obsługa zabezpieczeń przed nadmiernym ryzykiem.
-- Możliwość testowania na danych historycznych oraz w środowisku rzeczywistym.
+- Obsługa różnych typów stop-loss: fixed, trailing, ATR-based, time-based.
+- Integracja z modułami strategii i wykonawczymi.
+- Możliwość dynamicznej regulacji poziomów stop-loss w zależności od warunków rynkowych.
 """
 
 import logging
-import time
-from typing import Any, Dict, Optional
 
-import requests
+import pandas as pd
 
 # Konfiguracja logowania
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[logging.FileHandler("order_execution.log"), logging.StreamHandler()],
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
 )
 
 
-class AdvancedOrderExecution:
+def fixed_stop_loss(entry_price: float, stop_loss_percent: float) -> float:
     """
-    Klasa obsługująca składanie i zarządzanie zleceniami na giełdzie.
+    Oblicza poziom stop-loss jako stały procent od ceny wejścia.
+
+    Parameters:
+        entry_price (float): Cena wejścia.
+        stop_loss_percent (float): Procent poziomu stop-loss.
+
+    Returns:
+        float: Poziom stop-loss.
     """
+    if entry_price <= 0 or stop_loss_percent <= 0:
+        raise ValueError(
+            "Cena wejścia i stop-loss procentowy muszą być większe od zera."
+        )
 
-    def __init__(
-        self,
-        api_url: str,
-        api_key: str,
-        max_slippage: float = 0.005,
-        retry_attempts: int = 3,
-    ):
-        """
-        Inicjalizacja modułu realizacji zleceń.
+    stop_loss_price = entry_price * (1 - stop_loss_percent / 100)
+    logging.info(
+        "Fixed Stop-Loss: Entry Price=%.2f, Stop-Loss Percent=%.2f%%, Stop-Loss Price=%.2f",
+        entry_price,
+        stop_loss_percent,
+        stop_loss_price,
+    )
+    return stop_loss_price
 
-        Parameters:
-            api_url (str): Adres API giełdy.
-            api_key (str): Klucz API do autoryzacji.
-            max_slippage (float): Maksymalny dopuszczalny poślizg cenowy (procent ceny).
-            retry_attempts (int): Maksymalna liczba ponownych prób realizacji zlecenia w razie błędu.
-        """
-        self.api_url = api_url
-        self.api_key = api_key
-        self.max_slippage = max_slippage
-        self.retry_attempts = retry_attempts
 
-    def _send_request(self, endpoint: str, payload: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        """
-        Wysyła żądanie do API giełdy i obsługuje błędy sieciowe.
+def trailing_stop_loss(
+    current_price: float, highest_price: float, trail_percent: float
+) -> float:
+    """
+    Oblicza trailing stop-loss jako dynamiczny próg na podstawie najwyższej ceny.
 
-        Parameters:
-            endpoint (str): Ścieżka do API.
-            payload (dict): Dane żądania.
+    Parameters:
+        current_price (float): Aktualna cena rynkowa.
+        highest_price (float): Najwyższa cena osiągnięta od momentu wejścia w pozycję.
+        trail_percent (float): Odstęp trailing stop-loss w procentach.
 
-        Returns:
-            dict: Odpowiedź API lub None w przypadku błędu.
-        """
-        headers = {"Authorization": f"Bearer {self.api_key}"}
-        url = f"{self.api_url}/{endpoint}"
+    Returns:
+        float: Nowy poziom stop-loss.
+    """
+    if current_price <= 0 or highest_price <= 0 or trail_percent <= 0:
+        raise ValueError("Ceny i trail percent muszą być większe od zera.")
 
-        for attempt in range(self.retry_attempts):
-            try:
-                response = requests.post(url, json=payload, headers=headers, timeout=5)
-                response.raise_for_status()
-                return response.json()
-            except requests.RequestException as e:
-                logging.error("Błąd API (%s) - próba %d: %s", endpoint, attempt + 1, e)
-                time.sleep(2**attempt)  # Wykładnicze opóźnienie
-        return None
+    stop_price = highest_price * (1 - trail_percent / 100)
+    logging.info(
+        "Trailing Stop-Loss: Current Price=%.2f, Highest Price=%.2f, Trail Percent=%.2f%%, Stop-Loss Price=%.2f",
+        current_price,
+        highest_price,
+        trail_percent,
+        stop_price,
+    )
+    return stop_price
 
-    def place_order(
-        self,
-        order_type: str,
-        symbol: str,
-        quantity: float,
-        price: Optional[float] = None,
-        stop_price: Optional[float] = None,
-    ) -> Optional[Dict[str, Any]]:
-        """
-        Składa zlecenie na giełdzie.
 
-        Parameters:
-            order_type (str): Typ zlecenia ("market", "limit", "stop_loss", "trailing_stop").
-            symbol (str): Symbol instrumentu finansowego (np. "BTCUSDT").
-            quantity (float): Ilość jednostek do kupna/sprzedaży.
-            price (float, opcjonalne): Cena dla zleceń limit.
-            stop_price (float, opcjonalne): Cena aktywacji dla stop-loss i trailing stop.
+def atr_based_stop_loss(
+    df: pd.DataFrame, atr_multiplier: float = 1.5, atr_period: int = 14
+) -> pd.Series:
+    """
+    Oblicza poziom stop-loss na podstawie ATR (Average True Range).
 
-        Returns:
-            dict: Odpowiedź API giełdy lub None w przypadku błędu.
-        """
-        payload = {"symbol": symbol, "quantity": quantity, "order_type": order_type}
+    Parameters:
+        df (pd.DataFrame): Dane rynkowe zawierające kolumny 'high', 'low', 'close'.
+        atr_multiplier (float): Współczynnik do obliczania poziomu stop-loss.
+        atr_period (int): Okres obliczeniowy ATR.
 
-        if order_type == "limit":
-            if price is None:
-                logging.error("Zlecenie LIMIT wymaga podania ceny.")
-                return None
-            payload["price"] = price
+    Returns:
+        pd.Series: Poziomy ATR-based stop-loss.
+    """
+    required_cols = {"high", "low", "close"}
+    if not required_cols.issubset(df.columns):
+        raise ValueError(f"Dane rynkowe muszą zawierać kolumny: {required_cols}")
 
-        elif order_type in ("stop_loss", "trailing_stop"):
-            if stop_price is None:
-                logging.error("Zlecenie STOP-LOSS i TRAILING STOP wymaga ceny aktywacji.")
-                return None
-            payload["stop_price"] = stop_price
+    if len(df) < atr_period:
+        raise ValueError(
+            f"Dane muszą zawierać co najmniej {atr_period} wierszy do obliczenia ATR."
+        )
 
-        response = self._send_request("order", payload)
+    tr1 = df["high"] - df["low"]
+    tr2 = (df["high"] - df["close"].shift()).abs()
+    tr3 = (df["low"] - df["close"].shift()).abs()
 
-        if response:
-            logging.info("Zlecenie złożone: %s", response)
-        else:
-            logging.error("Błąd składania zlecenia.")
-        return response
+    true_range = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
+    atr = true_range.rolling(window=atr_period, min_periods=1).mean()
 
-    def cancel_order(self, order_id: str) -> Optional[Dict[str, Any]]:
-        """
-        Anuluje istniejące zlecenie.
+    stop_loss_levels = df["close"] - (atr * atr_multiplier)
+    logging.info(
+        "ATR-based Stop-Loss: ATR Period=%d, ATR Multiplier=%.2f",
+        atr_period,
+        atr_multiplier,
+    )
+    return stop_loss_levels
 
-        Parameters:
-            order_id (str): Identyfikator zlecenia do anulowania.
 
-        Returns:
-            dict: Odpowiedź API lub None w przypadku błędu.
-        """
-        response = self._send_request("cancel_order", {"order_id": order_id})
+def time_based_stop_loss(
+    entry_time: pd.Timestamp, max_hold_time: pd.Timedelta, current_time: pd.Timestamp
+) -> bool:
+    """
+    Sprawdza, czy minął maksymalny czas trzymania pozycji i czy należy ją zamknąć.
 
-        if response:
-            logging.info("Zlecenie %s anulowane.", order_id)
-        else:
-            logging.error("Nie udało się anulować zlecenia %s.", order_id)
-        return response
+    Parameters:
+        entry_time (pd.Timestamp): Czas otwarcia pozycji.
+        max_hold_time (pd.Timedelta): Maksymalny czas trzymania pozycji.
+        current_time (pd.Timestamp): Aktualny czas.
 
-    def get_order_status(self, order_id: str) -> Optional[Dict[str, Any]]:
-        """
-        Pobiera status zlecenia.
-
-        Parameters:
-            order_id (str): Identyfikator zlecenia.
-
-        Returns:
-            dict: Odpowiedź API zawierająca status zlecenia.
-        """
-        response = self._send_request("order_status", {"order_id": order_id})
-
-        if response:
-            logging.info("Status zlecenia %s: %s", order_id, response)
-        else:
-            logging.error("Błąd pobierania statusu zlecenia %s.", order_id)
-        return response
-
-    def execute_trade(
-        self,
-        order_type: str,
-        symbol: str,
-        quantity: float,
-        target_price: Optional[float] = None,
-        stop_loss: Optional[float] = None,
-    ) -> Optional[Dict[str, Any]]:
-        """
-        Realizuje zlecenie z mechanizmem kontroli ryzyka.
-
-        Parameters:
-            order_type (str): Typ zlecenia ("market", "limit").
-            symbol (str): Symbol instrumentu (np. "BTCUSDT").
-            quantity (float): Ilość jednostek do kupna/sprzedaży.
-            target_price (float, opcjonalne): Docelowa cena dla zlecenia limit.
-            stop_loss (float, opcjonalne): Poziom stop-loss.
-
-        Returns:
-            dict: Odpowiedź API lub None w przypadku błędu.
-        """
-        current_price = self._get_market_price(symbol)
-        if current_price is None:
-            logging.error("Nie udało się pobrać aktualnej ceny rynkowej.")
-            return None
-
-        if order_type == "limit" and target_price:
-            if abs((target_price - current_price) / current_price) > self.max_slippage:
-                logging.warning("Zlecenie LIMIT nie zostało złożone: przekroczony dopuszczalny poślizg.")
-                return None
-
-        response = self.place_order(order_type, symbol, quantity, target_price)
-
-        if stop_loss:
-            stop_price = stop_loss
-            self.place_order("stop_loss", symbol, quantity, stop_price=stop_price)
-
-        return response
-
-    def _get_market_price(self, symbol: str) -> Optional[float]:
-        """
-        Pobiera aktualną cenę rynkową instrumentu.
-
-        Parameters:
-            symbol (str): Symbol instrumentu.
-
-        Returns:
-            float: Aktualna cena rynkowa lub None w przypadku błędu.
-        """
-        response = self._send_request("market_price", {"symbol": symbol})
-
-        if response and "price" in response:
-            return float(response["price"])
-        logging.error("Nie udało się pobrać ceny rynkowej dla %s.", symbol)
-        return None
+    Returns:
+        bool: True jeśli pozycja powinna zostać zamknięta, False w przeciwnym razie.
+    """
+    if current_time - entry_time >= max_hold_time:
+        logging.info(
+            "Time-Based Stop-Loss aktywowany: Entry Time=%s, Current Time=%s, Max Hold Time=%s",
+            entry_time,
+            current_time,
+            max_hold_time,
+        )
+        return True
+    return False
 
 
 # -------------------- Przykładowe użycie --------------------
 if __name__ == "__main__":
     try:
-        api_url = "https://api.exchange.example.com"
-        api_key = "your_api_key_here"
+        # Przykładowe dane rynkowe
+        data = {
+            "high": [105, 106, 107, 108, 109, 110, 111, 112, 113, 114],
+            "low": [95, 96, 97, 98, 99, 100, 101, 102, 103, 104],
+            "close": [100, 101, 102, 103, 104, 105, 106, 107, 108, 109],
+        }
+        df = pd.DataFrame(data)
 
-        order_executor = AdvancedOrderExecution(api_url, api_key)
+        # Testy funkcji
+        entry_price = 100
+        highest_price = 110
+        current_price = 105
+        stop_loss_percent = 5
+        trail_percent = 2
 
-        # Przykładowe składanie zlecenia
-        order_executor.execute_trade("limit", "BTCUSDT", 0.1, target_price=50000, stop_loss=49000)
+        print("Fixed Stop-Loss:", fixed_stop_loss(entry_price, stop_loss_percent))
+        print(
+            "Trailing Stop-Loss:",
+            trailing_stop_loss(current_price, highest_price, trail_percent),
+        )
+        print(
+            "ATR-based Stop-Loss (ostatnia wartość):", atr_based_stop_loss(df).iloc[-1]
+        )
+
+        # Test Time-Based Stop-Loss
+        entry_time = pd.Timestamp("2025-03-04 10:00:00")
+        current_time = pd.Timestamp("2025-03-04 15:00:00")
+        max_hold_time = pd.Timedelta(hours=4)
+
+        print(
+            "Time-Based Stop-Loss:",
+            time_based_stop_loss(entry_time, max_hold_time, current_time),
+        )
 
     except Exception as e:
-        logging.error("Błąd w module AdvancedOrderExecution: %s", e)
+        logging.error("Błąd w module stop_loss_manager.py: %s", e)
         raise

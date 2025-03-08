@@ -16,7 +16,9 @@ import numpy as np
 import pandas as pd
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 def compute_sma(series: pd.Series, window: int) -> pd.Series:
@@ -73,7 +75,9 @@ def compute_rsi(series: pd.Series, window: int = 14) -> pd.Series:
     return rsi
 
 
-def compute_macd(series: pd.Series, fast: int = 12, slow: int = 26, signal: int = 9) -> pd.DataFrame:
+def compute_macd(
+    series: pd.Series, fast: int = 12, slow: int = 26, signal: int = 9
+) -> pd.DataFrame:
     """
     Oblicza MACD, linię sygnału oraz histogram MACD.
 
@@ -95,7 +99,9 @@ def compute_macd(series: pd.Series, fast: int = 12, slow: int = 26, signal: int 
     return pd.DataFrame({"MACD": macd, "Signal": signal_line, "Histogram": histogram})
 
 
-def compute_stochastic(df: pd.DataFrame, k_period: int = 14, d_period: int = 3) -> pd.DataFrame:
+def compute_stochastic(
+    df: pd.DataFrame, k_period: int = 14, d_period: int = 3
+) -> pd.DataFrame:
     """
     Oblicza wskaźnik Stochastic Oscillator.
 
@@ -111,7 +117,9 @@ def compute_stochastic(df: pd.DataFrame, k_period: int = 14, d_period: int = 3) 
     high_max = df["high"].rolling(window=k_period, min_periods=1).max()
     k_percent = 100 * ((df["close"] - low_min) / (high_max - low_min))
     d_percent = k_percent.rolling(window=d_period, min_periods=1).mean()
-    logging.info("Obliczono Stochastic Oscillator dla okresów %d i %d.", k_period, d_period)
+    logging.info(
+        "Obliczono Stochastic Oscillator dla okresów %d i %d.", k_period, d_period
+    )
     return pd.DataFrame({"%K": k_percent, "%D": d_percent})
 
 

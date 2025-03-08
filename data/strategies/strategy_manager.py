@@ -18,7 +18,9 @@ import numpy as np
 import pandas as pd
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 class StrategyManager:
@@ -126,7 +128,9 @@ class StrategyManager:
             market_data (pd.DataFrame): Dane rynkowe używane w teście.
             test_duration (int): Czas trwania testu w sekundach.
         """
-        logging.info("Rozpoczynam stress-test strategii na okres %d sekund.", test_duration)
+        logging.info(
+            "Rozpoczynam stress-test strategii na okres %d sekund.", test_duration
+        )
         start_time = time.time()
         while time.time() - start_time < test_duration:
             self.evaluate_strategies(market_data)

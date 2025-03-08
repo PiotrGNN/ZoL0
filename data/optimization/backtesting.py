@@ -25,14 +25,18 @@ import numpy as np
 import pandas as pd
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 # Import modułu trade_logger (zakładamy, że jest w ścieżce data/logging/)
 try:
     from data.logging.trade_logger import TradeLogger
 except ImportError:
     TradeLogger = None
-    logging.warning("Nie znaleziono modułu trade_logger. Logowanie transakcji będzie ograniczone.")
+    logging.warning(
+        "Nie znaleziono modułu trade_logger. Logowanie transakcji będzie ograniczone."
+    )
 
 
 def calculate_cagr(initial_value: float, final_value: float, years: float) -> float:
@@ -86,7 +90,9 @@ def calculate_sharpe_ratio(returns: pd.Series, risk_free_rate: float = 0.0) -> f
     return float(excess_returns.mean() / excess_returns.std() * np.sqrt(252))
 
 
-def walk_forward_split(df: pd.DataFrame, n_splits: int) -> List[Tuple[pd.DataFrame, pd.DataFrame]]:
+def walk_forward_split(
+    df: pd.DataFrame, n_splits: int
+) -> List[Tuple[pd.DataFrame, pd.DataFrame]]:
     """
     Dzieli dane na kolejne okresy walk-forward.
     Zwraca listę krotek (train_data, test_data).
@@ -99,9 +105,13 @@ def walk_forward_split(df: pd.DataFrame, n_splits: int) -> List[Tuple[pd.DataFra
         List[tuple]: Lista krotek (train_data, test_data).
     """
     if df.index.size < n_splits * 2:
-        logging.warning("Rozmiar danych jest mniejszy niż wymagany do walk-forward. Zmniejsz n_splits.")
+        logging.warning(
+            "Rozmiar danych jest mniejszy niż wymagany do walk-forward. Zmniejsz n_splits."
+        )
     if df.index.size < 2:
-        logging.warning("Dane zawierają zbyt mało rekordów do jakiegokolwiek backtestu.")
+        logging.warning(
+            "Dane zawierają zbyt mało rekordów do jakiegokolwiek backtestu."
+        )
 
     total_period = (df.index[-1] - df.index[0]).days
     if total_period <= 0:
@@ -118,7 +128,9 @@ def walk_forward_split(df: pd.DataFrame, n_splits: int) -> List[Tuple[pd.DataFra
         if not train_data.empty and not test_data.empty:
             splits.append((train_data, test_data))
         else:
-            logging.info("Pominięto fold %d: train_data lub test_data jest puste.", i + 1)
+            logging.info(
+                "Pominięto fold %d: train_data lub test_data jest puste.", i + 1
+            )
     return splits
 
 
@@ -165,7 +177,9 @@ def run_strategy(
             # Otwieramy pozycję long
             positions = 1
             entry_price = price * (1 + spread + slippage)
-            trade_log.append({"timestamp": time_point, "action": "BUY", "price": entry_price})
+            trade_log.append(
+                {"timestamp": time_point, "action": "BUY", "price": entry_price}
+            )
         elif signal == -1 and positions == 1:
             # Zamykamy pozycję long
             exit_price = price * (1 - spread - slippage)
@@ -186,11 +200,17 @@ def run_strategy(
 
     if len(test_data) > 0:
         test_duration_days = (test_data.index[-1] - test_data.index[0]).days
-        test_duration_years = test_duration_days / 365.25 if test_duration_days > 0 else 0.0
+        test_duration_years = (
+            test_duration_days / 365.25 if test_duration_days > 0 else 0.0
+        )
     else:
         test_duration_years = 0.0
 
-    cagr = calculate_cagr(initial_capital, capital, test_duration_years) if test_duration_years > 0 else 0.0
+    cagr = (
+        calculate_cagr(initial_capital, capital, test_duration_years)
+        if test_duration_years > 0
+        else 0.0
+    )
     equity_series = pd.Series(equity_curve, index=test_data.index[: len(equity_curve)])
     max_dd = calculate_max_drawdown(equity_series)
     returns = equity_series.pct_change().dropna()
@@ -250,7 +270,9 @@ def backtest_strategy(
             results_list.append(future.result())
 
     if not results_list:
-        logging.warning("Brak wyników z backtestingu (być może brak odpowiednich foldów).")
+        logging.warning(
+            "Brak wyników z backtestingu (być może brak odpowiednich foldów)."
+        )
         return {
             "average_CAGR": 0.0,
             "average_max_drawdown": 0.0,
@@ -288,7 +310,9 @@ def example_strategy(df: pd.DataFrame) -> Dict[Any, int]:
     """
     signals: Dict[Any, int] = {}
     if "close" not in df.columns:
-        logging.error("Brak kolumny 'close' w DataFrame. Strategia nie może generować sygnałów.")
+        logging.error(
+            "Brak kolumny 'close' w DataFrame. Strategia nie może generować sygnałów."
+        )
         return signals
 
     sma = df["close"].rolling(window=10, min_periods=1).mean()

@@ -14,7 +14,9 @@ import importlib
 import logging
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 class ImportManager:
@@ -63,7 +65,9 @@ class ImportManager:
             module = self.import_module(module_name)
             module_version = getattr(module, "__version__", None)
             if module_version is None:
-                logging.warning("Moduł '%s' nie posiada atrybutu __version__.", module_name)
+                logging.warning(
+                    "Moduł '%s' nie posiada atrybutu __version__.", module_name
+                )
                 return False
             if module_version == required_version:
                 logging.info(

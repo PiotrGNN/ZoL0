@@ -23,7 +23,9 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error
 from sklearn.model_selection import KFold, cross_val_predict
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 class ModelRecognizer:
@@ -68,7 +70,9 @@ class ModelRecognizer:
             X (pd.DataFrame lub np.array): Dane wejściowe.
             y (pd.Series lub np.array): Wartości docelowe.
         """
-        cv = KFold(n_splits=self.cv_splits, shuffle=True, random_state=self.random_state)
+        cv = KFold(
+            n_splits=self.cv_splits, shuffle=True, random_state=self.random_state
+        )
         for name, model in self.models.items():
             try:
                 logging.info("Ocena modelu '%s'...", name)
@@ -77,7 +81,9 @@ class ModelRecognizer:
                 mae = mean_absolute_error(y, predictions)
                 rmse = sqrt(mse)
                 returns = np.diff(predictions)
-                sharpe = np.mean(returns) / np.std(returns) if np.std(returns) != 0 else 0.0
+                sharpe = (
+                    np.mean(returns) / np.std(returns) if np.std(returns) != 0 else 0.0
+                )
 
                 self.results[name] = {
                     "mse": mse,
@@ -104,7 +110,11 @@ class ModelRecognizer:
         Normalizuje metryki między modelami, aby umożliwić porównanie.
         """
         metric_keys = ["mse", "mae", "rmse", "sharpe"]
-        valid_results = {name: metrics for name, metrics in self.results.items() if metrics is not None}
+        valid_results = {
+            name: metrics
+            for name, metrics in self.results.items()
+            if metrics is not None
+        }
         norm_metrics = {key: {} for key in metric_keys}
 
         for key in metric_keys:
@@ -113,8 +123,9 @@ class ModelRecognizer:
             range_val = max_val - min_val if max_val != min_val else 1.0
             for name, metrics in valid_results.items():
                 norm_metrics[key][name] = (
-                    (max_val - metrics[key]) / range_val if key in ["mse", "mae", "rmse"] else
-                    (metrics[key] - min_val) / range_val
+                    (max_val - metrics[key]) / range_val
+                    if key in ["mse", "mae", "rmse"]
+                    else (metrics[key] - min_val) / range_val
                 )
         return norm_metrics
 
@@ -128,7 +139,11 @@ class ModelRecognizer:
         if scores:
             self.best_model_name = max(scores, key=scores.get)
             self.best_model = self.models[self.best_model_name]
-            logging.info("Najlepszy model to '%s' z score: %.4f", self.best_model_name, scores[self.best_model_name])
+            logging.info(
+                "Najlepszy model to '%s' z score: %.4f",
+                self.best_model_name,
+                scores[self.best_model_name],
+            )
         else:
             logging.warning("Brak ocenionych modeli do wyboru najlepszego.")
 
@@ -138,7 +153,10 @@ class ModelRecognizer:
         """
         scores = {}
         for name in norm_metrics["mse"]:
-            score = sum(self.metric_weights[metric] * norm_metrics[metric][name] for metric in self.metric_weights)
+            score = sum(
+                self.metric_weights[metric] * norm_metrics[metric][name]
+                for metric in self.metric_weights
+            )
             scores[name] = score
             logging.info("Łączny score dla modelu '%s': %.4f", name, score)
         return scores
@@ -166,7 +184,9 @@ if __name__ == "__main__":
 
         recognizer = ModelRecognizer(cv_splits=5)
 
-        recognizer.add_model("RandomForest", RandomForestRegressor(n_estimators=100, random_state=42))
+        recognizer.add_model(
+            "RandomForest", RandomForestRegressor(n_estimators=100, random_state=42)
+        )
 
         recognizer.evaluate_models(X, y)
 
