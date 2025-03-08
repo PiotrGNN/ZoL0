@@ -11,19 +11,20 @@ Funkcjonalności:
 - Umożliwia symulację (paper trading) oraz pracę w trybie produkcyjnym.
 """
 
-import time
 import logging
-import threading
+import time
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s [%(levelname)s] %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
+
 
 class TradeExecutor:
     def __init__(self, order_executor, account_manager, risk_manager):
         """
         Inicjalizuje moduł TradeExecutor.
-        
+
         Parameters:
             order_executor: Instancja modułu odpowiedzialnego za wysyłanie zleceń (np. OrderExecution).
             account_manager: Moduł lub obiekt synchronizujący stan konta z danymi z giełdy.
@@ -37,10 +38,10 @@ class TradeExecutor:
     def execute_trade(self, signal):
         """
         Przetwarza pojedynczy sygnał transakcyjny i podejmuje decyzję o wykonaniu zlecenia.
-        
+
         Parameters:
             signal (dict): Sygnał transakcyjny, zawierający m.in. 'symbol', 'action', 'proposed_quantity', 'price', itp.
-            
+
         Returns:
             dict: Wynik wykonania zlecenia.
         """
@@ -56,9 +57,13 @@ class TradeExecutor:
                 return {"status": "rejected", "reason": "Risk constraints"}
 
             # Synchronizacja stanu konta
-            account_status = self.account_manager.get_account_status()
-            if not self.account_manager.has_sufficient_funds(action, proposed_quantity, proposed_price):
-                logging.warning("Niewystarczające środki dla sygnału %s %s.", action, symbol)
+            self.account_manager.get_account_status()
+            if not self.account_manager.has_sufficient_funds(
+                action, proposed_quantity, proposed_price
+            ):
+                logging.warning(
+                    "Niewystarczające środki dla sygnału %s %s.", action, symbol
+                )
                 return {"status": "rejected", "reason": "Insufficient funds"}
 
             # Wysłanie zlecenia za pomocą modułu order_executor
@@ -67,9 +72,9 @@ class TradeExecutor:
                 side=action,
                 order_type=signal.get("order_type", "MARKET"),
                 quantity=proposed_quantity,
-                price=proposed_price
+                price=proposed_price,
             )
-            
+
             # Zarejestruj transakcję
             trade_record = {
                 "symbol": symbol,
@@ -77,7 +82,7 @@ class TradeExecutor:
                 "quantity": proposed_quantity,
                 "price": proposed_price,
                 "order_response": order_response,
-                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
             }
             self.trade_log.append(trade_record)
             logging.info("Transakcja wykonana: %s", trade_record)
@@ -89,7 +94,7 @@ class TradeExecutor:
     def execute_trades(self, signals: list):
         """
         Przetwarza listę sygnałów transakcyjnych sekwencyjnie.
-        
+
         Parameters:
             signals (list): Lista sygnałów transakcyjnych.
         """
@@ -105,11 +110,12 @@ class TradeExecutor:
     def get_trade_log(self):
         """
         Zwraca dziennik wykonanych transakcji.
-        
+
         Returns:
             list: Lista zarejestrowanych transakcji.
         """
         return self.trade_log
+
 
 # -------------------- Przykładowe użycie --------------------
 if __name__ == "__main__":
@@ -120,33 +126,45 @@ if __name__ == "__main__":
         # risk_manager: moduł zarządzający ryzykiem (z metodą is_trade_allowed)
         #
         # Dla przykładu, stworzymy proste klasy symulujące ich działanie.
-        
+
         class DummyOrderExecutor:
             def send_order(self, symbol, side, order_type, quantity, price=None):
                 return {"orderId": 12345, "status": "FILLED", "symbol": symbol}
-        
+
         class DummyAccountManager:
             def get_account_status(self):
                 return {"balance": 10000}
+
             def has_sufficient_funds(self, action, quantity, price):
                 return True
-        
+
         class DummyRiskManager:
             def is_trade_allowed(self, symbol, quantity):
                 return True
-        
+
         order_executor = DummyOrderExecutor()
         account_manager = DummyAccountManager()
         risk_manager = DummyRiskManager()
-        
+
         executor = TradeExecutor(order_executor, account_manager, risk_manager)
-        
+
         # Przykładowe sygnały transakcyjne
         signals = [
-            {"symbol": "BTCUSDT", "action": "BUY", "proposed_quantity": 0.001, "price": 30000, "order_type": "LIMIT"},
-            {"symbol": "ETHUSDT", "action": "SELL", "proposed_quantity": 0.01, "order_type": "MARKET"}
+            {
+                "symbol": "BTCUSDT",
+                "action": "BUY",
+                "proposed_quantity": 0.001,
+                "price": 30000,
+                "order_type": "LIMIT",
+            },
+            {
+                "symbol": "ETHUSDT",
+                "action": "SELL",
+                "proposed_quantity": 0.01,
+                "order_type": "MARKET",
+            },
         ]
-        
+
         results = executor.execute_trades(signals)
         for res in results:
             logging.info("Wynik transakcji: %s", res)

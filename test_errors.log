@@ -1,0 +1,83 @@
+
+EEEEE.....
+======================================================================
+ERROR: test_ai_models (unittest.loader._FailedTest.test_ai_models)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_ai_models
+Traceback (most recent call last):
+  File "C:\Program Files\Python312\Lib\unittest\loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\unittest\loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "C:\Users\piotr\Documents\Nowy folder\ZoL0\data\tests\test_ai_models.py", line 11, in <module>
+    import numpy as np
+ModuleNotFoundError: No module named 'numpy'
+
+
+======================================================================
+ERROR: test_data_processing (unittest.loader._FailedTest.test_data_processing)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_data_processing
+Traceback (most recent call last):
+  File "C:\Program Files\Python312\Lib\unittest\loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\unittest\loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "C:\Users\piotr\Documents\Nowy folder\ZoL0\data\tests\test_data_processing.py", line 15, in <module>
+    import numpy as np
+ModuleNotFoundError: No module named 'numpy'
+
+
+======================================================================
+ERROR: test_execution (unittest.loader._FailedTest.test_execution)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_execution
+Traceback (most recent call last):
+  File "C:\Program Files\Python312\Lib\unittest\loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\unittest\loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "C:\Users\piotr\Documents\Nowy folder\ZoL0\data\tests\test_execution.py", line 15, in <module>
+    from data.execution.exchange_connector import ExchangeConnector
+  File "C:\Users\piotr\Documents\Nowy folder\ZoL0\data\execution\exchange_connector.py", line 15, in <module>
+    import requests
+ModuleNotFoundError: No module named 'requests'
+
+
+======================================================================
+ERROR: test_risk_management (unittest.loader._FailedTest.test_risk_management)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_risk_management
+Traceback (most recent call last):
+  File "C:\Program Files\Python312\Lib\unittest\loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\unittest\loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "C:\Users\piotr\Documents\Nowy folder\ZoL0\data\tests\test_risk_management.py", line 16, in <module>
+    import numpy as np
+ModuleNotFoundError: No module named 'numpy'
+
+
+======================================================================
+ERROR: test_strategies (unittest.loader._FailedTest.test_strategies)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_strategies
+Traceback (most recent call last):
+  File "C:\Program Files\Python312\Lib\unittest\loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\unittest\loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "C:\Users\piotr\Documents\Nowy folder\ZoL0\data\tests\test_strategies.py", line 12, in <module>
+    import numpy as np
+ModuleNotFoundError: No module named 'numpy'
+
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.002s
+
+FAILED (errors=5)

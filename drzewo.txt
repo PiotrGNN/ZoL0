@@ -1,0 +1,137 @@
+└── ZoL0
+    ├── .env
+    ├── .flake8
+    ├── .gitignore
+    ├── .pylintrc
+    ├── BamBam
+    │   ├── .gitattributes
+    │   └── README.md
+    ├── ai_models
+    │   ├── Nowy Dokument tekstowy.txt
+    │   ├── __init__.py
+    │   ├── anomaly_detection.py
+    │   ├── environment.py
+    │   ├── feature_engineering.py
+    │   ├── market_dummy_env.py
+    │   ├── model_recognition.py
+    │   ├── model_training.py
+    │   ├── model_tuner.py
+    │   ├── real_exchange_env.py
+    │   ├── reinforcement_learning.py
+    │   ├── ropmer_temp.py
+    │   ├── scalar.py
+    │   └── sentiment_ai.py
+    ├── auto_fix_log.txt
+    ├── auto_fix_tests.py
+    ├── config
+    │   ├──  (3).env
+    │   ├──  — kopia.env
+    │   ├── .env
+    │   ├── __init__.py
+    │   ├── config_loader.py
+    │   ├── secrets.json
+    │   ├── settings.py
+    │   └── settings.yml
+    ├── data
+    │   ├── __init__.py
+    │   ├── backups
+    │   ├── data
+    │   │   ├── __init__.py
+    │   │   ├── data_preprocessing.py
+    │   │   ├── historical_data.csv
+    │   │   ├── historical_data.py
+    │   │   └── market_data_fetcher.py
+    │   ├── data_storage.py
+    │   ├── dev_db
+    │   ├── execution
+    │   │   ├── __init__.py
+    │   │   ├── advanced_order_execution.py
+    │   │   ├── exchange_connector.py
+    │   │   ├── latency_optimizer.py
+    │   │   ├── order_execution.py
+    │   │   └── trade_executor.py
+    │   ├── historical.py
+    │   ├── historical_data.csv
+    │   ├── historical_data.db
+    │   ├── indicators
+    │   │   ├── __init__.py
+    │   │   ├── custom_indicators.py
+    │   │   ├── sentiment_analysis.py
+    │   │   ├── technical_analysis.py
+    │   │   └── volume_analysis.py
+    │   ├── logging
+    │   │   ├── __init__.py
+    │   │   ├── anomaly_detector.py
+    │   │   ├── error_logger.py
+    │   │   └── trade_logger.py
+    │   ├── optimization
+    │   │   ├── __init__.py
+    │   │   ├── backtesting.py
+    │   │   ├── hyperparameter_tuner.py
+    │   │   ├── leverage_optimizer.py
+    │   │   ├── portfolio_risk.py
+    │   │   ├── real_time_optimizer.py
+    │   │   └── strategy_optimizer.py
+    │   ├── requirements.txt
+    │   ├── risk_management
+    │   │   ├── __init__.py
+    │   │   ├── advanced_risk_manager.py
+    │   │   ├── portfolio_risk.py
+    │   │   ├── position_sizing.py
+    │   │   ├── risk_assessment.py
+    │   │   └── stop_loss_manager.py
+    │   ├── strategies
+    │   │   ├── AI_strategy_generator.py
+    │   │   ├── __init__.py
+    │   │   ├── breakout_strategy.py
+    │   │   ├── dynamic_strategy_switcher.py
+    │   │   ├── mean_reversion.py
+    │   │   ├── strategy_manager.py
+    │   │   └── trend_following.py
+    │   ├── tests
+    │   │   ├── __init__.py
+    │   │   ├── test_ai_models.py
+    │   │   ├── test_data_processing.py
+    │   │   ├── test_execution.py
+    │   │   ├── test_risk_management.py
+    │   │   ├── test_strategies.py
+    │   │   └── test_utils.py
+    │   ├── utils
+    │   │   ├── __init__.py
+    │   │   ├── api_handler.py
+    │   │   ├── cache_manager.py
+    │   │   ├── data_validator.py
+    │   │   ├── database_manager.py
+    │   │   ├── error_handling.py
+    │   │   ├── import_manager.py
+    │   │   ├── notification_system.py
+    │   │   └── performance_monitor.py
+    │   └── zrobcsv.py
+    ├── drzewo
+    ├── fix_imports.py
+    ├── fix_imports_log.txt
+    ├── fix_tests.py
+    ├── flake8_errors.txt
+    ├── flake8_final_report.txt
+    ├── logs
+    │   ├── app.log
+    │   ├── dev_app.log
+    │   └── trade_logger.log
+    ├── main.py
+    ├── order_execution.log
+    ├── requirements.txt
+    ├── saved_models
+    │   ├── XGB_PricePredictor_20250228_065021.pkl
+    │   ├── XGB_PricePredictor_20250228_065941.pkl
+    │   ├── XGB_PricePredictor_20250228_072451.pkl
+    │   ├── XGB_PricePredictor_20250228_082641.pkl
+    │   ├── XGB_PricePredictor_20250228_090101.pkl
+    │   ├── XGB_PricePredictor_20250228_093248.pkl
+    │   ├── XGB_PricePredictor_20250228_093619.pkl
+    │   ├── XGB_PricePredictor_20250228_094152.pkl
+    │   ├── XGB_PricePredictor_20250228_105722.pkl
+    │   ├── XGB_PricePredictor_20250228_105930.pkl
+    │   └── XGB_PricePredictor_20250228_150412.pkl
+    ├── temp_historical_data.db
+    ├── test_errors.log
+    └── tree_view.py

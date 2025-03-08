@@ -1,0 +1,134 @@
+2025-03-05 23:06:01,978 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-03-05 23:06:02,002 [ERROR] Błąd importu w portfolio_risk.py: cannot import name 'assess_portfolio_risk' from 'data.risk_management.portfolio_risk' (C:\Users\piotr\Documents\Nowy folder\ZoL0\data\risk_management\portfolio_risk.py)
+2025-03-05 23:06:02,003 [ERROR] Błąd importu w leverage_optimizer.py: No module named 'data.risk_management.leverage_optimizer'
+2025-03-05 23:06:02,139 [INFO] Zbudowano ensemble modeli: GradientBoostingRegressor i MLPRegressor.
+2025-03-05 23:06:02,254 [INFO] Zbudowano ensemble modeli: GradientBoostingRegressor i MLPRegressor.
+2025-03-05 23:06:02,259 [INFO] Ocena strategii - MSE: 0.6826
+2025-03-05 23:06:02,263 [INFO] Wybrane cechy: ['feature1', 'feature2']
+2025-03-05 23:06:02,267 [INFO] Wybrane cechy: ['feature1', 'feature2', 'feature3']
+2025-03-05 23:06:06,018 [INFO] Najlepsze hiperparametry: {'learning_rate': 0.01, 'max_depth': 3, 'n_estimators': 50}
+2025-03-05 23:06:06,151 [INFO] Zbudowano ensemble modeli: GradientBoostingRegressor i MLPRegressor.
+2025-03-05 23:06:06,154 [INFO] Ocena strategii - MSE: 0.6826
+2025-03-05 23:06:06,155 [INFO] Strategia AI wygenerowana pomyślnie. Raport: {'best_hyperparameters': {'learning_rate': 0.01, 'max_depth': 3, 'n_estimators': 50}, 'evaluation': {'MSE': 0.682638976728753}}
+2025-03-05 23:06:06,329 [INFO] Najlepsze hiperparametry: {'learning_rate': 0.01, 'max_depth': 3, 'n_estimators': 50}
+2025-03-05 23:06:06,333 [INFO] Uzupełniono brakujące wartości medianą.
+2025-03-05 23:06:06,335 [INFO] Uzupełniono brakujące wartości medianą.
+2025-03-05 23:06:06,336 [INFO] Obliczono logarytmiczne zwroty.
+2025-03-05 23:06:06,338 [INFO] Wykryto 1 outlierów w kolumnie close przy progu z-score 2.50.
+2025-03-05 23:06:06,340 [INFO] Rozpoczynam pipeline przetwarzania danych.
+2025-03-05 23:06:06,340 [INFO] Uzupełniono brakujące wartości medianą.
+2025-03-05 23:06:06,342 [INFO] Wykryto 1 outlierów w kolumnie close przy progu z-score 2.50.
+2025-03-05 23:06:06,343 [INFO] Winsoryzacja danych zakończona. Dolny limit: 100.60, Górny limit: 114.33.
+2025-03-05 23:06:06,344 [INFO] Obliczono logarytmiczne zwroty.
+2025-03-05 23:06:06,344 [INFO] Pipeline przetwarzania danych zakończony pomyślnie.
+2025-03-05 23:06:06,347 [INFO] Winsoryzacja danych zakończona. Dolny limit: 100.59, Górny limit: 114.33.
+2025-03-05 23:06:06,353 [INFO] Połączono z bazą danych: temp_historical_data.db
+2025-03-05 23:06:06,354 [INFO] HistoricalDataManager zainicjalizowany. CSV: temp_test_data.csv, DB: temp_historical_data.db
+2025-03-05 23:06:06,358 [INFO] Wczytano dane z CSV: temp_test_data.csv
+2025-03-05 23:06:06,359 [ERROR] Błąd przy usuwaniu plików testowych: [WinError 32] Proces nie może uzyskać dostępu do pliku, ponieważ jest on używany przez inny proces: 'temp_historical_data.db'
+2025-03-05 23:06:06,362 [INFO] Połączono z bazą danych: temp_historical_data.db
+2025-03-05 23:06:06,362 [INFO] HistoricalDataManager zainicjalizowany. CSV: temp_test_data.csv, DB: temp_historical_data.db
+2025-03-05 23:06:06,367 [INFO] Plik CSV został zaktualizowany: temp_test_data.csv
+2025-03-05 23:06:06,370 [ERROR] Błąd przy usuwaniu plików testowych: [WinError 32] Proces nie może uzyskać dostępu do pliku, ponieważ jest on używany przez inny proces: 'temp_historical_data.db'
+2025-03-05 23:06:06,370 [INFO] ExchangeConnector zainicjalizowany dla giełdy: binance
+2025-03-05 23:06:06,371 [INFO] ExchangeConnector zainicjalizowany dla giełdy: binance
+2025-03-05 23:06:06,371 [INFO] ExchangeConnector zainicjalizowany dla giełdy: binance
+2025-03-05 23:06:06,371 [INFO] ExchangeConnector zainicjalizowany dla giełdy: binance
+2025-03-05 23:06:06,371 [INFO] Zlecenie wysłane pomyślnie: {'orderId': 12345, 'status': 'FILLED', 'symbol': 'BTCUSDT'}
+2025-03-05 23:06:06,372 [INFO] ExchangeConnector zainicjalizowany dla giełdy: binance
+2025-03-05 23:06:06,372 [INFO] ExchangeConnector zainicjalizowany dla giełdy: binance
+2025-03-05 23:06:06,372 [INFO] Zlecenie wysłane pomyślnie: {'orderId': 12345, 'status': 'FILLED', 'symbol': 'BTCUSDT'}
+2025-03-05 23:06:06,372 [INFO] Transakcja wykonana: {'symbol': 'BTCUSDT', 'action': 'BUY', 'quantity': 0.001, 'price': 30500, 'order_response': {'orderId': 12345, 'status': 'FILLED', 'symbol': 'BTCUSDT'}, 'timestamp': '2025-03-05 23:06:06'}
+2025-03-05 23:06:06,372 [INFO] ExchangeConnector zainicjalizowany dla giełdy: binance
+2025-03-05 23:06:06,372 [INFO] ExchangeConnector zainicjalizowany dla giełdy: binance
+2025-03-05 23:06:06,372 [INFO] Zlecenie wysłane pomyślnie: {'orderId': 12345, 'status': 'FILLED', 'symbol': 'BTCUSDT'}
+2025-03-05 23:06:06,372 [INFO] Transakcja wykonana: {'symbol': 'BTCUSDT', 'action': 'BUY', 'quantity': 0.001, 'price': 30500, 'order_response': {'orderId': 12345, 'status': 'FILLED', 'symbol': 'BTCUSDT'}, 'timestamp': '2025-03-05 23:06:06'}
+2025-03-05 23:06:07,374 [INFO] Zlecenie wysłane pomyślnie: {'orderId': 12345, 'status': 'FILLED', 'symbol': 'ETHUSDT'}
+2025-03-05 23:06:07,374 [INFO] Transakcja wykonana: {'symbol': 'ETHUSDT', 'action': 'SELL', 'quantity': 0.01, 'price': None, 'order_response': {'orderId': 12345, 'status': 'FILLED', 'symbol': 'ETHUSDT'}, 'timestamp': '2025-03-05 23:06:07'}
+2025-03-05 23:06:08,376 [INFO] Wszystkie sygnały zostały przetworzone.
+2025-03-05 23:06:08,377 [WARNING] Funkcja `dynamic_leverage_model` nie została zaimportowana.
+2025-03-05 23:06:08,377 [WARNING] Funkcja `limit_max_leverage` nie została zaimportowana.
+2025-03-05 23:06:08,378 [INFO] Fixed Stop-Loss: Entry Price=100.00, Stop-Loss Percent=10.00%, Stop-Loss Price=90.00
+2025-03-05 23:06:08,379 [INFO] Trailing Stop-Loss: Current Price=100.00, Highest Price=110.00, Trail Percent=0.05%, Stop-Loss Price=109.95
+2025-03-05 23:06:08,381 [INFO] Obliczono wsparcie: 103.75 i opór: 110.59 dla okna 10.
+2025-03-05 23:06:08,382 [INFO] Skalibrowano box range: wsparcie 101.68, opór 112.80.
+2025-03-05 23:06:08,382 [INFO] Brak sygnału breakout: cena 110.59, wsparcie 101.68, opór 112.80, wolumen 2588.64.
+2025-03-05 23:06:08,385 [INFO] Obliczono wsparcie: 95.03 i opór: 105.32 dla okna 10.
+2025-03-05 23:06:08,385 [INFO] Skalibrowano box range: wsparcie 93.13, opór 107.43.
+2025-03-05 23:06:08,385 [INFO] Brak sygnału breakout: cena 95.03, wsparcie 93.13, opór 107.43, wolumen 2588.64.
+2025-03-05 23:06:08,388 [INFO] Obliczono SMA dla okna 10.
+2025-03-05 23:06:08,389 [INFO] Obliczono z-score dla okna 10.
+2025-03-05 23:06:08,390 [INFO] Obliczono SMA dla okna 10.
+2025-03-05 23:06:08,390 [INFO] Obliczono Bollinger Bands dla okna 10.
+2025-03-05 23:06:08,392 [INFO] Wygenerowano sygnał mean reversion na podstawie z-score (próg: 1.50).
+2025-03-05 23:06:08,394 [INFO] Obliczono ADX dla okresu 14.
+2025-03-05 23:06:08,396 [INFO] Obliczono MACD dla okresów fast: 12, slow: 26, signal: 9.
+2025-03-05 23:06:08,397 [INFO] Obliczono Price Channels dla okna 10.
+2025-03-05 23:06:08,398 [INFO] Wygenerowano sygnał trend following na podstawie ADX, MACD i Price Channels.
+2025-03-05 23:13:50,687 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-03-05 23:13:50,707 [ERROR] Błąd importu w portfolio_risk.py: cannot import name 'assess_portfolio_risk' from 'data.risk_management.portfolio_risk' (C:\Users\piotr\Documents\Nowy folder\ZoL0\data\risk_management\portfolio_risk.py)
+2025-03-05 23:13:50,708 [ERROR] Błąd importu w leverage_optimizer.py: No module named 'data.risk_management.leverage_optimizer'
+2025-03-05 23:13:50,840 [INFO] Zbudowano ensemble modeli: GradientBoostingRegressor i MLPRegressor.
+2025-03-05 23:13:50,957 [INFO] Zbudowano ensemble modeli: GradientBoostingRegressor i MLPRegressor.
+2025-03-05 23:13:50,960 [INFO] Ocena strategii - MSE: 0.6826
+2025-03-05 23:13:50,962 [INFO] Wybrane cechy: ['feature1', 'feature2']
+2025-03-05 23:13:50,966 [INFO] Wybrane cechy: ['feature1', 'feature2', 'feature3']
+2025-03-05 23:13:54,739 [INFO] Najlepsze hiperparametry: {'learning_rate': 0.01, 'max_depth': 3, 'n_estimators': 50}
+2025-03-05 23:13:54,855 [INFO] Zbudowano ensemble modeli: GradientBoostingRegressor i MLPRegressor.
+2025-03-05 23:13:54,857 [INFO] Ocena strategii - MSE: 0.6826
+2025-03-05 23:13:54,858 [INFO] Strategia AI wygenerowana pomyślnie. Raport: {'best_hyperparameters': {'learning_rate': 0.01, 'max_depth': 3, 'n_estimators': 50}, 'evaluation': {'MSE': 0.682638976728753}}
+2025-03-05 23:13:55,016 [INFO] Najlepsze hiperparametry: {'learning_rate': 0.01, 'max_depth': 3, 'n_estimators': 50}
+2025-03-05 23:13:55,019 [INFO] Uzupełniono brakujące wartości medianą.
+2025-03-05 23:13:55,023 [INFO] Uzupełniono brakujące wartości medianą.
+2025-03-05 23:13:55,023 [INFO] Obliczono logarytmiczne zwroty.
+2025-03-05 23:13:55,025 [INFO] Wykryto 1 outlierów w kolumnie close przy progu z-score 2.50.
+2025-03-05 23:13:55,026 [INFO] Rozpoczynam pipeline przetwarzania danych.
+2025-03-05 23:13:55,027 [INFO] Uzupełniono brakujące wartości medianą.
+2025-03-05 23:13:55,028 [INFO] Wykryto 1 outlierów w kolumnie close przy progu z-score 2.50.
+2025-03-05 23:13:55,029 [INFO] Winsoryzacja danych zakończona. Dolny limit: 100.60, Górny limit: 114.33.
+2025-03-05 23:13:55,030 [INFO] Obliczono logarytmiczne zwroty.
+2025-03-05 23:13:55,031 [INFO] Pipeline przetwarzania danych zakończony pomyślnie.
+2025-03-05 23:13:55,033 [INFO] Winsoryzacja danych zakończona. Dolny limit: 100.59, Górny limit: 114.33.
+2025-03-05 23:13:55,039 [INFO] Połączono z bazą danych: temp_historical_data.db
+2025-03-05 23:13:55,039 [INFO] HistoricalDataManager zainicjalizowany. CSV: temp_test_data.csv, DB: temp_historical_data.db
+2025-03-05 23:13:55,045 [INFO] Wczytano dane z CSV: temp_test_data.csv
+2025-03-05 23:13:55,046 [ERROR] Błąd przy usuwaniu plików testowych: [WinError 32] Proces nie może uzyskać dostępu do pliku, ponieważ jest on używany przez inny proces: 'temp_historical_data.db'
+2025-03-05 23:13:55,048 [INFO] Połączono z bazą danych: temp_historical_data.db
+2025-03-05 23:13:55,049 [INFO] HistoricalDataManager zainicjalizowany. CSV: temp_test_data.csv, DB: temp_historical_data.db
+2025-03-05 23:13:55,053 [INFO] Plik CSV został zaktualizowany: temp_test_data.csv
+2025-03-05 23:13:55,055 [ERROR] Błąd przy usuwaniu plików testowych: [WinError 32] Proces nie może uzyskać dostępu do pliku, ponieważ jest on używany przez inny proces: 'temp_historical_data.db'
+2025-03-05 23:13:55,056 [INFO] ExchangeConnector zainicjalizowany dla giełdy: binance
+2025-03-05 23:13:55,056 [INFO] ExchangeConnector zainicjalizowany dla giełdy: binance
+2025-03-05 23:13:55,057 [INFO] ExchangeConnector zainicjalizowany dla giełdy: binance
+2025-03-05 23:13:55,057 [INFO] ExchangeConnector zainicjalizowany dla giełdy: binance
+2025-03-05 23:13:55,057 [INFO] Zlecenie wysłane pomyślnie: {'orderId': 12345, 'status': 'FILLED', 'symbol': 'BTCUSDT'}
+2025-03-05 23:13:55,057 [INFO] ExchangeConnector zainicjalizowany dla giełdy: binance
+2025-03-05 23:13:55,057 [INFO] ExchangeConnector zainicjalizowany dla giełdy: binance
+2025-03-05 23:13:55,057 [INFO] Zlecenie wysłane pomyślnie: {'orderId': 12345, 'status': 'FILLED', 'symbol': 'BTCUSDT'}
+2025-03-05 23:13:55,058 [INFO] Transakcja wykonana: {'symbol': 'BTCUSDT', 'action': 'BUY', 'quantity': 0.001, 'price': 30500, 'order_response': {'orderId': 12345, 'status': 'FILLED', 'symbol': 'BTCUSDT'}, 'timestamp': '2025-03-05 23:13:55'}
+2025-03-05 23:13:55,058 [INFO] ExchangeConnector zainicjalizowany dla giełdy: binance
+2025-03-05 23:13:55,058 [INFO] ExchangeConnector zainicjalizowany dla giełdy: binance
+2025-03-05 23:13:55,058 [INFO] Zlecenie wysłane pomyślnie: {'orderId': 12345, 'status': 'FILLED', 'symbol': 'BTCUSDT'}
+2025-03-05 23:13:55,058 [INFO] Transakcja wykonana: {'symbol': 'BTCUSDT', 'action': 'BUY', 'quantity': 0.001, 'price': 30500, 'order_response': {'orderId': 12345, 'status': 'FILLED', 'symbol': 'BTCUSDT'}, 'timestamp': '2025-03-05 23:13:55'}
+2025-03-05 23:13:56,059 [INFO] Zlecenie wysłane pomyślnie: {'orderId': 12345, 'status': 'FILLED', 'symbol': 'ETHUSDT'}
+2025-03-05 23:13:56,059 [INFO] Transakcja wykonana: {'symbol': 'ETHUSDT', 'action': 'SELL', 'quantity': 0.01, 'price': None, 'order_response': {'orderId': 12345, 'status': 'FILLED', 'symbol': 'ETHUSDT'}, 'timestamp': '2025-03-05 23:13:56'}
+2025-03-05 23:13:57,060 [INFO] Wszystkie sygnały zostały przetworzone.
+2025-03-05 23:13:57,061 [WARNING] Funkcja `dynamic_leverage_model` nie została zaimportowana.
+2025-03-05 23:13:57,062 [WARNING] Funkcja `limit_max_leverage` nie została zaimportowana.
+2025-03-05 23:13:57,063 [INFO] Fixed Stop-Loss: Entry Price=100.00, Stop-Loss Percent=10.00%, Stop-Loss Price=90.00
+2025-03-05 23:13:57,063 [INFO] Trailing Stop-Loss: Current Price=100.00, Highest Price=110.00, Trail Percent=0.05%, Stop-Loss Price=109.95
+2025-03-05 23:13:57,066 [INFO] Obliczono wsparcie: 103.75 i opór: 115.86 dla okna 10.
+2025-03-05 23:13:57,067 [INFO] Skalibrowano box range: wsparcie 101.68, opór 118.17.
+2025-03-05 23:13:57,067 [INFO] Brak sygnału breakout: cena 115.86, wsparcie 101.68, opór 118.17, wolumen 3235.80.
+2025-03-05 23:13:57,068 [INFO] Obliczono wsparcie: 90.03 i opór: 105.32 dla okna 10.
+2025-03-05 23:13:57,069 [INFO] Skalibrowano box range: wsparcie 88.23, opór 107.43.
+2025-03-05 23:13:57,069 [INFO] Brak sygnału breakout: cena 90.03, wsparcie 88.23, opór 107.43, wolumen 3235.80.
+2025-03-05 23:13:57,070 [INFO] Obliczono SMA dla okna 10.
+2025-03-05 23:13:57,071 [INFO] Obliczono z-score dla okna 10.
+2025-03-05 23:13:57,071 [INFO] Obliczono SMA dla okna 10.
+2025-03-05 23:13:57,073 [INFO] Obliczono Bollinger Bands dla okna 10.
+2025-03-05 23:13:57,074 [INFO] Wygenerowano sygnał mean reversion na podstawie z-score (próg: 1.50).
+2025-03-05 23:13:57,076 [INFO] Obliczono ADX dla okresu 14.
+2025-03-05 23:13:57,077 [INFO] Obliczono MACD dla okresów fast: 12, slow: 26, signal: 9.
+2025-03-05 23:13:57,078 [INFO] Obliczono Price Channels dla okna 10.
+2025-03-05 23:13:57,079 [INFO] Wygenerowano sygnał trend following na podstawie ADX, MACD i Price Channels.

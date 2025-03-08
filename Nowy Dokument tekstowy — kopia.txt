@@ -1,6 +1,0 @@
-"""
-__init__.py
------------
-Folder 'data' jest traktowany jako moduł Pythona.
-Ten plik zawiera minimalną zawartość, umożliwiającą importowanie podmodułów z folderu data.
-"""

@@ -1,0 +1,34 @@
+[1m.\ai_models\environment.py[m[36m:[m178[36m:[m17[36m:[m [1m[31mW503[m line break before binary operator
+[1m.\ai_models\environment.py[m[36m:[m183[36m:[m17[36m:[m [1m[31mW503[m line break before binary operator
+[1m.\ai_models\model_recognition.py[m[36m:[m162[36m:[m17[36m:[m [1m[31mW503[m line break before binary operator
+[1m.\ai_models\model_recognition.py[m[36m:[m163[36m:[m17[36m:[m [1m[31mW503[m line break before binary operator
+[1m.\ai_models\model_recognition.py[m[36m:[m164[36m:[m17[36m:[m [1m[31mW503[m line break before binary operator
+[1m.\ai_models\model_training.py[m[36m:[m231[36m:[m13[36m:[m [1m[31mW503[m line break before binary operator
+[1m.\ai_models\model_training.py[m[36m:[m232[36m:[m13[36m:[m [1m[31mW503[m line break before binary operator
+[1m.\ai_models\model_tuner.py[m[36m:[m193[36m:[m13[36m:[m [1m[31mW503[m line break before binary operator
+[1m.\ai_models\model_tuner.py[m[36m:[m194[36m:[m13[36m:[m [1m[31mW503[m line break before binary operator
+[1m.\config\config_loader.py[m[36m:[m118[36m:[m45[36m:[m [1m[31mE203[m whitespace before ':'
+[1m.\config\config_loader.py[m[36m:[m143[36m:[m17[36m:[m [1m[31mW503[m line break before binary operator
+[1m.\config\config_loader.py[m[36m:[m144[36m:[m17[36m:[m [1m[31mW503[m line break before binary operator
+[1m.\data\data_storage.py[m[36m:[m349[36m:[m13[36m:[m [1m[31mW503[m line break before binary operator
+[1m.\data\indicators\custom_indicators.py[m[36m:[m152[36m:[m13[36m:[m [1m[31mW503[m line break before binary operator
+[1m.\data\indicators\custom_indicators.py[m[36m:[m153[36m:[m13[36m:[m [1m[31mW503[m line break before binary operator
+[1m.\data\indicators\volume_analysis.py[m[36m:[m70[36m:[m13[36m:[m [1m[31mW503[m line break before binary operator
+[1m.\data\optimization\strategy_optimizer.py[m[36m:[m115[36m:[m76[36m:[m [1m[31mE203[m whitespace before ':'
+[1m.\data\risk_management\portfolio_risk.py[m[36m:[m133[36m:[m13[36m:[m [1m[31mW503[m line break before binary operator
+[1m.\data\risk_management\portfolio_risk.py[m[36m:[m134[36m:[m13[36m:[m [1m[31mW503[m line break before binary operator
+[1m.\data\tests\test_data_processing.py[m[36m:[m82[36m:[m13[36m:[m [1m[31mW503[m line break before binary operator
+[1m.\data\tests\test_execution.py[m[36m:[m22[36m:[m1[36m:[m [1m[31mE402[m module level import not at top of file
+[1m.\data\tests\test_execution.py[m[36m:[m23[36m:[m1[36m:[m [1m[31mE402[m module level import not at top of file
+[1m.\data\tests\test_execution.py[m[36m:[m24[36m:[m1[36m:[m [1m[31mE402[m module level import not at top of file
+[1m.\data\tests\test_risk_management.py[m[36m:[m24[36m:[m1[36m:[m [1m[31mE402[m module level import not at top of file
+[1m.\data\tests\test_risk_management.py[m[36m:[m25[36m:[m1[36m:[m [1m[31mE402[m module level import not at top of file
+[1m.\data\tests\test_risk_management.py[m[36m:[m28[36m:[m1[36m:[m [1m[31mE402[m module level import not at top of file
+[1m.\data\tests\test_risk_management.py[m[36m:[m33[36m:[m1[36m:[m [1m[31mE402[m module level import not at top of file
+[1m.\data\tests\test_strategies.py[m[36m:[m21[36m:[m1[36m:[m [1m[31mE402[m module level import not at top of file
+[1m.\data\tests\test_strategies.py[m[36m:[m22[36m:[m1[36m:[m [1m[31mE402[m module level import not at top of file
+[1m.\data\tests\test_strategies.py[m[36m:[m23[36m:[m1[36m:[m [1m[31mE402[m module level import not at top of file
+[1m.\data\utils\error_handling.py[m[36m:[m26[36m:[m1[36m:[m [1m[31mE303[m too many blank lines (3)
+[1m.\data\utils\error_handling.py[m[36m:[m31[36m:[m1[36m:[m [1m[31mE303[m too many blank lines (3)
+[1m.\data\utils\error_handling.py[m[36m:[m36[36m:[m1[36m:[m [1m[31mE303[m too many blank lines (3)
+[1m.\data\zrobcsv.py[m[36m:[m181[36m:[m5[36m:[m [1m[31mE303[m too many blank lines (2)
