@@ -23,4 +23,3 @@ ta>=0.9.0
 
 # System utilities
 psutil>=5.8.0
-ai-models
