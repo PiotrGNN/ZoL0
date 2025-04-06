@@ -29,6 +29,12 @@ def _import_all_modules_from_directory(directory: str, package: str) -> None:
             module_name: str = filename[:-3]
             try:
                 module = importlib.import_module(f".{module_name}", package=package)
+            except ModuleNotFoundError as error:
+                print(f"Brakujący moduł: {error}. Proszę sprawdzić instalację pakietów.")
+                print("Uruchom: pip install -r requirements.txt --upgrade")
+                raise ImportError(
+                    f"Nie udało się zaimportować modułu '{module_name}' z pakietu '{package}'. Brakujący pakiet: {error}"
+                ) from error
             except Exception as error:
                 raise ImportError(
                     f"Nie udało się zaimportować modułu '{module_name}' z pakietu '{package}'."
