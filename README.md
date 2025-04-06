@@ -1,127 +1,93 @@
+# 🤖 Trading Bot - System Analityczny
 
-# 🚀 Trading Bot - System Analityczny
+## 📋 Opis Projektu
 
-## 📝 Opis projektu
-System do analizy danych rynkowych, strategii handlowych i automatycznego handlu, zoptymalizowany do działania w środowisku Replit.
+Trading Bot to system analityczny do analizy danych rynkowych, wykrywania anomalii i symulacji strategii inwestycyjnych. Projekt jest zoptymalizowany do działania w środowisku Replit.
 
-## 🔧 Funkcjonalności
-- Analiza danych rynkowych 
-- Wykrywanie anomalii cenowych
-- Symulacja strategii tradingowych
-- Zarządzanie ryzykiem i kapitałem
-- Modele uczenia maszynowego do predykcji
+## 🚀 Szybki Start
 
-## 🏗️ Struktura projektu
-```
-├── ai_models/              # Modele AI i uczenia maszynowego
-├── config/                 # Pliki konfiguracyjne
-├── data/                   # Moduły do obsługi danych
-│   ├── data/               # Pobieranie i przetwarzanie danych
-│   ├── execution/          # Wykonywanie zleceń
-│   ├── indicators/         # Wskaźniki techniczne
-│   ├── logging/            # Komponenty logowania
-│   ├── optimization/       # Optymalizacja strategii
-│   ├── risk_management/    # Zarządzanie ryzykiem
-│   ├── strategies/         # Strategie handlowe
-│   ├── tests/              # Testy jednostkowe
-│   └── utils/              # Narzędzia pomocnicze
-├── logs/                   # Pliki logów
-├── reports/                # Generowane raporty i wizualizacje
-├── saved_models/           # Zapisane modele ML
-└── main.py                 # Główny punkt wejścia aplikacji
-```
-
-## 🚀 Jak uruchomić
-1. Upewnij się, że wszystkie zależności są zainstalowane:
-   ```
+1. **Instalacja zależności**:
+   ```bash
    pip install -r requirements.txt
    ```
+   Alternatywnie, użyj predefiniowanego workflow "Install Dependencies"
 
-2. Utwórz plik `.env` na podstawie `.env.example`:
+2. **Uruchomienie projektu**:
+   ```bash
+   python main.py
    ```
-   cp .env.example .env
-   ```
+   Lub naciśnij przycisk "Run" w interfejsie Replit
 
-3. Uruchom aplikację (możesz użyć przycisku Run w Replit lub):
-   ```
-   python3 main.py
-   ```
-
-4. Uruchom testy:
-   ```
+3. **Uruchomienie testów**:
+   ```bash
    pytest data/tests/
    ```
+   Lub użyj workflow "Test"
 
-## 💻 Uruchamianie w Replit
-1. Projekt jest gotowy do natychmiastowego uruchomienia w środowisku Replit.
-2. Wystarczy kliknąć przycisk Run, aby uruchomić aplikację w trybie symulacji.
-3. Możesz też użyć predefiniowanych workflowów dostępnych w menu:
-   - `Run` - uruchamia aplikację
-   - `Test` - uruchamia testy jednostkowe
-   - `Format Code` - formatuje kod przy użyciu narzędzia Black
-   - `Lint Code` - sprawdza jakość kodu przy użyciu Flake8
+## 🧰 Struktura Projektu
 
-## 🛠️ Rozwój projektu
-1. Dla programistów, zalecane jest używanie narzędzi do formatowania i sprawdzania jakości kodu:
-   - Formatowanie kodu:
-     ```
-     black .
-     ```
-   - Sprawdzanie jakości kodu:
-     ```
-     flake8 .
-     ```
-   - Uruchamianie testów z pokryciem kodu:
-     ```
-     pytest --cov=. data/tests/
-     ```
-
-2. Struktura katalogów jest zorganizowana modułowo, co ułatwia rozwój projektu:
-   - Dodaj nowe modele AI w katalogu `ai_models/`
-   - Rozwijaj strategie handlowe w katalogu `data/strategies/`
-   - Twórz nowe wskaźniki w katalogu `data/indicators/`
-
-## 🔧 Narzędzia developerskie
-- **Linter**: flake8 - sprawdzanie zgodności ze standardami kodu
-  ```
-  flake8 .
-  ```
-
-- **Formatter**: black - automatyczne formatowanie kodu
-  ```
-  black .
-  ```
-
-- **Testy**: pytest - uruchamianie testów jednostkowych
-  ```
-  pytest
-  ```
-
-## 📦 Zależności
-Wszystkie wymagane biblioteki są wymienione w pliku `requirements.txt`.
-
-## 📝 Konfiguracja
-- Ustawienia można modyfikować w katalogu `config/`
-- Parametry środowiskowe znajdują się w pliku `.env`
-- W pliku `.replit` znajduje się konfiguracja środowiska Replit
-
-## 📊 Przykładowe użycie
-```python
-from ai_models.anomaly_detection import AnomalyDetectionModel
-
-# Inicjalizacja modelu wykrywania anomalii
-detector = AnomalyDetectionModel()
-
-# Wykrywanie anomalii w danych cenowych
-anomalies = detector.detect_price_anomalies(price_data)
+```
+├── ai_models/              # Modele sztucznej inteligencji
+│   ├── anomaly_detection.py  # Wykrywanie anomalii
+│   └── ...
+├── config/                 # Konfiguracja aplikacji
+├── data/                   # Moduły przetwarzania danych
+│   ├── data/               # Źródła danych i preprocessing
+│   ├── execution/          # Wykonywanie transakcji
+│   ├── indicators/         # Wskaźniki techniczne
+│   ├── logging/            # Logowanie operacji
+│   ├── optimization/       # Optymalizacja strategii
+│   ├── risk_management/    # Zarządzanie ryzykiem
+│   ├── strategies/         # Strategie inwestycyjne
+│   ├── tests/              # Testy jednostkowe
+│   └── utils/              # Funkcje pomocnicze
+├── logs/                   # Pliki logów
+├── saved_models/           # Zapisane modele AI
+├── .env.example            # Przykładowe zmienne środowiskowe
+├── requirements.txt        # Zależności projektu
+└── main.py                 # Główny skrypt aplikacji
 ```
 
-## 🔒 Bezpieczeństwo
-- Klucze API są przechowywane w zmiennych środowiskowych
-- Używaj trybu testowego przed przejściem do rzeczywistego handlu
+## 🛠️ Funkcjonalności
 
-## 👥 Współtwórcy
-Lista osób, które przyczyniły się do rozwoju projektu.
+- Analiza historycznych danych giełdowych
+- Wykrywanie anomalii cenowych i wolumenowych
+- Symulacja strategii inwestycyjnych
+- Analiza ryzyka i optymalizacja portfela
+- Automatyczne raportowanie wyników
 
-## 📄 Licencja
-Ten projekt jest licencjonowany - sprawdź plik LICENSE, aby uzyskać szczegóły.
+## 🔍 Workflow i Narzędzia
+
+W projekcie skonfigurowano następujące workflowy:
+
+1. **Run** - Uruchamia główny skrypt aplikacji
+2. **Test** - Uruchamia testy jednostkowe
+3. **Format Code** - Formatuje kod zgodnie z PEP 8 za pomocą Black
+4. **Lint Code** - Sprawdza jakość kodu za pomocą Flake8
+5. **Test with Coverage** - Uruchamia testy z raportem pokrycia
+6. **Install Dependencies** - Instaluje wymagane zależności
+
+## 🔑 Konfiguracja Środowiska
+
+Przed uruchomieniem aplikacji, skopiuj plik `.env.example` do `.env` i uzupełnij wymagane zmienne środowiskowe:
+
+```
+# API Keys - Replace with your actual keys
+BINANCE_API_KEY=your_binance_api_key_here
+BINANCE_API_SECRET=your_binance_api_secret_here
+```
+
+## 📊 Przykładowe Użycie
+
+```python
+# Inicjalizacja modelu wykrywania anomalii
+from ai_models.anomaly_detection import AnomalyDetectionModel
+
+model = AnomalyDetectionModel(method='isolation_forest', contamination=0.05)
+model.fit(data)
+anomalies = model.detect_anomalies(data)
+```
+
+## 📝 Licencja
+
+Ten projekt jest licencjonowany na warunkach MIT License.

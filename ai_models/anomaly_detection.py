@@ -1,278 +1,266 @@
 
 """
 anomaly_detection.py
--------------------
-Model do wykrywania anomalii cenowych i wzorców zachowań rynkowych.
-
-Funkcjonalności:
-- Wykrywanie nagłych skoków/spadków cen.
-- Identyfikacja nietypowych wzorców wolumenu.
-- Analiza odstających wartości wskaźników technicznych.
-- Możliwość trenowania na historycznych danych z oznaczonymi anomaliami.
+--------------------
+Moduł implementujący zaawansowane algorytmy wykrywania anomalii cenowych i wolumenowych.
+Wykorzystuje algorytmy statystyczne oraz uczenie maszynowe.
 """
 
 import logging
 import numpy as np
-import pandas as pd
 from sklearn.ensemble import IsolationForest
-from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import LocalOutlierFactor
+import pandas as pd
 
-logger = logging.getLogger(__name__)
+# Konfiguracja logowania
+logging.basicConfig(
+    filename='anomaly_detection.log',
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s'
+)
 
 class AnomalyDetectionModel:
     """
-    Model wykrywania anomalii w danych cenowych i wskaźnikach.
-    Wykorzystuje algorytmy Isolation Forest i statystyczne metody
-    wykrywania odstających wartości.
+    Klasa dostarczająca metody do wykrywania anomalii w danych rynkowych.
+    Możliwe metody: 
+    - Isolation Forest
+    - Local Outlier Factor
+    - Z-score
+    - Modified Z-score
+    - DBSCAN
     """
     
-    def __init__(self, contamination=0.05, n_estimators=100, random_state=42):
+    def __init__(self, method='isolation_forest', contamination=0.05):
         """
         Inicjalizacja modelu wykrywania anomalii.
         
-        Parameters:
-            contamination (float): Szacowany procent anomalii w danych (0.0-0.5).
-            n_estimators (int): Liczba drzew w lesie izolacyjnym.
-            random_state (int): Ziarno losowości dla powtarzalnych wyników.
+        Args:
+            method (str): Metoda wykrywania anomalii ('isolation_forest', 'lof', 'zscore', 'mzscore')
+            contamination (float): Oczekiwany odsetek anomalii w danych (0.0 - 0.5)
         """
+        self.method = method
         self.contamination = contamination
-        self.model = IsolationForest(
-            n_estimators=n_estimators,
-            contamination=contamination,
-            random_state=random_state
-        )
-        self.scaler = StandardScaler()
-        logger.info(f"Zainicjalizowano model wykrywania anomalii (contam={contamination})")
+        self.model = None
+        self.threshold = None
+        logging.info(f"Inicjalizacja modelu wykrywania anomalii: {method}, contamination={contamination}")
     
-    def detect_price_anomalies(self, price_data, columns=None):
+    def fit(self, data):
         """
-        Wykrywa anomalie w danych cenowych.
+        Trenuje model wykrywania anomalii.
         
-        Parameters:
-            price_data (DataFrame): DataFrame z danymi cenowymi.
-            columns (list): Lista kolumn do analizy. Jeśli None, użyj wszystkich.
-            
+        Args:
+            data (np.array or pd.DataFrame): Dane do analizy
+        
         Returns:
-            DataFrame: DataFrame z dodatkową kolumną 'is_anomaly' (1 dla anomalii, 0 dla normalnych).
+            self: Wytrenowany model
         """
-        try:
-            if price_data is None or len(price_data) == 0:
-                logger.warning("Brak danych do wykrycia anomalii")
-                return pd.DataFrame()
-                
-            if columns is None:
-                # Użyj wszystkich kolumn liczbowych
-                columns = price_data.select_dtypes(include=[np.number]).columns.tolist()
+        if isinstance(data, pd.DataFrame):
+            data = data.values
             
-            # Przygotowanie danych
-            X = price_data[columns].copy()
-            X = X.fillna(method='ffill')
+        if self.method == 'isolation_forest':
+            self.model = IsolationForest(contamination=self.contamination, random_state=42)
+            self.model.fit(data)
+        elif self.method == 'lof':
+            self.model = LocalOutlierFactor(n_neighbors=20, contamination=self.contamination)
+            self.model.fit(data)
+        elif self.method == 'zscore':
+            # Z-Score nie wymaga trenowania, tylko obliczenie średniej i odchylenia standardowego
+            self.mean = np.mean(data, axis=0)
+            self.std = np.std(data, axis=0)
+            self.threshold = 3.0  # Typowy próg dla Z-score (3 odchylenia standardowe)
+        elif self.method == 'mzscore':
+            # Modified Z-Score używa mediany zamiast średniej
+            self.median = np.median(data, axis=0)
+            self.mad = np.median(np.abs(data - self.median), axis=0) * 1.4826  # MAD * c dla normalności
+            self.threshold = 3.5  # Typowy próg dla Modified Z-score
+        else:
+            raise ValueError(f"Nieznana metoda wykrywania anomalii: {self.method}")
             
-            # Normalizacja danych
-            X_scaled = self.scaler.fit_transform(X)
-            
-            # Wykrywanie anomalii
-            predictions = self.model.fit_predict(X_scaled)
-            anomaly_score = self.model.decision_function(X_scaled)
-            
-            # Konwersja wyników (-1: anomalia, 1: normalne) na (1: anomalia, 0: normalne)
-            is_anomaly = np.where(predictions == -1, 1, 0)
-            
-            # Tworzenie wyniku
-            result = price_data.copy()
-            result['is_anomaly'] = is_anomaly
-            result['anomaly_score'] = anomaly_score
-            
-            anomaly_count = np.sum(is_anomaly)
-            logger.info(f"Wykryto {anomaly_count} anomalii w danych ({anomaly_count/len(price_data)*100:.2f}%)")
-            
-            return result
-            
-        except Exception as e:
-            logger.error(f"Błąd podczas wykrywania anomalii: {e}")
-            return pd.DataFrame()
+        logging.info(f"Model {self.method} został wytrenowany na danych o kształcie {data.shape}")
+        return self
     
-    def detect_volume_anomalies(self, volume_data, window=20):
+    def predict(self, data):
         """
-        Wykrywa anomalie w danych wolumenowych.
+        Wykrywa anomalie w danych.
         
-        Parameters:
-            volume_data (Series): Seria danych wolumenowych.
-            window (int): Okno czasowe do analizy.
+        Args:
+            data (np.array or pd.DataFrame): Dane do analizy
+        
+        Returns:
+            np.array: 1 dla normalnych obserwacji, -1 dla anomalii
+        """
+        if isinstance(data, pd.DataFrame):
+            data = data.values
+            
+        if self.model is None and self.method not in ['zscore', 'mzscore']:
+            raise ValueError("Model nie został wytrenowany. Wywołaj najpierw metodę fit()")
+            
+        if self.method == 'isolation_forest':
+            return self.model.predict(data)
+        elif self.method == 'lof':
+            return self.model.predict(data)
+        elif self.method == 'zscore':
+            z_scores = np.abs((data - self.mean) / (self.std + 1e-10))  # Unikamy dzielenia przez zero
+            return np.where(np.max(z_scores, axis=1) > self.threshold, -1, 1)
+        elif self.method == 'mzscore':
+            mz_scores = np.abs((data - self.median) / (self.mad + 1e-10))  # Unikamy dzielenia przez zero
+            return np.where(np.max(mz_scores, axis=1) > self.threshold, -1, 1)
+            
+    def detect_anomalies(self, data, return_scores=False):
+        """
+        Wykrywa anomalie i opcjonalnie zwraca wyniki z punktacją.
+        
+        Args:
+            data (np.array or pd.DataFrame): Dane do analizy
+            return_scores (bool): Czy zwrócić punktację anomalii
             
         Returns:
-            Series: Seria z oznaczonymi anomaliami wolumenu.
+            pd.DataFrame: DataFrame z wynikami detekcji anomalii
         """
-        try:
-            if volume_data is None or len(volume_data) == 0:
-                logger.warning("Brak danych wolumenowych do analizy")
-                return pd.Series()
+        is_dataframe = isinstance(data, pd.DataFrame)
+        index = data.index if is_dataframe else None
+        
+        if is_dataframe:
+            features = data.values
+        else:
+            features = data
+        
+        results = pd.DataFrame(index=index)
+        results['is_anomaly'] = self.predict(features) == -1
+        
+        if return_scores:
+            if self.method == 'isolation_forest':
+                # Dla Isolation Forest, wyższe wartości oznaczają niższe prawdopodobieństwo anomalii
+                scores = -self.model.decision_function(features)
+                results['anomaly_score'] = scores
+            elif self.method == 'lof':
+                # Dla LOF, wyższe wartości oznaczają wyższe prawdopodobieństwo anomalii
+                scores = self.model.negative_outlier_factor_ * -1
+                results['anomaly_score'] = scores
+            elif self.method == 'zscore':
+                scores = np.max(np.abs((features - self.mean) / (self.std + 1e-10)), axis=1)
+                results['anomaly_score'] = scores
+            elif self.method == 'mzscore':
+                scores = np.max(np.abs((features - self.median) / (self.mad + 1e-10)), axis=1)
+                results['anomaly_score'] = scores
+                
+        return results
+
+    def detect_price_anomalies(self, df, price_col='close', window=20):
+        """
+        Wykrywa anomalie cenowe używając ruchomego okna.
+        
+        Args:
+            df (pd.DataFrame): DataFrame z danymi cenowymi
+            price_col (str): Nazwa kolumny z cenami
+            window (int): Wielkość okna do analizy
             
-            # Obliczanie średniej kroczącej i odchylenia standardowego
-            rolling_mean = volume_data.rolling(window=window).mean()
-            rolling_std = volume_data.rolling(window=window).std()
+        Returns:
+            pd.Series: Seria z informacją czy dany punkt jest anomalią (True/False)
+        """
+        if self.method in ['zscore', 'mzscore']:
+            # Dla metod statystycznych używamy rolling window
+            if self.method == 'zscore':
+                means = df[price_col].rolling(window=window).mean()
+                stds = df[price_col].rolling(window=window).std()
+                z_scores = np.abs((df[price_col] - means) / (stds + 1e-10))
+                anomalies = z_scores > self.threshold
+            else:  # mzscore
+                rolling_median = df[price_col].rolling(window=window).median()
+                rolling_mad = df[price_col].rolling(window=window).apply(
+                    lambda x: np.median(np.abs(x - np.median(x))) * 1.4826
+                )
+                mz_scores = np.abs((df[price_col] - rolling_median) / (rolling_mad + 1e-10))
+                anomalies = mz_scores > self.threshold
+                
+            return anomalies.astype(bool)
+        else:
+            # Dla metod uczenia maszynowego używamy podejścia z oknem przesuwnym
+            anomalies = pd.Series(False, index=df.index)
             
-            # Identyfikacja anomalii (3 odchylenia standardowe od średniej)
-            upper_band = rolling_mean + 3 * rolling_std
-            
-            # Oznaczenie anomalii
-            volume_anomalies = (volume_data > upper_band).astype(int)
-            
-            anomaly_count = volume_anomalies.sum()
-            logger.info(f"Wykryto {anomaly_count} anomalii wolumenu")
-            
-            return volume_anomalies
-            
-        except Exception as e:
-            logger.error(f"Błąd podczas wykrywania anomalii wolumenu: {e}")
-            return pd.Series()
+            for i in range(window, len(df)):
+                features = df[price_col].iloc[i-window:i].values.reshape(-1, 1)
+                self.fit(features)
+                prediction = self.predict(df[price_col].iloc[i].reshape(1, -1))
+                anomalies.iloc[i] = prediction[0] == -1
+                
+            return anomalies
+
+def detect_volatility_anomalies(price_data, window=20, n_std=2.5):
+    """
+    Wykrywa anomalie w zmienności cen.
     
-    def detect_pattern_anomalies(self, ohlcv_data, lookback=5):
-        """
-        Wykrywa anomalie we wzorcach cenowych OHLCV.
+    Args:
+        price_data (pd.Series): Seria z danymi cenowymi
+        window (int): Rozmiar okna do obliczania zmienności
+        n_std (float): Liczba odchyleń standardowych powyżej której uznajemy zmienność za anomalię
         
-        Parameters:
-            ohlcv_data (DataFrame): DataFrame z danymi OHLCV.
-            lookback (int): Liczba świeczek wstecz do analizy wzorca.
-            
-        Returns:
-            DataFrame: DataFrame z dodatkową kolumną 'pattern_anomaly'.
-        """
-        try:
-            if ohlcv_data is None or len(ohlcv_data) < lookback + 1:
-                logger.warning(f"Za mało danych do analizy wzorców (min {lookback+1})")
-                return pd.DataFrame()
-            
-            required_columns = ['open', 'high', 'low', 'close', 'volume']
-            missing_columns = [col for col in required_columns if col not in ohlcv_data.columns]
-            
-            if missing_columns:
-                logger.warning(f"Brakujące kolumny do analizy wzorców: {missing_columns}")
-                return pd.DataFrame()
-            
-            # Przygotowanie danych
-            features = []
-            for i in range(len(ohlcv_data) - lookback):
-                window = ohlcv_data.iloc[i:i+lookback]
-                
-                # Tworzenie cech opisujących wzorzec
-                pattern_features = []
-                
-                # Względne zmiany cen
-                for col in ['open', 'high', 'low', 'close']:
-                    changes = window[col].pct_change().dropna().values
-                    pattern_features.extend(changes)
-                
-                # Cechy wolumenu
-                vol_changes = window['volume'].pct_change().dropna().values
-                pattern_features.extend(vol_changes)
-                
-                # Zakres cenowy
-                ranges = (window['high'] - window['low']).values / window['close'].values
-                pattern_features.extend(ranges)
-                
-                features.append(pattern_features)
-            
-            if not features:
-                logger.warning("Nie udało się wygenerować cech wzorców")
-                return pd.DataFrame()
-                
-            # Wykrywanie anomalii we wzorcach
-            X = np.array(features)
-            X = np.nan_to_num(X)  # Obsługa NaN
-            
-            model = IsolationForest(contamination=self.contamination, random_state=42)
-            predictions = model.fit_predict(X)
-            
-            # Konwersja wyników
-            pattern_anomalies = np.where(predictions == -1, 1, 0)
-            
-            # Tworzenie wyniku
-            result = ohlcv_data.copy()
-            result['pattern_anomaly'] = 0
-            result.iloc[lookback:]['pattern_anomaly'] = pattern_anomalies
-            
-            anomaly_count = np.sum(pattern_anomalies)
-            logger.info(f"Wykryto {anomaly_count} anomalii wzorców cenowych")
-            
-            return result
-            
-        except Exception as e:
-            logger.error(f"Błąd podczas wykrywania anomalii wzorców: {e}")
-            return pd.DataFrame()
+    Returns:
+        pd.Series: True dla punktów z anomalną zmiennością
+    """
+    # Obliczamy zmienność jako odchylenie standardowe zwrotów w oknie
+    returns = price_data.pct_change().dropna()
+    rolling_vol = returns.rolling(window=window).std()
+    
+    # Obliczamy średnią i odchylenie standardowe zmienności
+    mean_vol = rolling_vol.mean()
+    std_vol = rolling_vol.std()
+    
+    # Wykrywamy anomalie jako punkty, gdzie zmienność przekracza średnią o n_std odchyleń standardowych
+    anomalies = rolling_vol > (mean_vol + n_std * std_vol)
+    
+    logging.info(f"Wykryto {anomalies.sum()} anomalii zmienności z {len(anomalies)} punktów")
+    return anomalies
 
-    def get_model_info(self):
-        """
-        Zwraca informacje o modelu.
+def detect_volume_anomalies(volume_data, window=20, n_std=3.0):
+    """
+    Wykrywa anomalie w wolumenie.
+    
+    Args:
+        volume_data (pd.Series): Seria z danymi o wolumenie
+        window (int): Rozmiar okna do analizy
+        n_std (float): Liczba odchyleń standardowych powyżej której uznajemy wolumen za anomalię
         
-        Returns:
-            dict: Słownik z informacjami o modelu.
-        """
-        return {
-            "model_name": "Isolation Forest Anomaly Detection",
-            "contamination": self.contamination,
-            "n_estimators": self.model.n_estimators,
-            "features_supported": ["price", "volume", "pattern"]
-        }
+    Returns:
+        pd.Series: True dla punktów z anomalnym wolumenem
+    """
+    # Normalizujemy wolumen za pomocą logarytmu
+    log_volume = np.log1p(volume_data)
+    
+    # Obliczamy średni log-wolumen w oknie
+    rolling_mean = log_volume.rolling(window=window).mean()
+    rolling_std = log_volume.rolling(window=window).std()
+    
+    # Wykrywamy anomalie
+    anomalies = (log_volume > (rolling_mean + n_std * rolling_std)) | (log_volume < (rolling_mean - n_std * rolling_std))
+    
+    logging.info(f"Wykryto {anomalies.sum()} anomalii wolumenu z {len(anomalies)} punktów")
+    return anomalies
 
-
-# -------------------- Przykładowe użycie --------------------
+# Przykładowe użycie
 if __name__ == "__main__":
-    # Konfiguracja logowania
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s [%(levelname)s] %(message)s",
-        handlers=[
-            logging.FileHandler("anomaly_detection.log"),
-            logging.StreamHandler()
-        ]
-    )
-    
     try:
-        # Generowanie przykładowych danych
+        # Generujemy przykładowe dane
         np.random.seed(42)
-        dates = pd.date_range(start="2022-01-01", periods=100, freq="D")
+        n = 1000
         
-        # Dane cenowe z anomaliami
-        prices = np.cumsum(np.random.normal(0, 1, 100))
-        # Dodanie kilku anomalii
-        prices[30] += 10  # Nagły skok
-        prices[60] -= 8   # Nagły spadek
+        # Normalne dane z kilkoma anomaliami
+        data = np.random.randn(n, 2)
+        # Dodajemy kilka anomalii
+        anomalies_idx = np.random.choice(n, 50, replace=False)
+        data[anomalies_idx] = data[anomalies_idx] * 5
         
-        # Dane wolumenowe
-        volume = np.random.gamma(shape=2, scale=100, size=100)
-        # Anomalie wolumenu
-        volume[45] = volume[45] * 5
-        volume[75] = volume[75] * 4
+        # Tworzymy i trenujemy model
+        model = AnomalyDetectionModel(method='isolation_forest', contamination=0.05)
+        model.fit(data)
         
-        # Tworzenie DataFrame
-        df = pd.DataFrame({
-            'date': dates,
-            'open': prices,
-            'high': prices + np.random.uniform(0, 2, 100),
-            'low': prices - np.random.uniform(0, 2, 100),
-            'close': prices + np.random.normal(0, 0.5, 100),
-            'volume': volume
-        })
-        df.set_index('date', inplace=True)
+        # Wykrywamy anomalie
+        predictions = model.predict(data)
+        anomalies_count = (predictions == -1).sum()
         
-        # Inicjalizacja modelu
-        model = AnomalyDetectionModel(contamination=0.05)
-        
-        # Wykrywanie anomalii cenowych
-        price_anomalies = model.detect_price_anomalies(df, columns=['close'])
-        
-        # Wykrywanie anomalii wolumenu
-        volume_anomalies = model.detect_volume_anomalies(df['volume'])
-        
-        # Wykrywanie anomalii wzorców
-        pattern_anomalies = model.detect_pattern_anomalies(df)
-        
-        print(f"Wykryte anomalie cenowe: {price_anomalies['is_anomaly'].sum()}")
-        print(f"Wykryte anomalie wolumenu: {volume_anomalies.sum()}")
-        
-        if 'pattern_anomaly' in pattern_anomalies.columns:
-            print(f"Wykryte anomalie wzorców: {pattern_anomalies['pattern_anomaly'].sum()}")
+        logging.info(f"Wykryto {anomalies_count} anomalii z {n} punktów")
+        print(f"Wykryto {anomalies_count} anomalii.")
         
     except Exception as e:
-        logging.error(f"Błąd podczas testowania modelu: {e}")
+        logging.error(f"Błąd: {e}")
+        print(f"Wystąpił błąd: {e}")

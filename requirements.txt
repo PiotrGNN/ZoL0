@@ -22,7 +22,6 @@ scikit-optimize>=0.9.0
 
 # Finance specific
 ta>=0.10.0  # Technical Analysis
-pyalgotrade>=0.20
 ccxt>=1.60.0  # Cryptocurrency exchange trading
 alpaca-trade-api>=2.0.0
 
