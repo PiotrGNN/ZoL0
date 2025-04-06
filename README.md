@@ -75,9 +75,17 @@ pytest data/tests
 ## 🔒 Bezpieczeństwo
 
 - Nigdy nie przechowuj kluczy API bezpośrednio w kodzie
-- Używaj pliku `.env` dla zmiennych środowiskowych 
-- Zawsze testuj strategie w środowisku testowym przed uruchomieniem na prawdziwym rynku
+- Używaj pliku .env do przechowywania poufnych kluczy
+- Ustaw odpowiednie limity ryzyka w konfiguracji
 
-## 📝 Licencja
+## 🛠 Rozwój projektu
 
-Copyright © 2023
+1. Sklonuj repozytorium
+2. Zainstaluj zależności developerskie: `pip install -r requirements.txt`
+3. Uruchom testy przed wysłaniem zmian: `pytest data/tests`
+4. Sprawdź jakość kodu z flake8: `flake8 .`
+5. Sformatuj kod za pomocą black: `black .`
+
+## 📄 Licencja
+
+Ten projekt jest udostępniany na licencji MIT.
