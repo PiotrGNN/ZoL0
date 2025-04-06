@@ -7,9 +7,9 @@ python-dotenv==1.0.0
 requests==2.30.0
 pyyaml==6.0
 
-# Data visualization (zakomentowane, odkomentuj jeśli potrzebne)
-# matplotlib==3.7.1
-# plotly==5.14.1
+# Data visualization
+matplotlib==3.7.1
+plotly==5.14.1
 
 # Machine learning and AI
 joblib==1.2.0

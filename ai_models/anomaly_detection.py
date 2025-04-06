@@ -1,177 +1,205 @@
 """
-Moduł wykrywania anomalii przy użyciu metod AI/ML
-Zoptymalizowana wersja dla środowiska Replit
+anomaly_detection.py
+-------------------
+Moduł do wykrywania anomalii w danych rynkowych używający różnych technik 
+statystycznych i uczenia maszynowego.
 """
 
 import logging
+import os
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import IsolationForest
 from sklearn.preprocessing import StandardScaler
 
-class AnomalyDetectionModel:
-    """Model wykrywania anomalii w danych rynkowych."""
+# Konfiguracja logowania
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler("logs/anomaly_detector.log"),
+        logging.StreamHandler()
+    ]
+)
 
-    def __init__(self, contamination=0.05):
+# Upewnij się, że katalog logs istnieje
+os.makedirs("logs", exist_ok=True)
+
+class AnomalyDetectionModel:
+    """
+    Klasa implementująca różne metody wykrywania anomalii w danych finansowych.
+    """
+
+    def __init__(self, contamination=0.05, random_state=42):
         """
         Inicjalizacja modelu wykrywania anomalii.
 
-        Parameters:
-            contamination (float): oczekiwana proporcja anomalii w danych (0.0 - 0.5)
+        Args:
+            contamination (float): Oczekiwany procent anomalii w danych (0.0-0.5)
+            random_state (int): Ziarno losowości dla powtarzalnych wyników
         """
+        self.logger = logging.getLogger(__name__)
+        self.contamination = contamination
+        self.random_state = random_state
         self.model = IsolationForest(
-            n_estimators=100,
-            contamination=contamination,
-            random_state=42,
-            n_jobs=-1  # Wykorzystaj wszystkie dostępne rdzenie
+            contamination=contamination, 
+            random_state=random_state
         )
         self.scaler = StandardScaler()
-        self.is_fitted = False
-        logging.info("Model wykrywania anomalii zainicjalizowany")
+        self.logger.info("Zainicjalizowano model wykrywania anomalii")
 
     def fit(self, data):
         """
-        Dopasowuje model do danych.
+        Trenuje model na podanych danych.
 
-        Parameters:
-            data (pd.DataFrame/np.ndarray): Dane do treningu modelu
+        Args:
+            data (pd.DataFrame/np.array): Dane do treningu
+
+        Returns:
+            self: Wytrenowany model
         """
         try:
+            # Sprawdzenie typu danych
             if isinstance(data, pd.DataFrame):
-                # Usunięcie wartości NaN
-                data = data.dropna()
-
-                # Konwersja do tablicy NumPy jeśli to DataFrame
-                X = data.values if len(data.shape) > 1 else data.values.reshape(-1, 1)
+                X = data.values
             else:
-                X = data if len(data.shape) > 1 else data.reshape(-1, 1)
+                X = data
 
-            # Skalowanie danych
+            # Normalizacja danych
             X_scaled = self.scaler.fit_transform(X)
 
             # Trenowanie modelu
             self.model.fit(X_scaled)
-            self.is_fitted = True
-            logging.info(f"Model wykrywania anomalii wytrenowany na {X.shape[0]} próbkach")
-            return True
+            self.logger.info(f"Model wytrenowany na {X.shape[0]} przykładach")
+            return self
         except Exception as e:
-            logging.error(f"Błąd podczas trenowania modelu wykrywania anomalii: {e}")
-            return False
-
-    def detect(self, data, threshold=-0.5):
-        """
-        Wykrywa anomalie w danych.
-
-        Parameters:
-            data (pd.DataFrame/np.ndarray): Dane do analizy
-            threshold (float): Próg decyzyjny (niższe wartości -> więcej anomalii)
-
-        Returns:
-            np.ndarray: Indeksy wykrytych anomalii
-        """
-        if not self.is_fitted:
-            logging.warning("Model nie jest wytrenowany. Najpierw wywołaj metodę fit().")
-            return np.array([])
-
-        try:
-            if isinstance(data, pd.DataFrame):
-                # Zachowanie indeksów DataFrame do późniejszego zwrócenia
-                original_index = data.index
-
-                # Usunięcie wartości NaN
-                data = data.dropna()
-                data_index = data.index
-
-                # Konwersja do tablicy NumPy
-                X = data.values if len(data.shape) > 1 else data.values.reshape(-1, 1)
-            else:
-                X = data if len(data.shape) > 1 else data.reshape(-1, 1)
-                original_index = np.arange(len(X))
-                data_index = original_index
-
-            # Skalowanie danych
-            X_scaled = self.scaler.transform(X)
-
-            # Przewidywanie anomalii (niższe wartości = większe prawdopodobieństwo anomalii)
-            scores = self.model.decision_function(X_scaled)
-
-            # Znalezienie indeksów anomalii
-            anomaly_indices = np.where(scores < threshold)[0]
-
-            # Mapowanie indeksów z powrotem na oryginalne indeksy
-            if isinstance(data, pd.DataFrame):
-                anomaly_indices = data_index[anomaly_indices]
-
-            logging.info(f"Wykryto {len(anomaly_indices)} anomalii wśród {len(X)} próbek")
-            return anomaly_indices
-        except Exception as e:
-            logging.error(f"Błąd podczas wykrywania anomalii: {e}")
-            return np.array([])
+            self.logger.error(f"Błąd podczas trenowania modelu: {e}")
+            raise
 
     def predict(self, data):
         """
-        Przewiduje, które punkty są anomaliami (-1) lub normalne (1).
+        Przewiduje anomalie w danych.
 
-        Parameters:
-            data (pd.DataFrame/np.ndarray): Dane do analizy
+        Args:
+            data (pd.DataFrame/np.array): Dane do analizy
 
         Returns:
-            np.ndarray: Etykiety dla każdego punktu danych (-1: anomalia, 1: normalne)
+            np.array: Tablica etykiet (-1 dla anomalii, 1 dla normalnych danych)
         """
-        if not self.is_fitted:
-            logging.warning("Model nie jest wytrenowany. Najpierw wywołaj metodę fit().")
-            return np.array([])
-
         try:
+            # Sprawdzenie typu danych
             if isinstance(data, pd.DataFrame):
-                # Usunięcie wartości NaN
-                data = data.dropna()
-
-                # Konwersja do tablicy NumPy
-                X = data.values if len(data.shape) > 1 else data.values.reshape(-1, 1)
+                X = data.values
             else:
-                X = data if len(data.shape) > 1 else data.reshape(-1, 1)
+                X = data
 
-            # Skalowanie danych
+            # Normalizacja danych
             X_scaled = self.scaler.transform(X)
 
-            # Przewidywanie anomalii
+            # Predykcja
             predictions = self.model.predict(X_scaled)
-            logging.info(f"Wykonano predykcję anomalii dla {len(X)} próbek")
+            self.logger.info(f"Wykonano predykcję na {X.shape[0]} przykładach")
             return predictions
         except Exception as e:
-            logging.error(f"Błąd podczas przewidywania anomalii: {e}")
-            return np.array([])
+            self.logger.error(f"Błąd podczas predykcji: {e}")
+            raise
 
-    def detect_multiple_features(self, data_dict, thresholds=None):
+    def detect_anomalies(self, data, threshold=2.5):
         """
-        Wykrywa anomalie w wielu cechach/seriach danych.
+        Wykrywa anomalie w danych używając standardowego odchylenia.
 
-        Parameters:
-            data_dict (dict): Słownik {nazwa_cechy: dane}
-            thresholds (dict, optional): Słownik {nazwa_cechy: próg}
+        Args:
+            data (pd.Series/np.array): Seria danych do analizy
+            threshold (float): Liczba odchyleń standardowych powyżej której
+                              punkt jest uznawany za anomalię
 
         Returns:
-            dict: Słownik {nazwa_cechy: indeksy_anomalii}
+            np.array: Tablica wartości boolowskich (True dla anomalii)
         """
-        results = {}
-
-        if thresholds is None:
-            thresholds = {key: -0.5 for key in data_dict.keys()}
-
-        for feature_name, data in data_dict.items():
-            # Trenowanie nowego modelu dla każdej cechy
-            feature_model = AnomalyDetectionModel()
-            if feature_model.fit(data):
-                threshold = thresholds.get(feature_name, -0.5)
-                anomalies = feature_model.detect(data, threshold)
-                results[feature_name] = anomalies
-                logging.info(f"Wykryto {len(anomalies)} anomalii dla cechy '{feature_name}'")
+        try:
+            # Konwersja do numpy array
+            if isinstance(data, pd.Series):
+                values = data.values
             else:
-                results[feature_name] = np.array([])
-                logging.warning(f"Nie udało się wykryć anomalii dla cechy '{feature_name}'")
+                values = data
 
-        return results
+            mean = np.mean(values)
+            std = np.std(values)
+
+            # Wykrywanie anomalii
+            anomalies = np.abs(values - mean) > threshold * std
+
+            anomaly_count = np.sum(anomalies)
+            self.logger.info(f"Wykryto {anomaly_count} anomalii wśród {len(values)} punktów danych")
+            return anomalies
+        except Exception as e:
+            self.logger.error(f"Błąd podczas wykrywania anomalii: {e}")
+            raise
+
+    def detect_price_anomalies(self, price_data, window_size=20, threshold=2.5):
+        """
+        Wykrywa anomalie cenowe na podstawie ruchomego średniego odchylenia.
+
+        Args:
+            price_data (pd.Series): Seria danych cenowych
+            window_size (int): Rozmiar okna do obliczenia ruchomej średniej
+            threshold (float): Próg odchylenia dla anomalii
+
+        Returns:
+            pd.Series: Seria boolowska (True dla anomalii)
+        """
+        try:
+            # Obliczenie ruchomej średniej
+            rolling_mean = price_data.rolling(window=window_size).mean()
+            rolling_std = price_data.rolling(window=window_size).std()
+
+            # Obliczenie odchylenia
+            z_score = (price_data - rolling_mean) / rolling_std
+
+            # Identyfikacja anomalii
+            anomalies = abs(z_score) > threshold
+
+            # Uzupełnienie wartości NaN
+            anomalies = anomalies.fillna(False)
+
+            anomaly_count = anomalies.sum()
+            self.logger.info(f"Wykryto {anomaly_count} anomalii cenowych w szeregu czasowym")
+            return anomalies
+        except Exception as e:
+            self.logger.error(f"Błąd podczas wykrywania anomalii cenowych: {e}")
+            raise
+
+    def visualize_anomalies(self, data, anomalies, title="Wykryte anomalie"):
+        """
+        Wizualizuje wykryte anomalie.
+
+        Args:
+            data (pd.Series): Oryginalne dane
+            anomalies (pd.Series): Seria boolowska z wynikami detekcji
+            title (str): Tytuł wykresu
+        """
+        try:
+            import matplotlib.pyplot as plt
+
+            plt.figure(figsize=(12, 6))
+            plt.plot(data, label='Dane')
+            plt.scatter(data[anomalies].index, data[anomalies], 
+                      color='red', label='Anomalie')
+            plt.title(title)
+            plt.legend()
+            plt.tight_layout()
+
+            # Zapisanie wykresu
+            os.makedirs("reports", exist_ok=True)
+            plt.savefig(f"reports/{title.replace(' ', '_')}.png")
+            plt.close()
+
+            self.logger.info(f"Wygenerowano wizualizację anomalii: reports/{title.replace(' ', '_')}.png")
+        except ImportError:
+            self.logger.warning("Biblioteka matplotlib nie jest zainstalowana. Wizualizacja niedostępna.")
+        except Exception as e:
+            self.logger.error(f"Błąd podczas wizualizacji anomalii: {e}")
+
 
 # Przykład użycia
 if __name__ == "__main__":
@@ -195,50 +223,10 @@ if __name__ == "__main__":
     model.fit(X)
 
     # Wykrywanie anomalii
-    anomaly_indices = model.detect(X)
+    anomaly_indices = model.detect_anomalies(X.flatten()) #Adapt to new method
     print(f"Wykryte anomalie (indeksy): {anomaly_indices}")
 
     # Predykcja wszystkich punktów
     predictions = model.predict(X)
     n_detected_anomalies = np.sum(predictions == -1)
     print(f"Liczba wykrytych anomalii: {n_detected_anomalies}")
-
-
-# Konfiguracja logowania
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[logging.StreamHandler()]
-)
-
-# Uruchomienie prostego testu (zachowana z oryginalnego kodu)
-def simple_anomaly_test():
-    """Prosta funkcja testująca moduł wykrywania anomalii."""
-    # Generowanie danych testowych
-    np.random.seed(42)
-    normal_data = np.random.normal(0, 1, 1000)
-    anomalies = np.random.normal(5, 1, 50)
-
-    # Wstawienie anomalii w losowe miejsca
-    indices = np.random.choice(1000, 50, replace=False)
-    data = normal_data.copy()
-    data[indices] = anomalies
-
-    # Wykrywanie anomalii
-    detector = AnomalyDetectionModel(contamination=0.05)
-    detector.fit(data.reshape(-1, 1))
-    anomaly_indices, _ = detector.detect_anomalies(data.reshape(-1, 1))
-
-    # Ocena skuteczności
-    correct_detections = np.intersect1d(anomaly_indices, indices)
-    precision = len(correct_detections) / len(anomaly_indices) if len(anomaly_indices) > 0 else 0
-    recall = len(correct_detections) / len(indices)
-
-    print(f"Wykryto {len(anomaly_indices)} anomalii, z czego {len(correct_detections)} prawidłowo")
-    print(f"Precision: {precision:.2f}, Recall: {recall:.2f}")
-
-    return precision, recall
-
-
-if __name__ == "__main__":
-    precision, recall = simple_anomaly_test()

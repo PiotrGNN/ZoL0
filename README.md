@@ -1,79 +1,98 @@
-# 🤖 Trading Bot - System Analityczny
 
-## 📋 Opis projektu
+# 🚀 Trading Bot - System Analityczny
 
-Trading Bot to zaawansowany system analityczny do analizy danych rynkowych, wykrywania anomalii i testowania strategii tradingowych. System wykorzystuje metody uczenia maszynowego do analizy wzorców cenowych i wolumenowych.
+## 📝 Opis projektu
+System do analizy danych rynkowych, strategii handlowych i automatycznego handlu, zoptymalizowany do działania w środowisku Replit.
 
-## 🚀 Szybki start
+## 🔧 Funkcjonalności
+- Analiza danych rynkowych 
+- Wykrywanie anomalii cenowych
+- Symulacja strategii tradingowych
+- Zarządzanie ryzykiem i kapitałem
+- Modele uczenia maszynowego do predykcji
 
-### Przygotowanie środowiska
-
-1. Sklonuj repozytorium
-2. W środowisku Replit system automatycznie zainstaluje wymagane zależności
-3. Utwórz plik `.env` na podstawie `.env.example` i ustaw swoje klucze API
-
-### Uruchomienie systemu
-
-Możesz uruchomić system na dwa sposoby:
-
-1. **Przycisk Run** - Kliknij przycisk "Run" w panelu Replit
-2. **Z linii poleceń** - Uruchom `python main.py`
-
-## 🧰 Dostępne workflows w Replit
-
-- **Start Trading Bot** - Uruchamia główny system
-- **Run Tests** - Wykonuje testy jednostkowe
-- **Lint Code** - Sprawdza kod źródłowy linterem
-
-## 📁 Struktura projektu
-
+## 🏗️ Struktura projektu
 ```
-.
-├── ai_models/                # Modele AI/ML
-│   ├── anomaly_detection.py  # Wykrywanie anomalii rynkowych
-│   ├── reinforcement_learning.py # Uczenie ze wzmocnieniem
-│   └── sentiment_analysis.py # Analiza sentymentu rynkowego
-├── data/
-│   ├── execution/            # Wykonywanie transakcji
-│   ├── indicators/           # Wskaźniki techniczne
-│   ├── risk_management/      # Zarządzanie ryzykiem
-│   ├── strategies/           # Strategie tradingowe
-│   └── tests/                # Testy jednostkowe
-├── config/                   # Konfiguracja systemu
-├── logs/                     # Logi systemu
-├── .env.example              # Przykładowy plik zmiennych środowiskowych
-└── main.py                   # Punkt wejściowy systemu
+├── ai_models/              # Modele AI i uczenia maszynowego
+├── config/                 # Pliki konfiguracyjne
+├── data/                   # Moduły do obsługi danych
+│   ├── data/               # Pobieranie i przetwarzanie danych
+│   ├── execution/          # Wykonywanie zleceń
+│   ├── indicators/         # Wskaźniki techniczne
+│   ├── logging/            # Komponenty logowania
+│   ├── optimization/       # Optymalizacja strategii
+│   ├── risk_management/    # Zarządzanie ryzykiem
+│   ├── strategies/         # Strategie handlowe
+│   ├── tests/              # Testy jednostkowe
+│   └── utils/              # Narzędzia pomocnicze
+├── logs/                   # Pliki logów
+├── reports/                # Generowane raporty i wizualizacje
+├── saved_models/           # Zapisane modele ML
+└── main.py                 # Główny punkt wejścia aplikacji
 ```
 
-## 🧪 Testowanie
+## 🚀 Jak uruchomić
+1. Upewnij się, że wszystkie zależności są zainstalowane:
+   ```
+   pip install -r requirements.txt
+   ```
 
-Aby uruchomić testy jednostkowe, użyj workflowa "Run Tests" lub wykonaj:
+2. Utwórz plik `.env` na podstawie `.env.example`:
+   ```
+   cp .env.example .env
+   ```
 
+3. Uruchom aplikację:
+   ```
+   python3 main.py
+   ```
+
+4. Uruchom testy:
+   ```
+   pytest data/tests/
+   ```
+
+## 🔧 Narzędzia developerskie
+- **Linter**: flake8 - sprawdzanie zgodności ze standardami kodu
+  ```
+  flake8 .
+  ```
+
+- **Formatter**: black - automatyczne formatowanie kodu
+  ```
+  black .
+  ```
+
+- **Testy**: pytest - uruchamianie testów jednostkowych
+  ```
+  pytest
+  ```
+
+## 📦 Zależności
+Wszystkie wymagane biblioteki są wymienione w pliku `requirements.txt`.
+
+## 📝 Konfiguracja
+- Ustawienia można modyfikować w katalogu `config/`
+- Parametry środowiskowe znajdują się w pliku `.env`
+- W pliku `.replit` znajduje się konfiguracja środowiska Replit
+
+## 📊 Przykładowe użycie
+```python
+from ai_models.anomaly_detection import AnomalyDetectionModel
+
+# Inicjalizacja modelu wykrywania anomalii
+detector = AnomalyDetectionModel()
+
+# Wykrywanie anomalii w danych cenowych
+anomalies = detector.detect_price_anomalies(price_data)
 ```
-python -m pytest data/tests
-```
-
-## 📊 Dostępne strategie
-
-1. **Mean Reversion** - Wykorzystuje powrót ceny do średniej
-2. **Trend Following** - Wykorzystuje silne trendy rynkowe
-3. **Breakout Strategy** - Wykrywa wybicia z konsolidacji
-4. **AI Strategy** - Adaptacyjna strategia bazująca na uczeniu maszynowym
 
 ## 🔒 Bezpieczeństwo
+- Klucze API są przechowywane w zmiennych środowiskowych
+- Używaj trybu testowego przed przejściem do rzeczywistego handlu
 
-- Nigdy nie przechowuj kluczy API bezpośrednio w kodzie
-- Używaj pliku .env do przechowywania poufnych kluczy
-- Ustaw odpowiednie limity ryzyka w konfiguracji
+## 👥 Współtwórcy
+Lista osób, które przyczyniły się do rozwoju projektu.
 
-## 🛠 Rozwój projektu
-
-1. Sklonuj repozytorium
-2. Zainstaluj zależności developerskie: `pip install -r requirements.txt`
-3. Uruchom testy przed wysłaniem zmian: `python -m pytest`
-4. Formatuj kod za pomocą Black: `black .`
-5. Sprawdź zgodność z PEP8: `flake8 .`
-
-## 📝 Licencja
-
-Ten projekt jest udostępniony na licencji MIT.
+## 📄 Licencja
+Ten projekt jest licencjonowany - sprawdź plik LICENSE, aby uzyskać szczegóły.

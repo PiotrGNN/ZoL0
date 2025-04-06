@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+
+#!/usr/bin/env python3
 """
 Trading Bot - główny moduł systemu
 Zoptymalizowana wersja dla środowiska Replit
@@ -7,7 +8,13 @@ Zoptymalizowana wersja dla środowiska Replit
 import logging
 import os
 import sys
+import time
 from dotenv import load_dotenv
+
+# Utworzenie struktury katalogów
+os.makedirs("logs", exist_ok=True)
+os.makedirs("data", exist_ok=True)
+os.makedirs("reports", exist_ok=True)
 
 # Konfiguracja logowania
 logging.basicConfig(
@@ -18,9 +25,6 @@ logging.basicConfig(
         logging.StreamHandler(sys.stdout)
     ]
 )
-
-# Upewnij się, że katalog logs istnieje
-os.makedirs("logs", exist_ok=True)
 
 # Ładowanie zmiennych środowiskowych
 load_dotenv()
@@ -39,18 +43,26 @@ def initialize_components():
     """Inicjalizuje niezbędne komponenty systemu."""
     try:
         logging.info("Inicjalizacja komponentów systemu...")
-        # Import strategii i inicjalizacji komponentów
-        from data.strategies.strategy_manager import StrategyManager
-        strategy_manager = StrategyManager()
-
+        
         # Import modułu wykrywania anomalii
         from ai_models.anomaly_detection import AnomalyDetectionModel
         anomaly_detector = AnomalyDetectionModel()
-
-        return {
-            "strategy_manager": strategy_manager,
+        
+        # Tutaj można dodać inicjalizację innych komponentów
+        # na razie tylko symulacja
+        components = {
             "anomaly_detector": anomaly_detector
         }
+        
+        # Sprawdź, czy możliwe jest zainicjalizowanie managera strategii
+        try:
+            from data.strategies.strategy_manager import StrategyManager
+            components["strategy_manager"] = StrategyManager()
+            logging.info("Zainicjalizowano StrategyManager")
+        except ImportError:
+            logging.warning("Nie można zainicjalizować StrategyManager - kontynuowanie bez tego komponentu")
+        
+        return components
     except Exception as e:
         logging.error(f"Błąd podczas inicjalizacji komponentów: {e}")
         return None
@@ -71,11 +83,11 @@ def start_simulation_mode():
     """)
 
     try:
-        # Tutaj dodaj logikę symulacji
-        import time
+        # Symulacja działania systemu
         for i in range(10):
             logging.info(f"Symulacja: krok {i+1}/10")
-            time.sleep(1)  # Symulacja działania systemu
+            print(f"⏳ Przetwarzanie danych... {i+1}/10")
+            time.sleep(1)
 
         print("\n✅ Symulacja zakończona pomyślnie!")
     except KeyboardInterrupt:
@@ -84,13 +96,26 @@ def start_simulation_mode():
         logging.error(f"Błąd podczas symulacji: {e}")
         print(f"\n❌ Błąd symulacji: {e}")
 
-def main():
-    """Główna funkcja systemu."""
+def display_welcome_message():
+    """Wyświetla wiadomość powitalną projektu."""
     print("""
     =================================================================
     🤖 Trading Bot - System Analityczny
     =================================================================
+    Projekt gotowy do działania w środowisku Replit
+    
+    Dostępne tryby pracy:
+    - Symulacja (domyślna)
+    - Analiza
+    - Testowanie
+    
+    Więcej informacji w README.md
+    =================================================================
     """)
+
+def main():
+    """Główna funkcja systemu."""
+    display_welcome_message()
 
     # Ładowanie konfiguracji
     config = load_configuration()

@@ -1,4 +1,5 @@
-run = ["python", "main.py"]
+
+run = ["python3", "main.py"]
 hidden = [".config", "**/__pycache__", "**/.pytest_cache", "**/*.pyc"]
 
 entrypoint = "main.py"
@@ -9,7 +10,7 @@ language = "python3"
 channel = "stable-22_11"
 
 [env]
-PYTHONPATH="."
+PYTHONPATH = "."
 PYTHONFAULTHANDLER = "1"
 
 [packager]
@@ -21,7 +22,7 @@ enabledForHosting = true
 packageSearch = true
 
 [gitHubImport]
-requiredFiles = [".replit"]
+requiredFiles = [".replit", "replit.nix"]
 
 [languages]
 
@@ -32,12 +33,48 @@ pattern = "**/*.py"
 start = "pylsp"
 
 [deployment]
-run = ["python", "main.py"]
+run = ["python3", "main.py"]
 deploymentTarget = "cloudrun"
 
 [tools]
 formatter = "black"
 linter = "flake8"
 
-[interpreter]
-command = ["python3"]
+[workflows]
+runButton = "Run"
+
+[[workflows.workflow]]
+name = "Run"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python3 main.py"
+
+[[workflows.workflow]]
+name = "Test"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pytest data/tests/"
+
+[[workflows.workflow]]
+name = "Format Code"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "black ."
+
+[[workflows.workflow]]
+name = "Lint Code"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "flake8 ."
