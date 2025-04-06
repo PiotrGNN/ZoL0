@@ -1,6 +1,6 @@
 # 🚀 Advanced AI Trading System
 
-System do automatycznego tradingu z wykorzystaniem algorytmów AI i ML.
+System do automatycznego tradingu z wykorzystaniem zaawansowanych algorytmów AI i ML.
 
 ## 📋 Funkcje
 
@@ -10,89 +10,75 @@ System do automatycznego tradingu z wykorzystaniem algorytmów AI i ML.
 - 🔄 **Backtesting** - Testowanie strategii na danych historycznych
 - 🛡️ **Zarządzanie ryzykiem** - Zaawansowane mechanizmy kontroli ryzyka
 
+## 🚀 Szybki start (Replit)
 
-## 🚀 Uruchomienie
-
-1. Upewnij się, że masz plik `.env` (możesz skopiować z `.env.example`):
+1. Skonfiguruj plik `.env` (skopiuj z `.env.example`):
    ```
    cp .env.example .env
    ```
 
-2. Zainstaluj wymagane zależności:
+2. Kliknij przycisk ▶️ **Run** lub wybierz workflow "Start Trading Bot" z menu
+
+## 🔧 Konfiguracja środowiska
+
+1. Zainstaluj wymagane zależności:
    ```
    pip install -r requirements.txt
    ```
 
-3. Uruchom system tradingowy:
+2. Uruchom system tradingowy:
    ```
    python main.py
    ```
 
-## 🔧 Konfiguracja
+3. Dostępne workflow:
+   - **Start Trading Bot** - Uruchamia główny system tradingowy
+   - **Run Tests** - Uruchamia testy jednostkowe
+   - **Lint Code** - Sprawdza jakość kodu
 
-Projekt używa pliku `.env` do konfiguracji kluczy API, poziomów logowania i innych ustawień:
-
-```
-# API Keys
-BINANCE_API_KEY=your_api_key
-BINANCE_API_SECRET=your_api_secret
-BYBIT_API_KEY=your_api_key
-BYBIT_API_SECRET=your_api_secret
-
-# Environment
-TRADING_MODE=testnet
-LOG_LEVEL=INFO
-```
-
-## 🧪 Testy
-
-Uruchomienie testów jednostkowych:
+## 🛠️ Struktura projektu
 
 ```
-pytest data/tests/
+├── ai_models/            # Modele AI i uczenia maszynowego
+├── config/               # Pliki konfiguracyjne
+├── data/                 # Moduły przetwarzania danych i strategii
+│   ├── data/             # Pobieranie i przetwarzanie danych
+│   ├── execution/        # Logika wykonywania zleceń
+│   ├── indicators/       # Wskaźniki techniczne
+│   ├── logging/          # Narzędzia logowania
+│   ├── optimization/     # Optymalizacja strategii
+│   ├── risk_management/  # Moduły kontroli ryzyka
+│   ├── strategies/       # Strategie tradingowe
+│   ├── tests/            # Testy jednostkowe
+│   └── utils/            # Funkcje pomocnicze
+├── logs/                 # Pliki logów
+├── saved_models/         # Zapisane wytrenowane modele
+└── main.py               # Główny punkt wejścia
 ```
 
-## 📂 Struktura projektu
+## 📝 Wymagania
 
+- Python 3.8+
+- Biblioteki wymienione w `requirements.txt`
+- Klucze API do giełd kryptowalut (dla handlu rzeczywistego)
+
+## 🧪 Rozwój i testowanie
+
+### Uruchomienie testów
 ```
-├── ai_models/            # AI and ML models
-├── config/               # Configuration files
-├── data/                 # Data processing and strategy modules
-│   ├── data/             # Data acquisition and preprocessing
-│   ├── execution/        # Order execution logic
-│   ├── indicators/       # Technical indicators
-│   ├── logging/          # Logging utilities
-│   ├── optimization/     # Strategy optimization
-│   ├── risk_management/  # Risk control modules
-│   ├── strategies/       # Trading strategies
-│   ├── tests/            # Unit tests
-│   └── utils/            # Utility functions
-├── logs/                 # Log files
-├── saved_models/         # Serialized trained models
-└── main.py               # Main entry point
+python -m pytest data/tests/
 ```
 
-## 🛠️ Development
-### Testing
-Run tests with:
-```
-pytest data/tests/
-```
-
-### Code Style
-Format code with:
+### Formatowanie kodu
 ```
 black .
 ```
-Check code style with:
+
+### Sprawdzanie stylu kodu
 ```
-flake8
+flake8 .
 ```
 
-## 📄 License
+## 📄 Licencja
 
-This project is proprietary software.
-
-## 🤝 Contributing
-
-Please read the CONTRIBUTING.md for details on our code of conduct and the process for submitting pull requests.
+Ten projekt jest udostępniany na licencji MIT. Zobacz plik LICENSE dla szczegółów.

@@ -1,3 +1,4 @@
+
 """
 main.py
 -------
@@ -12,12 +13,6 @@ Funkcjonalności:
   - Wykorzystanie AI do analizy rynku i predykcji trendów
   - Automatyczne optymalizowanie strategii przez AI
   - Centralne logowanie i obsługa wyjątków
-
-Kod zgodny z najlepszymi praktykami:
-  - Typowanie statyczne (type hints)
-  - Obsługa wyjątków i centralne logowanie
-  - Modularność i skalowalność
-  - Integracja z systemami monitoringu i AI
 """
 
 import logging
@@ -26,6 +21,10 @@ import sys
 import threading
 import time
 from datetime import datetime
+from dotenv import load_dotenv
+
+# Ładujemy zmienne środowiskowe z .env
+load_dotenv()
 
 from ai_models.ai_optimizer import StrategyOptimizer
 from ai_models.anomaly_detection import AnomalyDetector
@@ -48,7 +47,7 @@ def setup_logging() -> None:
     log_filename = f"trading_bot_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.log"
     log_file: str = os.path.join(log_dir, log_filename)
 
-    log_level_str: str = CONFIG.get("LOGGING", {}).get("level", "INFO").upper()
+    log_level_str: str = os.getenv("LOG_LEVEL", "INFO").upper()
     log_level = getattr(logging, log_level_str, logging.INFO)
 
     logging.basicConfig(
@@ -64,11 +63,22 @@ def setup_logging() -> None:
 
 def choose_environment() -> str:
     """Wybór środowiska: production lub testnet."""
-    print("\n[1] Production (Prawdziwy handel)")
+    print("\n==== WYBÓR ŚRODOWISKA ====")
+    print("[1] Production (Prawdziwy handel)")
     print("[2] Testnet (Symulacja)")
 
+    # Domyślnie wybieramy testnet dla bezpieczeństwa
+    default_env = os.getenv("APP_ENV", "development")
+    if default_env == "production":
+        default_choice = "1"
+    else:
+        default_choice = "2"
+
     while True:
-        choice = input("Wybierz środowisko [1/2]: ").strip()
+        choice = input(f"Wybierz środowisko [1/2] (domyślnie: {default_choice}): ").strip()
+        if not choice:
+            choice = default_choice
+            
         if choice == "1":
             return "production"
         elif choice == "2":
@@ -78,11 +88,15 @@ def choose_environment() -> str:
 
 def choose_exchange() -> str:
     """Wybór giełdy: Binance lub Bybit."""
-    print("\n[1] Binance")
+    print("\n==== WYBÓR GIEŁDY ====")
+    print("[1] Binance")
     print("[2] Bybit")
 
     while True:
-        choice = input("Wybierz giełdę [1/2]: ").strip()
+        choice = input("Wybierz giełdę [1/2] (domyślnie: 1): ").strip()
+        if not choice:
+            choice = "1"
+            
         if choice == "1":
             return "binance"
         elif choice == "2":
@@ -95,6 +109,12 @@ def initialize_trading_modules(environment: str, exchange: str) -> TradeExecutor
     try:
         api_key = os.getenv(f"{exchange.upper()}_API_KEY")
         api_secret = os.getenv(f"{exchange.upper()}_API_SECRET")
+
+        if not api_key or not api_secret:
+            logging.warning(f"⚠️ Brak kluczy API dla {exchange.upper()}. Sprawdź plik .env")
+            print(f"\n⚠️ UWAGA: Nie znaleziono kluczy API dla {exchange.upper()}.")
+            print(f"Proszę dodać {exchange.upper()}_API_KEY i {exchange.upper()}_API_SECRET do pliku .env")
+            print("Kontynuacja z ograniczoną funkcjonalnością (tylko odczyt danych).\n")
 
         base_url = (
             "https://api.binance.com"
@@ -167,10 +187,10 @@ def initialize_ai_modules():
                 ai_modules[module_key] = None
         
         num_loaded = sum(1 for m in ai_modules.values() if m is not None)
-        if num_loaded == 5:
+        if num_loaded == len(modules_to_init):
             logging.info("✅ Wszystkie moduły AI załadowane pomyślnie!")
         else:
-            logging.warning("⚠️ Załadowano %d/5 modułów AI", num_loaded)
+            logging.warning(f"⚠️ Załadowano {num_loaded}/{len(modules_to_init)} modułów AI")
             
         return ai_modules
     except Exception as e:
@@ -221,6 +241,10 @@ def trading_loop(trading_manager: TradeExecutor, ai_modules: dict):
 def main() -> None:
     """Główna funkcja uruchamiająca system tradingowy."""
     try:
+        print("\n" + "="*50)
+        print("🚀 ZAAWANSOWANY SYSTEM TRADINGOWY Z AI")
+        print("="*50 + "\n")
+        
         setup_logging()
         logging.info("🚀 System tradingowy uruchamiany.")
 
@@ -228,10 +252,15 @@ def main() -> None:
         environment = choose_environment()
         exchange = choose_exchange()
 
+        print("\n🔧 Inicjalizacja systemu...")
+        
         # Inicjalizacja modułów
         trading_manager = initialize_trading_modules(environment, exchange)
         ai_modules = initialize_ai_modules()
 
+        print("\n✅ System gotowy do działania!")
+        print("📊 Uruchamianie modułów analizy AI i tradingu...")
+        
         # Wielowątkowość – AI i trading działają równolegle
         ai_thread = threading.Thread(target=ai_analysis_loop, args=(ai_modules,), daemon=True)
         trading_thread = threading.Thread(
@@ -241,11 +270,34 @@ def main() -> None:
         ai_thread.start()
         trading_thread.start()
 
-        ai_thread.join()
-        trading_thread.join()
+        # Tworzymy pętlę główną, która nasłuchuje na komendy użytkownika
+        print("\n🔸 Naciśnij Ctrl+C, aby zatrzymać system.")
+        print("🔸 Wpisz 'status', aby sprawdzić stan systemu.")
+        print("🔸 Wpisz 'exit' lub 'quit', aby zakończyć.\n")
+        
+        while True:
+            try:
+                user_input = input("🤖 > ").strip().lower()
+                if user_input in ['exit', 'quit']:
+                    print("Zamykanie systemu...")
+                    break
+                elif user_input == 'status':
+                    print(f"\n==== STATUS SYSTEMU ====")
+                    print(f"🔹 Giełda: {exchange.capitalize()}")
+                    print(f"🔹 Środowisko: {environment}")
+                    print(f"🔹 Moduły AI: {sum(1 for m in ai_modules.values() if m is not None)}/{len(ai_modules)} aktywne")
+                    print(f"🔹 Trading: aktywny\n")
+                elif user_input:
+                    print(f"Nieznana komenda: {user_input}")
+            except KeyboardInterrupt:
+                print("\nZamykanie systemu...")
+                break
 
+    except KeyboardInterrupt:
+        print("\nSystem zatrzymany przez użytkownika.")
     except Exception as main_error:
         logging.critical("❌ Krytyczny błąd w systemie tradingowym: %s", main_error)
+        print(f"\n❌ BŁĄD KRYTYCZNY: {main_error}")
         sys.exit(1)
 
 

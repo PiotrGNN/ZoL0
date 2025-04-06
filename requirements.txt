@@ -18,11 +18,12 @@ optuna>=3.0.0
 # Trading specific
 ccxt>=1.60.0
 ta>=0.9.0
+statsmodels>=0.13.0
 
 # System utilities
 psutil>=5.8.0
 
-# Testing and linting
+# Testing and development
 pytest>=7.0.0
 flake8>=4.0.0
 black>=22.0.0

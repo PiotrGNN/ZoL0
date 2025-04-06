@@ -50,11 +50,11 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "pip install -r requirements.txt --upgrade"
+args = "python3 -m pip install -r requirements.txt --upgrade"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python main.py"
+args = "python3 main.py"
 
 [[workflows.workflow]]
 name = "Run Tests"
