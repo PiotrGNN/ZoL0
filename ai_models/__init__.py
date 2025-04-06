@@ -1,8 +1,12 @@
+
 """
-Moduł ai_models zawiera wszystkie modele uczenia maszynowego i sztucznej inteligencji
-używane w projekcie trading bota.
+ai_models package
+----------------
+Pakiet zawierający modele sztucznej inteligencji wykorzystywane
+w systemie do analizy rynków finansowych, wykrywania anomalii,
+oraz predykcji ruchów cenowych.
 """
 
-from ai_models.anomaly_detection import AnomalyDetectionModel, detect_volatility_anomalies, detect_volume_anomalies
+from .anomaly_detection import AnomalyDetectionModel
 
-__all__ = ['AnomalyDetectionModel', 'detect_volatility_anomalies', 'detect_volume_anomalies']
+__all__ = ['AnomalyDetectionModel']

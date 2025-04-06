@@ -1,45 +1,39 @@
-
 run = "python main.py"
-hidden = [".config", "**/__pycache__", "**/.pytest_cache", "**/*.pyc"]
-
-entrypoint = "main.py"
-
 language = "python3"
-modules = ["python-3.11"]
+entrypoint = "main.py"
+hidden = [".git", ".config", "**/__pycache__", "**/.mypy_cache", "**/*.pyc"]
 
 [nix]
 channel = "stable-22_11"
 
 [env]
-PYTHONPATH = "."
-PYTHONFAULTHANDLER = "1"
+PYTHONPATH = "$PYTHONPATH:$PWD"
+PATH = "$PATH:$PWD"
 
 [packager]
 language = "python3"
-ignoredPackages = []
+ignoredPackages = ["unit_tests"]
 
 [packager.features]
-enabledForHosting = true
 packageSearch = true
-
-[gitHubImport]
-requiredFiles = [".replit", "replit.nix"]
-
-[languages]
+guessImports = true
 
 [languages.python3]
 pattern = "**/*.py"
+syntax = "python"
 
 [languages.python3.languageServer]
 start = "pylsp"
 
+[unitTest]
+language = "python3"
+
 [deployment]
-run = ["python3", "main.py"]
+run = ["python", "main.py"]
 deploymentTarget = "cloudrun"
 
-[tools]
-formatter = "black"
-linter = "flake8"
+[gitHubImport]
+requiredFiles = [".replit", "replit.nix", ".gitignore"]
 
 [workflows]
 runButton = "Run"

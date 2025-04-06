@@ -1,62 +1,68 @@
+
 # 🤖 Trading Bot - System Analityczny
 
-## 📋 Opis Projektu
+System do analizy rynków finansowych z wykorzystaniem algorytmów uczenia maszynowego i sztucznej inteligencji, zoptymalizowany do działania w środowisku Replit.
 
-Trading Bot to system analityczny do analizy danych rynkowych, wykrywania anomalii i symulacji strategii inwestycyjnych. Projekt jest zoptymalizowany do działania w środowisku Replit.
+## 🚀 Funkcjonalności
 
-## 🚀 Szybki Start
-
-1. **Instalacja zależności**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-   Alternatywnie, użyj predefiniowanego workflow "Install Dependencies"
-
-2. **Uruchomienie projektu**:
-   ```bash
-   python main.py
-   ```
-   Lub naciśnij przycisk "Run" w interfejsie Replit
-
-3. **Uruchomienie testów**:
-   ```bash
-   pytest data/tests/
-   ```
-   Lub użyj workflow "Test"
-
-## 🧰 Struktura Projektu
-
-```
-├── ai_models/              # Modele sztucznej inteligencji
-│   ├── anomaly_detection.py  # Wykrywanie anomalii
-│   └── ...
-├── config/                 # Konfiguracja aplikacji
-├── data/                   # Moduły przetwarzania danych
-│   ├── data/               # Źródła danych i preprocessing
-│   ├── execution/          # Wykonywanie transakcji
-│   ├── indicators/         # Wskaźniki techniczne
-│   ├── logging/            # Logowanie operacji
-│   ├── optimization/       # Optymalizacja strategii
-│   ├── risk_management/    # Zarządzanie ryzykiem
-│   ├── strategies/         # Strategie inwestycyjne
-│   ├── tests/              # Testy jednostkowe
-│   └── utils/              # Funkcje pomocnicze
-├── logs/                   # Pliki logów
-├── saved_models/           # Zapisane modele AI
-├── .env.example            # Przykładowe zmienne środowiskowe
-├── requirements.txt        # Zależności projektu
-└── main.py                 # Główny skrypt aplikacji
-```
-
-## 🛠️ Funkcjonalności
-
-- Analiza historycznych danych giełdowych
+- Pobieranie i przetwarzanie danych giełdowych
 - Wykrywanie anomalii cenowych i wolumenowych
 - Symulacja strategii inwestycyjnych
 - Analiza ryzyka i optymalizacja portfela
 - Automatyczne raportowanie wyników
 
-## 🔍 Workflow i Narzędzia
+## 🔧 Instalacja i konfiguracja
+
+### Wymagania systemowe
+
+Projekt jest skonfigurowany do automatycznego działania w środowisku Replit. W przypadku uruchamiania lokalnie, wymagane są:
+
+- Python 3.8+
+- Pakiety wymienione w pliku `requirements.txt`
+
+### Konfiguracja środowiska
+
+1. **Zmienne środowiskowe**:
+   Skopiuj plik `.env.example` do `.env` i uzupełnij wymagane zmienne:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Instalacja zależności**:
+   Zależności zostaną automatycznie zainstalowane przy pierwszym uruchomieniu. Możesz też zainstalować je ręcznie:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+## 📊 Uruchamianie systemu
+
+### W środowisku Replit
+
+Naciśnij przycisk ▶️ **Run** aby uruchomić system.
+
+### Lokalne uruchomienie
+
+```bash
+python main.py
+```
+
+## 🧪 Testy
+
+Uruchom testy jednostkowe:
+
+```bash
+pytest data/tests/
+```
+
+Testy z raportem pokrycia:
+
+```bash
+pytest --cov=. --cov-report=term-missing data/tests/
+```
+
+## 🎛️ Dostępne workflowy
 
 W projekcie skonfigurowano następujące workflowy:
 
@@ -67,27 +73,34 @@ W projekcie skonfigurowano następujące workflowy:
 5. **Test with Coverage** - Uruchamia testy z raportem pokrycia
 6. **Install Dependencies** - Instaluje wymagane zależności
 
-## 🔑 Konfiguracja Środowiska
-
-Przed uruchomieniem aplikacji, skopiuj plik `.env.example` do `.env` i uzupełnij wymagane zmienne środowiskowe:
+## 🏗️ Struktura projektu
 
 ```
-# API Keys - Replace with your actual keys
-BINANCE_API_KEY=your_binance_api_key_here
-BINANCE_API_SECRET=your_binance_api_secret_here
+.
+├── ai_models/                # Modele AI i uczenia maszynowego
+├── config/                   # Pliki konfiguracyjne
+├── data/                     # Przetwarzanie i zarządzanie danymi
+│   ├── data/                 # Pobieranie i przetwarzanie danych
+│   ├── execution/            # Wykonywanie transakcji
+│   ├── indicators/           # Wskaźniki techniczne
+│   ├── logging/              # Logowanie zdarzeń
+│   ├── optimization/         # Optymalizacja strategii
+│   ├── risk_management/      # Zarządzanie ryzykiem
+│   ├── strategies/           # Strategie inwestycyjne
+│   ├── tests/                # Testy jednostkowe
+│   └── utils/                # Narzędzia pomocnicze
+├── logs/                     # Logi aplikacji
+├── saved_models/             # Zapisane modele ML
+├── main.py                   # Główny punkt wejścia
+└── requirements.txt          # Zależności projektu
 ```
 
-## 📊 Przykładowe Użycie
+## 🛠️ Narzędzia deweloperskie
 
-```python
-# Inicjalizacja modelu wykrywania anomalii
-from ai_models.anomaly_detection import AnomalyDetectionModel
-
-model = AnomalyDetectionModel(method='isolation_forest', contamination=0.05)
-model.fit(data)
-anomalies = model.detect_anomalies(data)
-```
+- **Linter**: Flake8 (konfiguracja w `.flake8`)
+- **Formatter**: Black
+- **Testy**: pytest
 
 ## 📝 Licencja
 
-Ten projekt jest licencjonowany na warunkach MIT License.
+Ten projekt jest udostępniany na licencji MIT.
