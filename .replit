@@ -2,3 +2,18 @@ modules = ["python-3.12"]
 
 [nix]
 channel = "stable-24_05"
+
+[deployment]
+run = ["sh", "-c", "python main.py"]
+
+[workflows]
+runButton = "Start Trading Bot"
+
+[[workflows.workflow]]
+name = "Start Trading Bot"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python main.py"
