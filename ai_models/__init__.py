@@ -1,12 +1,8 @@
 
 """
-ai_models package
-----------------
-Pakiet zawierający modele sztucznej inteligencji wykorzystywane
-w systemie do analizy rynków finansowych, wykrywania anomalii,
-oraz predykcji ruchów cenowych.
+ai_models - pakiet zawierający modele sztucznej inteligencji i uczenia maszynowego
 """
 
-from .anomaly_detection import AnomalyDetectionModel
+from ai_models.anomaly_detection import AnomalyDetector
 
-__all__ = ['AnomalyDetectionModel']
+__all__ = ["AnomalyDetector"]

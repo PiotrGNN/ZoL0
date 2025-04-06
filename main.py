@@ -140,3 +140,59 @@ if __name__ == "__main__":
     except Exception as e:
         logging.critical(f"Nieoczekiwany błąd: {e}")
         print(f"\n❌ Krytyczny błąd: {e}")
+#!/usr/bin/env python
+"""
+Trading System - Główny moduł aplikacji
+---------------------------------------
+Ten skrypt stanowi główny punkt wejścia do systemu tradingowego.
+"""
+
+import logging
+import os
+import sys
+from pathlib import Path
+
+# Konfiguracja ścieżek projektu
+PROJECT_ROOT = Path(__file__).resolve().parent
+sys.path.append(str(PROJECT_ROOT))
+
+# Konfiguracja logowania
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler(os.path.join(PROJECT_ROOT, "logs", "app.log")),
+        logging.StreamHandler(sys.stdout)
+    ]
+)
+
+logger = logging.getLogger(__name__)
+
+
+def setup_environment():
+    """Konfiguracja środowiska aplikacji."""
+    # Upewnij się, że folder logs istnieje
+    os.makedirs(os.path.join(PROJECT_ROOT, "logs"), exist_ok=True)
+    logger.info("Środowisko zostało skonfigurowane")
+
+
+def main():
+    """Główna funkcja uruchamiająca system."""
+    try:
+        setup_environment()
+        logger.info("Uruchamianie systemu tradingowego...")
+        
+        # Przykładowe wykorzystanie modułu detekcji anomalii
+        from ai_models.anomaly_detection import AnomalyDetector
+        
+        detector = AnomalyDetector()
+        detector.info()
+        
+        logger.info("System tradingowy uruchomiony pomyślnie")
+    except Exception as e:
+        logger.error(f"Wystąpił błąd podczas uruchamiania systemu: {e}")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

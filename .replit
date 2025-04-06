@@ -2,6 +2,7 @@ run = "python main.py"
 language = "python3"
 entrypoint = "main.py"
 hidden = [".git", ".config", "**/__pycache__", "**/.mypy_cache", "**/*.pyc"]
+modules = ["python-3.11"]
 
 [nix]
 channel = "stable-22_11"
