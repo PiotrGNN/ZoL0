@@ -1,10 +1,11 @@
 
-run = ["python3", "main.py"]
+run = "python main.py"
 hidden = [".config", "**/__pycache__", "**/.pytest_cache", "**/*.pyc"]
 
 entrypoint = "main.py"
 
 language = "python3"
+modules = ["python-3.11"]
 
 [nix]
 channel = "stable-22_11"
@@ -87,3 +88,12 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "pytest --cov=. --cov-report=term-missing data/tests/"
+
+[[workflows.workflow]]
+name = "Install Dependencies"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pip install -r requirements.txt"

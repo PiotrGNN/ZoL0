@@ -33,3 +33,15 @@ try:
     from .feature_engineering import FeatureEngineer
 except ImportError:
     pass
+"""
+AI Models Package
+----------------
+Pakiet zawierający modele uczenia maszynowego i sztucznej inteligencji
+wykorzystywane w systemie tradingowym.
+"""
+
+from .anomaly_detection import AnomalyDetectionModel
+
+__all__ = [
+    'AnomalyDetectionModel',
+]
