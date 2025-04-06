@@ -134,33 +134,96 @@ def initialize_trading_modules(environment: str, exchange: str) -> TradeExecutor
 
 
 def initialize_ai_modules():
-    """Inicjalizuje modele AI."""
+    """Inicjalizuje modele AI z obsługą brakujących zależności."""
+    ai_modules = {}
+    
     try:
-        sentiment_ai = SentimentAnalyzer()
-        anomaly_ai = AnomalyDetector()
-        trend_ai = TrendPredictor()
-        optimizer_ai = StrategyOptimizer()
-        reinforcement_ai = ReinforcementLearner()
-
-        logging.info("✅ Moduły AI załadowane!")
-        return sentiment_ai, anomaly_ai, trend_ai, optimizer_ai, reinforcement_ai
+        # Inicjalizuj moduły z obsługą błędów dla każdego z osobna
+        try:
+            ai_modules['sentiment_ai'] = SentimentAnalyzer()
+            logging.info("✅ Moduł analizy sentymentu załadowany")
+        except Exception as e:
+            logging.warning("⚠️ Nie udało się załadować modułu analizy sentymentu: %s", e)
+            ai_modules['sentiment_ai'] = None
+            
+        try:
+            ai_modules['anomaly_ai'] = AnomalyDetector()
+            logging.info("✅ Moduł wykrywania anomalii załadowany")
+        except Exception as e:
+            logging.warning("⚠️ Nie udało się załadować modułu wykrywania anomalii: %s", e)
+            ai_modules['anomaly_ai'] = None
+            
+        try:
+            ai_modules['trend_ai'] = TrendPredictor()
+            logging.info("✅ Moduł predykcji trendów załadowany")
+        except Exception as e:
+            logging.warning("⚠️ Nie udało się załadować modułu predykcji trendów: %s", e)
+            ai_modules['trend_ai'] = None
+            
+        try:
+            ai_modules['optimizer_ai'] = StrategyOptimizer()
+            logging.info("✅ Moduł optymalizacji strategii załadowany")
+        except Exception as e:
+            logging.warning("⚠️ Nie udało się załadować modułu optymalizacji strategii: %s", e)
+            ai_modules['optimizer_ai'] = None
+            
+        try:
+            ai_modules['reinforcement_ai'] = ReinforcementLearner()
+            logging.info("✅ Moduł uczenia ze wzmocnieniem załadowany")
+        except Exception as e:
+            logging.warning("⚠️ Nie udało się załadować modułu uczenia ze wzmocnieniem: %s", e)
+            ai_modules['reinforcement_ai'] = None
+        
+        num_loaded = sum(1 for m in ai_modules.values() if m is not None)
+        if num_loaded == 5:
+            logging.info("✅ Wszystkie moduły AI załadowane pomyślnie!")
+        else:
+            logging.warning("⚠️ Załadowano %d/5 modułów AI", num_loaded)
+            
+        return ai_modules
     except Exception as e:
-        logging.error("❌ Błąd inicjalizacji AI: %s", e)
-        return None
+        logging.error("❌ Krytyczny błąd podczas inicjalizacji modułów AI: %s", e)
+        return {}
 
 
-def ai_analysis_loop():
-    """Pętla do analizy AI w czasie rzeczywistym."""
+def ai_analysis_loop(ai_modules):
+    """Pętla do analizy AI w czasie rzeczywistym z obsługą brakujących modułów."""
     while True:
-        logging.info("🧠 AI analizuje rynek...")
-        time.sleep(10)
+        try:
+            logging.info("🧠 AI analizuje rynek...")
+            
+            # Wykonuj dostępne analizy
+            if ai_modules.get('sentiment_ai'):
+                logging.info("📊 Analiza sentymentu w toku...")
+            
+            if ai_modules.get('anomaly_ai'):
+                logging.info("🔍 Wykrywanie anomalii w toku...")
+            
+            if ai_modules.get('trend_ai'):
+                logging.info("📈 Predykcja trendów w toku...")
+            
+            time.sleep(10)
+        except Exception as e:
+            logging.error("❌ Błąd w pętli analizy AI: %s", e)
+            time.sleep(30)  # Dłuższa przerwa przy błędzie
 
 
-def trading_loop(trading_manager: TradeExecutor):
-    """Pętla do automatycznego handlu."""
+def trading_loop(trading_manager: TradeExecutor, ai_modules: dict):
+    """Pętla do automatycznego handlu z wykorzystaniem dostępnych modułów AI."""
     while True:
-        logging.info("📈 Wykonywanie transakcji...")
-        time.sleep(5)
+        try:
+            logging.info("📈 Analiza rynku i wykonywanie transakcji...")
+            
+            # Możemy użyć optimizera jeśli jest dostępny
+            if ai_modules.get('optimizer_ai'):
+                logging.info("⚙️ Optymalizacja strategii w toku...")
+            
+            # Symulacja handlu
+            logging.info("💹 Monitorowanie rynku...")
+            time.sleep(5)
+        except Exception as e:
+            logging.error("❌ Błąd w pętli tradingowej: %s", e)
+            time.sleep(15)  # Dłuższa przerwa przy błędzie
 
 
 def main() -> None:
@@ -175,12 +238,12 @@ def main() -> None:
 
         # Inicjalizacja modułów
         trading_manager = initialize_trading_modules(environment, exchange)
-        initialize_ai_modules()
+        ai_modules = initialize_ai_modules()
 
         # Wielowątkowość – AI i trading działają równolegle
-        ai_thread = threading.Thread(target=ai_analysis_loop, daemon=True)
+        ai_thread = threading.Thread(target=ai_analysis_loop, args=(ai_modules,), daemon=True)
         trading_thread = threading.Thread(
-            target=trading_loop, args=(trading_manager,), daemon=True
+            target=trading_loop, args=(trading_manager, ai_modules), daemon=True
         )
 
         ai_thread.start()
