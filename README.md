@@ -42,7 +42,7 @@ System do analizy danych rynkowych, strategii handlowych i automatycznego handlu
    cp .env.example .env
    ```
 
-3. Uruchom aplikację:
+3. Uruchom aplikację (możesz użyć przycisku Run w Replit lub):
    ```
    python3 main.py
    ```
@@ -51,6 +51,35 @@ System do analizy danych rynkowych, strategii handlowych i automatycznego handlu
    ```
    pytest data/tests/
    ```
+
+## 💻 Uruchamianie w Replit
+1. Projekt jest gotowy do natychmiastowego uruchomienia w środowisku Replit.
+2. Wystarczy kliknąć przycisk Run, aby uruchomić aplikację w trybie symulacji.
+3. Możesz też użyć predefiniowanych workflowów dostępnych w menu:
+   - `Run` - uruchamia aplikację
+   - `Test` - uruchamia testy jednostkowe
+   - `Format Code` - formatuje kod przy użyciu narzędzia Black
+   - `Lint Code` - sprawdza jakość kodu przy użyciu Flake8
+
+## 🛠️ Rozwój projektu
+1. Dla programistów, zalecane jest używanie narzędzi do formatowania i sprawdzania jakości kodu:
+   - Formatowanie kodu:
+     ```
+     black .
+     ```
+   - Sprawdzanie jakości kodu:
+     ```
+     flake8 .
+     ```
+   - Uruchamianie testów z pokryciem kodu:
+     ```
+     pytest --cov=. data/tests/
+     ```
+
+2. Struktura katalogów jest zorganizowana modułowo, co ułatwia rozwój projektu:
+   - Dodaj nowe modele AI w katalogu `ai_models/`
+   - Rozwijaj strategie handlowe w katalogu `data/strategies/`
+   - Twórz nowe wskaźniki w katalogu `data/indicators/`
 
 ## 🔧 Narzędzia developerskie
 - **Linter**: flake8 - sprawdzanie zgodności ze standardami kodu

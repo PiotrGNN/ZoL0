@@ -78,3 +78,12 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "flake8 ."
+
+[[workflows.workflow]]
+name = "Test with Coverage"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pytest --cov=. --cov-report=term-missing data/tests/"
