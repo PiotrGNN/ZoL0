@@ -181,7 +181,21 @@ def initialize_ai_modules():
                 logging.info(f"✅ Moduł {module_name} załadowany")
             except ImportError as e:
                 logging.warning(f"⚠️ Brak zależności dla modułu {module_name}: {e}")
-                ai_modules[module_key] = None
+                # Automatyczna instalacja brakujących zależności
+                missing_pkg = str(e).split("'")[-2] if "'" in str(e) else None
+                if missing_pkg:
+                    try:
+                        import subprocess
+                        logging.info(f"🔄 Próba automatycznej instalacji pakietu: {missing_pkg}")
+                        subprocess.check_call(["pip", "install", missing_pkg])
+                        # Ponowna próba importu
+                        ai_modules[module_key] = module_class()
+                        logging.info(f"✅ Pakiet {missing_pkg} zainstalowany i moduł {module_name} załadowany")
+                    except Exception as install_err:
+                        logging.warning(f"⚠️ Nie udało się zainstalować pakietu {missing_pkg}: {install_err}")
+                        ai_modules[module_key] = None
+                else:
+                    ai_modules[module_key] = None
             except Exception as e:
                 logging.warning(f"⚠️ Nie udało się załadować modułu {module_name}: {e}")
                 ai_modules[module_key] = None

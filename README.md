@@ -1,3 +1,4 @@
+
 # 🚀 Advanced AI Trading System
 
 System do automatycznego tradingu z wykorzystaniem zaawansowanych algorytmów AI i ML.
@@ -34,51 +35,49 @@ System do automatycznego tradingu z wykorzystaniem zaawansowanych algorytmów AI
 3. Dostępne workflow:
    - **Start Trading Bot** - Uruchamia główny system tradingowy
    - **Run Tests** - Uruchamia testy jednostkowe
-   - **Lint Code** - Sprawdza jakość kodu
+   - **Lint Code** - Sprawdza kod źródłowy linterem
 
-## 🛠️ Struktura projektu
+## 📁 Struktura projektu
 
 ```
-├── ai_models/            # Modele AI i uczenia maszynowego
-├── config/               # Pliki konfiguracyjne
-├── data/                 # Moduły przetwarzania danych i strategii
-│   ├── data/             # Pobieranie i przetwarzanie danych
-│   ├── execution/        # Logika wykonywania zleceń
-│   ├── indicators/       # Wskaźniki techniczne
-│   ├── logging/          # Narzędzia logowania
-│   ├── optimization/     # Optymalizacja strategii
-│   ├── risk_management/  # Moduły kontroli ryzyka
-│   ├── strategies/       # Strategie tradingowe
-│   ├── tests/            # Testy jednostkowe
-│   └── utils/            # Funkcje pomocnicze
-├── logs/                 # Pliki logów
-├── saved_models/         # Zapisane wytrenowane modele
-└── main.py               # Główny punkt wejścia
+.
+├── ai_models/                # Modele AI/ML
+│   ├── anomaly_detection.py  # Wykrywanie anomalii rynkowych
+│   ├── reinforcement_learning.py # Uczenie ze wzmocnieniem
+│   └── sentiment_analysis.py # Analiza sentymentu rynkowego
+├── data/
+│   ├── execution/            # Wykonywanie transakcji
+│   ├── indicators/           # Wskaźniki techniczne
+│   ├── risk_management/      # Zarządzanie ryzykiem
+│   ├── strategies/           # Strategie tradingowe
+│   └── tests/                # Testy jednostkowe
+├── config/                   # Konfiguracja systemu
+├── logs/                     # Logi systemu
+├── .env.example              # Przykładowy plik zmiennych środowiskowych
+└── main.py                   # Punkt wejściowy systemu
 ```
 
-## 📝 Wymagania
+## 🧪 Testowanie
 
-- Python 3.8+
-- Biblioteki wymienione w `requirements.txt`
-- Klucze API do giełd kryptowalut (dla handlu rzeczywistego)
+Aby uruchomić testy jednostkowe, użyj workflowa "Run Tests" lub wykonaj:
 
-## 🧪 Rozwój i testowanie
-
-### Uruchomienie testów
 ```
-python -m pytest data/tests/
+pytest data/tests
 ```
 
-### Formatowanie kodu
-```
-black .
-```
+## 📊 Dostępne strategie
 
-### Sprawdzanie stylu kodu
-```
-flake8 .
-```
+1. **Mean Reversion** - Wykorzystuje powrót ceny do średniej
+2. **Trend Following** - Wykorzystuje silne trendy rynkowe
+3. **Breakout Strategy** - Wykrywa wybicia z konsolidacji
+4. **AI Strategy** - Adaptacyjna strategia bazująca na uczeniu maszynowym
 
-## 📄 Licencja
+## 🔒 Bezpieczeństwo
 
-Ten projekt jest udostępniany na licencji MIT. Zobacz plik LICENSE dla szczegółów.
+- Nigdy nie przechowuj kluczy API bezpośrednio w kodzie
+- Używaj pliku `.env` dla zmiennych środowiskowych 
+- Zawsze testuj strategie w środowisku testowym przed uruchomieniem na prawdziwym rynku
+
+## 📝 Licencja
+
+Copyright © 2023
