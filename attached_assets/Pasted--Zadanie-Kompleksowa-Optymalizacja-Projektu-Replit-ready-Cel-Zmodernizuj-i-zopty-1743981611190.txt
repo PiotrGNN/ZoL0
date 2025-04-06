@@ -1,0 +1,61 @@
+## 🚀 Zadanie: Kompleksowa Optymalizacja Projektu (Replit-ready)
+
+### 🎯 Cel:
+Zmodernizuj i zoptymalizuj projekt tak, aby był w pełni funkcjonalny, wydajny i gotowy do natychmiastowego działania w środowisku [Replit](https://replit.com).
+
+---
+
+### ✅ Zakres działań:
+
+#### 1. Analiza i zależności:
+- Zidentyfikuj i dodaj wszystkie wymagane biblioteki.
+- Usuń nieużywane zależności.
+- Wygeneruj odpowiedni plik:
+  - `requirements.txt` (Python) lub
+  - `package.json` (Node.js)
+- W razie potrzeby dodaj pliki `.replit` i `replit.nix` do automatycznej konfiguracji środowiska.
+
+#### 2. Naprawa i stabilność:
+- Usuń błędy kompilacji i wykonania.
+- Zadbaj o poprawne importy i działanie kodu.
+- Upewnij się, że projekt działa bez ingerencji użytkownika.
+
+#### 3. Refaktoryzacja i styl:
+- Zoptymalizuj strukturę katalogów i plików.
+- Wprowadź czytelne, spójne nazewnictwo.
+- Usuń zbędny, zduplikowany lub nieczytelny kod.
+- Dodaj niezbędne komentarze i dokumentację.
+
+#### 4. Wydajność i dobre praktyki:
+- Zastosuj nowoczesne wzorce projektowe, jeśli to zasadne.
+- Uprość i zoptymalizuj logikę działania.
+- Zadbaj o niskie zużycie zasobów (CPU, RAM).
+
+#### 5. Automatyzacja i narzędzia:
+- Skonfiguruj:
+  - Linter (`flake8`, `eslint`)
+  - Formatter (`black`, `prettier`)
+  - Testy (`pytest`, `jest`)
+- Dodaj skrypty: `run`, `test`, `start`, itp.
+- Przygotuj plik README z instrukcją uruchomienia.
+
+---
+
+### 📦 Oczekiwany rezultat:
+
+- Gotowy do użycia kod z pełną konfiguracją środowiska.
+- Skonfigurowane narzędzia developerskie.
+- Poprawiona wersja plików projektu.
+- Dokumentacja uruchomienia i opis wprowadzonych zmian.
+
+---
+
+### 🧠 Lista kontrolna (Replit):
+
+- [ ] Czy projekt ma wyraźny punkt wejścia (`main.py`, `app.py`, `index.js`)?
+- [ ] Czy działa automatycznie przez `.replit`?
+- [ ] Czy instaluje się bez błędów po klonowaniu?
+- [ ] Czy styl kodu jest jednolity i zgodny z linterem?
+- [ ] Czy kod jest modułowy i łatwy do utrzymania?
+
+---
