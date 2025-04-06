@@ -1,0 +1,17 @@
+2025-03-02 07:23:06,424 [INFO] Wszystkie wymagane pliki istnieją.
+2025-03-02 07:23:06,434 [INFO] Naprawiono `NoneType` dla `best_model`.
+2025-03-02 07:23:06,434 [INFO] Poprawiono `H` na `h` w: data/tests/test_strategies.py
+2025-03-02 07:24:11,599 [INFO] Wszystkie wymagane pliki istnieją.
+2025-03-02 07:24:11,625 [INFO] Naprawiono `NoneType` dla `best_model`.
+2025-03-02 07:24:11,648 [INFO] Poprawiono `H` na `h` w: data/tests/test_strategies.py
+2025-03-02 07:26:43,103 [ERROR] 🚨 Brakujące pliki: ['C:\\Users\\piotr\\Documents\\Nowy folder\\ZoL0\\data\\execution\\stop_loss_manager.py']
+2025-03-02 07:26:43,107 [INFO] 🔧 Naprawiono `NoneType` dla `best_model`.
+2025-03-02 07:26:43,107 [INFO] 🔄 Poprawiono `H` na `h` w: test_strategies.py
+2025-03-02 07:29:46,663 [ERROR] 🚨 Brakujące pliki: ['C:\\Users\\piotr\\Documents\\Nowy folder\\ZoL0\\data\\execution\\stop_loss_manager.py']
+2025-03-02 07:29:46,691 [INFO] 🔧 Naprawiono `NoneType` dla `best_model`.
+2025-03-02 07:29:46,713 [INFO] 🔄 Poprawiono `H` na `h` w: test_strategies.py
+2025-03-02 07:32:32,501 [INFO] 🔍 Rozpoczynam automatyczną naprawę testów...
+2025-03-02 07:32:32,501 [INFO] ✅ Wszystkie wymagane pliki istnieją.
+2025-03-02 07:32:32,524 [INFO] 🔧 Naprawiono `NoneType` dla `best_model`.
+2025-03-02 07:32:32,524 [INFO] 🚀 Uruchamiam testy ponownie...
+2025-03-02 07:32:33,643 [INFO] 🎯 **Testy zakończone!**

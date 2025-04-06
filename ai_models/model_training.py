@@ -12,16 +12,16 @@ Funkcjonalności:
 - Odporny na błędy (logowanie wyjątków, automatyczna próba wznowienia) oraz zapisywanie wyników do folderu saved_models.
 """
 
-import os
 import logging
+import os
 import pickle
+from datetime import datetime
+from typing import Any, Dict, List, Optional, Union
+
 import numpy as np
 import pandas as pd
-from datetime import datetime
-from typing import Any, Dict, Optional, Union, List
-
+from sklearn.metrics import mean_absolute_error, mean_squared_error
 from sklearn.model_selection import TimeSeriesSplit
-from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 # Dla modeli Keras (jeśli używasz TensorFlow)
 try:
@@ -31,8 +31,10 @@ except ImportError:
     tf = None
 
 # Konfiguracja logowania (opcjonalnie może być zastąpione przez setup_logging w main.py)
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s [%(levelname)s] %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
+
 
 class ModelTrainer:
     def __init__(
@@ -42,7 +44,7 @@ class ModelTrainer:
         saved_model_dir: str = "saved_models",
         online_learning: bool = False,
         use_gpu: bool = False,
-        early_stopping_params: Optional[Dict[str, Any]] = None
+        early_stopping_params: Optional[Dict[str, Any]] = None,
     ):
         """
         Inicjalizacja trenera modelu.
@@ -72,10 +74,7 @@ class ModelTrainer:
             # Możesz tu włączyć strategię tf.distribute.MirroredStrategy() itp.
 
     def walk_forward_split(
-        self,
-        X: pd.DataFrame,
-        y: pd.Series,
-        n_splits: int = 5
+        self, X: pd.DataFrame, y: pd.Series, n_splits: int = 5
     ) -> List[tuple]:
         """
         Dzieli dane przy użyciu walk-forward validation.
@@ -97,7 +96,7 @@ class ModelTrainer:
         y: pd.Series,
         n_splits: int = 5,
         epochs: int = 50,
-        batch_size: int = 32
+        batch_size: int = 32,
     ) -> Dict[str, List[float]]:
         """
         Trenuje model przy użyciu walk-forward validation.
@@ -114,7 +113,7 @@ class ModelTrainer:
         """
         try:
             splits = self.walk_forward_split(X, y, n_splits=n_splits)
-            metrics = {'mse': [], 'mae': []}
+            metrics = {"mse": [], "mae": []}
 
             for fold, (X_train, y_train, X_val, y_val) in enumerate(splits, start=1):
                 logging.info("Rozpoczynam trening (fold %d / %d)", fold, n_splits)
@@ -125,25 +124,27 @@ class ModelTrainer:
                     if self.early_stopping_params:
                         callbacks.append(EarlyStopping(**self.early_stopping_params))
                     checkpoint_path = os.path.join(
-                        self.saved_model_dir,
-                        f"{self.model_name}_fold{fold}.h5"
+                        self.saved_model_dir, f"{self.model_name}_fold{fold}.h5"
                     )
                     callbacks.append(
                         ModelCheckpoint(
                             checkpoint_path,
                             save_best_only=True,
-                            monitor=self.early_stopping_params.get('monitor', 'val_loss'),
-                            verbose=1
+                            monitor=self.early_stopping_params.get(
+                                "monitor", "val_loss"
+                            ),
+                            verbose=1,
                         )
                     )
-                    
+
                     history = self.model.fit(
-                        X_train, y_train,
+                        X_train,
+                        y_train,
                         validation_data=(X_val, y_val),
                         epochs=epochs,
                         batch_size=batch_size,
                         callbacks=callbacks,
-                        verbose=1
+                        verbose=1,
                     )
                     # Zachowujemy historię treningu
                     self.history = history.history
@@ -160,20 +161,22 @@ class ModelTrainer:
                 # Obliczamy metryki
                 mse = mean_squared_error(y_val, predictions)
                 mae = mean_absolute_error(y_val, predictions)
-                metrics['mse'].append(mse)
-                metrics['mae'].append(mae)
+                metrics["mse"].append(mse)
+                metrics["mae"].append(mae)
 
                 logging.info("Fold %d - MSE: %.4f, MAE: %.4f", fold, mse, mae)
 
                 # Jeśli online learning i model wspiera partial_fit
                 if self.online_learning and hasattr(self.model, "partial_fit"):
-                    logging.info("Aktualizacja modelu metodą partial_fit (online learning).")
+                    logging.info(
+                        "Aktualizacja modelu metodą partial_fit (online learning)."
+                    )
                     # Przekazujemy dane walidacyjne do partial_fit
                     self.model.partial_fit(X_val, y_val)
 
             # Wyliczamy średnie metryki z wszystkich foldów
-            avg_mse = float(np.mean(metrics['mse']))
-            avg_mae = float(np.mean(metrics['mae']))
+            avg_mse = float(np.mean(metrics["mse"]))
+            avg_mae = float(np.mean(metrics["mae"]))
             logging.info("Średnie MSE: %.4f, Średnie MAE: %.4f", avg_mse, avg_mae)
 
             # Zapisujemy ostateczny model
@@ -192,8 +195,7 @@ class ModelTrainer:
         try:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             model_filename = os.path.join(
-                self.saved_model_dir,
-                f"{self.model_name}_{timestamp}"
+                self.saved_model_dir, f"{self.model_name}_{timestamp}"
             )
 
             if tf is not None and isinstance(self.model, tf.keras.Model):
@@ -210,27 +212,36 @@ class ModelTrainer:
             logging.error("Błąd podczas zapisywania modelu: %s", e)
             raise
 
+
 # -------------------- Przykładowe użycie --------------------
 if __name__ == "__main__":
     try:
         # Generowanie przykładowych danych (np. dane finansowe)
         np.random.seed(42)
         dates = pd.date_range(start="2022-01-01", periods=500, freq="D")
-        X = pd.DataFrame({
-            'feature1': np.random.normal(0, 1, size=500),
-            'feature2': np.random.normal(0, 1, size=500)
-        }, index=dates)
-        y = X['feature1'] * 1.5 + X['feature2'] * (-2.0) + np.random.normal(0, 0.5, size=500)
-        
+        X = pd.DataFrame(
+            {
+                "feature1": np.random.normal(0, 1, size=500),
+                "feature2": np.random.normal(0, 1, size=500),
+            },
+            index=dates,
+        )
+        y = (
+            X["feature1"] * 1.5
+            + X["feature2"] * (-2.0)
+            + np.random.normal(0, 0.5, size=500)
+        )
+
         # Przykład użycia z modelem scikit-learn (np. RandomForestRegressor)
         from sklearn.ensemble import RandomForestRegressor
+
         model = RandomForestRegressor(n_estimators=100, random_state=42)
 
         trainer = ModelTrainer(
             model=model,
             model_name="RandomForest_Model",
             online_learning=True,
-            early_stopping_params={'monitor': 'val_loss', 'patience': 5}
+            early_stopping_params={"monitor": "val_loss", "patience": 5},
         )
         metrics = trainer.train(X, y, n_splits=5)
 

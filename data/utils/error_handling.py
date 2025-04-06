@@ -13,20 +13,22 @@ Funkcjonalności:
 import logging
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s [%(levelname)s] %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
+
 
 class DataError(Exception):
     """Wyjątek związany z błędami przetwarzania danych."""
-    pass
+
 
 class TradingError(Exception):
     """Wyjątek związany z błędami podczas wykonywania transakcji."""
-    pass
+
 
 class ConfigError(Exception):
     """Wyjątek związany z błędami konfiguracji."""
-    pass
+
 
 def log_error(error, level=logging.ERROR):
     """
@@ -39,6 +41,7 @@ def log_error(error, level=logging.ERROR):
     logging.log(level, "Błąd: %s", str(error))
     # Tutaj można zintegrować wysyłkę powiadomień np. e-mail, Slack, Sentry itp.
 
+
 def handle_data_error(error):
     """
     Obsługuje błąd związany z danymi, logując go i rzucając DataError.
@@ -48,6 +51,7 @@ def handle_data_error(error):
     """
     log_error(error, level=logging.ERROR)
     raise DataError(error)
+
 
 def handle_trading_error(error):
     """
@@ -59,6 +63,7 @@ def handle_trading_error(error):
     log_error(error, level=logging.CRITICAL)
     raise TradingError(error)
 
+
 def handle_config_error(error):
     """
     Obsługuje błąd związany z konfiguracją, logując go i rzucając ConfigError.
@@ -69,6 +74,7 @@ def handle_config_error(error):
     log_error(error, level=logging.WARNING)
     raise ConfigError(error)
 
+
 # -------------------- Przykładowe testy jednostkowe --------------------
 if __name__ == "__main__":
     try:
@@ -78,7 +84,7 @@ if __name__ == "__main__":
             handle_data_error(e)
     except DataError as de:
         logging.info("Prawidłowo przechwycony DataError: %s", de)
-    
+
     try:
         try:
             raise ValueError("Test trading error")
@@ -86,7 +92,7 @@ if __name__ == "__main__":
             handle_trading_error(e)
     except TradingError as te:
         logging.info("Prawidłowo przechwycony TradingError: %s", te)
-    
+
     try:
         try:
             raise ValueError("Test config error")

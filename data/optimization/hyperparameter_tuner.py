@@ -9,28 +9,40 @@ Funkcjonalności:
 """
 
 import logging
+
 import numpy as np
 import pandas as pd
 
 try:
     import optuna
+
     OPTUNA_AVAILABLE = True
 except ImportError:
     OPTUNA_AVAILABLE = False
 
-from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.metrics import mean_squared_error
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s [%(levelname)s] %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
+
 
 class HyperparameterTuner:
-    def __init__(self, model_class, param_space: dict, search_method: str = "grid", metric: str = "mse",
-                 cv: int = 5, n_iter: int = 50, random_state: int = 42):
+    def __init__(
+        self,
+        model_class,
+        param_space: dict,
+        search_method: str = "grid",
+        metric: str = "mse",
+        cv: int = 5,
+        n_iter: int = 50,
+        random_state: int = 42,
+    ):
         """
         Inicjalizuje tuner hiperparametrów.
-        
+
         Parameters:
             model_class: Klasa modelu (np. RandomForestRegressor).
             param_space (dict): Przestrzeń hiperparametrów.
@@ -53,27 +65,33 @@ class HyperparameterTuner:
     def tune(self, X: pd.DataFrame, y: pd.Series):
         """
         Przeprowadza tuning hiperparametrów na danych.
-        
+
         Parameters:
             X (pd.DataFrame): Dane wejściowe.
             y (pd.Series): Wartości docelowe.
-        
+
         Returns:
             tuple: (najlepsze hiperparametry, najlepszy wynik metryki)
         """
-        logging.info("Rozpoczynam tuning hiperparametrów metodą: %s", self.search_method)
+        logging.info(
+            "Rozpoczynam tuning hiperparametrów metodą: %s", self.search_method
+        )
         if self.search_method == "grid":
             tuner = GridSearchCV(
                 estimator=self.model_class(),
                 param_grid=self.param_space,
                 scoring=self.metric,
                 cv=self.cv,
-                n_jobs=-1
+                n_jobs=-1,
             )
             tuner.fit(X, y)
             self.best_params = tuner.best_params_
             self.best_score = tuner.best_score_
-            logging.info("Grid Search zakończony. Najlepsze parametry: %s, wynik: %.4f", self.best_params, self.best_score)
+            logging.info(
+                "Grid Search zakończony. Najlepsze parametry: %s, wynik: %.4f",
+                self.best_params,
+                self.best_score,
+            )
         elif self.search_method == "random":
             tuner = RandomizedSearchCV(
                 estimator=self.model_class(),
@@ -82,23 +100,37 @@ class HyperparameterTuner:
                 cv=self.cv,
                 n_iter=self.n_iter,
                 random_state=self.random_state,
-                n_jobs=-1
+                n_jobs=-1,
             )
             tuner.fit(X, y)
             self.best_params = tuner.best_params_
             self.best_score = tuner.best_score_
-            logging.info("Random Search zakończony. Najlepsze parametry: %s, wynik: %.4f", self.best_params, self.best_score)
+            logging.info(
+                "Random Search zakończony. Najlepsze parametry: %s, wynik: %.4f",
+                self.best_params,
+                self.best_score,
+            )
         elif self.search_method == "bayesian":
             if not OPTUNA_AVAILABLE:
-                raise ImportError("Optuna nie jest zainstalowana. Zainstaluj ją, aby używać bayesian optimization.")
-            study = optuna.create_study(direction="minimize", sampler=optuna.samplers.TPESampler(seed=self.random_state))
+                raise ImportError(
+                    "Optuna nie jest zainstalowana. Zainstaluj ją, aby używać bayesian optimization."
+                )
+            study = optuna.create_study(
+                direction="minimize",
+                sampler=optuna.samplers.TPESampler(seed=self.random_state),
+            )
+
             def objective(trial):
                 params = {}
                 for key, space in self.param_space.items():
                     if space["type"] == "int":
-                        params[key] = trial.suggest_int(key, space["low"], space["high"], step=space.get("step", 1))
+                        params[key] = trial.suggest_int(
+                            key, space["low"], space["high"], step=space.get("step", 1)
+                        )
                     elif space["type"] == "float":
-                        params[key] = trial.suggest_float(key, space["low"], space["high"])
+                        params[key] = trial.suggest_float(
+                            key, space["low"], space["high"]
+                        )
                     elif space["type"] == "categorical":
                         params[key] = trial.suggest_categorical(key, space["choices"])
                     else:
@@ -108,13 +140,19 @@ class HyperparameterTuner:
                 predictions = model.predict(X)
                 score = mean_squared_error(y, predictions)
                 return score
+
             study.optimize(objective, n_trials=self.n_iter)
             self.best_params = study.best_params
             self.best_score = study.best_value
-            logging.info("Bayesian Optimization zakończona. Najlepsze parametry: %s, wynik: %.4f", self.best_params, self.best_score)
+            logging.info(
+                "Bayesian Optimization zakończona. Najlepsze parametry: %s, wynik: %.4f",
+                self.best_params,
+                self.best_score,
+            )
         else:
             raise ValueError(f"Nieobsługiwana metoda tuningu: {self.search_method}")
         return self.best_params, self.best_score
+
 
 # -------------------- Przykładowe użycie i testy --------------------
 if __name__ == "__main__":
@@ -122,25 +160,39 @@ if __name__ == "__main__":
         # Przykładowe dane
         np.random.seed(42)
         import pandas as pd
-        X = pd.DataFrame({
-            "feature1": np.random.uniform(0, 1, 500),
-            "feature2": np.random.uniform(0, 1, 500)
-        })
+
+        X = pd.DataFrame(
+            {
+                "feature1": np.random.uniform(0, 1, 500),
+                "feature2": np.random.uniform(0, 1, 500),
+            }
+        )
         y = X["feature1"] * 2.0 + X["feature2"] * (-1.0) + np.random.normal(0, 0.1, 500)
-        
+
         # Przykładowa przestrzeń hiperparametrów dla RandomForestRegressor
         from sklearn.ensemble import RandomForestRegressor
+
         param_space = {
             "n_estimators": {"type": "int", "low": 50, "high": 200, "step": 10},
             "max_depth": {"type": "int", "low": 3, "high": 10, "step": 1},
-            "min_samples_split": {"type": "int", "low": 2, "high": 10, "step": 1}
+            "min_samples_split": {"type": "int", "low": 2, "high": 10, "step": 1},
         }
-        
-        tuner = HyperparameterTuner(model_class=RandomForestRegressor, param_space=param_space,
-                                     search_method="bayesian", metric="neg_mean_squared_error", cv=5,
-                                     n_iter=20, random_state=42)
+
+        tuner = HyperparameterTuner(
+            model_class=RandomForestRegressor,
+            param_space=param_space,
+            search_method="bayesian",
+            metric="neg_mean_squared_error",
+            cv=5,
+            n_iter=20,
+            random_state=42,
+        )
         best_params, best_score = tuner.tune(X, y)
-        logging.info("Tuning zakończony. Najlepsze parametry: %s, najlepszy wynik: %.4f", best_params, best_score)
+        logging.info(
+            "Tuning zakończony. Najlepsze parametry: %s, najlepszy wynik: %.4f",
+            best_params,
+            best_score,
+        )
     except Exception as e:
         logging.error("Błąd w module hyperparameter_tuner.py: %s", e)
         raise

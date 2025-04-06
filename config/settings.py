@@ -7,12 +7,14 @@ oraz integruje się z modułem ConfigLoader, umożliwiając ładowanie dodatkowy
 z plików JSON/YAML. Kod został zaprojektowany z myślą o skalowalności i szybkim uruchamianiu dużych systemów.
 """
 
-import os
 import logging
+import os
 from typing import Any, Dict
 
 from dotenv import load_dotenv
-from .config_loader import ConfigLoader  # Import względny, dopasuj do swojej struktury projektu
+
+from .config_loader import \
+    ConfigLoader  # Import względny, dopasuj do swojej struktury projektu
 
 # -----------------------------------
 # 1. Wczytanie zmiennych z pliku .env
@@ -22,7 +24,9 @@ load_dotenv()
 # -----------------------------------
 # 2. Konfiguracja wstępna logowania
 # -----------------------------------
-logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 # -----------------------------------
 # 3. Określenie środowiska
@@ -41,38 +45,25 @@ default_settings: Dict[str, Any] = {
             "port": 5432,
             "user": "devuser",
             "password": "devpassword",
-            "name": "dev_db"
+            "name": "dev_db",
         },
         # Binance klucze (np. do testnetu):
         "API": {
             # Jeśli chcesz wczytywać z .env:
             "key": os.getenv("BINANCE_API_KEY", "binance_public_key"),
             "secret": os.getenv("BINANCE_API_SECRET", "binance_public_secret"),
-            "base_url": "https://testnet.binance.vision"
+            "base_url": "https://testnet.binance.vision",
         },
         # Bybit klucze – pobierane z .env
         "BYBIT": {
             "api_key": os.getenv("BYBIT_API_KEY", "bybit_dummy_key"),
             "api_secret": os.getenv("BYBIT_API_SECRET", "bybit_dummy_secret"),
-            "use_testnet": os.getenv("BYBIT_USE_TESTNET", "true").lower() == "true"
+            "use_testnet": os.getenv("BYBIT_USE_TESTNET", "true").lower() == "true",
         },
-        "TRADING": {
-            "commission": 0.001,
-            "spread": 0.0005,
-            "slippage": 0.0005
-        },
-        "SECURITY": {
-            "access_restrictions": False,
-            "password_encryption": False
-        },
-        "LOGGING": {
-            "level": "DEBUG",
-            "file": "dev_app.log"
-        },
-        "PATHS": {
-            "logs_dir": "./logs",
-            "data_dir": "./data"
-        }
+        "TRADING": {"commission": 0.001, "spread": 0.0005, "slippage": 0.0005},
+        "SECURITY": {"access_restrictions": False, "password_encryption": False},
+        "LOGGING": {"level": "DEBUG", "file": "dev_app.log"},
+        "PATHS": {"logs_dir": "./logs", "data_dir": "./data"},
     },
     "test": {
         "DEBUG": True,
@@ -81,35 +72,22 @@ default_settings: Dict[str, Any] = {
             "port": 5432,
             "user": "testuser",
             "password": "testpassword",
-            "name": "test_db"
+            "name": "test_db",
         },
         "API": {
             "key": "test_key",
             "secret": "test_secret",
-            "base_url": "https://api.binance.com"
+            "base_url": "https://api.binance.com",
         },
         "BYBIT": {
             "api_key": "test_bybit_key",
             "api_secret": "test_bybit_secret",
-            "use_testnet": True
+            "use_testnet": True,
         },
-        "TRADING": {
-            "commission": 0.001,
-            "spread": 0.0005,
-            "slippage": 0.0005
-        },
-        "SECURITY": {
-            "access_restrictions": True,
-            "password_encryption": True
-        },
-        "LOGGING": {
-            "level": "INFO",
-            "file": "test_app.log"
-        },
-        "PATHS": {
-            "logs_dir": "./logs",
-            "data_dir": "./data"
-        }
+        "TRADING": {"commission": 0.001, "spread": 0.0005, "slippage": 0.0005},
+        "SECURITY": {"access_restrictions": True, "password_encryption": True},
+        "LOGGING": {"level": "INFO", "file": "test_app.log"},
+        "PATHS": {"logs_dir": "./logs", "data_dir": "./data"},
     },
     "production": {
         "DEBUG": False,
@@ -118,42 +96,31 @@ default_settings: Dict[str, Any] = {
             "port": 5432,
             "user": "produser",
             "password": "prodpassword",
-            "name": "prod_db"
+            "name": "prod_db",
         },
         "API": {
             "key": "prod_key",
             "secret": "prod_secret",
-            "base_url": "https://api.binance.com"
+            "base_url": "https://api.binance.com",
         },
         "BYBIT": {
             "api_key": "prod_bybit_key",
             "api_secret": "prod_bybit_secret",
-            "use_testnet": False
+            "use_testnet": False,
         },
-        "TRADING": {
-            "commission": 0.001,
-            "spread": 0.0005,
-            "slippage": 0.0005
-        },
-        "SECURITY": {
-            "access_restrictions": True,
-            "password_encryption": True
-        },
-        "LOGGING": {
-            "level": "WARNING",
-            "file": "prod_app.log"
-        },
-        "PATHS": {
-            "logs_dir": "./logs",
-            "data_dir": "./data"
-        }
-    }
+        "TRADING": {"commission": 0.001, "spread": 0.0005, "slippage": 0.0005},
+        "SECURITY": {"access_restrictions": True, "password_encryption": True},
+        "LOGGING": {"level": "WARNING", "file": "prod_app.log"},
+        "PATHS": {"logs_dir": "./logs", "data_dir": "./data"},
+    },
 }
 
 # -----------------------------------
 # 5. Wybór ustawień dla aktualnego środowiska
 # -----------------------------------
-env_settings: Dict[str, Any] = default_settings.get(APP_ENV, default_settings["development"])
+env_settings: Dict[str, Any] = default_settings.get(
+    APP_ENV, default_settings["development"]
+)
 
 # -----------------------------------
 # 6. Ładowanie dodatkowych ustawień z plików JSON/YAML przy pomocy ConfigLoader
@@ -172,6 +139,7 @@ except Exception as e:
     logging.error("Błąd ładowania dodatkowych ustawień: %s", e)
     file_settings = {}
 
+
 def merge_dicts(base: Dict[str, Any], override: Dict[str, Any]) -> Dict[str, Any]:
     """
     Rekurencyjnie scala dwa słowniki, gdzie wartości z 'override' nadpisują te z 'base'.
@@ -183,6 +151,7 @@ def merge_dicts(base: Dict[str, Any], override: Dict[str, Any]) -> Dict[str, Any
         else:
             result[key] = value
     return result
+
 
 # -----------------------------------
 # 7. Scalanie ustawień (domyślne + pliki + zmienne środowiskowe)

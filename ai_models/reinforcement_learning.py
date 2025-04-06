@@ -10,30 +10,43 @@ Obsługuje Deep Q-Network (DQN) z technikami:
 """
 
 import logging
-import numpy as np
 import random
 from collections import deque
+
+import numpy as np
 import tensorflow as tf
 from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Dense, Input
 from tensorflow.keras.optimizers import Adam
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 # Sprawdzenie dostępności GPU
-gpus = tf.config.list_physical_devices('GPU')
+gpus = tf.config.list_physical_devices("GPU")
 if gpus:
     logging.info(f"Wykryto {len(gpus)} GPU, włączam strategię MirroredStrategy")
     strategy = tf.distribute.MirroredStrategy()
 else:
     strategy = None
 
+
 class DQNAgent:
-    def __init__(self, state_size, action_size,
-                 discount_factor=0.99, learning_rate=0.001,
-                 epsilon=1.0, epsilon_min=0.01, epsilon_decay=0.995,
-                 batch_size=64, memory_size=100000, target_update_freq=5):
+    def __init__(
+        self,
+        state_size,
+        action_size,
+        discount_factor=0.99,
+        learning_rate=0.001,
+        epsilon=1.0,
+        epsilon_min=0.01,
+        epsilon_decay=0.995,
+        batch_size=64,
+        memory_size=100000,
+        target_update_freq=5,
+    ):
         """
         Inicjalizacja agenta DQN.
 
@@ -76,14 +89,16 @@ class DQNAgent:
         Returns:
             tf.keras.Model: Model sieci.
         """
-        with strategy.scope() if strategy else tf.device('/CPU:0'):
-            model = Sequential([
-                Input(shape=(self.state_size,)),
-                Dense(128, activation='relu'),
-                Dense(128, activation='relu'),
-                Dense(self.action_size, activation='linear')
-            ])
-            model.compile(optimizer=Adam(learning_rate=self.learning_rate), loss='mse')
+        with strategy.scope() if strategy else tf.device("/CPU:0"):
+            model = Sequential(
+                [
+                    Input(shape=(self.state_size,)),
+                    Dense(128, activation="relu"),
+                    Dense(128, activation="relu"),
+                    Dense(self.action_size, activation="linear"),
+                ]
+            )
+            model.compile(optimizer=Adam(learning_rate=self.learning_rate), loss="mse")
 
         logging.info("Model sieci Q został zbudowany.")
         return model
@@ -146,7 +161,9 @@ class DQNAgent:
         self.update_target_model()
         logging.info("Model załadowany z %s", name)
 
+
 # -------------------- Trening --------------------
+
 
 def train_dqn(agent, env, episodes=1000, max_steps=500):
     """
@@ -176,21 +193,30 @@ def train_dqn(agent, env, episodes=1000, max_steps=500):
             if done:
                 break
 
-        logging.info("Epizod %d: Reward: %.2f, Epsilon: %.4f", e+1, total_reward, agent.epsilon)
+        logging.info(
+            "Epizod %d: Reward: %.2f, Epsilon: %.4f", e + 1, total_reward, agent.epsilon
+        )
 
     agent.save("dqn_trained_model.h5")
+
 
 # -------------------- Przykładowe użycie --------------------
 
 if __name__ == "__main__":
     try:
+
         class DummyEnv:
             def reset(self):
                 return {"price": 100.0, "capital": 10000, "position": 0}
 
             def step(self, action):
                 reward = np.random.uniform(-1, 1)
-                return {"price": 100.0, "capital": 10000, "position": 0}, reward, False, {}
+                return (
+                    {"price": 100.0, "capital": 10000, "position": 0},
+                    reward,
+                    False,
+                    {},
+                )
 
         env = DummyEnv()
         agent = DQNAgent(state_size=3, action_size=3)

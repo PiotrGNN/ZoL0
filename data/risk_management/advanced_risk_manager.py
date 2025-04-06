@@ -12,11 +12,14 @@ Funkcjonalności:
 """
 
 import logging
+
 import numpy as np
 
 # Konfiguracja logowania
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s [%(levelname)s] %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
+
 
 class AdvancedRiskManager:
     """
@@ -24,9 +27,16 @@ class AdvancedRiskManager:
     take-profit oraz wielkość pozycji na podstawie warunków rynkowych.
     """
 
-    def __init__(self, max_risk_per_trade=0.02, max_drawdown=0.2, volatility_factor=1.5,
-                 min_stop_loss=0.005, max_stop_loss=0.02, take_profit_factor=2.0,
-                 leverage_adjustment=True):
+    def __init__(
+        self,
+        max_risk_per_trade=0.02,
+        max_drawdown=0.2,
+        volatility_factor=1.5,
+        min_stop_loss=0.005,
+        max_stop_loss=0.02,
+        take_profit_factor=2.0,
+        leverage_adjustment=True,
+    ):
         """
         Inicjalizacja menedżera ryzyka.
 
@@ -61,7 +71,10 @@ class AdvancedRiskManager:
         self.initial_capital = initial_capital
         self.current_capital = initial_capital
         self.highest_capital = initial_capital
-        logging.info("Zainicjalizowano menedżera ryzyka. Kapitał początkowy: %.2f", initial_capital)
+        logging.info(
+            "Zainicjalizowano menedżera ryzyka. Kapitał początkowy: %.2f",
+            initial_capital,
+        )
 
     def update_capital(self, new_capital):
         """
@@ -76,7 +89,10 @@ class AdvancedRiskManager:
 
         drawdown = 1 - (new_capital / self.highest_capital)
         if drawdown > self.max_drawdown:
-            logging.warning("Przekroczono maksymalny drawdown! Aktualny drawdown: %.2f%%", drawdown * 100)
+            logging.warning(
+                "Przekroczono maksymalny drawdown! Aktualny drawdown: %.2f%%",
+                drawdown * 100,
+            )
 
     def calculate_stop_loss(self, volatility):
         """
@@ -144,14 +160,21 @@ class AdvancedRiskManager:
         logging.info("Dostosowana dźwignia: %.2f", new_leverage)
         return new_leverage
 
+
 # -------------------- Przykładowe użycie --------------------
 if __name__ == "__main__":
     try:
         # Inicjalizacja menedżera ryzyka
-        risk_manager = AdvancedRiskManager(max_risk_per_trade=0.02, max_drawdown=0.15,
-                                           volatility_factor=1.2, min_stop_loss=0.005, max_stop_loss=0.03,
-                                           take_profit_factor=2.5, leverage_adjustment=True)
-        
+        risk_manager = AdvancedRiskManager(
+            max_risk_per_trade=0.02,
+            max_drawdown=0.15,
+            volatility_factor=1.2,
+            min_stop_loss=0.005,
+            max_stop_loss=0.03,
+            take_profit_factor=2.5,
+            leverage_adjustment=True,
+        )
+
         risk_manager.initialize(initial_capital=10000)
 
         # Przykładowe warunki rynkowe
@@ -162,13 +185,20 @@ if __name__ == "__main__":
         take_profit = risk_manager.calculate_take_profit(stop_loss)
 
         # Obliczenie wielkości pozycji
-        position_size = risk_manager.determine_position_size(account_balance=10000, stop_loss=stop_loss, asset_price=50)
+        position_size = risk_manager.determine_position_size(
+            account_balance=10000, stop_loss=stop_loss, asset_price=50
+        )
 
         # Dynamiczna dźwignia
         leverage = risk_manager.adjust_leverage(market_conditions)
 
-        logging.info("Finalna konfiguracja: SL=%.4f, TP=%.4f, Wielkość pozycji=%.2f, Dźwignia=%.2f",
-                     stop_loss, take_profit, position_size, leverage)
+        logging.info(
+            "Finalna konfiguracja: SL=%.4f, TP=%.4f, Wielkość pozycji=%.2f, Dźwignia=%.2f",
+            stop_loss,
+            take_profit,
+            position_size,
+            leverage,
+        )
 
     except Exception as e:
         logging.error("Błąd w AdvancedRiskManager: %s", e)
