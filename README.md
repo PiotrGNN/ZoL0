@@ -1,41 +1,29 @@
+# 🤖 Trading Bot - System Analityczny
 
-# 🚀 Advanced AI Trading System
+## 📋 Opis projektu
 
-System do automatycznego tradingu z wykorzystaniem zaawansowanych algorytmów AI i ML.
+Trading Bot to zaawansowany system analityczny do analizy danych rynkowych, wykrywania anomalii i testowania strategii tradingowych. System wykorzystuje metody uczenia maszynowego do analizy wzorców cenowych i wolumenowych.
 
-## 📋 Funkcje
+## 🚀 Szybki start
 
-- 🤖 **AI/ML Trading** - Wykorzystanie modeli uczenia maszynowego do predykcji ruchu cen
-- 📊 **Wykrywanie anomalii** - Identyfikacja nietypowych wzorców rynkowych
-- 📈 **Optymalizacja strategii** - Automatyczne dostosowanie parametrów strategii
-- 🔄 **Backtesting** - Testowanie strategii na danych historycznych
-- 🛡️ **Zarządzanie ryzykiem** - Zaawansowane mechanizmy kontroli ryzyka
+### Przygotowanie środowiska
 
-## 🚀 Szybki start (Replit)
+1. Sklonuj repozytorium
+2. W środowisku Replit system automatycznie zainstaluje wymagane zależności
+3. Utwórz plik `.env` na podstawie `.env.example` i ustaw swoje klucze API
 
-1. Skonfiguruj plik `.env` (skopiuj z `.env.example`):
-   ```
-   cp .env.example .env
-   ```
+### Uruchomienie systemu
 
-2. Kliknij przycisk ▶️ **Run** lub wybierz workflow "Start Trading Bot" z menu
+Możesz uruchomić system na dwa sposoby:
 
-## 🔧 Konfiguracja środowiska
+1. **Przycisk Run** - Kliknij przycisk "Run" w panelu Replit
+2. **Z linii poleceń** - Uruchom `python main.py`
 
-1. Zainstaluj wymagane zależności:
-   ```
-   pip install -r requirements.txt
-   ```
+## 🧰 Dostępne workflows w Replit
 
-2. Uruchom system tradingowy:
-   ```
-   python main.py
-   ```
-
-3. Dostępne workflow:
-   - **Start Trading Bot** - Uruchamia główny system tradingowy
-   - **Run Tests** - Uruchamia testy jednostkowe
-   - **Lint Code** - Sprawdza kod źródłowy linterem
+- **Start Trading Bot** - Uruchamia główny system
+- **Run Tests** - Wykonuje testy jednostkowe
+- **Lint Code** - Sprawdza kod źródłowy linterem
 
 ## 📁 Struktura projektu
 
@@ -62,7 +50,7 @@ System do automatycznego tradingu z wykorzystaniem zaawansowanych algorytmów AI
 Aby uruchomić testy jednostkowe, użyj workflowa "Run Tests" lub wykonaj:
 
 ```
-pytest data/tests
+python -m pytest data/tests
 ```
 
 ## 📊 Dostępne strategie
@@ -82,10 +70,10 @@ pytest data/tests
 
 1. Sklonuj repozytorium
 2. Zainstaluj zależności developerskie: `pip install -r requirements.txt`
-3. Uruchom testy przed wysłaniem zmian: `pytest data/tests`
-4. Sprawdź jakość kodu z flake8: `flake8 .`
-5. Sformatuj kod za pomocą black: `black .`
+3. Uruchom testy przed wysłaniem zmian: `python -m pytest`
+4. Formatuj kod za pomocą Black: `black .`
+5. Sprawdź zgodność z PEP8: `flake8 .`
 
-## 📄 Licencja
+## 📝 Licencja
 
-Ten projekt jest udostępniany na licencji MIT.
+Ten projekt jest udostępniony na licencji MIT.

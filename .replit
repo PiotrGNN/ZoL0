@@ -39,44 +39,5 @@ deploymentTarget = "cloudrun"
 formatter = "black"
 linter = "flake8"
 
-[workflows]
-runButton = "Start Trading Bot"
-
-[[workflows.workflow]]
-name = "Start Trading Bot"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "pip install -r requirements.txt"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python main.py"
-
-[[workflows.workflow]]
-name = "Run Tests"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "pip install -r requirements.txt pytest"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "pytest data/tests"
-
-[[workflows.workflow]]
-name = "Lint Code"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "pip install flake8"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "flake8 ."
+[interpreter]
+command = ["python3"]
