@@ -21,16 +21,36 @@ try:
     from sklearn.model_selection import GridSearchCV
     SKLEARN_AVAILABLE = True
 except ImportError:
-    logging.warning("sklearn nie jest dostępny. Ograniczona funkcjonalność AnomalyDetector.")
-    SKLEARN_AVAILABLE = False
+    logging.warning("sklearn nie jest dostępny. Instaluję scikit-learn...")
+    import subprocess
+    try:
+        subprocess.run(["pip", "install", "scikit-learn>=1.0.0"], check=True)
+        from sklearn.cluster import DBSCAN
+        from sklearn.ensemble import IsolationForest
+        from sklearn.model_selection import GridSearchCV
+        SKLEARN_AVAILABLE = True
+        logging.info("scikit-learn zainstalowany pomyślnie!")
+    except Exception as e:
+        logging.error(f"Nie udało się zainstalować scikit-learn: {e}")
+        SKLEARN_AVAILABLE = False
 
 # Uproszczona wersja bez TensorFlow
 TENSORFLOW_AVAILABLE = False
 try:
     import numpy as np
+    import pandas as pd
 except ImportError:
-    logging.error("numpy nie jest dostępny. AnomalyDetector nie będzie działać.")
-    np = None
+    logging.error("numpy/pandas nie jest dostępny. Instaluję...")
+    import subprocess
+    try:
+        subprocess.run(["pip", "install", "numpy>=1.21.0", "pandas>=1.3.0"], check=True)
+        import numpy as np
+        import pandas as pd
+        logging.info("numpy i pandas zainstalowane pomyślnie!")
+    except Exception as e:
+        logging.error(f"Nie udało się zainstalować numpy/pandas: {e}")
+        np = None
+        pd = None
 
 # Prosty autoenkoder jako alternatywa dla TensorFlow
 class SimpleAutoencoder:

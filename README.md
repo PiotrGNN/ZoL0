@@ -1,45 +1,58 @@
+# 🚀 Advanced AI Trading System
 
-# 🤖 Advanced Trading System with AI
+System do automatycznego tradingu z wykorzystaniem algorytmów AI i ML.
 
-## 📋 Overview
+## 📋 Funkcje
 
-Advanced trading system using AI for market analysis, prediction, and automated execution. The system features:
+- 🤖 **AI/ML Trading** - Wykorzystanie modeli uczenia maszynowego do predykcji ruchu cen
+- 📊 **Wykrywanie anomalii** - Identyfikacja nietypowych wzorców rynkowych
+- 📈 **Optymalizacja strategii** - Automatyczne dostosowanie parametrów strategii
+- 🔄 **Backtesting** - Testowanie strategii na danych historycznych
+- 🛡️ **Zarządzanie ryzykiem** - Zaawansowane mechanizmy kontroli ryzyka
 
-- 🔌 Multiple exchange connections (Binance, Bybit)
-- 🧠 AI-powered market analysis and decision making
-- 📊 Backtesting and simulation capabilities
-- ⚙️ Real-time trading with market monitoring
-- 🚨 Risk management and anomaly detection
 
-## 🚀 Quick Start
+## 🚀 Uruchomienie
 
-### Prerequisites
+1. Upewnij się, że masz plik `.env` (możesz skopiować z `.env.example`):
+   ```
+   cp .env.example .env
+   ```
 
-- Python 3.8+
-- Required packages (installed automatically)
+2. Zainstaluj wymagane zależności:
+   ```
+   pip install -r requirements.txt
+   ```
 
-### Installation
+3. Uruchom system tradingowy:
+   ```
+   python main.py
+   ```
 
-1. Clone the repository
-2. Create and configure `.env` file (use `.env.example` as template)
-3. Install dependencies:
+## 🔧 Konfiguracja
+
+Projekt używa pliku `.env` do konfiguracji kluczy API, poziomów logowania i innych ustawień:
 
 ```
-pip install -r requirements.txt
+# API Keys
+BINANCE_API_KEY=your_api_key
+BINANCE_API_SECRET=your_api_secret
+BYBIT_API_KEY=your_api_key
+BYBIT_API_SECRET=your_api_secret
+
+# Environment
+TRADING_MODE=testnet
+LOG_LEVEL=INFO
 ```
 
-### Running the System
+## 🧪 Testy
+
+Uruchomienie testów jednostkowych:
 
 ```
-python main.py
+pytest data/tests/
 ```
 
-The system will guide you through:
-1. Choosing environment (Production/Testnet)
-2. Selecting exchange (Binance/Bybit)
-3. Starting trading and AI analysis
-
-## 🧩 Project Structure
+## 📂 Struktura projektu
 
 ```
 ├── ai_models/            # AI and ML models
@@ -59,28 +72,18 @@ The system will guide you through:
 └── main.py               # Main entry point
 ```
 
-## ⚙️ Configuration
-
-All configuration is done through:
-- `.env` file for environment variables
-- `config/settings.yml` for application settings
-
 ## 🛠️ Development
-
 ### Testing
-
 Run tests with:
 ```
 pytest data/tests/
 ```
 
 ### Code Style
-
 Format code with:
 ```
 black .
 ```
-
 Check code style with:
 ```
 flake8

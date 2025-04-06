@@ -1,10 +1,44 @@
-modules = ["python-3.12"]
+
+run = ["python", "main.py"]
+hidden = [".config", "**/__pycache__", "**/.pytest_cache", "**/*.pyc"]
+
+entrypoint = "main.py"
+
+language = "python3"
 
 [nix]
-channel = "stable-24_05"
+channel = "stable-22_11"
+
+[env]
+PYTHONPATH="."
+PYTHONFAULTHANDLER = "1"
+
+[packager]
+language = "python3"
+ignoredPackages = []
+
+[packager.features]
+enabledForHosting = true
+packageSearch = true
+
+[gitHubImport]
+requiredFiles = [".replit"]
+
+[languages]
+
+[languages.python3]
+pattern = "**/*.py"
+
+[languages.python3.languageServer]
+start = "pylsp"
 
 [deployment]
-run = ["sh", "-c", "python main.py"]
+run = ["python", "main.py"]
+deploymentTarget = "cloudrun"
+
+[tools]
+formatter = "black"
+linter = "flake8"
 
 [workflows]
 runButton = "Start Trading Bot"
@@ -16,8 +50,34 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "pip install -r requirements.txt"
+args = "pip install -r requirements.txt --upgrade"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python main.py"
+
+[[workflows.workflow]]
+name = "Run Tests"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pip install -r requirements.txt"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pytest data/tests"
+
+[[workflows.workflow]]
+name = "Lint Code"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pip install flake8"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "flake8 ."

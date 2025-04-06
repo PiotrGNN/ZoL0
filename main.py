@@ -137,42 +137,34 @@ def initialize_ai_modules():
     """Inicjalizuje modele AI z obsługą brakujących zależności."""
     ai_modules = {}
     
+    # Lista modułów AI do inicjalizacji
+    modules_to_init = [
+        ('sentiment_ai', SentimentAnalyzer, "analizy sentymentu"),
+        ('anomaly_ai', AnomalyDetector, "wykrywania anomalii"),
+        ('trend_ai', TrendPredictor, "predykcji trendów"),
+        ('optimizer_ai', StrategyOptimizer, "optymalizacji strategii"),
+        ('reinforcement_ai', ReinforcementLearner, "uczenia ze wzmocnieniem")
+    ]
+    
     try:
-        # Inicjalizuj moduły z obsługą błędów dla każdego z osobna
-        try:
-            ai_modules['sentiment_ai'] = SentimentAnalyzer()
-            logging.info("✅ Moduł analizy sentymentu załadowany")
-        except Exception as e:
-            logging.warning("⚠️ Nie udało się załadować modułu analizy sentymentu: %s", e)
-            ai_modules['sentiment_ai'] = None
-            
-        try:
-            ai_modules['anomaly_ai'] = AnomalyDetector()
-            logging.info("✅ Moduł wykrywania anomalii załadowany")
-        except Exception as e:
-            logging.warning("⚠️ Nie udało się załadować modułu wykrywania anomalii: %s", e)
-            ai_modules['anomaly_ai'] = None
-            
-        try:
-            ai_modules['trend_ai'] = TrendPredictor()
-            logging.info("✅ Moduł predykcji trendów załadowany")
-        except Exception as e:
-            logging.warning("⚠️ Nie udało się załadować modułu predykcji trendów: %s", e)
-            ai_modules['trend_ai'] = None
-            
-        try:
-            ai_modules['optimizer_ai'] = StrategyOptimizer()
-            logging.info("✅ Moduł optymalizacji strategii załadowany")
-        except Exception as e:
-            logging.warning("⚠️ Nie udało się załadować modułu optymalizacji strategii: %s", e)
-            ai_modules['optimizer_ai'] = None
-            
-        try:
-            ai_modules['reinforcement_ai'] = ReinforcementLearner()
-            logging.info("✅ Moduł uczenia ze wzmocnieniem załadowany")
-        except Exception as e:
-            logging.warning("⚠️ Nie udało się załadować modułu uczenia ze wzmocnieniem: %s", e)
-            ai_modules['reinforcement_ai'] = None
+        # Inicjalizacja z obsługą błędów dla każdego modułu
+        for module_key, module_class, module_name in modules_to_init:
+            try:
+                # Sprawdzamy dostępność zależności przez specjalne metody w modułach
+                if hasattr(module_class, 'check_dependencies') and not module_class.check_dependencies():
+                    logging.warning(f"⚠️ Brak wymaganych zależności dla modułu {module_name}")
+                    ai_modules[module_key] = None
+                    continue
+                    
+                # Inicjalizacja modułu
+                ai_modules[module_key] = module_class()
+                logging.info(f"✅ Moduł {module_name} załadowany")
+            except ImportError as e:
+                logging.warning(f"⚠️ Brak zależności dla modułu {module_name}: {e}")
+                ai_modules[module_key] = None
+            except Exception as e:
+                logging.warning(f"⚠️ Nie udało się załadować modułu {module_name}: {e}")
+                ai_modules[module_key] = None
         
         num_loaded = sum(1 for m in ai_modules.values() if m is not None)
         if num_loaded == 5:
