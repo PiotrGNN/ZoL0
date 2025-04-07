@@ -92,3 +92,7 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "pip install -r requirements.txt"
+
+[[ports]]
+localPort = 5000
+externalPort = 80
