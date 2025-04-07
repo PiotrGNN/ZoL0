@@ -525,6 +525,18 @@ if __name__ == "__main__":
     # Inicjalizacja systemu
     initialize_system()
 
+    # Utworzenie pliku .env, jeśli nie istnieje
+    if not os.path.exists('.env'):
+        with open('.env', 'w') as f:
+            f.write("FLASK_APP=main.py\n")
+            f.write("FLASK_ENV=development\n")
+            f.write("PORT=5000\n")
+            f.write("BYBIT_API_KEY=YourApiKeyHere\n")
+            f.write("BYBIT_API_SECRET=YourApiSecretHere\n")
+            f.write("BYBIT_USE_TESTNET=true\n")
+        logging.info("Utworzono plik .env z domyślnymi ustawieniami")
+
     # Uruchomienie aplikacji - zawsze używamy 0.0.0.0 i portu 5000 w Replit
     port = int(os.environ.get("PORT", 5000))
+    logging.info(f"Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie {port}")
     app.run(host='0.0.0.0', port=port, debug=True)
