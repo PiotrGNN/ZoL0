@@ -286,44 +286,6 @@ def get_notifications():
                 'message': 'Wykryto zwiększoną zmienność na rynku BTC/USDT.',
                 'timestamp': (datetime.now() - timedelta(minutes=10)).strftime('%Y-%m-%d %H:%M:%S')
             },
-
-@app.route("/api/bybit/connection-test", methods=["GET"])
-def test_bybit_connection():
-    """Endpoint do testowania połączenia z ByBit API."""
-    if not bybit_client:
-        return jsonify({"success": False, "error": "Klient ByBit nie jest zainicjalizowany", "testnet": True}), 500
-
-    try:
-        # Test połączenia poprzez pobranie czasu serwera
-        server_time = bybit_client.get_server_time()
-        
-        # Test połączenia przez próbę pobrania salda (wymaga autentykacji)
-        balance_test = bybit_client.get_account_balance()
-        
-        # Sprawdzenie, czy używamy testnet czy produkcyjnego API
-        is_testnet = bybit_client.use_testnet
-        
-        connection_status = {
-            "success": True,
-            "api_initialized": True,
-            "server_time": server_time,
-            "testnet": is_testnet,
-            "environment": "testnet" if is_testnet else "production",
-            "authentication": balance_test.get("success", False),
-            "balance_data": "Dostępne" if balance_test.get("success", False) else "Błąd autoryzacji",
-            "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        }
-        
-        logger.info(f"Test połączenia z ByBit API: {connection_status}")
-        return jsonify(connection_status)
-    except Exception as e:
-        logger.error(f"Błąd podczas testowania połączenia z ByBit API: {e}", exc_info=True)
-        return jsonify({
-            "success": False, 
-            "error": str(e),
-            "testnet": bybit_client.use_testnet if bybit_client else None
-        }), 500
-
             {
                 'id': 3,
                 'type': 'success',
@@ -565,6 +527,43 @@ def get_bybit_account_balance():
 def get_portfolio():
     """Endpoint zwracający dane portfela - przekierowanie do /api/bybit/account-balance."""
     return get_bybit_account_balance()
+
+@app.route("/api/bybit/connection-test", methods=["GET"])
+def test_bybit_connection():
+    """Endpoint do testowania połączenia z ByBit API."""
+    if not bybit_client:
+        return jsonify({"success": False, "error": "Klient ByBit nie jest zainicjalizowany", "testnet": True}), 500
+
+    try:
+        # Test połączenia poprzez pobranie czasu serwera
+        server_time = bybit_client.get_server_time()
+        
+        # Test połączenia przez próbę pobrania salda (wymaga autentykacji)
+        balance_test = bybit_client.get_account_balance()
+        
+        # Sprawdzenie, czy używamy testnet czy produkcyjnego API
+        is_testnet = bybit_client.use_testnet
+        
+        connection_status = {
+            "success": True,
+            "api_initialized": True,
+            "server_time": server_time,
+            "testnet": is_testnet,
+            "environment": "testnet" if is_testnet else "production",
+            "authentication": balance_test.get("success", False),
+            "balance_data": "Dostępne" if balance_test.get("success", False) else "Błąd autoryzacji",
+            "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+        
+        logger.info(f"Test połączenia z ByBit API: {connection_status}")
+        return jsonify(connection_status)
+    except Exception as e:
+        logger.error(f"Błąd podczas testowania połączenia z ByBit API: {e}", exc_info=True)
+        return jsonify({
+            "success": False, 
+            "error": str(e),
+            "testnet": bybit_client.use_testnet if bybit_client else None
+        }), 500
 
 
 # Uruchomienie aplikacji
