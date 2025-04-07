@@ -707,3 +707,104 @@ function renderPortfolioChart(assets) {
         }
     });
 }
+
+
+// Funkcje do obsługi modalu trenowania modeli
+function setupModelTraining() {
+    const trainBtn = document.getElementById('train-model-btn');
+    const modal = document.getElementById('train-model-modal');
+    const closeBtn = modal.querySelector('.close');
+    const cancelBtn = document.getElementById('cancel-training-btn');
+    const startTrainingBtn = document.getElementById('start-training-btn');
+    const trainingStatus = document.getElementById('training-status');
+
+    // Otwieranie modalu
+    trainBtn.addEventListener('click', function() {
+        modal.style.display = 'block';
+    });
+
+    // Zamykanie modalu
+    closeBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+    });
+
+    cancelBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+    });
+
+    // Kliknięcie poza modalem
+    window.addEventListener('click', function(event) {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    // Rozpoczęcie trenowania
+    startTrainingBtn.addEventListener('click', function() {
+        const symbol = document.getElementById('model-symbol').value;
+        const interval = document.getElementById('model-interval').value;
+        const lookback = document.getElementById('model-lookback').value;
+
+        // Pokazujemy status trenowania
+        trainingStatus.style.display = 'block';
+        startTrainingBtn.disabled = true;
+        cancelBtn.disabled = true;
+
+        // Wysyłamy zapytanie do API
+        fetch('/api/train-ai-model', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                symbol: symbol,
+                interval: interval,
+                lookback_days: parseInt(lookback)
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            trainingStatus.style.display = 'none';
+            startTrainingBtn.disabled = false;
+            cancelBtn.disabled = false;
+
+            if (data.success) {
+                alert(`Model dla ${symbol} został wytrenowany pomyślnie!`);
+                modal.style.display = 'none';
+
+                // Odświeżamy status modeli
+                fetch('/api/ai-models-status')
+                    .then(response => response.json())
+                    .then(data => {
+                        // ... Tutaj można zaktualizować tabelę modeli
+                        updateDashboardData();
+                    });
+            } else {
+                alert(`Błąd podczas trenowania modelu: ${data.error || 'Nieznany błąd'}`);
+            }
+        })
+        .catch(error => {
+            console.error('Error training model:', error);
+            trainingStatus.style.display = 'none';
+            startTrainingBtn.disabled = false;
+            cancelBtn.disabled = false;
+            alert('Wystąpił błąd podczas komunikacji z serwerem.');
+        });
+    });
+}
+
+// Inicjalizacja strony
+document.addEventListener('DOMContentLoaded', function() {
+    // Pierwszy load
+    updateDashboardData();
+
+    // Aktualizacja co 5 sekund
+    setInterval(updateDashboardData, 5000);
+
+    // Inicjalizacja trenowania modeli
+    if (document.getElementById('train-model-btn')) {
+        setupModelTraining();
+    }
+
+    console.log("Dashboard załadowany");
+});

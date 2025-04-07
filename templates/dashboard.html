@@ -12,7 +12,7 @@
         <h1>Trading Bot Dashboard</h1>
         <p>Zaawansowana platforma zarządzania handlem z wykorzystaniem AI</p>
     </header>
-    
+
     <main>
         <section id="summary-section" class="dashboard-section">
             <h2>Podsumowanie</h2>
@@ -27,7 +27,7 @@
                 <!-- Inne karty podsumowania -->
             </div>
         </section>
-        
+
         <section id="portfolio-section" class="dashboard-section">
             <h2>Portfel</h2>
             <div class="portfolio-table-container">
@@ -136,18 +136,71 @@
                 <!-- Status modeli AI -->
                 <div id="ai-models-section" class="card">
                     <h2>Modele AI</h2>
-                    <div id="ai-models-container" class="ai-models-grid">
-                        {% for model in ai_models %}
-                        <div class="ai-model-card">
-                            <h4>{{ model.name }}</h4>
-                            <div class="model-details">
-                                <div>Typ: {{ model.type }}</div>
-                                <div>Dokładność: <span class="{% if model.accuracy >= 70 %}positive{% elif model.accuracy >= 50 %}neutral{% else %}negative{% endif %}">{{ model.accuracy }}%</span></div>
-                                <div>Status: <span class="status-{{ model.status|lower }}">{{ model.status }}</span></div>
-                                <div>Ostatnie użycie: {{ model.last_used }}</div>
+                    <div class="card-header">
+                        <h3>Modele AI</h3>
+                        <button id="train-model-btn" class="primary-btn">Trenuj nowy model</button>
+                    </div>
+                    <div class="card-body">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Nazwa</th>
+                                    <th>Status</th>
+                                    <th>Dokładność</th>
+                                    <th>Ostatnia aktualizacja</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for model in ai_models %}
+                                <tr>
+                                    <td>{{ model.name }}</td>
+                                    <td><span class="status-badge {{ 'active' if model.status == 'Active' else 'inactive' }}">{{ model.status }}</span></td>
+                                    <td>{{ model.accuracy }}%</td>
+                                    <td>{{ model.last_used }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <!-- Modal do trenowania modelu -->
+                        <div id="train-model-modal" class="modal">
+                            <div class="modal-content">
+                                <span class="close">&times;</span>
+                                <h3>Trenuj nowy model AI</h3>
+                                <div class="form-group">
+                                    <label for="symbol">Symbol:</label>
+                                    <select id="model-symbol">
+                                        <option value="BTCUSDT">BTC/USDT</option>
+                                        <option value="ETHUSDT">ETH/USDT</option>
+                                        <option value="SOLUSDT">SOL/USDT</option>
+                                        <option value="DOGEUSDT">DOGE/USDT</option>
+                                        <option value="BNBUSDT">BNB/USDT</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="interval">Interwał czasowy:</label>
+                                    <select id="model-interval">
+                                        <option value="1h">1 godzina</option>
+                                        <option value="4h">4 godziny</option>
+                                        <option value="1d">1 dzień</option>
+                                        <option value="15m">15 minut</option>
+                                        <option value="5m">5 minut</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="lookback">Dane z okresu (dni):</label>
+                                    <input type="number" id="model-lookback" value="30" min="1" max="60">
+                                </div>
+                                <div id="training-status" style="display: none;">
+                                    <p>Trwa trenowanie modelu... To może potrwać kilka minut.</p>
+                                    <div class="loading-spinner"></div>
+                                </div>
+                                <div class="form-actions">
+                                    <button id="start-training-btn" class="primary-btn">Rozpocznij trenowanie</button>
+                                    <button id="cancel-training-btn" class="secondary-btn">Anuluj</button>
+                                </div>
                             </div>
                         </div>
-                        {% endfor %}
                     </div>
                 </div>
 
