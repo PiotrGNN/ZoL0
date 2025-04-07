@@ -51,10 +51,14 @@ logger.info(f"Poziom logowania: {log_level}")
 
 try:
     # Importy modułów projektu - będą zaimportowane tylko jeśli środowisko jest poprawnie skonfigurowane
-    from data.execution.bybit_connector import BybitConnector
-    from data.utils.api_handler import APIHandler
-    from data.data.market_data_fetcher import MarketDataFetcher
-    from flask import Flask, jsonify, render_template
+    try:
+        from data.execution.bybit_connector import BybitConnector
+        from data.utils.api_handler import APIHandler
+        from data.data.market_data_fetcher import MarketDataFetcher
+        from flask import Flask, jsonify, render_template
+    except ImportError as e:
+        logger.error(f"Błąd importu modułów: {e}")
+        from flask import Flask, jsonify, render_template
 
     # Inicjalizacja Flask
     app = Flask(__name__, 
