@@ -296,7 +296,10 @@ class BybitConnector:
                         # Test połączenia z API z obsługą limitów zapytań
                         try:
                             # Wydłużone opóźnienie między zapytaniami dla testu połączenia
-                            time.sleep(5.0)  # Zwiększone opóźnienie, aby uniknąć błędów rate limit
+                            if not self.use_testnet:
+                                time.sleep(5.0)  # Dodatkowe 5 sekund dla API produkcyjnego
+                            else:
+                                time.sleep(3.0)  # 3 sekundy dla testnet
                             self._apply_rate_limit()
 
                             # W przypadku przekroczenia limitu zapytań, używamy czasu lokalnego

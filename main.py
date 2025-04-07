@@ -95,7 +95,12 @@ def initialize_system():
             logging.info(f"Inicjalizacja klienta ByBit - Klucz: {masked_key}, Testnet: {use_testnet}")
             logging.info(f"Produkcyjne API jest {'WŁĄCZONE' if not use_testnet else 'WYŁĄCZONE'}")
             if not use_testnet:
-                logging.warning("UWAGA: Używasz PRODUKCYJNEGO API ByBit. Operacje handlowe będą mieć realne skutki finansowe!")
+                logging.warning("!!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit. Operacje handlowe będą mieć realne skutki finansowe!")
+                logging.warning("Upewnij się, że Twoje klucze API mają właściwe ograniczenia i są odpowiednio zabezpieczone.")
+                print("\n\n========== PRODUKCYJNE API BYBIT ==========")
+                print("!!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit")
+                print("Operacje handlowe będą mieć realne skutki finansowe!")
+                print("===========================================\n\n")
 
             # Użyj wartości z konfiguracji lub zmiennych środowiskowych
             use_testnet = os.getenv("BYBIT_USE_TESTNET", "true").lower() == "true"
