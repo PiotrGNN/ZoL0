@@ -174,17 +174,28 @@ class BybitConnector:
         """Pobiera saldo konta."""
         try:
             if self.client is None:
-                logging.error("Klient API nie został zainicjalizowany.")
-                self.logger.error(f"Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: {self.api_key[:5]}..., Testnet: {self.use_testnet}")
-                return {
-                    "balances": {
-                        "BTC": {"equity": 0.005, "available_balance": 0.005, "wallet_balance": 0.005},
-                        "USDT": {"equity": 500, "available_balance": 450, "wallet_balance": 500}
-                    }, 
-                    "success": False,
-                    "error": "Klient API nie został zainicjalizowany.",
-                    "note": "Dane przykładowe - błąd inicjalizacji klienta"
-                }
+                # Próba reinicjalizacji klienta
+                try:
+                    import pybit
+                    self.logger.info(f"Próba reinicjalizacji klienta API. API key: {self.api_key[:5]}..., Testnet: {self.use_testnet}")
+                    self.client = pybit.unified_trading.HTTP(
+                        api_key=self.api_key,
+                        api_secret=self.api_secret,
+                        testnet=self.use_testnet
+                    )
+                    self.logger.info("Klient API został pomyślnie reinicjalizowany.")
+                except Exception as init_error:
+                    self.logger.error(f"Nie udało się zainicjalizować klienta API: {init_error}")
+                    logging.error(f"Klient API nie został zainicjalizowany. Błąd: {init_error}")
+                    return {
+                        "balances": {
+                            "BTC": {"equity": 0.005, "available_balance": 0.005, "wallet_balance": 0.005},
+                            "USDT": {"equity": 500, "available_balance": 450, "wallet_balance": 500}
+                        }, 
+                        "success": False,
+                        "error": f"Klient API nie został zainicjalizowany. Błąd: {init_error}",
+                        "note": "Dane przykładowe - błąd inicjalizacji klienta"
+                    }
 
             # Testowa implementacja (symulacja)
             if self.use_testnet:
@@ -202,9 +213,26 @@ class BybitConnector:
                 # Prawdziwa implementacja lub symulacja jeśli połączenie nie działa
                 try:
                     self.logger.info(f"Próba pobrania danych z prawdziwego API Bybit. API key: {self.api_key[:5]}..., Testnet: {self.use_testnet}")
+                    
+                    # Testowanie połączenia z API
+                    try:
+                        # Najpierw sprawdźmy czy mamy dostęp do API
+                        time_response = self.client.get_server_time()
+                        self.logger.info(f"Test połączenia z API: {time_response}")
+                    except Exception as time_error:
+                        self.logger.error(f"Test połączenia z API nie powiódł się: {time_error}")
+                        raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+                    
+                    # Próba pobrania salda konta
                     wallet = self.client.get_wallet_balance(accountType="UNIFIED")
                     
                     self.logger.info(f"Odpowiedź API Bybit: {str(wallet)[:200]}...")
+                    
+                    # Sprawdzenie czy odpowiedź zawiera kod błędu
+                    if "retCode" in wallet and wallet["retCode"] != 0:
+                        error_msg = wallet.get("retMsg", "Nieznany błąd API")
+                        self.logger.error(f"API zwróciło błąd: {error_msg}")
+                        raise Exception(f"Błąd API ByBit: {error_msg}")
                     
                     result = {
                         "balances": {},
@@ -234,6 +262,7 @@ class BybitConnector:
                     if not result["balances"]:
                         self.logger.warning(f"API zwróciło pustą listę sald. Pełna odpowiedź: {wallet}")
                         result["warning"] = "API zwróciło pustą listę sald"
+                        self.logger.info("Próba pobrania danych z API zwróciła pustą listę sald. Możliwe przyczyny: brak środków na koncie, nieprawidłowe konto, nieprawidłowe uprawnienia API.")
                     
                     return result
                 except Exception as e:
@@ -248,7 +277,7 @@ class BybitConnector:
                         "success": False,
                         "error": str(e),
                         "source": "simulation",
-                        "note": "Dane symulowane - błąd API"
+                        "note": "Dane symulowane - błąd API: " + str(e)
                     }
         except Exception as e:
             self.logger.error(f"Krytyczny błąd podczas pobierania salda konta: {e}. Traceback: {traceback.format_exc()}")
@@ -260,7 +289,7 @@ class BybitConnector:
                 },
                 "success": False,
                 "error": str(e),
-                "note": "Dane symulowane - wystąpił błąd"
+                "note": "Dane symulowane - wystąpił błąd: " + str(e)
             }
 
     def place_order(self, symbol: str, side: str, price: float, quantity: float, 

@@ -19331,3 +19331,1751 @@ Original error was: No module named 'numpy.core._multiarray_umath'
 2025-04-07 18:17:44,206 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
 2025-04-07 18:17:44,236 [WARNING]  * Debugger is active!
 2025-04-07 18:17:44,240 [INFO]  * Debugger PIN: 136-574-543
+2025-04-07 18:17:46,838 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:46] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:17:46,845 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:46] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:17:46,847 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:46] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:17:46,880 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:46] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:17:46,884 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:46] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:17:46,886 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:17:46,891 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:17:46,894 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:46] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:17:46,897 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:46] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:17:46,896 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:17:46,919 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:17:46,899 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:46] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:17:46,934 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:46] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:17:46,953 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:46] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:17:46,937 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:46] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:17:46,940 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:46] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:17:47,010 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:47] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:17:47,012 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:47] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:17:47,019 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:47] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:17:47,047 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:47] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:17:47,075 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:47] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:17:47,080 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:47] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:17:47,083 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:47] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:17:47,176 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:17:47,179 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:17:47,183 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:47] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:17:47,891 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:47] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:17:47,895 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:17:47,895 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:17:47,896 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:47] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:17:47,903 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:47] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:17:47,941 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:47] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:17:47,943 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:47] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:17:47,947 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:47] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:17:56,781 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:17:56,783 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:56] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:17:56,782 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:17:56,786 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:56] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:17:56,788 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:56] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:17:56,793 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:56] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:17:56,794 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:56] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:17:56,795 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:56] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:17:56,956 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:56] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:17:57,826 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:57] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:17:57,834 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:57] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:17:57,835 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:57] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:17:57,840 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:17:57,842 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:17:57,842 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:57] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:17:57,847 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:57] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:17:57,901 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:57] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:17:57,957 [INFO] 172.31.128.72 - - [07/Apr/2025 18:17:57] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:18:06,822 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:18:06,823 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:18:06,824 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:06] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:18:06,831 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:06] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:18:06,834 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:06] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:18:06,845 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:06] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:18:06,846 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:06] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:18:06,849 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:06] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:18:07,817 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:18:07,818 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:07] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:18:07,820 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:07] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:18:07,820 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:18:07,823 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:07] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:18:07,824 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:07] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:18:07,826 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:07] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:18:07,827 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:07] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:18:11,799 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:11] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:18:12,818 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:12] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:18:16,887 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:18:16,888 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:18:16,888 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:16] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:18:16,898 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:16] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:18:16,905 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:16] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:18:16,907 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:16] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:18:16,967 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:16] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:18:16,999 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:16] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:18:17,821 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:18:17,822 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:18:17,823 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:17] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:18:17,826 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:17] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:18:17,827 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:17] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:18:17,836 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:17] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:18:17,837 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:17] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:18:17,839 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:17] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:18:22,734 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:18:24,139 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 18:18:26,870 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:18:26,881 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:18:26,881 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:18:26,881 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:18:26,882 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:18:26,882 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 18:18:26,882 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 18:18:26,883 [ERROR] Błąd podczas inicjalizacji klienta ByBit: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:18:26,883 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 18:18:26,883 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744049906883, 'time': '2025-04-07 18:18:26'}
+2025-04-07 18:18:26,884 [INFO] System zainicjalizowany poprawnie
+2025-04-07 18:18:26,884 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 18:18:26,901 [WARNING]  * Debugger is active!
+2025-04-07 18:18:26,905 [INFO]  * Debugger PIN: 205-168-561
+2025-04-07 18:18:28,550 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:18:28,552 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:28] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:18:28,554 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:28] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:18:28,554 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:18:28,561 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:28] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:18:28,561 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:28] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:18:28,574 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:28] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:18:28,577 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:28] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:18:28,579 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:28] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:18:28,581 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:28] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:18:28,582 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:18:28,585 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:28] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:18:28,590 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:28] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:18:28,592 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:28] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:18:28,594 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:18:28,596 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:28] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:18:28,721 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:28] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:18:28,723 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:28] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:18:28,731 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:28] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:18:28,735 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:28] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:18:33,696 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:18:33,700 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:18:33,703 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:33] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 18:18:33,704 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:18:33,711 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:18:33,712 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:33] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:18:33,714 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:18:33,830 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:33] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:18:33,842 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:18:33,850 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:18:33,928 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:33] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 18:18:33,931 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:18:33,932 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:18:33,962 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:18:33,963 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:33] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:18:33,979 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:18:33,985 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:33] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:18:34,076 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:34] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:18:34,077 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:34] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:18:34,079 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:34] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:18:34,094 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:34] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 18:18:34,110 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:34] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:18:34,125 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:18:34,133 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:18:34,210 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:34] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:18:34,214 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:34] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:18:34,219 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:34] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:18:34,266 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:18:34,268 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:18:34,410 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:18:34,412 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:18:34,542 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:18:34,543 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:18:36,890 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:18:36,890 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:18:36,890 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:36] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:18:36,897 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:36] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:18:36,903 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:36] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:18:36,911 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:36] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:18:36,913 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:36] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:18:36,952 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:36] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:18:37,826 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:37] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:18:37,827 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:37] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:18:37,829 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:18:37,831 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:37] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:18:37,832 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:18:37,834 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:37] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:18:37,836 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:37] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:18:37,837 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:37] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:18:41,721 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:41] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:18:42,817 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:42] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:18:46,888 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:18:46,888 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:18:46,888 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:46] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:18:46,891 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:46] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:18:46,894 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:46] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:18:46,896 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:46] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:18:46,944 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:46] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:18:46,957 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:46] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:18:47,827 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:18:47,828 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:18:47,829 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:47] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:18:47,834 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:47] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:18:47,836 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:47] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:18:47,838 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:47] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:18:47,842 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:47] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:18:47,844 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:47] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:18:56,766 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:18:56,767 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:18:56,767 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:56] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:18:56,771 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:56] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:18:56,787 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:56] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:18:56,794 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:56] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:18:56,802 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:56] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:18:56,804 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:56] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:18:56,965 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:56] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:18:57,814 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:57] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:18:57,816 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:57] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:18:57,817 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:57] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:18:57,819 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:57] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:18:57,822 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:57] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:18:57,869 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:18:57,872 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:18:57,874 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:57] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:18:57,969 [INFO] 172.31.128.72 - - [07/Apr/2025 18:18:57] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:19:07,108 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:07] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:19:07,109 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:19:07,110 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:19:07,110 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:07] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:19:07,125 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:07] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:19:07,126 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:07] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:19:07,128 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:07] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:19:07,140 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:07] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:19:07,816 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:19:07,817 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:19:07,818 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:07] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:19:07,821 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:07] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:19:07,823 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:07] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:19:07,825 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:07] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:19:07,833 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:07] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:19:07,834 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:07] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:19:12,831 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:12] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:19:13,432 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:13] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:19:17,816 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:17] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:19:17,818 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:17] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:19:17,820 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:19:17,820 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:19:17,825 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:17] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:19:17,829 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:17] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:19:17,829 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:17] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:19:17,833 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:17] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:19:21,911 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:19:21,912 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:21] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:19:21,916 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:21] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:19:21,918 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:21] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:19:21,923 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:21] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:19:21,918 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:19:21,928 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:21] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:19:21,931 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:21] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:19:26,744 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:26] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:19:26,745 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:26] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:19:26,747 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:26] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:19:26,749 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:26] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:19:26,750 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:19:26,751 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:26] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:19:26,752 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:19:26,754 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:26] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:19:26,913 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:26] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:19:26,914 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:26] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:19:27,845 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:27] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:19:27,847 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:27] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:19:27,849 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:27] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:19:27,850 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:27] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:19:27,852 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:27] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:19:27,854 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:19:27,854 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:19:27,855 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:27] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:19:27,981 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:27] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:19:27,985 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:27] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:19:33,690 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:19:33,690 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:33] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:19:33,696 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:33] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 18:19:33,699 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:19:33,702 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:19:33,704 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:19:33,707 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:19:33,822 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:33] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:19:33,826 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:19:33,836 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:33] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 18:19:33,839 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:19:33,834 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:19:33,841 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:19:33,843 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:33] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:19:33,954 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:19:33,961 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:19:33,974 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:19:33,977 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:33] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:19:33,982 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:33] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 18:19:33,986 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:19:34,090 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:34] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:19:34,093 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:19:34,095 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:19:34,105 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:34] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:19:34,108 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:34] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:19:34,113 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:34] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:19:34,117 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:34] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:19:34,227 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:19:34,230 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:19:34,361 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:19:34,363 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:19:34,494 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:19:34,496 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:19:36,850 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:19:36,850 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:19:36,852 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:36] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:19:36,856 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:36] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:19:36,858 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:36] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:19:36,859 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:36] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:19:36,861 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:36] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:19:36,863 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:36] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:19:37,813 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:19:37,814 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:19:37,815 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:37] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:19:37,818 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:37] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:19:37,820 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:37] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:19:37,821 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:37] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:19:37,822 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:37] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:19:37,824 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:37] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:19:41,784 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:41] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:19:42,817 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:42] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:19:46,814 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:19:46,815 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:46] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:19:46,816 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:46] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:19:46,817 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:19:46,820 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:46] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:19:46,823 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:46] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:19:46,900 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:46] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:19:46,907 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:46] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:19:47,831 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:19:47,832 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:47] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:19:47,833 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:19:47,837 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:47] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:19:47,836 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:47] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:19:47,835 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:47] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:19:47,842 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:47] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:19:47,844 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:47] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:19:57,813 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:57] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:19:57,815 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:19:57,815 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:19:57,817 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:57] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:19:57,820 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:57] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:19:57,824 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:57] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:19:57,826 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:57] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:19:57,830 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:57] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:19:58,000 [INFO] 172.31.128.72 - - [07/Apr/2025 18:19:58] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:20:00,801 [INFO]  * Detected change in '/home/runner/workspace/data/execution/.bybit_connector.py.1721480963~', reloading
+2025-04-07 18:20:00,806 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:00,921 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:00] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:20:00,923 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:00] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:20:00,925 [ERROR] Klient API nie został zainicjalizowany.
+2025-04-07 18:20:00,926 [ERROR] Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:20:00,927 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:00] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:20:00,938 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:00] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:20:00,940 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:00] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:20:00,942 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:00] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:20:01,091 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:01] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:20:01,955 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 18:20:05,838 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:05,850 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:05,850 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:05,850 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:20:05,850 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:20:05,850 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 18:20:05,851 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 18:20:05,852 [ERROR] Błąd podczas inicjalizacji klienta ByBit: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:05,853 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 18:20:05,853 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744050005853, 'time': '2025-04-07 18:20:05'}
+2025-04-07 18:20:05,853 [INFO] System zainicjalizowany poprawnie
+2025-04-07 18:20:05,853 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 18:20:05,876 [WARNING]  * Debugger is active!
+2025-04-07 18:20:05,880 [INFO]  * Debugger PIN: 126-469-784
+2025-04-07 18:20:07,385 [INFO]  * Detected change in '/nix/store/j9q83kq60x1zd8mhh58x33za9zhc1qka-python3.10-pysocks-1.7.1/lib/python3.10/site-packages/socks.py', reloading
+2025-04-07 18:20:07,386 [INFO]  * Detected change in '/nix/store/61mhmxgj9fks2p2glq0f84pd2m5iif5k-python3.10-numpy-1.24.2/lib/python3.10/site-packages/numpy/typing/__init__.py', reloading
+2025-04-07 18:20:07,562 [INFO]  * Detected change in '/nix/store/61mhmxgj9fks2p2glq0f84pd2m5iif5k-python3.10-numpy-1.24.2/lib/python3.10/site-packages/numpy/_typing/__init__.py', reloading
+2025-04-07 18:20:07,563 [INFO]  * Detected change in '/nix/store/61mhmxgj9fks2p2glq0f84pd2m5iif5k-python3.10-numpy-1.24.2/lib/python3.10/site-packages/numpy/_typing/_nested_sequence.py', reloading
+2025-04-07 18:20:07,564 [INFO]  * Detected change in '/nix/store/61mhmxgj9fks2p2glq0f84pd2m5iif5k-python3.10-numpy-1.24.2/lib/python3.10/site-packages/numpy/_typing/_nbit.py', reloading
+2025-04-07 18:20:07,564 [INFO]  * Detected change in '/nix/store/61mhmxgj9fks2p2glq0f84pd2m5iif5k-python3.10-numpy-1.24.2/lib/python3.10/site-packages/numpy/_typing/_char_codes.py', reloading
+2025-04-07 18:20:07,564 [INFO]  * Detected change in '/nix/store/61mhmxgj9fks2p2glq0f84pd2m5iif5k-python3.10-numpy-1.24.2/lib/python3.10/site-packages/numpy/_typing/_scalars.py', reloading
+2025-04-07 18:20:07,565 [INFO]  * Detected change in '/nix/store/61mhmxgj9fks2p2glq0f84pd2m5iif5k-python3.10-numpy-1.24.2/lib/python3.10/site-packages/numpy/_typing/_shape.py', reloading
+2025-04-07 18:20:07,565 [INFO]  * Detected change in '/nix/store/61mhmxgj9fks2p2glq0f84pd2m5iif5k-python3.10-numpy-1.24.2/lib/python3.10/site-packages/numpy/_typing/_dtype_like.py', reloading
+2025-04-07 18:20:07,566 [INFO]  * Detected change in '/nix/store/61mhmxgj9fks2p2glq0f84pd2m5iif5k-python3.10-numpy-1.24.2/lib/python3.10/site-packages/numpy/_typing/_generic_alias.py', reloading
+2025-04-07 18:20:07,566 [INFO]  * Detected change in '/nix/store/61mhmxgj9fks2p2glq0f84pd2m5iif5k-python3.10-numpy-1.24.2/lib/python3.10/site-packages/numpy/_typing/_array_like.py', reloading
+2025-04-07 18:20:07,566 [INFO]  * Detected change in '/nix/store/61mhmxgj9fks2p2glq0f84pd2m5iif5k-python3.10-numpy-1.24.2/lib/python3.10/site-packages/numpy/_typing/_add_docstring.py', reloading
+2025-04-07 18:20:07,568 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:07,570 [INFO]  * Detected change in '/home/runner/workspace/.pythonlibs/lib/python3.10/site-packages/scipy/stats/_discrete_distns.py', reloading
+2025-04-07 18:20:07,714 [INFO]  * Detected change in '/home/runner/workspace/.pythonlibs/lib/python3.10/site-packages/scipy/stats/_levy_stable/__init__.py', reloading
+2025-04-07 18:20:07,721 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:07] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:20:07,729 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:07] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:20:07,728 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:20:07,730 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:07,730 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:07,731 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:07] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:20:07,733 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:07] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:20:07,735 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:07] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:20:07,736 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:07] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:20:07,817 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:20:07,819 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:07] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:20:07,819 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:07,821 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:07] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:20:07,822 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:07] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:20:07,822 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:07,824 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:07] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:20:07,826 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:07] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:20:07,827 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:07] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:20:08,216 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 18:20:10,412 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:10,430 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:10,431 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:10,431 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:20:10,432 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:20:10,432 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 18:20:10,432 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 18:20:10,434 [ERROR] Błąd podczas inicjalizacji klienta ByBit: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:10,434 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 18:20:10,435 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744050010435, 'time': '2025-04-07 18:20:10'}
+2025-04-07 18:20:10,435 [INFO] System zainicjalizowany poprawnie
+2025-04-07 18:20:10,435 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 18:20:10,462 [WARNING]  * Debugger is active!
+2025-04-07 18:20:10,467 [INFO]  * Debugger PIN: 629-023-893
+2025-04-07 18:20:12,009 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:12,012 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:12,174 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:12] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:20:12,819 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:12] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:20:13,407 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 18:20:16,367 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:16,382 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:16,384 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:16,395 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:20:16,395 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:20:16,396 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 18:20:16,396 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 18:20:16,398 [ERROR] Błąd podczas inicjalizacji klienta ByBit: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:16,399 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 18:20:16,399 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744050016399, 'time': '2025-04-07 18:20:16'}
+2025-04-07 18:20:16,399 [INFO] System zainicjalizowany poprawnie
+2025-04-07 18:20:16,399 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 18:20:16,421 [WARNING]  * Debugger is active!
+2025-04-07 18:20:16,425 [INFO]  * Debugger PIN: 408-540-148
+2025-04-07 18:20:17,450 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:17,457 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:20:17,460 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:17,463 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:17] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:20:17,464 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:17] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:20:17,464 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:17,468 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:17] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:20:17,471 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:17] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:20:17,472 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:17] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:20:17,478 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:17] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:20:17,981 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 18:20:20,150 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:20,162 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:20,163 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:20,163 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:20:20,163 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:20:20,163 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 18:20:20,163 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 18:20:20,165 [ERROR] Błąd podczas inicjalizacji klienta ByBit: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:20,165 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 18:20:20,165 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744050020165, 'time': '2025-04-07 18:20:20'}
+2025-04-07 18:20:20,165 [INFO] System zainicjalizowany poprawnie
+2025-04-07 18:20:20,166 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 18:20:20,184 [WARNING]  * Debugger is active!
+2025-04-07 18:20:20,188 [INFO]  * Debugger PIN: 100-983-320
+2025-04-07 18:20:21,351 [INFO]  * Detected change in '/home/runner/workspace/config/config_loader.py', reloading
+2025-04-07 18:20:21,352 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:21,354 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:21,363 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:21,363 [INFO]  * Detected change in '/home/runner/workspace/config/config_loader.py', reloading
+2025-04-07 18:20:21,363 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:21,363 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:21,364 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:21,365 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:21,365 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:21,366 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:21,366 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:21,367 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:21,368 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:21,368 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:21,369 [INFO]  * Detected change in '/home/runner/workspace/data/logging/error_logger.py', reloading
+2025-04-07 18:20:21,369 [INFO]  * Detected change in '/home/runner/workspace/data/utils/error_handling.py', reloading
+2025-04-07 18:20:21,369 [INFO]  * Detected change in '/home/runner/workspace/data/tests/test_execution.py', reloading
+2025-04-07 18:20:21,370 [INFO]  * Detected change in '/home/runner/workspace/data/tests/test_risk_management.py', reloading
+2025-04-07 18:20:21,370 [INFO]  * Detected change in '/home/runner/workspace/data/tests/test_strategies.py', reloading
+2025-04-07 18:20:21,371 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:21,371 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:21,462 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:21,464 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:21,670 [INFO]  * Detected change in '/home/runner/workspace/data/indicators/sentiment_analysis.py', reloading
+2025-04-07 18:20:21,670 [INFO]  * Detected change in '/home/runner/workspace/ai_models/anomaly_detection.py', reloading
+2025-04-07 18:20:21,671 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:21,671 [INFO]  * Detected change in '/home/runner/workspace/data/utils/notification_system.py', reloading
+2025-04-07 18:20:21,671 [INFO]  * Detected change in '/home/runner/workspace/data/utils/import_manager.py', reloading
+2025-04-07 18:20:21,671 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:21,672 [INFO]  * Detected change in '/home/runner/workspace/data/indicators/sentiment_analysis.py', reloading
+2025-04-07 18:20:21,672 [INFO]  * Detected change in '/home/runner/workspace/ai_models/anomaly_detection.py', reloading
+2025-04-07 18:20:21,672 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:21,672 [INFO]  * Detected change in '/home/runner/workspace/data/utils/notification_system.py', reloading
+2025-04-07 18:20:21,672 [INFO]  * Detected change in '/home/runner/workspace/data/utils/import_manager.py', reloading
+2025-04-07 18:20:21,673 [INFO]  * Detected change in '/home/runner/workspace/data/indicators/sentiment_analysis.py', reloading
+2025-04-07 18:20:21,673 [INFO]  * Detected change in '/home/runner/workspace/ai_models/anomaly_detection.py', reloading
+2025-04-07 18:20:21,673 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:21,674 [INFO]  * Detected change in '/home/runner/workspace/data/utils/notification_system.py', reloading
+2025-04-07 18:20:21,674 [INFO]  * Detected change in '/home/runner/workspace/data/utils/import_manager.py', reloading
+2025-04-07 18:20:21,675 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:21,675 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:21,675 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:21,676 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:21,676 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:21,676 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:21,682 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:21] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:20:21,684 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:21] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:20:21,687 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:21] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:20:21,688 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:20:21,696 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:21,697 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:21,697 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:21] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:20:21,689 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:21] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:20:21,699 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:21] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:20:22,278 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 18:20:25,755 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:25,776 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:25,776 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:25,776 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:20:25,777 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:20:25,777 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 18:20:25,777 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 18:20:25,778 [ERROR] Błąd podczas inicjalizacji klienta ByBit: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:25,779 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 18:20:25,779 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744050025779, 'time': '2025-04-07 18:20:25'}
+2025-04-07 18:20:25,779 [INFO] System zainicjalizowany poprawnie
+2025-04-07 18:20:25,779 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 18:20:25,801 [WARNING]  * Debugger is active!
+2025-04-07 18:20:25,804 [INFO]  * Debugger PIN: 141-496-823
+2025-04-07 18:20:26,953 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:27,791 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 18:20:30,104 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:30,115 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:30,115 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:30,115 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:20:30,115 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:20:30,115 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 18:20:30,115 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 18:20:30,117 [ERROR] Błąd podczas inicjalizacji klienta ByBit: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:30,117 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 18:20:30,117 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744050030117, 'time': '2025-04-07 18:20:30'}
+2025-04-07 18:20:30,117 [INFO] System zainicjalizowany poprawnie
+2025-04-07 18:20:30,117 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 18:20:30,133 [WARNING]  * Debugger is active!
+2025-04-07 18:20:30,136 [INFO]  * Debugger PIN: 148-231-564
+2025-04-07 18:20:31,106 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:31,107 [INFO]  * Detected change in '/home/runner/workspace/data/logging/error_logger.py', reloading
+2025-04-07 18:20:31,439 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:31] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:20:31,437 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:20:31,453 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:31,456 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:31,457 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:31] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:20:31,459 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:31] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:20:31,463 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:31] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:20:31,467 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:31] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:20:31,475 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:31] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:20:31,480 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:31] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:20:31,483 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:31] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:20:31,478 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:20:31,486 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:31] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:20:31,492 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:31] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:20:31,489 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:31,495 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:31,489 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:31] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:20:31,501 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:31] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:20:31,586 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:31] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:20:31,590 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:31] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:20:31,661 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:31] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:20:31,664 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:31] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:20:32,041 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 18:20:34,339 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:34,350 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:34,350 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:34,351 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:20:34,351 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:20:34,351 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 18:20:34,351 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 18:20:34,352 [ERROR] Błąd podczas inicjalizacji klienta ByBit: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:34,353 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 18:20:34,353 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744050034353, 'time': '2025-04-07 18:20:34'}
+2025-04-07 18:20:34,353 [INFO] System zainicjalizowany poprawnie
+2025-04-07 18:20:34,353 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 18:20:34,366 [WARNING]  * Debugger is active!
+2025-04-07 18:20:34,369 [INFO]  * Debugger PIN: 137-241-105
+2025-04-07 18:20:35,403 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:35] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:20:35,404 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:20:35,409 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:35] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:20:35,410 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:35] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:20:35,412 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:35] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 18:20:35,413 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:35] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:20:35,415 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:35] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:20:35,540 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:20:35,541 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:35] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:20:35,544 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:35] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:20:35,592 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:35] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:20:35,597 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:35] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:20:35,604 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:35] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:20:35,609 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:35] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 18:20:35,673 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:35] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:20:35,676 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:35] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:20:35,721 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:20:35,722 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:35] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:20:35,730 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:35] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:20:35,738 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:35] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:20:35,741 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:35] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:20:35,801 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:35] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:20:35,808 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:35] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 18:20:35,854 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:35] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:20:35,863 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:35] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:20:35,871 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:20:35,872 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:35] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:20:35,874 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:35] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:20:35,933 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:35] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:20:36,006 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:20:36,007 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:36] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:20:36,142 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:20:36,144 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:36] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:20:37,401 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:37,483 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:20:37,484 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:37,484 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:37,485 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:37] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:20:37,512 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:37] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:20:37,514 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:37] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:20:37,515 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:37] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:20:37,517 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:37] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:20:37,518 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:37] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:20:37,877 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 18:20:40,092 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:40,103 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:40,103 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:40,104 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:20:40,104 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:20:40,104 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 18:20:40,104 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 18:20:40,106 [ERROR] Błąd podczas inicjalizacji klienta ByBit: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:40,106 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 18:20:40,106 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744050040106, 'time': '2025-04-07 18:20:40'}
+2025-04-07 18:20:40,106 [INFO] System zainicjalizowany poprawnie
+2025-04-07 18:20:40,106 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 18:20:40,122 [WARNING]  * Debugger is active!
+2025-04-07 18:20:40,125 [INFO]  * Debugger PIN: 112-857-726
+2025-04-07 18:20:41,243 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:41] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:20:41,251 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:20:41,256 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:41] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:20:41,256 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:41,257 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:41,259 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:41] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:20:41,261 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:41] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:20:41,263 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:41] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:20:41,265 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:41] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:20:42,197 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:42] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:20:42,823 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:42] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:20:42,892 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:43,204 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:43,289 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:43,746 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 18:20:45,952 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:45,963 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:45,963 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:45,963 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:20:45,964 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:20:45,964 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 18:20:45,964 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 18:20:45,965 [ERROR] Błąd podczas inicjalizacji klienta ByBit: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:45,965 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 18:20:45,966 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744050045965, 'time': '2025-04-07 18:20:45'}
+2025-04-07 18:20:45,966 [INFO] System zainicjalizowany poprawnie
+2025-04-07 18:20:45,966 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 18:20:45,980 [WARNING]  * Debugger is active!
+2025-04-07 18:20:45,983 [INFO]  * Debugger PIN: 824-961-103
+2025-04-07 18:20:46,906 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:47,517 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 18:20:50,086 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:50,096 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:50,096 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:50,096 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:20:50,096 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:20:50,096 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 18:20:50,097 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 18:20:50,098 [ERROR] Błąd podczas inicjalizacji klienta ByBit: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:50,098 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 18:20:50,098 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744050050098, 'time': '2025-04-07 18:20:50'}
+2025-04-07 18:20:50,098 [INFO] System zainicjalizowany poprawnie
+2025-04-07 18:20:50,098 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 18:20:50,112 [WARNING]  * Debugger is active!
+2025-04-07 18:20:50,115 [INFO]  * Debugger PIN: 362-832-256
+2025-04-07 18:20:51,126 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:51] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:20:51,129 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:20:51,130 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:51] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:20:51,131 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:51,135 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:51,133 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:51] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:20:51,132 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:51] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:20:51,136 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:51] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:20:51,137 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:51] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:20:51,137 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:51] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:20:51,138 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:51] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:20:51,140 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:20:51,142 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:51] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:20:51,143 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:51] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:20:51,145 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:51] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:20:51,147 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:51,149 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:51,150 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:51] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:20:54,196 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:54,651 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 18:20:56,604 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:56,614 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:56,614 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:20:56,614 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:20:56,615 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:20:56,615 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 18:20:56,615 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 18:20:56,616 [ERROR] Błąd podczas inicjalizacji klienta ByBit: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:56,616 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 18:20:56,616 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744050056616, 'time': '2025-04-07 18:20:56'}
+2025-04-07 18:20:56,616 [INFO] System zainicjalizowany poprawnie
+2025-04-07 18:20:56,617 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 18:20:56,631 [WARNING]  * Debugger is active!
+2025-04-07 18:20:56,633 [INFO]  * Debugger PIN: 125-833-379
+2025-04-07 18:20:57,604 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:20:57,610 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:57] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:20:57,611 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:57] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:20:57,610 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:57,613 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:57,613 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:57] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:20:57,614 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:57] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:20:57,615 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:57] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:20:57,617 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:57] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:20:57,776 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:57] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:20:57,814 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:20:57,815 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:57,815 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:20:57,816 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:57] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:20:57,818 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:57] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:20:57,819 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:57] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:20:57,821 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:57] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:20:57,823 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:57] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:20:57,824 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:57] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:20:57,946 [INFO] 172.31.128.72 - - [07/Apr/2025 18:20:57] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:20:59,749 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:59,749 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:59,814 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:59,815 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:59,815 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:59,816 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:59,817 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:59,817 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:59,818 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:59,819 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:59,820 [INFO]  * Detected change in '/home/runner/workspace/data/logging/error_logger.py', reloading
+2025-04-07 18:20:59,820 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:59,821 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:59,821 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:59,822 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:59,823 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:59,823 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:59,824 [INFO]  * Detected change in '/home/runner/workspace/ai_models/anomaly_detection.py', reloading
+2025-04-07 18:20:59,825 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:59,825 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:59,826 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:59,826 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:59,827 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:59,827 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:20:59,827 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:59,828 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:59,843 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:20:59,844 [INFO]  * Detected change in '/home/runner/workspace/ai_models/anomaly_detection.py', reloading
+2025-04-07 18:20:59,844 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:21:01,161 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 18:21:03,614 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:21:03,624 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:21:03,624 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:21:03,625 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:21:03,625 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:21:03,625 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 18:21:03,625 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 18:21:03,626 [ERROR] Błąd podczas inicjalizacji klienta ByBit: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:21:03,626 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 18:21:03,627 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744050063626, 'time': '2025-04-07 18:21:03'}
+2025-04-07 18:21:03,627 [INFO] System zainicjalizowany poprawnie
+2025-04-07 18:21:03,627 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 18:21:03,641 [WARNING]  * Debugger is active!
+2025-04-07 18:21:03,643 [INFO]  * Debugger PIN: 465-904-119
+2025-04-07 18:21:07,828 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:21:07,828 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:21:07,828 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:21:07,829 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:07] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:21:07,835 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:07] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:21:07,836 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:07] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:21:07,838 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:07] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:21:07,840 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:07] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:21:07,841 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:07] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:21:12,813 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:12] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:21:17,816 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:17] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:21:17,814 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:21:17,817 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:21:17,818 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:21:17,819 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:17] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:21:17,823 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:17] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:21:17,826 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:17] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:21:17,828 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:17] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:21:17,829 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:17] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:21:27,827 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:27] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:21:27,829 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:27] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:21:27,830 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:27] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:21:27,828 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:21:27,832 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:27] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:21:27,833 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:21:27,834 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:21:27,834 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:27] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:21:27,836 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:27] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:21:27,969 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:27] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:21:27,973 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:27] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:21:33,706 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:21:33,707 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:33] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:21:33,710 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:21:33,717 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:33] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 18:21:33,718 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:21:33,720 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:21:33,722 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:21:33,846 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:21:33,851 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:33] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:21:33,853 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:21:33,855 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:21:33,856 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:33] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:21:33,860 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:21:33,865 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:33] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 18:21:33,977 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:21:33,990 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:21:33,991 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:21:33,995 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:33] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:21:33,997 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:21:34,000 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:21:34,002 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:21:34,118 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:34] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:21:34,126 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:34] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 18:21:34,129 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:34] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:21:34,130 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:34] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:21:34,132 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:34] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:21:34,136 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:34] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:21:34,254 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:21:34,255 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:21:34,385 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:21:34,386 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:21:34,518 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:21:34,519 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:21:34,764 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:34] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:21:34,766 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:34] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:21:34,767 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:34] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:21:34,769 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:34] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:21:34,770 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:34] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:21:34,770 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:21:34,780 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:21:34,781 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:21:34,782 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:34] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:21:34,954 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:34] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:21:37,813 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:21:37,815 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:21:37,819 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:21:37,822 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:37] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:21:37,821 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:37] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:21:37,823 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:37] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:21:37,826 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:37] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:21:37,834 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:37] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:21:37,843 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:37] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:21:42,830 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:42] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:21:47,818 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:21:47,821 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:47] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:21:47,819 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:21:47,822 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:21:47,822 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:47] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:21:47,824 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:47] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:21:47,828 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:47] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:21:47,833 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:47] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:21:47,834 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:47] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:21:56,737 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:56] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:21:56,778 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:56] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:21:56,779 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:21:56,780 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:21:56,780 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:21:56,781 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:56] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:21:56,782 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:56] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:21:56,782 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:56] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:21:56,786 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:56] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:21:56,900 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:56] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:21:56,950 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:56] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:21:57,813 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:21:57,815 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:57] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:21:57,816 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:21:57,818 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:57] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:21:57,818 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:21:57,819 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:57] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:21:57,820 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:57] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:21:57,821 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:57] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:21:57,822 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:57] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:21:57,945 [INFO] 172.31.128.72 - - [07/Apr/2025 18:21:57] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:22:00,914 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:22:00,915 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:22:00,970 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:22:00,983 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:22:00,984 [INFO]  * Detected change in '/home/runner/workspace/ai_models/anomaly_detection.py', reloading
+2025-04-07 18:22:00,985 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:22:00,986 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:22:00,987 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:22:00,988 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:22:00,988 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:22:00,989 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:22:00,990 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:22:00,996 [INFO]  * Detected change in '/home/runner/workspace/ai_models/anomaly_detection.py', reloading
+2025-04-07 18:22:00,997 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:22:02,432 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 18:22:05,034 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:22:05,051 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:22:05,051 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:22:05,052 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:22:05,052 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:22:05,052 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 18:22:05,052 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 18:22:05,054 [ERROR] Błąd podczas inicjalizacji klienta ByBit: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:22:05,054 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 18:22:05,054 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744050125054, 'time': '2025-04-07 18:22:05'}
+2025-04-07 18:22:05,054 [INFO] System zainicjalizowany poprawnie
+2025-04-07 18:22:05,054 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 18:22:05,075 [WARNING]  * Debugger is active!
+2025-04-07 18:22:05,084 [INFO]  * Debugger PIN: 543-556-913
+2025-04-07 18:22:07,821 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:22:07,821 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:22:07,821 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:22:07,822 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:07] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:22:07,826 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:07] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:22:07,829 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:07] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:22:07,831 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:07] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:22:07,833 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:07] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:22:07,843 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:07] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:22:12,825 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:12] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:22:17,813 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:22:17,816 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:17] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:22:17,817 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:22:17,818 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:22:17,818 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:17] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:22:17,826 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:17] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:22:17,833 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:17] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:22:17,845 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:17] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:22:17,910 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:17] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:22:27,835 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:22:27,837 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:27] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:22:27,839 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:27] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:22:27,838 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:22:27,841 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:27] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:22:27,841 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:22:27,843 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:27] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:22:27,845 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:27] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:22:27,848 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:27] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:22:27,973 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:27] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:22:27,976 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:27] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:22:33,694 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:22:33,696 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:22:33,700 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:22:33,699 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:22:33,703 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:22:33,709 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:33] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 18:22:33,710 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:33] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:22:33,829 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:33] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:22:33,837 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:22:33,840 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:22:33,846 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:33] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 18:22:33,858 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:22:33,860 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:22:33,966 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:22:33,969 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:22:33,971 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:33] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:22:33,974 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:33] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:22:33,981 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:22:33,994 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:33] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 18:22:33,997 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:22:34,098 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:34] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:22:34,105 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:34] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:22:34,192 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:34] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:22:34,196 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:34] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:22:34,194 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:22:34,198 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:22:34,200 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:34] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:22:34,330 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:22:34,331 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:22:34,461 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:22:34,463 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:22:34,625 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:22:34,626 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:22:37,815 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:37] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:22:37,816 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:22:37,818 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:37] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:22:37,819 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:37] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:22:37,819 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:22:37,824 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:22:37,822 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:37] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:22:37,825 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:37] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:22:37,821 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:37] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:22:42,836 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:42] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:22:47,817 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:47] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:22:47,819 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:22:47,820 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:47] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:22:47,821 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:22:47,823 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:47] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:22:47,823 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:22:47,824 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:47] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:22:47,825 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:47] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:22:47,826 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:47] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:22:56,378 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:56] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:22:56,379 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:56] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:22:56,380 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:56] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:22:56,381 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:56] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:22:56,385 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:56] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:22:56,450 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:22:56,451 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:22:56,451 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:22:56,452 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:56] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:22:57,715 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:57] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:22:57,840 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:22:57,842 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:57] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:22:57,846 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:57] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:22:57,844 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:22:57,849 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:57] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:22:57,852 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:57] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:22:57,852 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:22:57,853 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:57] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:22:57,856 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:57] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:22:58,005 [INFO] 172.31.128.72 - - [07/Apr/2025 18:22:58] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:23:07,828 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:07] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:23:07,831 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:23:07,833 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:23:07,834 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:23:07,834 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:07] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:23:07,837 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:07] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:23:07,841 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:07] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:23:07,842 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:07] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:23:07,876 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:07] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:23:09,277 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:09] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:23:09,660 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:23:09,661 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:23:09,662 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:23:09,662 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:09] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:23:09,676 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:09] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:23:09,677 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:09] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:23:09,679 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:09] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:23:09,690 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:09] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:23:09,691 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:09] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:23:11,923 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:23:11,923 [INFO]  * Detected change in '/home/runner/workspace/ai_models/anomaly_detection.py', reloading
+2025-04-07 18:23:11,924 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:23:11,924 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:23:11,979 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:23:11,984 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:23:11,985 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:23:11,985 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:23:11,986 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:23:11,986 [INFO]  * Detected change in '/home/runner/workspace/ai_models/anomaly_detection.py', reloading
+2025-04-07 18:23:11,987 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:23:12,459 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:12] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:23:12,987 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 18:23:15,610 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:23:15,621 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:23:15,621 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:23:15,622 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:23:15,622 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:23:15,622 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 18:23:15,622 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 18:23:15,623 [ERROR] Błąd podczas inicjalizacji klienta ByBit: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:23:15,624 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 18:23:15,624 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744050195624, 'time': '2025-04-07 18:23:15'}
+2025-04-07 18:23:15,624 [INFO] System zainicjalizowany poprawnie
+2025-04-07 18:23:15,624 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 18:23:15,638 [WARNING]  * Debugger is active!
+2025-04-07 18:23:15,640 [INFO]  * Debugger PIN: 420-975-120
+2025-04-07 18:23:16,719 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:16] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:23:17,812 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:23:17,813 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:23:17,814 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:23:17,814 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:17] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:23:17,817 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:17] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:23:17,819 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:17] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:23:17,820 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:17] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:23:17,821 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:17] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:23:17,826 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:17] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:23:27,827 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:27] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:23:27,830 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:27] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:23:27,831 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:27] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:23:27,832 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:27] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:23:27,833 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:27] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:23:27,835 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:23:27,836 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:23:27,837 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:23:27,837 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:27] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:23:27,958 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:27] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:23:27,962 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:27] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:23:31,684 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:23:31,684 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:23:31,684 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:23:31,685 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:31] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:23:31,687 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:31] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:23:31,689 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:31] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:23:31,694 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:31] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:23:31,695 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:31] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:23:31,696 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:31] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:23:31,834 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:31] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:23:31,856 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:31] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:23:33,687 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:23:33,688 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:33] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:23:33,694 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:23:33,696 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:33] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 18:23:33,697 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:23:33,699 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:23:33,700 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:23:33,819 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:33] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:23:33,826 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:23:33,829 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:23:33,833 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:33] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 18:23:33,833 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:23:33,835 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:23:33,836 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:33] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:23:33,963 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:23:33,966 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:23:33,968 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:33] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:23:33,971 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:23:33,972 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:33] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 18:23:33,973 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:23:34,091 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:34] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:23:34,098 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:23:34,098 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:23:34,103 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:34] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:23:34,107 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:34] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:23:34,108 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:34] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:23:34,109 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:34] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:23:34,226 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:23:34,227 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:23:34,355 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:23:34,356 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:23:34,486 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:23:34,487 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:23:37,810 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:23:37,811 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:23:37,811 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:23:37,811 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:37] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:23:37,814 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:37] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:23:37,815 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:37] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:23:37,819 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:37] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:23:37,870 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:37] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:23:37,888 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:37] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:23:42,829 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:42] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:23:47,819 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:23:47,825 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:47] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:23:47,827 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:47] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:23:47,830 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:47] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:23:47,823 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:23:47,831 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:47] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:23:47,833 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:47] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:23:47,835 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:23:47,843 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:47] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:23:53,226 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:23:53,226 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:23:53,227 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:23:53,228 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:53] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:23:53,234 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:53] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:23:53,235 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:53] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:23:53,237 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:53] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:23:53,290 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:53] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:23:53,297 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:53] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:23:57,816 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:23:57,818 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:57] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:23:57,820 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:57] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:23:57,819 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:23:57,821 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:57] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:23:57,824 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:23:57,826 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:57] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:23:57,830 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:57] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:23:57,831 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:57] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:23:57,955 [INFO] 172.31.128.72 - - [07/Apr/2025 18:23:57] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:24:00,558 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:00] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:24:07,834 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:07] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:24:07,832 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:24:07,840 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:24:07,839 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:07] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:24:07,838 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:07] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:24:07,842 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:24:07,844 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:07] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:24:07,845 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:07] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:24:07,913 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:07] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:24:09,003 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:24:09,004 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:24:09,004 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:24:09,004 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:09] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:24:09,022 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:09] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:24:09,023 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:09] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:24:09,025 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:09] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:24:09,026 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:09] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:24:09,028 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:09] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:24:12,811 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:12] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:24:17,815 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:17] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:24:17,816 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:17] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:24:17,818 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:24:17,819 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:24:17,819 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:24:17,820 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:17] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:24:17,821 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:17] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:24:17,821 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:17] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:24:17,823 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:17] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:24:27,839 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:27] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:24:27,844 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:27] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:24:27,847 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:27] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:24:27,850 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:27] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:24:27,848 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:24:27,853 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:24:27,853 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:24:27,853 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:27] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:24:27,857 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:27] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:24:27,971 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:27] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:24:27,987 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:27] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:24:33,696 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:24:33,697 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:33] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 18:24:33,699 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:24:33,702 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:24:33,706 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:33] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:24:33,720 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:24:33,722 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:24:33,836 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:24:33,839 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:24:33,843 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:33] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:24:33,847 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:33] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 18:24:33,871 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:24:33,872 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:33] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:24:33,877 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:24:33,982 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:24:33,987 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:33] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 18:24:33,989 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:24:33,993 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:24:34,003 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:34] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:24:34,011 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:34] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:24:34,114 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:24:34,116 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:24:34,121 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:34] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:24:34,123 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:34] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:24:34,133 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:34] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:24:34,171 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:34] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:24:34,173 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:34] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:24:34,255 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:24:34,257 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:24:34,387 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:24:34,387 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:24:34,526 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:24:34,528 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:24:37,822 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:24:37,822 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:24:37,823 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:24:37,824 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:37] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:24:37,835 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:37] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:24:37,836 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:37] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:24:37,843 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:37] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:24:37,837 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:37] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:24:37,846 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:37] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:24:42,825 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:42] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:24:47,810 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:24:47,812 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:24:47,813 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:24:47,813 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:47] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:24:47,816 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:47] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:24:47,818 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:47] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:24:47,819 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:47] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:24:47,821 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:47] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:24:47,825 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:47] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:24:49,935 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:49] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:24:49,941 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:49] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:24:49,945 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:49] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:24:49,951 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:49] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:24:50,026 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:50] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:24:50,041 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:24:50,042 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:24:50,042 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:24:50,042 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:50] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:24:50,092 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:50] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:24:50,095 [INFO] 172.31.128.72 - - [07/Apr/2025 18:24:50] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:24:52,936 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:24:52,971 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:24:52,978 [INFO]  * Detected change in '/home/runner/workspace/ai_models/anomaly_detection.py', reloading
+2025-04-07 18:24:52,982 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:24:54,034 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 18:24:59,252 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:24:59,268 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:24:59,268 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:24:59,268 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:24:59,269 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:24:59,269 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 18:24:59,269 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 18:24:59,273 [ERROR] Błąd podczas inicjalizacji klienta ByBit: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:24:59,274 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 18:24:59,274 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744050299274, 'time': '2025-04-07 18:24:59'}
+2025-04-07 18:24:59,274 [INFO] System zainicjalizowany poprawnie
+2025-04-07 18:24:59,274 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 18:24:59,313 [WARNING]  * Debugger is active!
+2025-04-07 18:24:59,317 [INFO]  * Debugger PIN: 128-711-616
+2025-04-07 18:25:00,888 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:00] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:25:00,896 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:25:00,897 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:00] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:25:00,897 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:25:00,899 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:00] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:25:00,900 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:00] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:25:00,900 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:25:00,902 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:00] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:25:00,903 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:00] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:25:01,027 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:01] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:25:07,808 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:25:07,808 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:25:07,809 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:25:07,810 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:07] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:25:07,817 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:07] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:25:07,822 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:07] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:25:07,824 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:07] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:25:07,825 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:07] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:25:07,826 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:07] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:25:12,832 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:12] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:25:17,816 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:25:17,816 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:25:17,816 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:25:17,817 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:17] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:25:17,818 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:17] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:25:17,820 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:17] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:25:17,821 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:17] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:25:17,824 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:17] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:25:17,832 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:17] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:25:25,672 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:25:25,672 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:25:25,673 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:25:25,673 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:25] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:25:25,677 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:25] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:25:25,678 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:25] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:25:25,679 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:25] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:25:25,683 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:25] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:25:25,687 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:25] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:25:25,846 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:25] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:25:27,811 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:27] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:25:27,812 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:25:27,816 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:27] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:25:27,817 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:27] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:25:27,813 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:25:27,818 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:27] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:25:27,820 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:27] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:25:27,821 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:25:27,822 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:27] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:25:27,948 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:27] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:25:27,958 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:27] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:25:31,126 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:25:31,127 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:25:31,127 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:25:31,128 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:31] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:25:31,203 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:31] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:25:31,211 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:31] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:25:31,252 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:31] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:25:31,255 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:31] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:25:31,257 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:31] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:25:31,302 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:31] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:25:31,368 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:31] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:25:33,694 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:25:33,696 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:33] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:25:33,699 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:25:33,700 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:25:33,701 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:25:33,702 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:33] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 18:25:33,704 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:25:33,829 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:33] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:25:33,835 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:25:33,836 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:25:33,838 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:33] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:25:33,839 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:25:33,840 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:25:33,842 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:25:33,963 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:25:33,967 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:33] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 18:25:33,971 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:25:33,972 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:33] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:25:33,975 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:25:33,976 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:25:33,976 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:33] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:25:34,094 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:34] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:25:34,103 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:34] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:25:34,111 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:34] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 18:25:34,112 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:34] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:25:34,113 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:34] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:25:34,114 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:34] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:25:34,230 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:25:34,231 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:25:34,361 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:25:34,362 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:25:34,494 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:25:34,495 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:25:35,699 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/encodings/__init__.py', reloading
+2025-04-07 18:25:35,700 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/codecs.py', reloading
+2025-04-07 18:25:35,704 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/encodings/aliases.py', reloading
+2025-04-07 18:25:35,705 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/encodings/utf_8.py', reloading
+2025-04-07 18:25:35,706 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/io.py', reloading
+2025-04-07 18:25:35,708 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/abc.py', reloading
+2025-04-07 18:25:35,709 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/site.py', reloading
+2025-04-07 18:25:35,714 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/os.py', reloading
+2025-04-07 18:25:35,715 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/stat.py', reloading
+2025-04-07 18:25:35,716 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/_collections_abc.py', reloading
+2025-04-07 18:25:35,718 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/posixpath.py', reloading
+2025-04-07 18:25:35,719 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/genericpath.py', reloading
+2025-04-07 18:25:35,723 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/_sitebuiltins.py', reloading
+2025-04-07 18:25:35,724 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/types.py', reloading
+2025-04-07 18:25:35,727 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/importlib/__init__.py', reloading
+2025-04-07 18:25:35,731 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/warnings.py', reloading
+2025-04-07 18:25:35,733 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/importlib/util.py', reloading
+2025-04-07 18:25:35,734 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/importlib/_abc.py', reloading
+2025-04-07 18:25:35,735 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/contextlib.py', reloading
+2025-04-07 18:25:35,737 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/collections/__init__.py', reloading
+2025-04-07 18:25:35,739 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/keyword.py', reloading
+2025-04-07 18:25:35,741 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/operator.py', reloading
+2025-04-07 18:25:35,742 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/reprlib.py', reloading
+2025-04-07 18:25:35,744 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/functools.py', reloading
+2025-04-07 18:25:35,746 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/importlib/machinery.py', reloading
+2025-04-07 18:25:35,749 [INFO]  * Detected change in '/nix/store/lc7qv2ldzrs1aq3hbyzmbgvn0h2w26pl-sitecustomize/lib/python/site-packages/sitecustomize.py', reloading
+2025-04-07 18:25:35,755 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/json/__init__.py', reloading
+2025-04-07 18:25:35,757 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/json/decoder.py', reloading
+2025-04-07 18:25:35,758 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/re.py', reloading
+2025-04-07 18:25:35,760 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/enum.py', reloading
+2025-04-07 18:25:35,764 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/sre_compile.py', reloading
+2025-04-07 18:25:35,767 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/sre_parse.py', reloading
+2025-04-07 18:25:35,769 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/sre_constants.py', reloading
+2025-04-07 18:25:35,777 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/copyreg.py', reloading
+2025-04-07 18:25:35,777 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/json/scanner.py', reloading
+2025-04-07 18:25:35,778 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/json/encoder.py', reloading
+2025-04-07 18:25:35,894 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/encodings/__init__.py', reloading
+2025-04-07 18:25:35,898 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/codecs.py', reloading
+2025-04-07 18:25:35,901 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/encodings/aliases.py', reloading
+2025-04-07 18:25:35,902 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/encodings/utf_8.py', reloading
+2025-04-07 18:25:35,904 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/io.py', reloading
+2025-04-07 18:25:35,908 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/abc.py', reloading
+2025-04-07 18:25:35,909 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/site.py', reloading
+2025-04-07 18:25:35,910 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/os.py', reloading
+2025-04-07 18:25:35,912 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/stat.py', reloading
+2025-04-07 18:25:35,915 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/_collections_abc.py', reloading
+2025-04-07 18:25:35,918 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/posixpath.py', reloading
+2025-04-07 18:25:35,922 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/genericpath.py', reloading
+2025-04-07 18:25:35,922 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/_sitebuiltins.py', reloading
+2025-04-07 18:25:35,924 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/types.py', reloading
+2025-04-07 18:25:35,926 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/importlib/__init__.py', reloading
+2025-04-07 18:25:35,928 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/warnings.py', reloading
+2025-04-07 18:25:35,929 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/importlib/util.py', reloading
+2025-04-07 18:25:35,930 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/importlib/_abc.py', reloading
+2025-04-07 18:25:35,932 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/contextlib.py', reloading
+2025-04-07 18:25:35,934 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/collections/__init__.py', reloading
+2025-04-07 18:25:35,937 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/keyword.py', reloading
+2025-04-07 18:25:35,939 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/operator.py', reloading
+2025-04-07 18:25:35,941 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/reprlib.py', reloading
+2025-04-07 18:25:35,943 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/functools.py', reloading
+2025-04-07 18:25:35,946 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/importlib/machinery.py', reloading
+2025-04-07 18:25:35,947 [INFO]  * Detected change in '/nix/store/lc7qv2ldzrs1aq3hbyzmbgvn0h2w26pl-sitecustomize/lib/python/site-packages/sitecustomize.py', reloading
+2025-04-07 18:25:35,954 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/json/__init__.py', reloading
+2025-04-07 18:25:35,957 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/json/decoder.py', reloading
+2025-04-07 18:25:35,959 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/re.py', reloading
+2025-04-07 18:25:35,959 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/enum.py', reloading
+2025-04-07 18:25:35,961 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/sre_compile.py', reloading
+2025-04-07 18:25:35,963 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/sre_parse.py', reloading
+2025-04-07 18:25:35,973 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/sre_constants.py', reloading
+2025-04-07 18:25:35,976 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/copyreg.py', reloading
+2025-04-07 18:25:35,980 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/json/scanner.py', reloading
+2025-04-07 18:25:35,991 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/json/encoder.py', reloading
+2025-04-07 18:25:37,125 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 18:25:39,457 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:25:39,469 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:25:39,469 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:25:39,470 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:25:39,470 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:25:39,470 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 18:25:39,470 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 18:25:39,472 [ERROR] Błąd podczas inicjalizacji klienta ByBit: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:25:39,472 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 18:25:39,472 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744050339472, 'time': '2025-04-07 18:25:39'}
+2025-04-07 18:25:39,472 [INFO] System zainicjalizowany poprawnie
+2025-04-07 18:25:39,472 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 18:25:39,488 [WARNING]  * Debugger is active!
+2025-04-07 18:25:39,490 [INFO]  * Debugger PIN: 142-207-848
+2025-04-07 18:25:40,548 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:40] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:25:40,550 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:40] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:25:40,551 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:40] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:25:40,552 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:40] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:25:40,553 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:25:40,554 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:25:40,555 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:40] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:25:40,556 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:40] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:25:40,556 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:25:40,559 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:40] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:25:40,557 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:25:40,560 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:40] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:25:40,561 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:40] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:25:40,562 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:40] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:25:40,563 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:40] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:25:40,562 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:25:40,566 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:25:40,566 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:40] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:25:42,816 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:42] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:25:47,829 [INFO] Próba reinicjalizacji klienta API. API key: a4r7E..., Testnet: False
+2025-04-07 18:25:47,831 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:47] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:25:47,833 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:47] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:25:47,831 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:25:47,834 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:25:47,835 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:47] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:25:47,836 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:47] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:25:47,837 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:47] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:25:47,838 [INFO] 172.31.128.72 - - [07/Apr/2025 18:25:47] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:26:39,258 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:26:39,310 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:26:39,310 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:26:39,311 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:26:39,315 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:26:39,315 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 18:26:39,315 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 18:26:39,331 [ERROR] Błąd podczas inicjalizacji klienta ByBit: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:26:39,332 [INFO] BybitConnector zainicjalizowany. Testnet: True
+2025-04-07 18:26:39,334 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744050399334, 'time': '2025-04-07 18:26:39'}
+2025-04-07 18:26:39,334 [INFO] System zainicjalizowany poprawnie
+2025-04-07 18:26:39,337 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 18:26:39,542 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.72:5000
+2025-04-07 18:26:39,571 [INFO] [33mPress CTRL+C to quit[0m
+2025-04-07 18:26:39,804 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 18:26:45,468 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:26:45,484 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:26:45,484 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:26:45,484 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:26:45,484 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:26:45,484 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 18:26:45,485 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 18:26:45,490 [ERROR] Błąd podczas inicjalizacji klienta ByBit: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:26:45,490 [INFO] BybitConnector zainicjalizowany. Testnet: True
+2025-04-07 18:26:45,490 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744050405490, 'time': '2025-04-07 18:26:45'}
+2025-04-07 18:26:45,490 [INFO] System zainicjalizowany poprawnie
+2025-04-07 18:26:45,490 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 18:26:45,515 [WARNING]  * Debugger is active!
+2025-04-07 18:26:46,037 [INFO]  * Debugger PIN: 240-171-745
+2025-04-07 18:26:56,328 [INFO] 172.31.128.72 - - [07/Apr/2025 18:26:56] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:26:56,335 [INFO] Próba reinicjalizacji klienta API. API key: 9VJok..., Testnet: True
+2025-04-07 18:26:56,335 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:26:56,336 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:26:56,337 [INFO] Pobrano portfolio: {'balances': {'BTC': {'equity': 0.005, 'available_balance': 0.005, 'wallet_balance': 0.005}, 'USDT': {'equity': 500, 'available_balance': 450, 'wallet_balance': 500}}, 'success': False, 'error': "Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'", 'note': 'Dane przykładowe - błąd inicjalizacji klienta'}
+2025-04-07 18:26:56,352 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/encodings/unicode_escape.py', reloading
+2025-04-07 18:26:56,397 [INFO] 172.31.128.72 - - [07/Apr/2025 18:26:56] "GET / HTTP/1.1" 200 -
+2025-04-07 18:26:56,477 [INFO] 172.31.128.72 - - [07/Apr/2025 18:26:56] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:26:56,567 [INFO] 172.31.128.72 - - [07/Apr/2025 18:26:56] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-04-07 18:26:56,608 [INFO] 172.31.128.72 - - [07/Apr/2025 18:26:56] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:26:56,689 [INFO] 172.31.128.72 - - [07/Apr/2025 18:26:56] "GET /static/js/dashboard.js HTTP/1.1" 200 -
+2025-04-07 18:26:57,409 [INFO] Próba reinicjalizacji klienta API. API key: 9VJok..., Testnet: True
+2025-04-07 18:26:57,409 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:26:57,410 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:26:57,412 [INFO] 172.31.128.72 - - [07/Apr/2025 18:26:57] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:26:57,413 [INFO] 172.31.128.72 - - [07/Apr/2025 18:26:57] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:26:57,415 [INFO] 172.31.128.72 - - [07/Apr/2025 18:26:57] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:26:57,417 [INFO] 172.31.128.72 - - [07/Apr/2025 18:26:57] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:26:57,418 [INFO] 172.31.128.72 - - [07/Apr/2025 18:26:57] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:26:57,421 [INFO] 172.31.128.72 - - [07/Apr/2025 18:26:57] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:26:57,543 [INFO] 172.31.128.72 - - [07/Apr/2025 18:26:57] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:26:57,549 [INFO] 172.31.128.72 - - [07/Apr/2025 18:26:57] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:26:58,043 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 18:27:02,434 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:27:02,449 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:27:02,449 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:27:02,449 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:27:02,449 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:27:02,450 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 18:27:02,450 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 18:27:02,455 [ERROR] Błąd podczas inicjalizacji klienta ByBit: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:27:02,455 [INFO] BybitConnector zainicjalizowany. Testnet: True
+2025-04-07 18:27:02,455 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744050422455, 'time': '2025-04-07 18:27:02'}
+2025-04-07 18:27:02,455 [INFO] System zainicjalizowany poprawnie
+2025-04-07 18:27:02,455 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 18:27:02,481 [WARNING]  * Debugger is active!
+2025-04-07 18:27:02,614 [INFO]  * Debugger PIN: 413-213-582
+2025-04-07 18:27:07,437 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:07] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:27:07,439 [INFO] Próba reinicjalizacji klienta API. API key: 9VJok..., Testnet: True
+2025-04-07 18:27:07,439 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:27:07,441 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:27:07,441 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:07] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:27:07,444 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:07] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:27:07,446 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:07] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:27:07,447 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:07] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:27:07,449 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:07] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:27:12,416 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:12] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:27:17,419 [INFO] Próba reinicjalizacji klienta API. API key: 9VJok..., Testnet: True
+2025-04-07 18:27:17,420 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:27:17,421 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:27:17,422 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:17] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:27:17,426 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:17] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:27:17,427 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:17] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:27:17,430 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:17] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:27:17,433 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:17] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:27:17,435 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:17] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:27:27,456 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:27] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:27:27,454 [INFO] Próba reinicjalizacji klienta API. API key: 9VJok..., Testnet: True
+2025-04-07 18:27:27,458 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:27] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:27:27,459 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:27] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:27:27,458 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:27:27,461 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:27:27,463 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:27] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:27:27,464 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:27] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:27:27,531 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:27] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:27:27,590 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:27] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:27:33,688 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:27:33,690 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:33] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 18:27:33,694 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:27:33,696 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:27:33,697 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:27:33,683 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:27:33,721 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:33] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:27:33,856 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:27:33,865 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:27:33,866 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:33] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 18:27:33,867 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:27:33,892 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:27:33,895 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:33] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:27:33,988 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:27:34,044 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:34] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:27:34,048 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:34] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:27:34,046 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:27:34,054 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:27:34,177 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:34] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:27:34,191 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:34] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 18:27:34,193 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:34] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:27:34,206 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:34] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:27:34,210 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:34] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:27:34,212 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:34] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:27:34,331 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:27:34,333 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:27:34,355 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:34] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 18:27:34,463 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:27:34,465 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:27:34,614 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:27:34,620 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:27:34,756 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-07 18:27:34,757 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 18:27:37,430 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:37] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:27:37,428 [INFO] Próba reinicjalizacji klienta API. API key: 9VJok..., Testnet: True
+2025-04-07 18:27:37,434 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:27:37,434 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:27:37,436 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:37] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:27:37,438 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:37] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:27:37,445 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:37] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:27:37,449 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:37] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:27:37,451 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:37] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:27:42,430 [INFO] 172.31.128.72 - - [07/Apr/2025 18:27:42] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:27:45,115 [INFO]  * Detected change in '/home/runner/workspace/data/execution/.bybit_connector.py.950572794~', reloading
+2025-04-07 18:27:45,119 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:27:45,137 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:27:47,248 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 18:28:04,519 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:28:04,580 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:28:04,580 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:28:04,581 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:28:04,588 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:28:04,588 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 18:28:04,589 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 18:28:04,605 [ERROR] Błąd podczas inicjalizacji klienta ByBit: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:28:04,610 [INFO] BybitConnector zainicjalizowany. Testnet: True
+2025-04-07 18:28:04,612 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744050484612, 'time': '2025-04-07 18:28:04'}
+2025-04-07 18:28:04,612 [INFO] System zainicjalizowany poprawnie
+2025-04-07 18:28:04,612 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 18:28:04,725 [WARNING]  * Debugger is active!
+2025-04-07 18:28:05,181 [INFO]  * Debugger PIN: 563-082-703
+2025-04-07 18:28:11,358 [INFO]  * Detected change in '/nix/store/d5r0vhh39kbx0sl5dlsnl9hzn6pmizqc-python3.10-defusedxml-0.7.1/lib/python3.10/site-packages/defusedxml/__init__.py', reloading
+2025-04-07 18:28:11,358 [INFO]  * Detected change in '/nix/store/d5r0vhh39kbx0sl5dlsnl9hzn6pmizqc-python3.10-defusedxml-0.7.1/lib/python3.10/site-packages/defusedxml/common.py', reloading
+2025-04-07 18:28:11,359 [INFO]  * Detected change in '/nix/store/d5r0vhh39kbx0sl5dlsnl9hzn6pmizqc-python3.10-defusedxml-0.7.1/lib/python3.10/site-packages/defusedxml/ElementTree.py', reloading
+2025-04-07 18:28:11,359 [INFO]  * Detected change in '/nix/store/sc7w98nrvbsdpig4bln36bpbawc03y8f-python3.10-cycler-0.11.0/lib/python3.10/site-packages/cycler.py', reloading
+2025-04-07 18:28:11,360 [INFO]  * Detected change in '/nix/store/idymc08kqpgs6585wwkk4p5ac5i5f0b7-python3.10-python-dateutil-2.8.2/lib/python3.10/site-packages/dateutil/__init__.py', reloading
+2025-04-07 18:28:11,363 [INFO]  * Detected change in '/nix/store/idymc08kqpgs6585wwkk4p5ac5i5f0b7-python3.10-python-dateutil-2.8.2/lib/python3.10/site-packages/dateutil/_version.py', reloading
+2025-04-07 18:28:11,363 [INFO]  * Detected change in '/nix/store/idymc08kqpgs6585wwkk4p5ac5i5f0b7-python3.10-python-dateutil-2.8.2/lib/python3.10/site-packages/dateutil/parser/__init__.py', reloading
+2025-04-07 18:28:11,382 [INFO]  * Detected change in '/nix/store/idymc08kqpgs6585wwkk4p5ac5i5f0b7-python3.10-python-dateutil-2.8.2/lib/python3.10/site-packages/dateutil/parser/_parser.py', reloading
+2025-04-07 18:28:11,382 [INFO]  * Detected change in '/nix/store/idymc08kqpgs6585wwkk4p5ac5i5f0b7-python3.10-python-dateutil-2.8.2/lib/python3.10/site-packages/dateutil/relativedelta.py', reloading
+2025-04-07 18:28:11,383 [INFO]  * Detected change in '/nix/store/idymc08kqpgs6585wwkk4p5ac5i5f0b7-python3.10-python-dateutil-2.8.2/lib/python3.10/site-packages/dateutil/_common.py', reloading
+2025-04-07 18:28:11,384 [INFO]  * Detected change in '/nix/store/idymc08kqpgs6585wwkk4p5ac5i5f0b7-python3.10-python-dateutil-2.8.2/lib/python3.10/site-packages/dateutil/tz/__init__.py', reloading
+2025-04-07 18:28:11,384 [INFO]  * Detected change in '/nix/store/idymc08kqpgs6585wwkk4p5ac5i5f0b7-python3.10-python-dateutil-2.8.2/lib/python3.10/site-packages/dateutil/tz/tz.py', reloading
+2025-04-07 18:28:11,384 [INFO]  * Detected change in '/nix/store/idymc08kqpgs6585wwkk4p5ac5i5f0b7-python3.10-python-dateutil-2.8.2/lib/python3.10/site-packages/dateutil/tz/_common.py', reloading
+2025-04-07 18:28:11,385 [INFO]  * Detected change in '/nix/store/idymc08kqpgs6585wwkk4p5ac5i5f0b7-python3.10-python-dateutil-2.8.2/lib/python3.10/site-packages/dateutil/tz/_factories.py', reloading
+2025-04-07 18:28:11,385 [INFO]  * Detected change in '/nix/store/idymc08kqpgs6585wwkk4p5ac5i5f0b7-python3.10-python-dateutil-2.8.2/lib/python3.10/site-packages/dateutil/tz/win.py', reloading
+2025-04-07 18:28:11,385 [INFO]  * Detected change in '/nix/store/idymc08kqpgs6585wwkk4p5ac5i5f0b7-python3.10-python-dateutil-2.8.2/lib/python3.10/site-packages/dateutil/parser/isoparser.py', reloading
+2025-04-07 18:28:11,386 [INFO]  * Detected change in '/nix/store/idymc08kqpgs6585wwkk4p5ac5i5f0b7-python3.10-python-dateutil-2.8.2/lib/python3.10/site-packages/dateutil/rrule.py', reloading
+2025-04-07 18:28:11,387 [INFO]  * Detected change in '/nix/store/idymc08kqpgs6585wwkk4p5ac5i5f0b7-python3.10-python-dateutil-2.8.2/lib/python3.10/site-packages/dateutil/easter.py', reloading
+2025-04-07 18:28:11,387 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:28:11,657 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:28:11,658 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 18:28:13,114 [INFO] Próba reinicjalizacji klienta API. API key: 9VJok..., Testnet: True
+2025-04-07 18:28:13,115 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:28:13,116 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:28:13,117 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:13] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:28:13,119 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:13] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:28:13,122 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:13] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:28:13,124 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:13] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:28:13,126 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:13] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:28:13,127 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:13] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:28:13,130 [INFO] Próba reinicjalizacji klienta API. API key: 9VJok..., Testnet: True
+2025-04-07 18:28:13,132 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:28:13,133 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:28:13,133 [INFO] Pobrano portfolio: {'balances': {'BTC': {'equity': 0.005, 'available_balance': 0.005, 'wallet_balance': 0.005}, 'USDT': {'equity': 500, 'available_balance': 450, 'wallet_balance': 500}}, 'success': False, 'error': "Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'", 'note': 'Dane przykładowe - błąd inicjalizacji klienta'}
+2025-04-07 18:28:13,187 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:13] "GET / HTTP/1.1" 200 -
+2025-04-07 18:28:13,270 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:13] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:28:13,274 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:13] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:28:13,279 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:13] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:28:13,282 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:13] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 18:28:13,283 [INFO] Próba reinicjalizacji klienta API. API key: 9VJok..., Testnet: True
+2025-04-07 18:28:13,284 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:28:13,285 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:28:13,285 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:13] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:28:13,334 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:13] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:28:13,401 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:13] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:28:13,412 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:13] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 18:28:13,413 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:13] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:28:13,414 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:13] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:28:13,416 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:13] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:28:13,763 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 18:28:18,410 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:28:18,534 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:28:18,534 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 18:28:18,535 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:28:18,535 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 18:28:18,535 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 18:28:18,535 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 18:28:18,542 [ERROR] Błąd podczas inicjalizacji klienta ByBit: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:28:18,542 [INFO] BybitConnector zainicjalizowany. Testnet: True
+2025-04-07 18:28:18,542 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744050498542, 'time': '2025-04-07 18:28:18'}
+2025-04-07 18:28:18,542 [INFO] System zainicjalizowany poprawnie
+2025-04-07 18:28:18,542 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 18:28:18,587 [WARNING]  * Debugger is active!
+2025-04-07 18:28:18,610 [INFO]  * Debugger PIN: 119-889-622
+2025-04-07 18:28:20,538 [INFO] Próba reinicjalizacji klienta API. API key: 9VJok..., Testnet: True
+2025-04-07 18:28:20,545 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:28:20,547 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:28:20,548 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:20] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:28:20,543 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:20] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:28:20,552 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:20] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:28:20,562 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:20] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:28:20,666 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:20] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 18:28:20,671 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:20] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 18:28:20,692 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:20] "GET /static/js/dashboard.js HTTP/1.1" 200 -
+2025-04-07 18:28:20,694 [INFO] Próba reinicjalizacji klienta API. API key: 9VJok..., Testnet: True
+2025-04-07 18:28:20,699 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:20] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-04-07 18:28:20,700 [ERROR] Nie udało się zainicjalizować klienta API: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:28:20,700 [ERROR] Klient API nie został zainicjalizowany. Błąd: module 'pybit' has no attribute 'unified_trading'
+2025-04-07 18:28:20,700 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:20] "GET /api/bybit/account-balance HTTP/1.1" 200 -
+2025-04-07 18:28:20,704 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:20] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 18:28:20,718 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:20] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 18:28:20,728 [INFO] 172.31.128.72 - - [07/Apr/2025 18:28:20] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 18:28:25,534 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 18:28:25,538 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading

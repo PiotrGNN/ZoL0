@@ -26,7 +26,7 @@ const errorCounts = {
 // Główne funkcje dashboardu
 function updateDashboardData() {
     console.log('Aktualizacja danych dashboardu...');
-    updatePortfolioData();
+    updatePortfolio(); // Zmienione na nową funkcję
     updateCharts();
     updateTradingStats();
     updateRecentTrades();
@@ -34,7 +34,11 @@ function updateDashboardData() {
     updateAlerts(); 
 }
 
-function updatePortfolioData() {
+// Licznik błędów dla śledzenia problemów z API
+let apiErrorCount = 0;
+const MAX_ERROR_COUNT = 5;
+
+function updatePortfolio() {
     fetch('/api/bybit/account-balance')
         .then(response => {
             if (!response.ok) {
@@ -43,47 +47,171 @@ function updatePortfolioData() {
             return response.json();
         })
         .then(data => {
+            // Resetujemy licznik błędów, gdy żądanie zakończy się sukcesem
+            apiErrorCount = 0;
+
+            const portfolioContainer = document.getElementById('portfolio-data');
+            if (!portfolioContainer) return;
+
+            // Wyczyszczenie obecnej zawartości
+            portfolioContainer.innerHTML = '';
+
+            // Sprawdzanie czy mamy błąd API
             if (data.error) {
-                throw new Error(data.error);
+                console.error("Błąd podczas pobierania danych portfela:", data.error);
+                portfolioContainer.innerHTML = `
+                    <div class="error-message">
+                        <h4>Problem z API ByBit</h4>
+                        <p>${data.error}</p>
+                        <p>Sprawdź swoje klucze API i uprawnienia.</p>
+                    </div>`;
+                return;
             }
 
-            // Aktualizacja interfejsu z danymi portfela
-            const portfolioContainer = document.getElementById('portfolio-container');
-            if (portfolioContainer && data.balances) {
-                let portfolioHTML = '<div class="card"><div class="card-header">Stan portfela</div><div class="card-body">';
-                portfolioHTML += '<table class="table"><thead><tr><th>Waluta</th><th>Dostępne</th><th>Całkowite</th></tr></thead><tbody>';
+            if (data.balances && Object.keys(data.balances).length > 0) {
+                let totalUSDT = 0;
 
-                for (const [currency, balance] of Object.entries(data.balances)) {
-                    portfolioHTML += `<tr>
-                        <td>${currency}</td>
-                        <td>${Number(balance.available_balance).toFixed(6)}</td>
-                        <td>${Number(balance.wallet_balance).toFixed(6)}</td>
-                    </tr>`;
+                // Tworzenie tabeli z danymi portfela
+                const table = document.createElement('table');
+                table.className = 'portfolio-table';
+
+                // Nagłówek tabeli
+                const thead = document.createElement('thead');
+                thead.innerHTML = `
+                    <tr>
+                        <th>Waluta</th>
+                        <th>Wartość</th>
+                        <th>Dostępne</th>
+                        <th>W portfelu</th>
+                    </tr>
+                `;
+                table.appendChild(thead);
+
+                // Ciało tabeli
+                const tbody = document.createElement('tbody');
+
+                let hasAssets = false;
+
+                for (const [coin, balance] of Object.entries(data.balances)) {
+                    if (balance.equity > 0) {
+                        hasAssets = true;
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${coin}</td>
+                            <td>${parseFloat(balance.equity).toFixed(6)}</td>
+                            <td>${parseFloat(balance.available_balance).toFixed(6)}</td>
+                            <td>${parseFloat(balance.wallet_balance).toFixed(6)}</td>
+                        `;
+                        tbody.appendChild(row);
+
+                        // Dodawanie do sumy USDT (wartość szacunkowa)
+                        if (coin === 'USDT') {
+                            totalUSDT += parseFloat(balance.equity);
+                        } else {
+                            // Tutaj można dodać przeliczanie innych walut na USDT
+                        }
+                    }
                 }
 
-                portfolioHTML += '</tbody></table></div></div>';
-                portfolioContainer.innerHTML = portfolioHTML;
-            }
+                if (!hasAssets) {
+                    portfolioContainer.innerHTML = `
+                        <div class="warning-message">
+                            <h4>Brak aktywów na koncie</h4>
+                            <p>Twoje konto ByBit nie zawiera żadnych środków lub dane nie mogły zostać pobrane.</p>
+                        </div>`;
 
-            // Resetuj licznik błędów po sukcesie
-            errorCounts.balance = 0;
+                    // Dodaj notatkę jeśli dane są symulowane
+                    if (data.note) {
+                        const noteElement = document.createElement('div');
+                        noteElement.className = 'data-note';
+                        noteElement.textContent = data.note;
+                        portfolioContainer.appendChild(noteElement);
+                    }
+
+                    return;
+                }
+
+                table.appendChild(tbody);
+                portfolioContainer.appendChild(table);
+
+                // Dodawanie informacji o szacunkowej całkowitej wartości
+                const totalValueInfo = document.createElement('div');
+                totalValueInfo.className = 'total-value-info';
+                totalValueInfo.innerHTML = `Szacunkowa wartość (USDT): <strong>${totalUSDT.toFixed(2)}</strong>`;
+                portfolioContainer.appendChild(totalValueInfo);
+
+                // Status API
+                const apiStatus = document.createElement('div');
+                apiStatus.className = data.success ? 'api-status success' : 'api-status warning';
+                apiStatus.innerHTML = `<strong>Status API:</strong> ${data.success ? 'Połączono' : 'Problem z połączeniem'}`;
+                if (data.source) {
+                    apiStatus.innerHTML += ` (źródło: ${data.source})`;
+                }
+                portfolioContainer.appendChild(apiStatus);
+
+                // Dodaj notatkę jeśli dane są symulowane
+                if (data.note) {
+                    const noteElement = document.createElement('div');
+                    noteElement.className = 'data-note';
+                    noteElement.textContent = data.note;
+                    portfolioContainer.appendChild(noteElement);
+                }
+
+                // Dodaj ostrzeżenie jeśli jest
+                if (data.warning) {
+                    const warningElement = document.createElement('div');
+                    warningElement.className = 'warning-message';
+                    warningElement.textContent = data.warning;
+                    portfolioContainer.appendChild(warningElement);
+                }
+            } else {
+                portfolioContainer.innerHTML = `
+                    <div class="error-message">
+                        <h4>Brak danych portfela</h4>
+                        <p>Problem z połączeniem z ByBit lub konto nie zawiera żadnych środków.</p>
+                        <p>Upewnij się, że klucze API są poprawne i mają wymagane uprawnienia.</p>
+                    </div>`;
+
+                // Dodaj notatkę jeśli dane są symulowane
+                if (data.note) {
+                    const noteElement = document.createElement('div');
+                    noteElement.className = 'data-note';
+                    noteElement.textContent = data.note;
+                    portfolioContainer.appendChild(noteElement);
+                }
+            }
         })
         .catch(error => {
-            errorCounts.balance++;
-            console.warn("Błąd podczas pobierania danych portfela:", error);
+            console.error("Błąd podczas pobierania danych portfela:", error);
 
-            // Tylko wyświetl komunikat o błędzie jeśli jest to powtarzający się problem
-            if (errorCounts.balance > 3) {
-                const portfolioContainer = document.getElementById('portfolio-container');
-                if (portfolioContainer) {
-                    portfolioContainer.innerHTML = `<div class="card">
-                        <div class="card-header">Stan portfela</div>
-                        <div class="card-body">
-                            <div class="alert alert-warning">
-                                Nie udało się pobrać danych portfela. Spróbuj odświeżyć stronę.
-                            </div>
-                        </div>
-                    </div>`;
+            // Zwiększamy licznik błędów
+            apiErrorCount++;
+
+            const portfolioContainer = document.getElementById('portfolio-data');
+            if (portfolioContainer) {
+                if (apiErrorCount >= MAX_ERROR_COUNT) {
+                    // Gdy osiągniemy limit błędów, wyświetlamy bardziej szczegółową informację
+                    portfolioContainer.innerHTML = `
+                        <div class="error-message">
+                            <h4>Poważny problem z połączeniem API</h4>
+                            <p>Nie można połączyć się z API ByBit po ${apiErrorCount} próbach.</p>
+                            <p>Powody:</p>
+                            <ul>
+                                <li>Nieprawidłowe klucze API</li>
+                                <li>Wygasłe klucze API</li>
+                                <li>Brak wymaganych uprawnień API</li>
+                                <li>Problem z połączeniem internetowym</li>
+                                <li>API ByBit może być chwilowo niedostępne</li>
+                            </ul>
+                            <p>Błąd: ${error.message}</p>
+                        </div>`;
+                } else {
+                    portfolioContainer.innerHTML = `
+                        <div class="error-message">
+                            <h4>Błąd podczas pobierania danych portfela</h4>
+                            <p>Sprawdź połączenie z internetem i API ByBit.</p>
+                            <p>Próba ${apiErrorCount} z ${MAX_ERROR_COUNT}</p>
+                        </div>`;
                 }
             }
         });
