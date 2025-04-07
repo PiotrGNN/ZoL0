@@ -43,11 +43,11 @@ EMERGENCY_TTL = 3600   # Awaryjny czas życia (60 minut) w przypadku przekroczen
 # Parametry dla różnych środowisk
 ENVIRONMENT_CONFIG = {
     'production': {
-        'min_interval': 10.0,       # Bardzo konserwatywny odstęp między zapytaniami (10000ms)
-        'max_calls_per_minute': 6,  # Drastycznie zmniejszony limit dla produkcji
-        'cache_ttl_multiplier': 8.0,# Bardzo długi czas cache'owania dla produkcji
-        'server_time_ttl': 600,     # 10 minut cache'owania czasu serwera (by uniknąć odpytywania)
-        'rate_limit_reset_time': 600# 10 minut po przekroczeniu limitu zanim spróbujemy ponownie
+        'min_interval': 20.0,       # Jeszcze bardziej konserwatywny odstęp między zapytaniami (20000ms)
+        'max_calls_per_minute': 3,  # Radykalnie zmniejszony limit dla produkcji
+        'cache_ttl_multiplier': 15.0,# Ekstremalnie długi czas cache'owania dla produkcji
+        'server_time_ttl': 1800,     # 30 minut cache'owania czasu serwera (by uniknąć odpytywania)
+        'rate_limit_reset_time': 1800# 30 minut po przekroczeniu limitu zanim spróbujemy ponownie
     },
     'development': {
         'min_interval': 5.0,        # Zwiększony minimalny odstęp między zapytaniami (5000ms)

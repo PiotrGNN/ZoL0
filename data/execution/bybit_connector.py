@@ -649,6 +649,40 @@ class BybitConnector:
                             ('get_account_balance', {}),
                             ('get_balances', {})
                         ]
+                        
+                        # Jeśli powyższe metody nie zadziałały, spróbuj bezpośredniego zapytania HTTP do V5 API
+                        if wallet is None:
+                            try:
+                                self.logger.info("Próba pobrania salda przez bezpośrednie zapytanie HTTP do V5 API")
+                                v5_endpoint = f"{self.base_url}/v5/account/wallet-balance"
+                                headers = {}
+                                params = {}
+                                if self.api_key:
+                                    # Tworzenie sygnatury dla V5 API
+                                    timestamp = str(int(time.time() * 1000))
+                                    signature_payload = timestamp + self.api_key + "20000" # recv_window=20000
+                                    signature = hmac.new(
+                                        bytes(self.api_secret, 'utf-8'),
+                                        bytes(signature_payload, 'utf-8'),
+                                        hashlib.sha256
+                                    ).hexdigest()
+                                    
+                                    headers = {
+                                        "X-BAPI-API-KEY": self.api_key,
+                                        "X-BAPI-TIMESTAMP": timestamp,
+                                        "X-BAPI-RECV-WINDOW": "20000",
+                                        "X-BAPI-SIGN": signature
+                                    }
+                                
+                                response = requests.get(v5_endpoint, headers=headers, params=params, timeout=10)
+                                if response.status_code == 200:
+                                    wallet = response.json()
+                                    self.logger.info(f"Saldo pobrane przez bezpośrednie zapytanie HTTP")
+                                else:
+                                    self.logger.warning(f"Błąd podczas pobierania salda przez V5 API: {response.status_code} - {response.text}")
+                            except Exception as e:
+                                self.logger.warning(f"Błąd podczas używania bezpośredniego zapytania HTTP: {e}")
+                                # Kontynuujemy, aby spróbować innych metod
 
                         for method_name, params in wallet_methods:
                             if hasattr(self.client, method_name):
