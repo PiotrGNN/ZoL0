@@ -1,37 +1,22 @@
 run = "python main.py"
-modules = ["python-3.10:v18-20230807-322e88b"]
-hidden = [".pythonlibs"]
+language = "python3"
+entrypoint = "main.py"
 
 [nix]
 channel = "stable-22_11"
-
-[env]
-PYTHONPATH = "/home/runner/${REPL_SLUG}/"
-FLASK_APP = "main.py"
-FLASK_ENV = "development"
-
-[packager]
-language = "python3"
-
-[packager.features]
-enabledForHosting = false
-packageSearch = true
-guessImports = true
-
-[unitTest]
-language = "python3"
 
 [deployment]
 run = "python main.py"
 deploymentTarget = "cloudrun"
 
-[languages]
+[env]
+PYTHONPATH = "."
 
 [languages.python3]
 pattern = "**/*.py"
 
 [languages.python3.languageServer]
-start = "pylsp"
+start = ["pylsp"]
 
 [[ports]]
 localPort = 5000
@@ -39,3 +24,16 @@ externalPort = 80
 
 [workflows]
 runButton = "Run"
+
+[[workflows.workflow]]
+name = "Run"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pip install -r requirements.txt"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python main.py"

@@ -12,10 +12,14 @@ obsługę błędów oraz poprawną synchronizację między modułami.
 
 import logging
 import unittest
-from typing import Any, Dict
+import sys
+import os
+import pandas as pd
+from unittest.mock import Mock, patch
 
+# Importy głównych modułów
 from data.execution.exchange_connector import ExchangeConnector
-from data.execution.order_execution import OrderExecution
+from data.execution.order_execution import OrderExecution #Corrected import here
 from data.execution.trade_executor import TradeExecutor
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")

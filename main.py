@@ -235,7 +235,7 @@ def train_ai_model():
             "error": str(e)
         })
 
-@app.route("/api/component-status", methods=["GET"])
+@app.ro@app.route("/api/component-status", methods=["GET"])
 def get_component_status():
     # Rzeczywisty status komponentów systemu
     try:

@@ -49,13 +49,13 @@ def handle_data_error(error):
     Parameters:
         error (Exception): Błąd do obsłużenia.
     """
-    log_error(error, level=logging.ERROR)
+    log_error(error, level=logging.WARNING)
     raise DataError(error)
 
 
 def handle_trading_error(error):
     """
-    Obsługuje błąd związany z transakcjami, logując go i rzucając TradingError.
+    Obsługuje błąd związany z tradingiem, logując go i rzucając TradingError.
 
     Parameters:
         error (Exception): Błąd do obsłużenia.
