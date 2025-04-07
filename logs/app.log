@@ -180,3 +180,60 @@
 2025-04-07 10:54:09,087 [INFO] Renderowanie dashboardu z danymi: 3 komponenty, 2 anomalie, 4 modele AI
 2025-04-07 10:54:09,088 [INFO] 172.31.128.12 - - [07/Apr/2025 10:54:09] "GET /dashboard HTTP/1.1" 200 -
 2025-04-07 10:54:10,090 [INFO] 172.31.128.12 - - [07/Apr/2025 10:54:10] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 10:54:34,476 [INFO] 172.31.128.12 - - [07/Apr/2025 10:54:34] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 10:54:40,096 [INFO] 172.31.128.12 - - [07/Apr/2025 10:54:40] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 10:55:04,890 [INFO] 172.31.128.12 - - [07/Apr/2025 10:55:04] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 10:55:10,872 [INFO] 172.31.128.12 - - [07/Apr/2025 10:55:10] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 10:55:34,479 [INFO] 172.31.128.12 - - [07/Apr/2025 10:55:34] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 10:55:40,096 [INFO] 172.31.128.12 - - [07/Apr/2025 10:55:40] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 10:56:04,481 [INFO] 172.31.128.12 - - [07/Apr/2025 10:56:04] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 10:56:10,097 [INFO] 172.31.128.12 - - [07/Apr/2025 10:56:10] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 10:56:34,892 [INFO] 172.31.128.12 - - [07/Apr/2025 10:56:34] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 10:56:40,871 [INFO] 172.31.128.12 - - [07/Apr/2025 10:56:40] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 10:57:04,485 [INFO] 172.31.128.12 - - [07/Apr/2025 10:57:04] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 10:57:10,108 [INFO] 172.31.128.12 - - [07/Apr/2025 10:57:10] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 10:57:38,459 [INFO] Ładowanie konfiguracji systemu...
+2025-04-07 10:57:38,460 [INFO] Inicjalizacja komponentów systemu...
+2025-04-07 10:57:40,006 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 10:57:40,704 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 10:57:40,713 [INFO] Zainicjalizowano StrategyManager z 0 strategiami
+2025-04-07 10:57:40,713 [INFO] Zainicjalizowano StrategyManager
+2025-04-07 10:57:40,713 [INFO] Zainicjalizowano 2 komponentów
+2025-04-07 10:57:40,713 [INFO] Uruchamianie systemu w trybie symulacji...
+2025-04-07 10:57:40,713 [INFO] Symulacja: krok 1/3
+2025-04-07 10:57:41,213 [INFO] Symulacja: krok 2/3
+2025-04-07 10:57:41,714 [INFO] Symulacja: krok 3/3
+2025-04-07 10:57:42,215 [INFO] System podstawowy uruchomiony, startuję serwer web...
+2025-04-07 10:57:42,215 [INFO] Uruchamianie serwera web na porcie 5000...
+2025-04-07 10:57:42,226 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.12:5000
+2025-04-07 10:57:42,226 [INFO] [33mPress CTRL+C to quit[0m
+2025-04-07 10:57:54,458 [INFO] 172.31.128.12 - - [07/Apr/2025 10:57:54] "[32mGET / HTTP/1.1[0m" 302 -
+2025-04-07 10:57:54,589 [INFO] 172.31.128.12 - - [07/Apr/2025 10:57:54] "[32mGET / HTTP/1.1[0m" 302 -
+2025-04-07 10:57:54,591 [INFO] Renderowanie dashboardu z danymi: 3 komponenty, 2 anomalie, 4 modele AI
+2025-04-07 10:57:54,598 [INFO] 172.31.128.12 - - [07/Apr/2025 10:57:54] "GET /dashboard HTTP/1.1" 200 -
+2025-04-07 10:57:54,732 [INFO] Renderowanie dashboardu z danymi: 3 komponenty, 2 anomalie, 4 modele AI
+2025-04-07 10:57:54,733 [INFO] 172.31.128.12 - - [07/Apr/2025 10:57:54] "GET /dashboard HTTP/1.1" 200 -
+2025-04-07 10:57:54,971 [INFO] 172.31.128.12 - - [07/Apr/2025 10:57:54] "GET /static/css/styles.css HTTP/1.1" 200 -
+2025-04-07 10:57:55,103 [INFO] 172.31.128.12 - - [07/Apr/2025 10:57:55] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-04-07 10:57:55,107 [INFO] 172.31.128.12 - - [07/Apr/2025 10:57:55] "GET /static/js/dashboard.js HTTP/1.1" 200 -
+2025-04-07 10:57:55,239 [INFO] 172.31.128.12 - - [07/Apr/2025 10:57:55] "[36mGET /static/js/dashboard.js HTTP/1.1[0m" 304 -
+2025-04-07 10:57:55,968 [INFO] 172.31.128.12 - - [07/Apr/2025 10:57:55] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 10:57:56,100 [INFO] 172.31.128.12 - - [07/Apr/2025 10:57:56] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 10:58:26,964 [INFO] 172.31.128.12 - - [07/Apr/2025 10:58:26] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 10:58:27,154 [INFO] 172.31.128.12 - - [07/Apr/2025 10:58:27] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 10:58:27,567 [INFO] Renderowanie dashboardu z danymi: 3 komponenty, 2 anomalie, 4 modele AI
+2025-04-07 10:58:27,567 [INFO] 172.31.128.12 - - [07/Apr/2025 10:58:27] "GET /dashboard HTTP/1.1" 200 -
+2025-04-07 10:58:27,727 [INFO] 172.31.128.12 - - [07/Apr/2025 10:58:27] "[36mGET /static/js/dashboard.js HTTP/1.1[0m" 304 -
+2025-04-07 10:58:27,785 [INFO] 172.31.128.12 - - [07/Apr/2025 10:58:27] "GET /static/css/styles.css HTTP/1.1" 200 -
+2025-04-07 10:58:27,935 [INFO] 172.31.128.12 - - [07/Apr/2025 10:58:27] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 10:58:40,920 [INFO] Uruchomiono symulację z panelu administratora
+2025-04-07 10:58:40,920 [INFO] 172.31.128.12 - - [07/Apr/2025 10:58:40] "GET /start-simulation HTTP/1.1" 200 -
+2025-04-07 10:58:56,888 [INFO] 172.31.128.12 - - [07/Apr/2025 10:58:56] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 10:58:57,024 [INFO] 172.31.128.12 - - [07/Apr/2025 10:58:57] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 10:58:57,943 [INFO] 172.31.128.12 - - [07/Apr/2025 10:58:57] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 10:59:26,038 [INFO] 172.31.128.12 - - [07/Apr/2025 10:59:26] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 10:59:26,168 [INFO] 172.31.128.12 - - [07/Apr/2025 10:59:26] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 10:59:28,867 [INFO] 172.31.128.12 - - [07/Apr/2025 10:59:28] "GET /api/chart-data HTTP/1.1" 200 -
