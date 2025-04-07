@@ -3199,3 +3199,191 @@ Original error was: No module named 'numpy.core._multiarray_umath'
 2025-04-07 14:54:32,252 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:32] "GET /api/ai-models-status HTTP/1.1" 200 -
 2025-04-07 14:54:32,253 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:32] "GET /api/trading-stats HTTP/1.1" 200 -
 2025-04-07 14:54:32,254 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:32] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 14:54:37,247 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:37] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:54:37,251 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:37] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:54:37,252 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:37] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:54:37,253 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:37] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:54:37,311 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:37] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 14:54:42,258 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:42] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:54:42,261 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:42] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:54:42,264 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:42] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 14:54:42,266 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:42] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:54:42,269 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:42] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:54:42,271 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:42] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 14:54:47,247 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:47] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 14:54:47,251 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:47] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:54:47,252 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:47] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:54:47,254 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:47] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:54:47,255 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:47] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:54:52,243 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:52] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 14:54:52,248 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:52] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:54:52,249 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:52] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:54:52,249 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:52] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:54:52,250 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:52] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:54:52,252 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:52] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 14:54:52,386 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:52] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 14:54:57,321 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:57] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:54:57,326 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:57] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:54:57,328 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:57] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:54:57,329 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:57] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 14:54:57,329 [INFO] 172.31.128.12 - - [07/Apr/2025 14:54:57] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:54:57,407 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 14:54:57,453 [INFO]  * Restarting with stat
+2025-04-07 14:54:57,765 [WARNING] Pomijam moduł 'historical' z powodu błędu: 
+
+IMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!
+
+Importing the numpy C-extensions failed. This error can happen for
+many reasons, often due to issues with your setup or how NumPy was
+installed.
+
+We have compiled some common reasons and troubleshooting tips at:
+
+    https://numpy.org/devdocs/user/troubleshooting-importerror.html
+
+Please note and check the following:
+
+  * The Python version is: Python3.10 from "/home/runner/workspace/.pythonlibs/bin/python"
+  * The NumPy version is: "1.24.3"
+
+and make sure that they are the versions you expect.
+Please carefully study the documentation linked above for further help.
+
+Original error was: No module named 'numpy.core._multiarray_umath'
+
+2025-04-07 14:54:57,780 [WARNING] Pomijam moduł 'zrobcsv' z powodu błędu: Unable to import required dependencies:
+numpy: 
+
+IMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!
+
+Importing the numpy C-extensions failed. This error can happen for
+many reasons, often due to issues with your setup or how NumPy was
+installed.
+
+We have compiled some common reasons and troubleshooting tips at:
+
+    https://numpy.org/devdocs/user/troubleshooting-importerror.html
+
+Please note and check the following:
+
+  * The Python version is: Python3.10 from "/home/runner/workspace/.pythonlibs/bin/python"
+  * The NumPy version is: "1.24.3"
+
+and make sure that they are the versions you expect.
+Please carefully study the documentation linked above for further help.
+
+Original error was: No module named 'numpy.core._multiarray_umath'
+
+2025-04-07 14:54:57,783 [WARNING] Pomijam podpakiet 'data' z powodu błędu: Nie udało się zaimportować modułu 'data_preprocessing' z pakietu 'data.data'.
+2025-04-07 14:54:57,861 [WARNING] Pomijam podpakiet 'indicators' z powodu błędu: Nie udało się zaimportować modułu 'custom_indicators' z pakietu 'data.indicators'.
+2025-04-07 14:54:57,863 [WARNING] Pomijam podpakiet 'logging' z powodu błędu: Nie udało się zaimportować modułu 'anomaly_detector' z pakietu 'data.logging'.
+2025-04-07 14:54:57,870 [WARNING] Pomijam podpakiet 'optimization' z powodu błędu: Nie udało się zaimportować modułu 'backtesting' z pakietu 'data.optimization'.
+2025-04-07 14:54:57,872 [WARNING] Pomijam podpakiet 'risk_management' z powodu błędu: Nie udało się zaimportować modułu 'advanced_risk_manager' z pakietu 'data.risk_management'.
+2025-04-07 14:54:57,873 [WARNING] Pomijam podpakiet 'strategies' z powodu błędu: Nie udało się zaimportować modułu 'AI_strategy_generator' z pakietu 'data.strategies'.
+2025-04-07 14:54:57,873 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 14:54:57,876 [WARNING] Pomijam podpakiet 'utils' z powodu błędu: Nie udało się zaimportować modułu 'data_validator' z pakietu 'data.utils'.
+2025-04-07 14:54:57,877 [WARNING] Nie udało się re-eksportować HistoricalDataManager: Nie udało się zaimportować modułu 'data_preprocessing' z pakietu 'data.data'.
+2025-04-07 14:54:57,879 [WARNING] Nie udało się re-eksportować data_preprocessing: Nie udało się zaimportować modułu 'data_preprocessing' z pakietu 'data.data'.
+2025-04-07 14:54:57,887 [ERROR] Błąd podczas inicjalizacji systemu: Nie udało się zaimportować modułu 'data_validator' z pakietu 'data.utils'.
+2025-04-07 14:54:57,911 [WARNING]  * Debugger is active!
+2025-04-07 14:54:57,913 [INFO]  * Debugger PIN: 989-897-416
+2025-04-07 14:55:02,255 [ERROR] Błąd podczas pobierania danych dashboardu: 'NoneType' object has no attribute 'analyze'
+2025-04-07 14:55:02,256 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:02] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:55:02,261 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:02] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:55:02,266 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:02] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:55:02,268 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:02] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:55:02,279 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:02] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 14:55:02,287 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:02] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:55:07,256 [ERROR] Błąd podczas pobierania danych dashboardu: 'NoneType' object has no attribute 'analyze'
+2025-04-07 14:55:07,257 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:07] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:55:07,260 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:07] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:55:07,265 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:07] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:55:07,267 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:07] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:55:07,269 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:07] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:55:12,251 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:12] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:55:12,252 [ERROR] Błąd podczas pobierania danych dashboardu: 'NoneType' object has no attribute 'analyze'
+2025-04-07 14:55:12,254 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:12] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:55:12,256 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:12] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:55:12,257 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:12] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:55:12,258 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:12] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 14:55:12,259 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:12] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:55:17,256 [ERROR] Błąd podczas pobierania danych dashboardu: 'NoneType' object has no attribute 'analyze'
+2025-04-07 14:55:17,259 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:17] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:55:17,260 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:17] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:55:17,262 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:17] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:55:17,262 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:17] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:55:17,266 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:17] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:55:22,260 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:22] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:55:22,261 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:22] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:55:22,262 [ERROR] Błąd podczas pobierania danych dashboardu: 'NoneType' object has no attribute 'analyze'
+2025-04-07 14:55:22,263 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:22] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 14:55:22,265 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:22] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:55:22,266 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:22] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:55:22,267 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:22] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:55:27,255 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:27] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:55:27,256 [ERROR] Błąd podczas pobierania danych dashboardu: 'NoneType' object has no attribute 'analyze'
+2025-04-07 14:55:27,257 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:27] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:55:27,262 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:27] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:55:27,266 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:27] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:55:27,267 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:27] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:55:32,248 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:32] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:55:32,249 [ERROR] Błąd podczas pobierania danych dashboardu: 'NoneType' object has no attribute 'analyze'
+2025-04-07 14:55:32,251 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:32] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:55:32,253 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:32] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:55:32,251 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:32] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:55:32,255 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:32] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:55:32,257 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:32] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 14:55:37,268 [ERROR] Błąd podczas pobierania danych dashboardu: 'NoneType' object has no attribute 'analyze'
+2025-04-07 14:55:37,269 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:37] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:55:37,270 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:37] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:55:37,274 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:37] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:55:37,277 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:37] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:55:37,280 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:37] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:55:42,247 [ERROR] Błąd podczas pobierania danych dashboardu: 'NoneType' object has no attribute 'analyze'
+2025-04-07 14:55:42,247 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:42] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:55:42,251 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:42] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:55:42,252 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:42] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:55:42,253 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:42] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:55:42,253 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:42] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 14:55:42,255 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:42] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:55:47,243 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:47] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:55:47,248 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:47] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:55:47,249 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:47] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:55:47,250 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:47] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:55:47,347 [ERROR] Błąd podczas pobierania danych dashboardu: 'NoneType' object has no attribute 'analyze'
+2025-04-07 14:55:47,348 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:47] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:55:51,805 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:51] "GET / HTTP/1.1" 200 -
+2025-04-07 14:55:51,972 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:51] "GET /static/css/styles.css HTTP/1.1" 200 -
+2025-04-07 14:55:52,072 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:52] "GET /static/js/dashboard.js HTTP/1.1" 200 -
+2025-04-07 14:55:52,252 [ERROR] Błąd podczas pobierania danych dashboardu: 'NoneType' object has no attribute 'analyze'
+2025-04-07 14:55:52,254 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:52] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:55:52,255 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:52] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:55:52,256 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:52] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 14:55:52,389 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:52] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:55:52,394 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:52] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:55:52,398 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:52] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:55:52,520 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:52] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 14:55:52,528 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:52] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 14:55:52,533 [ERROR] Błąd podczas pobierania danych dashboardu: 'NoneType' object has no attribute 'analyze'
+2025-04-07 14:55:52,534 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:52] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:55:52,788 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:52] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:55:52,789 [ERROR] Błąd podczas pobierania danych dashboardu: 'NoneType' object has no attribute 'analyze'
+2025-04-07 14:55:52,791 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:52] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:55:52,794 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:52] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:55:52,802 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:52] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:55:52,804 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:52] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 14:55:52,806 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:52] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:55:52,924 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:52] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 14:55:57,397 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:57] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:55:57,399 [ERROR] Błąd podczas pobierania danych dashboardu: 'NoneType' object has no attribute 'analyze'
+2025-04-07 14:55:57,429 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:57] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:55:57,400 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:57] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:55:57,411 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:57] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:55:57,408 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:57] "[33mGET /api/portfolio HTTP/1.1[0m" 404 -
+2025-04-07 14:55:57,402 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:57] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:55:57,788 [ERROR] Błąd podczas pobierania danych dashboardu: 'NoneType' object has no attribute 'analyze'
+2025-04-07 14:55:57,789 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:57] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:55:57,792 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:57] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:55:57,798 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:57] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:55:57,801 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:57] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:55:57,804 [INFO] 172.31.128.12 - - [07/Apr/2025 14:55:57] "GET /api/alerts HTTP/1.1" 200 -
