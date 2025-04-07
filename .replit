@@ -1,3 +1,4 @@
+
 entrypoint = "main.py"
 modules = ["python-3.10:v18-20230807-322e88b"]
 
@@ -10,7 +11,7 @@ channel = "stable-23_05"
 PYTHONPATH = "${REPL_HOME}"
 
 [deployment]
-run = ["python", "main.py"]
+run = ["python3", "main.py"]
 deploymentTarget = "cloudrun"
 
 [unitTest]
@@ -38,14 +39,23 @@ port = 5000
 localPort = 5000
 externalPort = 80
 
+[interpreter]
+command = [
+  "python3"
+]
+
+[packager]
+language = "python3"
+ignoredPackages = []
+
+[packager.features]
+packageSearch = true
+guessImports = true
+enabledForHosting = false
+
+[runOnStart]
+pattern = "**/*.py"
+command = "python3"
+
 [workflows]
 runButton = "Run"
-
-[[workflows.workflow]]
-name = "Run"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python3 main.py"
