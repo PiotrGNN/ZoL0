@@ -124,8 +124,8 @@ function updateComponentStatus(componentId, status) {
 }
 
 function updateCharts() {
-    // Pobierz dane wykresu z API
-    fetch('/api/chart-data')
+    // Pobierz dane do wykresów
+    fetch('/api/dashboard/data')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Błąd pobierania danych wykresu');
@@ -386,63 +386,73 @@ function updateAlerts() {
 }
 
 function fetchNotifications() {
+    // Pobieranie powiadomień z API
     fetch('/api/notifications')
-        .then(response => {
-            if (!response.ok) {
-                return { notifications: [] };
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
-            const notificationsList = document.getElementById('notifications-list');
-            if (!notificationsList) return;
+            if (data.success) {
+                const notifications = data.notifications;
+                if (notifications.length > 0) {
+                    const notificationsList = document.getElementById('notifications-list');
+                    if (notificationsList) {
+                        notificationsList.innerHTML = '';
+                        let notificationsHTML = '';
 
-            if (data && Array.isArray(data.notifications) && data.notifications.length > 0) {
-                let notificationsHTML = '';
+                        notifications.forEach(notification => {
+                            const notificationClass = {
+                                'critical': 'status-offline',
+                                'alert': 'status-warning',
+                                'warning': 'status-warning',
+                                'info': 'status-online'
+                            }[notification.level] || '';
 
-                data.notifications.forEach(notification => {
-                    const notificationClass = {
-                        'critical': 'status-offline',
-                        'alert': 'status-warning',
-                        'warning': 'status-warning',
-                        'info': 'status-online'
-                    }[notification.level] || '';
+                            notificationsHTML += `
+                            <div class="notification-item ${notificationClass}" data-id="${notification.id}">
+                                <div class="notification-time">${formatTimestamp(notification.timestamp)}</div>
+                                <div class="notification-content">
+                                    <div class="notification-title">${notification.title}</div>
+                                    <div class="notification-message">${notification.message}</div>
+                                </div>
+                                ${!notification.read ? '<div class="unread-indicator"></div>' : ''}
+                            </div>`;
+                        });
 
-                    notificationsHTML += `
-                    <div class="notification-item ${notificationClass}" data-id="${notification.id}">
-                        <div class="notification-time">${formatTimestamp(notification.timestamp)}</div>
-                        <div class="notification-content">
-                            <div class="notification-title">${notification.title}</div>
-                            <div class="notification-message">${notification.message}</div>
-                        </div>
-                        ${!notification.read ? '<div class="unread-indicator"></div>' : ''}
-                    </div>`;
-                });
+                        notificationsList.innerHTML = notificationsHTML;
 
-                notificationsList.innerHTML = notificationsHTML;
+                        // Aktualizacja licznika
+                        const unreadCount = notifications.filter(n => !n.read).length;
+                        const notificationBadge = document.getElementById('notifications-badge');
+                        if (notificationBadge) {
+                            notificationBadge.textContent = unreadCount;
+                            notificationBadge.style.display = unreadCount > 0 ? 'inline-block' : 'none';
+                        }
 
-                // Aktualizacja licznika
-                const unreadCount = data.notifications.filter(n => !n.read).length;
-                const notificationBadge = document.getElementById('notifications-badge');
-                if (notificationBadge) {
-                    notificationBadge.textContent = unreadCount;
-                    notificationBadge.style.display = unreadCount > 0 ? 'inline-block' : 'none';
+                        // Dodaj obsługę kliknięć
+                        document.querySelectorAll('.notification-item').forEach(item => {
+                            item.addEventListener('click', function() {
+                                markNotificationAsRead(this.dataset.id);
+                            });
+                        });
+
+                    }
+                } else {
+                    const notificationsList = document.getElementById('notifications-list');
+                    if (notificationsList) {
+                        notificationsList.innerHTML = '<div class="no-data">Brak powiadomień</div>';
+
+                        // Ukryj badge
+                        const notificationBadge = document.getElementById('notifications-badge');
+                        if (notificationBadge) {
+                            notificationBadge.style.display = 'none';
+                        }
+                    }
                 }
 
-                // Dodaj obsługę kliknięć
-                document.querySelectorAll('.notification-item').forEach(item => {
-                    item.addEventListener('click', function() {
-                        markNotificationAsRead(this.dataset.id);
-                    });
-                });
-
-            } else {
-                notificationsList.innerHTML = '<div class="no-data">Brak powiadomień</div>';
-
-                // Ukryj badge
-                const notificationBadge = document.getElementById('notifications-badge');
-                if (notificationBadge) {
-                    notificationBadge.style.display = 'none';
+                // Aktualizacja licznika powiadomień
+                const badge = document.getElementById('notifications-badge');
+                if (badge) {
+                    badge.textContent = notifications.length;
+                    badge.style.display = 'inline-block';
                 }
             }
         })
