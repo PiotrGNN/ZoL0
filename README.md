@@ -64,6 +64,26 @@ flake8 .
 pytest --cov=. --cov-report=term-missing data/tests/
 ```
 
+## 📁 Struktura projektu
+
+```
+├── config/            - Konfiguracja aplikacji
+├── data/              - Główny katalog modułów projektu
+│   ├── data/          - Zarządzanie danymi rynkowymi
+│   ├── execution/     - Integracja z giełdami i wykonywanie zleceń
+│   ├── indicators/    - Wskaźniki techniczne i analizy
+│   ├── logging/       - System logowania
+│   ├── risk_management/ - Zarządzanie ryzykiem
+│   ├── strategies/    - Strategie handlowe
+│   ├── tests/         - Testy jednostkowe
+│   └── utils/         - Narzędzia pomocnicze
+├── logs/              - Pliki logów
+├── saved_models/      - Zapisane modele AI
+├── static/            - Pliki statyczne (CSS, JS)
+├── templates/         - Szablony HTML
+└── main.py            - Główny plik aplikacjiov=. --cov-report=term-missing data/tests/
+```
+
 ## 🧩 Struktura projektu
 
 ```

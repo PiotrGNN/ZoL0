@@ -5,6 +5,13 @@ from datetime import datetime
 import flask
 from flask import Flask, jsonify, render_template, request
 
+# Próba importu dotenv z obsługą błędu
+try:
+    from dotenv import load_dotenv
+    load_dotenv()  # ładujemy zmienne środowiskowe
+except ImportError:
+    logging.warning("Moduł dotenv nie jest zainstalowany. Zmienne środowiskowe mogą nie być dostępne.")
+
 # Konfiguracja logowania
 os.makedirs("logs", exist_ok=True)
 logging.basicConfig(

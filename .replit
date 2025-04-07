@@ -1,4 +1,4 @@
-run = "pip install -r requirements.txt && python main.py"
+run = "python main.py"
 language = "python3"
 entrypoint = "main.py"
 hidden = [".config", "**/__pycache__", "**/.pyc"]
@@ -33,13 +33,6 @@ pattern = "**/*.py"
 [languages.python3.languageServer]
 start = "pylsp"
 
-[gitHubImport]
-requiredFiles = [".replit", "replit.nix", ".config", "requirements.txt"]
-
-[auth]
-pageEnabled = false
-buttonEnabled = false
-
 [[ports]]
 localPort = 5000
 externalPort = 80
@@ -54,49 +47,4 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "pip install -r requirements.txt && python main.py"
-
-[[workflows.workflow]]
-name = "Test"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "pytest data/tests/"
-
-[[workflows.workflow]]
-name = "Format Code"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "black ."
-
-[[workflows.workflow]]
-name = "Lint Code"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "flake8 ."
-
-[[workflows.workflow]]
-name = "Test with Coverage"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "pytest --cov=. --cov-report=term-missing data/tests/"
-
-[[workflows.workflow]]
-name = "Install Dependencies"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "pip install -r requirements.txt"
+args = "python main.py"
