@@ -121,3 +121,28 @@
 2025-04-07 10:48:41,555 [INFO] 172.31.128.12 - - [07/Apr/2025 10:48:41] "GET /dashboard HTTP/1.1" 200 -
 2025-04-07 10:48:43,488 [INFO] 172.31.128.12 - - [07/Apr/2025 10:48:43] "GET /download-report HTTP/1.1" 200 -
 2025-04-07 10:48:53,008 [INFO] 172.31.128.12 - - [07/Apr/2025 10:48:53] "GET /api/status HTTP/1.1" 200 -
+2025-04-07 10:49:51,800 [INFO] Ładowanie konfiguracji systemu...
+2025-04-07 10:49:51,800 [INFO] Inicjalizacja komponentów systemu...
+2025-04-07 10:49:53,506 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 10:49:54,193 [WARNING] Pomijam podpakiet 'indicators' z powodu błędu: Nie udało się zaimportować modułu 'sentiment_analysis' z pakietu 'data.indicators'.
+2025-04-07 10:49:54,372 [WARNING] Pomijam podpakiet 'strategies' z powodu błędu: Nie udało się zaimportować modułu 'strategy_manager' z pakietu 'data.strategies'.
+2025-04-07 10:49:54,372 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 10:49:54,379 [WARNING] Nie można zainicjalizować StrategyManager - kontynuowanie bez tego komponentu: Nie udało się zaimportować modułu 'strategy_manager' z pakietu 'data.strategies'.
+2025-04-07 10:49:54,379 [INFO] Zainicjalizowano 1 komponentów
+2025-04-07 10:49:54,379 [INFO] Uruchamianie systemu w trybie symulacji...
+2025-04-07 10:49:54,379 [INFO] Symulacja: krok 1/3
+2025-04-07 10:49:54,879 [INFO] Symulacja: krok 2/3
+2025-04-07 10:49:55,380 [INFO] Symulacja: krok 3/3
+2025-04-07 10:49:55,880 [INFO] System podstawowy uruchomiony, startuję serwer web...
+2025-04-07 10:49:55,881 [INFO] Uruchamianie serwera web na porcie 5000...
+2025-04-07 10:49:55,892 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.12:5000
+2025-04-07 10:49:55,892 [INFO] [33mPress CTRL+C to quit[0m
+2025-04-07 10:49:56,367 [INFO] 172.31.128.12 - - [07/Apr/2025 10:49:56] "[32mGET / HTTP/1.1[0m" 302 -
+2025-04-07 10:49:56,499 [INFO] Renderowanie dashboardu z danymi: 3 komponenty, 2 anomalie, 4 modele AI
+2025-04-07 10:49:56,500 [INFO] 172.31.128.12 - - [07/Apr/2025 10:49:56] "[32mGET / HTTP/1.1[0m" 302 -
+2025-04-07 10:49:56,508 [INFO] 172.31.128.12 - - [07/Apr/2025 10:49:56] "GET /dashboard HTTP/1.1" 200 -
+2025-04-07 10:49:56,646 [INFO] Renderowanie dashboardu z danymi: 3 komponenty, 2 anomalie, 4 modele AI
+2025-04-07 10:49:56,646 [INFO] 172.31.128.12 - - [07/Apr/2025 10:49:56] "GET /dashboard HTTP/1.1" 200 -
