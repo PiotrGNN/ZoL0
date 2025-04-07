@@ -12,7 +12,9 @@ run = ["python", "main.py"]
 deploymentTarget = "cloudrun"
 
 [languages]
-python = 3.10
+[languages.python]
+pattern = "**/*.py"
+version = "3.10"
 
 [env]
 FLASK_APP = "main.py"
@@ -80,3 +82,12 @@ command = ["python3", "-u"]
 
 [workflows]
 runButton = "Run"
+
+[[workflows.workflow]]
+name = "Run"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python main.py"
