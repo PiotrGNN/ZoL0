@@ -1,49 +1,50 @@
-# ZoL0 - System Tradingowy z AI
 
-## 📋 Opis
-System tradingowy wspierany sztuczną inteligencją, zoptymalizowany do pracy z giełdą Bybit. System integruje strategie tradingowe, zarządzanie ryzykiem i modele AI w jednej platformie z interfejsem webowym.
+# 🤖 AI Trading System
 
-## 🚀 Uruchomienie
+Zaawansowany system tradingowy oparty na AI, wykorzystujący modele uczenia maszynowego do analizy rynku i wykonywania transakcji.
 
-### W środowisku Replit
-1. Kliknij przycisk **Run** - aplikacja uruchomi się automatycznie
-2. Poczekaj na załadowanie wszystkich zależności
-3. Panel webowy będzie dostępny automatycznie w oknie przeglądarki
+## 🚀 Uruchomienie projektu
 
-### Lokalnie
-1. Zainstaluj zależności: `pip install -r requirements.txt`
-2. Ustaw zmienne środowiskowe w pliku `.env` (skopiuj z `.env.example`)
-3. Uruchom aplikację: `python main.py`
-4. Przejdź do `http://localhost:5000` w przeglądarce
+### Środowisko Replit
+Projekt jest w pełni skonfigurowany do pracy w środowisku Replit:
 
-## 🔧 Konfiguracja
-1. Aby połączyć się z giełdą Bybit, ustaw zmienne w pliku `.env`:
-   ```
-   BYBIT_API_KEY=your_api_key
-   BYBIT_API_SECRET=your_api_secret
-   TEST_MODE=true  # zmień na "false" w środowisku produkcyjnym
-   ```
+1. Kliknij przycisk **Run** aby uruchomić aplikację
+2. Aplikacja webowa będzie dostępna pod adresem podanym w zakładce "Webview"
 
-## 🧪 Testy
-Uruchom testy jednostkowe: `python -m unittest discover -s data/tests`
+### 🔒 Konfiguracja API
 
-## 📂 Struktura projektu
-- `ai_models/` - Modele AI i uczenie maszynowe
-- `data/` - Główne komponenty systemu
-  - `execution/` - Wykonywanie zleceń
-  - `indicators/` - Wskaźniki techniczne
-  - `risk_management/` - Zarządzanie ryzykiem
-  - `strategies/` - Strategie handlowe
-  - `tests/` - Testy jednostkowe
-- `static/` i `templates/` - Interfejs użytkownika
-- `main.py` - Główny plik aplikacji
+Aby używać połączenia z giełdami kryptowalut:
 
+1. Utwórz plik `.env` na podstawie `.env.example`
+2. Dodaj swoje klucze API do pliku `.env` lub użyj narzędzia Secrets w Replit
 
-## 🔒 Bezpieczeństwo
-- Przechowuj klucze API używając Replit Secrets Manager (`Tools → Secrets`)
-- Ogranicz uprawnienia kluczy API do minimum
-- Używaj trybu testowego (testnet) do testowania nowych strategii
-- Ustaw odpowiednie limity ryzyka w konfiguracji
+```
+BYBIT_API_KEY=your_bybit_api_key_here
+BYBIT_API_SECRET=your_bybit_api_secret_here
+BINANCE_API_KEY=your_binance_api_key_here
+BINANCE_API_SECRET=your_binance_api_secret_here
+```
 
-## 📜 Licencja
-Ten projekt jest zastrzeżony i nie jest dostępny publicznie bez zgody autora.
+## 🧩 Struktura projektu
+
+- `main.py` - Główny plik uruchomieniowy aplikacji
+- `ai_models/` - Modele AI do analizy i prognozowania rynku
+- `data/` - Moduły do pobierania danych, zarządzania ryzykiem i strategii
+- `config/` - Konfiguracja aplikacji
+- `templates/` - Szablony HTML dla interfejsu webowego
+- `static/` - Pliki statyczne (CSS, JS)
+
+## 🛠️ Technologie
+
+- Python 3.10
+- Flask (backend web)
+- Pandas, NumPy, SciKit-Learn (analiza danych)
+- XGBoost, Optuna (modelowanie AI)
+- Bybit & Binance API (integracja z giełdami)
+
+## 🔍 Testowanie
+
+Testy jednostkowe znajdują się w katalogu `data/tests/`. Uruchom je poleceniem:
+```
+python -m pytest data/tests/
+```
