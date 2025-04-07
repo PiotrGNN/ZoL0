@@ -16,12 +16,18 @@ from urllib.parse import urlencode
 # Upewniamy się, że folder logs istnieje
 os.makedirs("logs", exist_ok=True)
 
-# Sprawdzamy dostępność modułu requests
+# Zabezpieczenie importów - jeśli nie ma biblioteki, obsłużymy to ładnie
 try:
     import requests
 except ImportError:
     requests = None
-    logging.warning("Moduł 'requests' nie jest zainstalowany. BybitConnector będzie działał w trybie symulacji.")
+    logging.warning("Moduł 'requests' nie jest zainstalowany. Używam trybu symulacji.")
+
+try:
+    import websocket
+except ImportError:
+    websocket = None
+    logging.warning("Moduł 'websocket-client' nie jest zainstalowany. Funkcje websocket będą niedostępne.")
 
 # Konfiguracja logowania
 logging.basicConfig(
@@ -815,7 +821,7 @@ if __name__ == "__main__":
 
     # Ładujemy zmienne środowiskowe
     api_key = os.getenv("BYBIT_API_KEY")
-    api_secret = os.getenv("BYBIT_API_SECRET")
+    api_secret = os.getenv(""BYBIT_API_SECRET")
     use_testnet = os.getenv("TEST_MODE", "true").lower() in ["true", "1", "t"]
 
     # Sprawdzamy, czy moduł requests jest dostępny
