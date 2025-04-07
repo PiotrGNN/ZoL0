@@ -44,9 +44,11 @@ class BybitConnector:
 
                 # Inicjalizacja śledzenia limitów API
                 self.last_api_call = 0
-                self.min_time_between_calls = 0.5  # 500ms minimalny odstęp między zapytaniami
-                self.rate_limit_backoff = 5.0  # 5 sekund oczekiwania po przekroczeniu limitu
-                self.remaining_rate_limit = 1000 # Initial rate limit
+                self.min_time_between_calls = 1.0  # 1000ms minimalny odstęp między zapytaniami
+                self.rate_limit_backoff = 10.0  # 10 sekund oczekiwania po przekroczeniu limitu
+                self.remaining_rate_limit = 50  # Bezpieczniejszy limit początkowy
+                self.rate_limit_exceeded = False  # Flaga oznaczająca przekroczenie limitu
+                self.last_rate_limit_reset = time.time()  # Czas ostatniego resetu limitu
 
                 # Używanie odpowiednich klas rynkowych, zgodnie z ostrzeżeniem z biblioteki
                 try:
@@ -237,7 +239,20 @@ class BybitConnector:
             return {"symbol": symbol, "bids": [], "asks": [], "error": str(e)}
 
     def get_account_balance(self) -> Dict[str, Any]:
-        """Pobiera saldo konta."""
+        """Pobiera saldo konta z zastosowaniem cache."""
+        # Import managera cache
+        from data.utils.cache_manager import get_cached_data, store_cached_data, is_cache_valid
+        
+        # Klucz cache
+        cache_key = f"account_balance_{self.api_key[:8]}_{self.use_testnet}"
+        
+        # Sprawdzenie czy dane są w cache i ważne (TTL: 30 sekund)
+        if is_cache_valid(cache_key, ttl=30):
+            cached_data = get_cached_data(cache_key)
+            if cached_data:
+                self.logger.debug("Używam danych z cache dla account_balance")
+                return cached_data[0]
+                
         # Zmienna do śledzenia prób ponowienia
         max_retries = 3
         retry_count = 0
@@ -328,7 +343,15 @@ class BybitConnector:
 
                             # Specjalna obsługa limitu żądań API
                             if "rate limit" in error_str.lower() or "429" in error_str or "403" in error_str:
-                                self.logger.warning(f"Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.")
+                                self.rate_limit_exceeded = True
+                                self.last_rate_limit_reset = time.time()
+                                self.remaining_rate_limit = 0
+                                self.logger.warning(f"Przekroczono limit zapytań API. Używam symulowanych danych i zwiększam czas oczekiwania.")
+                                
+                                # Zwiększ dynamicznie czas oczekiwania przy kolejnych przekroczeniach limitu
+                                self.min_time_between_calls = min(3.0, self.min_time_between_calls * 1.5)  # max 3s między zapytaniami
+                                self.rate_limit_backoff = min(60.0, self.rate_limit_backoff * 1.5)  # max 60s backoff
+                                
                                 # Zwracamy symulowane dane zamiast zgłaszania wyjątku
                                 return {
                                     "balances": {
@@ -339,7 +362,7 @@ class BybitConnector:
                                     "success": True,
                                     "warning": "Przekroczono limit zapytań API. Dane symulowane.",
                                     "source": "simulation_rate_limited",
-                                    "note": "Przekroczono limit zapytań API. Odczekaj chwilę przed ponowną próbą."
+                                    "note": f"Przekroczono limit zapytań API. Oczekiwanie {self.rate_limit_backoff}s przed kolejnymi zapytaniami."
                                 }
                             else:
                                 # Dla innych błędów zgłaszamy wyjątek
@@ -421,6 +444,12 @@ class BybitConnector:
                             result["warning"] = "API zwróciło pustą listę sald"
                             self.logger.info("Próba pobrania danych z API zwróciła pustą listę sald. Możliwe przyczyny: brak środków na koncie, nieprawidłowe konto, nieprawidłowe uprawnienia API.")
 
+                        # Zapisanie poprawnych danych w cache
+                        from data.utils.cache_manager import store_cached_data
+                        cache_key = f"account_balance_{self.api_key[:8]}_{self.use_testnet}"
+                        store_cached_data(cache_key, result)
+                        self.logger.debug("Zapisano dane portfolio w cache")
+                        
                         return result
                     except Exception as e:
                         self.logger.error(f"Błąd podczas pobierania danych z prawdziwego API: {e}. Traceback: {traceback.format_exc()}")
@@ -597,12 +626,29 @@ class BybitConnector:
             return {"success": False, "error": str(e)}
 
     def _apply_rate_limit(self):
-        """Applies rate limiting to API calls."""
+        """Applies rate limiting to API calls with adaptive backoff."""
         now = time.time()
+        
+        # Jeśli przekroczono limit, stosuj dłuższe opóźnienie
+        if self.rate_limit_exceeded:
+            # Resetuj stan po 30 sekundach od ostatniego przekroczenia limitu
+            if now - self.last_rate_limit_reset > 30.0:
+                self.logger.info("Resetowanie stanu limitów API po okresie oczekiwania")
+                self.rate_limit_exceeded = False
+                self.remaining_rate_limit = 50  # Zakładamy odnowienie limitu
+            else:
+                # Oczekiwanie przy przekroczeniu limitu
+                sleep_time = self.rate_limit_backoff
+                self.logger.debug(f"Rate limit przekroczony - oczekiwanie {sleep_time}s przed próbą")
+                time.sleep(sleep_time)
+        
+        # Standardowe opóźnienie między wywołaniami
         time_since_last_call = now - self.last_api_call
         if time_since_last_call < self.min_time_between_calls:
             sleep_time = self.min_time_between_calls - time_since_last_call
             time.sleep(sleep_time)
+        
+        # Aktualizacja czasu ostatniego wywołania
         self.last_api_call = time.time()
 
 

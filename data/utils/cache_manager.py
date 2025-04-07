@@ -188,3 +188,136 @@ if __name__ == "__main__":
             )
 
     unittest.main()
+"""
+cache_manager.py
+-----------------
+Moduł obsługujący cache'owanie danych z API, aby zmniejszyć liczbę zapytań.
+"""
+
+import time
+import logging
+from functools import wraps
+from typing import Dict, Any, Callable, Optional, Tuple
+
+# Konfiguracja logowania
+logger = logging.getLogger("cache_manager")
+if not logger.handlers:
+    handler = logging.StreamHandler()
+    formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    logger.setLevel(logging.INFO)
+
+# Główny cache przechowujący dane
+_CACHE: Dict[str, Dict[str, Any]] = {}
+
+def cache_data(ttl: int = 30) -> Callable:
+    """
+    Dekorator do cache'owania wyników funkcji.
+    
+    Args:
+        ttl: Czas życia cache'u w sekundach (domyślnie 30s)
+    
+    Returns:
+        Callable: Dekorator
+    """
+    def decorator(func: Callable) -> Callable:
+        @wraps(func)
+        def wrapper(*args, **kwargs) -> Any:
+            # Generowanie klucza cache'u
+            cache_key = f"{func.__name__}:{str(args)}:{str(kwargs)}"
+            
+            # Sprawdzenie czy dane są w cache'u i aktualne
+            if cache_key in _CACHE:
+                entry = _CACHE[cache_key]
+                if time.time() - entry["timestamp"] < ttl:
+                    logger.debug(f"Cache hit for {func.__name__}")
+                    return entry["data"]
+            
+            # Wywołanie oryginalnej funkcji
+            result = func(*args, **kwargs)
+            
+            # Zapisanie wyniku w cache'u
+            _CACHE[cache_key] = {
+                "data": result,
+                "timestamp": time.time()
+            }
+            logger.debug(f"Cache store for {func.__name__}")
+            
+            return result
+        return wrapper
+    return decorator
+
+def get_cached_data(key: str) -> Optional[Tuple[Any, float]]:
+    """
+    Pobiera dane z cache'u.
+    
+    Args:
+        key: Klucz cache'u
+    
+    Returns:
+        Optional[Tuple[Any, float]]: Dane i timestamp lub None jeśli brak danych
+    """
+    if key in _CACHE:
+        entry = _CACHE[key]
+        return entry["data"], entry["timestamp"]
+    return None
+
+def store_cached_data(key: str, data: Any) -> None:
+    """
+    Zapisuje dane w cache'u.
+    
+    Args:
+        key: Klucz cache'u
+        data: Dane do zapisania
+    """
+    _CACHE[key] = {
+        "data": data,
+        "timestamp": time.time()
+    }
+
+def is_cache_valid(key: str, ttl: int = 30) -> bool:
+    """
+    Sprawdza czy dane w cache'u są aktualne.
+    
+    Args:
+        key: Klucz cache'u
+        ttl: Czas życia cache'u w sekundach
+    
+    Returns:
+        bool: True jeśli dane są aktualne, False w przeciwnym przypadku
+    """
+    if key in _CACHE:
+        return time.time() - _CACHE[key]["timestamp"] < ttl
+    return False
+
+def clear_cache() -> None:
+    """Czyści cały cache."""
+    global _CACHE
+    _CACHE = {}
+    logger.info("Cache cleared")
+
+def clear_expired_cache(ttl: int = 30) -> int:
+    """
+    Czyści wygasłe dane z cache'u.
+    
+    Args:
+        ttl: Czas życia cache'u w sekundach
+    
+    Returns:
+        int: Liczba usuniętych wpisów
+    """
+    global _CACHE
+    current_time = time.time()
+    expired_keys = [
+        key for key, entry in _CACHE.items() 
+        if current_time - entry["timestamp"] > ttl
+    ]
+    
+    for key in expired_keys:
+        del _CACHE[key]
+    
+    if expired_keys:
+        logger.info(f"Cleared {len(expired_keys)} expired cache entries")
+    
+    return len(expired_keys)

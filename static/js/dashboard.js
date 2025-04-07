@@ -1,4 +1,3 @@
-
 // Zmienne globalne dla dashboardu
 const refreshRates = {
     portfolio: 30000,       // co 30 sekund
@@ -23,12 +22,12 @@ const errorCounts = {
 // Zwiększanie opóźnienia w przypadku powtarzających się błędów
 function handleApiError(endpoint) {
     errorCounts[endpoint]++;
-    
+
     // Eksponencjalne zwiększanie opóźnienia przy powtarzających się błędach
     if (errorCounts[endpoint] > 3) {
         refreshRates[endpoint] *= 1.5;
         console.log(`Zwiększono opóźnienie dla ${endpoint} do ${refreshRates[endpoint]}ms z powodu powtarzających się błędów`);
-        
+
         // Maksymalne opóźnienie to 5 minut
         if (refreshRates[endpoint] > 300000) {
             refreshRates[endpoint] = 300000;
@@ -54,10 +53,29 @@ document.addEventListener('DOMContentLoaded', function() {
     setupEventListeners();
     initializeChart();
 
-    // Interwały aktualizacji
-    setInterval(updateDashboardData, 10000); // Co 10 sekund
-    setInterval(updateComponentStatuses, 15000); // Co 15 sekund
-    setInterval(fetchNotifications, 60000); // Co minutę
+    // Zmienne kontrolujące odświeżanie
+    let refreshInterval = 15000; // 15 sekund zamiast 5 sekund
+    let consecutiveErrors = 0;
+
+    // Adaptacyjne odświeżanie - zwiększa interwał przy błędach API
+    function adaptiveRefresh() {
+        updateDashboardData();
+
+        // Jeśli wystąpiło wiele błędów, zwiększ czas odświeżania
+        if (consecutiveErrors > 3) {
+            refreshInterval = Math.min(60000, refreshInterval * 1.5); // max 60 sekund
+            console.log(`Zwiększenie interwału odświeżania do ${refreshInterval/1000}s z powodu błędów API`);
+            consecutiveErrors = 0; // Reset licznika po dostosowaniu
+        }
+
+        // Zaplanuj kolejne odświeżenie
+        setTimeout(adaptiveRefresh, refreshInterval);
+    }
+
+    // Start adaptacyjnego odświeżania
+    setTimeout(adaptiveRefresh, refreshInterval);
+
+
 });
 
 // Główne funkcje dashboardu
@@ -89,7 +107,7 @@ function updatePortfolioData() {
             if (data && data.balances) {
                 const portfolioContainer = document.getElementById('portfolio-container');
                 if (!portfolioContainer) return;
-                
+
                 portfolioContainer.innerHTML = ''; // Czyszczenie kontenera
 
                 // Iterowanie po walutach i wyświetlanie danych
@@ -310,7 +328,7 @@ function updateTradingStats() {
             safeUpdateElement('trades-count', data.trades_count || 'N/A');
             safeUpdateElement('win-rate', data.win_rate || 'N/A');
             safeUpdateElement('max-drawdown', data.max_drawdown || 'N/A');
-            
+
             // Alternatywne ID (z szablonu HTML)
             safeUpdateElement('profit-value', data.profit || 'N/A');
             safeUpdateElement('trades-value', data.trades_count || 'N/A');
@@ -341,10 +359,10 @@ function updateRecentTrades() {
         })
         .then(data => {
             resetErrorCount('recentTrades');
-            
+
             // Sprawdzamy oba możliwe identyfikatory kontenerów
             const tradesContainer = document.getElementById('recent-trades-container') || document.getElementById('recent-trades-list');
-            
+
             if (tradesContainer) {
                 if (data.trades && data.trades.length > 0) {
                     let tradesHTML = '<table class="table"><thead><tr><th>Symbol</th><th>Typ</th><th>Czas</th><th>Zysk</th></tr></thead><tbody>';
@@ -386,7 +404,7 @@ function fetchNotifications() {
         })
         .then(data => {
             resetErrorCount('notifications');
-            
+
             if (data.success && data.notifications) {
                 const notificationsContainer = document.getElementById('notifications-container') || document.getElementById('notifications-list');
                 if (notificationsContainer) {
@@ -554,7 +572,7 @@ function updateAIModelsStatus() {
         })
         .then(data => {
             resetErrorCount('aiModels');
-            
+
             const aiModelsContainer = document.getElementById('ai-models-container');
             if (!aiModelsContainer) return;
 
@@ -576,7 +594,7 @@ function updateAIModelsStatus() {
                 });
 
                 aiModelsContainer.innerHTML = modelsHTML;
-                
+
                 // Pokazujemy sekcję jeśli istnieje
                 const aiModelsSection = document.getElementById('ai-models-section');
                 if (aiModelsSection) {
@@ -611,7 +629,7 @@ function updateAlerts() {
         })
         .then(data => {
             resetErrorCount('alerts');
-            
+
             const alertsContainer = document.getElementById('alerts-list');
             if (!alertsContainer) return;
 
