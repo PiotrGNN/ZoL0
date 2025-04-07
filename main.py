@@ -9,11 +9,16 @@ import os
 import sys
 import time
 from datetime import datetime
-from dotenv import load_dotenv
 import traceback
 
-# Konfiguracja środowiska przed importami
-load_dotenv()
+# Obsługa zmiennych środowiskowych
+try:
+    from dotenv import load_dotenv
+    # Konfiguracja środowiska przed importami
+    load_dotenv()
+    print("Zmienne środowiskowe załadowane z .env")
+except ImportError:
+    print("Moduł dotenv nie jest zainstalowany. Używam zmiennych systemowych.")
 
 # Tworzenie katalogu logów
 os.makedirs("logs", exist_ok=True)

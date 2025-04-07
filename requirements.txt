@@ -1,36 +1,30 @@
 
-# API i komunikacja
-requests>=2.28.1
-python-dotenv>=0.21.0
-websocket-client>=1.4.1
-Flask>=2.2.2
+# Podstawowe pakiety
+Flask==2.2.3
+Werkzeug==2.2.3
+requests==2.28.2
+python-dotenv==1.0.0
+websocket-client==1.5.1
 
 # Analiza danych
-pandas>=1.5.1
-numpy>=1.23.4
-scipy>=1.9.3
+pandas==1.5.3
+numpy==1.24.2
+scipy==1.10.1
 
-# Wizualizacja
-matplotlib>=3.6.2
-seaborn>=0.12.1
+# Wizualizacja (lekkie wersje)
+matplotlib==3.7.1
+seaborn==0.12.2
 
 # Analiza techniczna
-ta-lib>=0.4.24
-pandas-ta>=0.3.14b0
+pandas-ta==0.3.14b
 
-# AI/ML
-scikit-learn>=1.1.3
-xgboost>=1.7.1
-lightgbm>=3.3.3
-tensorflow>=2.10.0
-optuna>=3.0.3
+# AI/ML (podstawowe narzędzia)
+scikit-learn==1.2.2
+xgboost==1.7.4
 
 # Przechowywanie danych
-SQLAlchemy>=1.4.43
-APScheduler>=3.9.1
+SQLAlchemy==2.0.7
+APScheduler==3.10.1
 
-# Narzędzia deweloperskie
-pytest>=7.2.0
-black>=22.10.0
-flake8>=5.0.4
-pytest-cov>=4.0.0
+# Narzędzia deweloperskie - opcjonalne
+pytest==7.3.1

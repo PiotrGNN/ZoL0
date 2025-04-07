@@ -1,4 +1,4 @@
-run = ["python", "main.py"]
+run = "python main.py"
 modules = ["python-3.10:v18-20230807-322e88b"]
 hidden = [".config", "**/__pycache__", "**/.mypy_cache", "**/*.pyc"]
 
@@ -8,6 +8,7 @@ channel = "stable-22_11"
 [env]
 PYTHONPATH = "${REPL_HOME}"
 PYTHONUNBUFFERED = "1"
+FLASK_ENV = "development"
 
 [packager]
 language = "python3"
@@ -34,7 +35,7 @@ localPort = 5000
 externalPort = 80
 
 [workflows]
-runButton = "Run"
+runButton = "Run AI Trading System"
 
 [[workflows.workflow]]
 name = "Run"
@@ -43,7 +44,16 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python -m pip install --user -r requirements.txt"
+args = "python -m pip install -r requirements.txt"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python main.py"
+
+[[workflows.workflow]]
+name = "Run AI Trading System"
+author = 31819671
+mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
