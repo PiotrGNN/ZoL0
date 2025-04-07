@@ -641,20 +641,6 @@ function displayPortfolioData(portfolio) {
     const pnlValue = portfolio.pnl_percentage;
     pnlElement.textContent = (pnlValue > 0 ? '+' : '') + pnlValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
     pnlElement.className = 'pnl ' + (pnlValue >= 0 ? 'positive' : 'negative');
-    
-    // Wyświetlanie informacji o trybie (dane rzeczywiste vs symulacja)
-    const modeElement = document.getElementById('portfolio-mode');
-    if (modeElement) {
-        modeElement.textContent = portfolio.mode;
-        modeElement.className = portfolio.mode.includes('rzeczywiste') ? 'mode-real' : 'mode-sim';
-    }
-    
-    // Wyświetlanie informacji o połączeniu z API
-    const apiConnectionElement = document.getElementById('api-connection-status');
-    if (apiConnectionElement && portfolio.api_connection) {
-        apiConnectionElement.textContent = portfolio.api_connection;
-        apiConnectionElement.className = portfolio.api_connection === 'aktywne' ? 'status-online' : 'status-offline';
-    }
 
     // Aktualizacja tabeli aktywów
     const tableBody = document.getElementById('portfolio-assets');
@@ -671,12 +657,6 @@ function displayPortfolioData(portfolio) {
         `;
         tableBody.appendChild(row);
     });
-    
-    // Dodanie informacji o ostatniej aktualizacji
-    const lastUpdateElement = document.getElementById('portfolio-last-update');
-    if (lastUpdateElement) {
-        lastUpdateElement.textContent = `Ostatnia aktualizacja: ${portfolio.last_updated}`;
-    }
 }
 
 // Renderowanie wykresu alokacji portfela
