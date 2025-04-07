@@ -46,47 +46,37 @@ python main.py
 │   └── ...
 ├── logs/                  # Logi aplikacji
 ├── .env.example           # Przykładowy plik konfiguracyjny
-├── main.py                # Punkt wejścia aplikacji
+├── main.py                # Główny plik wykonawczy
 └── requirements.txt       # Zależności projektu
 ```
 
-## 🔧 Konfiguracja
+## ⚙️ Konfiguracja
 
-Kopia pliku `.env.example` do `.env` i dostosowanie zmiennych środowiskowych:
+1. Skopiuj plik `.env.example` do `.env`
+2. Uzupełnij wymagane klucze API i inne ustawienia:
+    - `BINANCE_API_KEY` - klucz API Binance
+    - `BINANCE_API_SECRET` - sekret API Binance
 
-```
-# API Keys
-BINANCE_API_KEY=your_binance_api_key_here
-BINANCE_API_SECRET=your_binance_api_secret_here
-
-# Trading parameters
-RISK_LEVEL=low
-MAX_POSITION_SIZE=0.1
-ENABLE_AUTO_TRADING=false
-```
-
-## 🧪 Testowanie
-
-Uruchomienie testów:
+## 🧪 Testy
 
 ```bash
-# Wszystkie testy
+# Uruchomienie testów
 pytest data/tests/
 
-# Testy z pokryciem kodu
+# Testy z raportowaniem pokrycia
 pytest --cov=. --cov-report=term-missing data/tests/
 ```
 
-## 🛠️ Narzędzia developerskie
+## 🔧 Narzędzia deweloperskie
 
 ```bash
 # Formatowanie kodu
 black .
 
-# Analiza statyczna
+# Sprawdzanie zgodności ze stylem
 flake8 .
 ```
 
 ## 📜 Licencja
 
-Ten projekt jest dostępny na licencji MIT.
+Ten projekt jest udostępniany na licencji MIT.

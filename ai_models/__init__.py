@@ -1,8 +1,8 @@
 
 """
-ai_models package - Pakiet zawierający modele uczenia maszynowego.
+ai_models - pakiet zawierający modele sztucznej inteligencji i uczenia maszynowego
 """
 
-from .anomaly_detection import AnomalyDetector, AnomalyDetectionModel
+from ai_models.anomaly_detection import AnomalyDetector
 
-__all__ = ['AnomalyDetector', 'AnomalyDetectionModel']
+__all__ = ["AnomalyDetector"]

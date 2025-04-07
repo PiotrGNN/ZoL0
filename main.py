@@ -42,7 +42,7 @@ def initialize_components():
         logger.info("Inicjalizacja komponentów systemu...")
 
         # Import modułu wykrywania anomalii
-        from ai_models.anomaly_detection import AnomalyDetector, AnomalyDetectionModel
+        from ai_models.anomaly_detection import AnomalyDetector
         anomaly_detector = AnomalyDetector(method="isolation_forest")
 
         # Tutaj można dodać inicjalizację innych komponentów

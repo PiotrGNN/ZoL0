@@ -1,39 +1,38 @@
 
-# Podstawowe biblioteki
+# Core data processing
 numpy>=1.20.0
 pandas>=1.3.0
-matplotlib>=3.4.0
-scikit-learn>=1.0.0
-
-# Analiza danych i przetwarzanie
 scipy>=1.7.0
-statsmodels>=0.13.0
-ta-lib==0.4.24
-yfinance>=0.1.67
 
-# Uczenie maszynowe
+# Machine Learning
+scikit-learn>=1.0.0
 xgboost>=1.5.0
-lightgbm>=3.3.0
 tensorflow>=2.8.0
 keras>=2.8.0
-optuna>=2.10.0
 
-# Narzędzia developerskie
+# Trading & Financial Analysis
+ta-lib>=0.4.24
+yfinance>=0.1.70
+ccxt>=1.60.0
+
+# Data visualization
+matplotlib>=3.5.0
+seaborn>=0.11.0
+plotly>=5.5.0
+
+# Testing & Quality Assurance
 pytest>=7.0.0
-black>=22.1.0
-flake8>=4.0.0
 pytest-cov>=3.0.0
+flake8>=4.0.0
+black>=22.1.0
 
-# Wizualizacja i notebooki
-jupyter>=1.0.0
-plotly>=5.6.0
-seaborn>=0.11.2
-
-# Logi i monitoring
-logging>=0.4.9
-
-# Inne narzędzia
-python-dotenv>=0.19.0
+# Web & API
 requests>=2.27.0
-beautifulsoup4>=4.10.0
-pyarrow>=7.0.0
+flask>=2.0.0
+fastapi>=0.75.0
+uvicorn>=0.17.0
+
+# Utilities
+python-dotenv>=0.19.0
+tqdm>=4.62.0
+joblib>=1.1.0
