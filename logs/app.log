@@ -2097,3 +2097,139 @@
 2025-04-07 14:40:54,419 [INFO] 172.31.128.12 - - [07/Apr/2025 14:40:54] "GET /api/alerts HTTP/1.1" 200 -
 2025-04-07 14:40:54,420 [INFO] 172.31.128.12 - - [07/Apr/2025 14:40:54] "GET /api/recent-trades HTTP/1.1" 200 -
 2025-04-07 14:40:54,421 [INFO] 172.31.128.12 - - [07/Apr/2025 14:40:54] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:40:59,434 [INFO] 172.31.128.12 - - [07/Apr/2025 14:40:59] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:40:59,435 [INFO] 172.31.128.12 - - [07/Apr/2025 14:40:59] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:40:59,436 [INFO] 172.31.128.12 - - [07/Apr/2025 14:40:59] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:40:59,437 [INFO] 172.31.128.12 - - [07/Apr/2025 14:40:59] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 14:40:59,438 [INFO] 172.31.128.12 - - [07/Apr/2025 14:40:59] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:40:59,439 [INFO] 172.31.128.12 - - [07/Apr/2025 14:40:59] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 14:41:04,411 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:04] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 14:41:04,415 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:04] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:41:04,416 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:04] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:41:04,419 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:04] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:41:04,419 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:04] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:41:09,416 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:09] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 14:41:09,422 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:09] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:41:09,423 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:09] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 14:41:09,479 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:09] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:41:09,481 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:09] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:41:09,484 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:09] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:41:14,430 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:14] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:41:14,431 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:14] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:41:14,433 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:14] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 14:41:14,434 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:14] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:41:14,436 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:14] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:41:19,426 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:19] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 14:41:19,428 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:19] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:41:19,429 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:19] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:41:19,431 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:19] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:41:19,434 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:19] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:41:19,437 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:19] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 14:41:19,565 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:19] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 14:41:24,419 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:24] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 14:41:24,421 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:24] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:41:24,424 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:24] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:41:24,429 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:24] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:41:24,431 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:24] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:41:29,425 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:29] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 14:41:29,435 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:29] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:41:29,440 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:29] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:41:29,441 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:29] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:41:29,489 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:29] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:41:29,517 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:29] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 14:41:33,789 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:41:33,795 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:33] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 14:41:33,799 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:33] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 14:41:33,800 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:41:33,811 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:41:33,838 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:41:33,940 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 14:41:33,947 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:33] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 14:41:33,957 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:41:33,962 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:41:33,964 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:33] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 14:41:34,017 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:34] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:41:34,108 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:34] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:41:34,110 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:34] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 14:41:34,420 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 14:41:34,433 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:34] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:41:34,434 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:34] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:41:34,441 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:34] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:41:34,443 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:34] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:41:39,416 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:39] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:41:39,417 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:39] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:41:39,417 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:39] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 14:41:39,419 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:39] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 14:41:39,424 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:39] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:41:39,422 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:39] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:41:44,425 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:44] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:41:44,433 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:44] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:41:44,438 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:44] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 14:41:44,441 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:44] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:41:44,484 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:44] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:41:49,420 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:49] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:41:49,423 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:49] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:41:49,431 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:49] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 14:41:49,433 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:49] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:41:49,439 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:49] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:41:49,444 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:49] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 14:41:54,454 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:54] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 14:41:54,456 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:54] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:41:54,473 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:54] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:41:54,475 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:54] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:41:54,485 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:54] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:41:59,423 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:59] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 14:41:59,424 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:59] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:41:59,465 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:59] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:41:59,479 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:59] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:41:59,481 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:59] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 14:41:59,484 [INFO] 172.31.128.12 - - [07/Apr/2025 14:41:59] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:42:04,419 [INFO] 172.31.128.12 - - [07/Apr/2025 14:42:04] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 14:42:04,422 [INFO] 172.31.128.12 - - [07/Apr/2025 14:42:04] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:42:04,428 [INFO] 172.31.128.12 - - [07/Apr/2025 14:42:04] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:42:04,432 [INFO] 172.31.128.12 - - [07/Apr/2025 14:42:04] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:42:04,433 [INFO] 172.31.128.12 - - [07/Apr/2025 14:42:04] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:42:09,428 [INFO] 172.31.128.12 - - [07/Apr/2025 14:42:09] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 14:42:09,434 [INFO] 172.31.128.12 - - [07/Apr/2025 14:42:09] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:42:09,464 [INFO] 172.31.128.12 - - [07/Apr/2025 14:42:09] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:42:09,473 [INFO] 172.31.128.12 - - [07/Apr/2025 14:42:09] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:42:09,481 [INFO] 172.31.128.12 - - [07/Apr/2025 14:42:09] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:42:09,495 [INFO] 172.31.128.12 - - [07/Apr/2025 14:42:09] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 14:42:14,421 [INFO] 172.31.128.12 - - [07/Apr/2025 14:42:14] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:42:14,432 [INFO] 172.31.128.12 - - [07/Apr/2025 14:42:14] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:42:14,436 [INFO] 172.31.128.12 - - [07/Apr/2025 14:42:14] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 14:42:14,442 [INFO] 172.31.128.12 - - [07/Apr/2025 14:42:14] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:42:14,444 [INFO] 172.31.128.12 - - [07/Apr/2025 14:42:14] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:42:19,419 [INFO] 172.31.128.12 - - [07/Apr/2025 14:42:19] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 14:42:19,420 [INFO] 172.31.128.12 - - [07/Apr/2025 14:42:19] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:42:19,422 [INFO] 172.31.128.12 - - [07/Apr/2025 14:42:19] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:42:19,425 [INFO] 172.31.128.12 - - [07/Apr/2025 14:42:19] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:42:19,428 [INFO] 172.31.128.12 - - [07/Apr/2025 14:42:19] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:42:19,433 [INFO] 172.31.128.12 - - [07/Apr/2025 14:42:19] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 14:42:19,581 [INFO] 172.31.128.12 - - [07/Apr/2025 14:42:19] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 14:42:23,234 [INFO]  * Detected change in '/home/runner/workspace/data/indicators/sentiment_analysis.py', reloading
+2025-04-07 14:42:23,775 [INFO]  * Restarting with stat
+2025-04-07 14:42:28,547 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 14:42:28,571 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 14:42:28,571 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 14:42:28,571 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 14:42:28,572 [WARNING] Biblioteka NLTK nie jest dostępna. Używam symulowanych danych sentymentu.
+2025-04-07 14:42:28,572 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 14:42:28,572 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 14:42:28,572 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 14:42:28,572 [INFO] Klient API ByBit zainicjalizowany pomyślnie
+2025-04-07 14:42:28,572 [INFO] System zainicjalizowany poprawnie
+2025-04-07 14:42:28,613 [WARNING]  * Debugger is active!
+2025-04-07 14:42:28,826 [INFO]  * Debugger PIN: 573-404-555
+2025-04-07 14:43:33,840 [INFO] 172.31.128.12 - - [07/Apr/2025 14:43:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:43:33,840 [INFO] 172.31.128.12 - - [07/Apr/2025 14:43:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:43:33,841 [INFO] 172.31.128.12 - - [07/Apr/2025 14:43:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 14:43:33,841 [INFO] 172.31.128.12 - - [07/Apr/2025 14:43:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:43:33,978 [INFO] 172.31.128.12 - - [07/Apr/2025 14:43:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 14:43:33,979 [INFO] 172.31.128.12 - - [07/Apr/2025 14:43:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 14:43:33,980 [INFO] 172.31.128.12 - - [07/Apr/2025 14:43:33] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-07 14:43:34,079 [INFO] 172.31.128.12 - - [07/Apr/2025 14:43:34] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-07 14:43:34,112 [INFO] 172.31.128.12 - - [07/Apr/2025 14:43:34] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 14:43:34,113 [INFO] 172.31.128.12 - - [07/Apr/2025 14:43:34] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 14:43:34,114 [INFO] 172.31.128.12 - - [07/Apr/2025 14:43:34] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 14:43:34,211 [INFO] 172.31.128.12 - - [07/Apr/2025 14:43:34] "GET /api/component-status HTTP/1.1" 200 -
