@@ -38,14 +38,7 @@ deploymentTarget = "cloudrun"
 
 [server]
 host = "0.0.0.0"
-port = 5000
-
-[port]
-5000 = "http"
-
-[[ports]]
-localPort = 5000
-externalPort = 80
+port = 0  # Automatyczny wybór portu
 
 [workflows]
 runButton = "Run"
@@ -66,7 +59,7 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "bash -c \"python run_server.py\""
+args = "python run_server.py"
 
 [[workflows.workflow]]
 name = "Init Project"

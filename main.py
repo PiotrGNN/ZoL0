@@ -631,7 +631,7 @@ if __name__ == "__main__":
             f.write("BYBIT_USE_TESTNET=true\n")
         logging.info("Utworzono plik .env z domyślnymi ustawieniami")
 
-    # Uruchomienie aplikacji - zawsze używamy 0.0.0.0 i portu 5000 w Replit
-    port = int(os.environ.get("PORT", 5000))
-    logging.info(f"Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie {port}")
+    # Uruchomienie aplikacji - używamy automatycznego wyboru portu
+    port = int(os.environ.get("PORT", 0))  # Port 0 oznacza, że system znajdzie wolny port
+    logging.info(f"Uruchamianie aplikacji Flask - system wybierze wolny port")
     app.run(host='0.0.0.0', port=port, debug=True)
