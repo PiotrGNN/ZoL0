@@ -1,0 +1,31 @@
+2025-04-07 19:31:09,158 [WARNING] Pomijam podpakiet 'execution' z powodu błędu: Nie udało się zaimportować modułu 'bybit_connector' z pakietu 'data.execution'.
+2025-04-07 19:31:09,898 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/__init__.py", line 31, in _import_all_modules_from_directory
+    module = importlib.import_module(f".{module_name}", package=package)
+  File "/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 879, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1017, in get_code
+  File "<frozen importlib._bootstrap_external>", line 947, in source_to_code
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 268
+    if self.use_testnet:
+IndentationError: expected an indented block after 'try' statement on line 265
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/main.py", line 38, in <module>
+    from data.execution.bybit_connector import BybitConnector
+  File "/home/runner/workspace/data/execution/__init__.py", line 75, in <module>
+    _import_all(_current_dir, __name__)
+  File "/home/runner/workspace/data/execution/__init__.py", line 70, in _import_all
+    _import_all_modules_from_directory(directory, package)
+  File "/home/runner/workspace/data/execution/__init__.py", line 33, in _import_all_modules_from_directory
+    raise ImportError(
+ImportError: Nie udało się zaimportować modułu 'bybit_connector' z pakietu 'data.execution'.

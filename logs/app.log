@@ -31795,3 +31795,349 @@ Request → GET https://api.bybit.com/spot/v1/time: {}.
 2025-04-07 19:28:53,218 [INFO] 172.31.128.72 - - [07/Apr/2025 19:28:53] "GET /api/ai-models-status HTTP/1.1" 200 -
 2025-04-07 19:28:53,220 [INFO] 172.31.128.72 - - [07/Apr/2025 19:28:53] "GET /api/recent-trades HTTP/1.1" 200 -
 2025-04-07 19:28:54,848 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:28:58,356 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:28:58,377 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:28:58,377 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:28:58,378 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:28:58,378 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:28:58,378 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:28:58,378 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:28:58,378 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:28:58,378 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:28:58,424 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 19:28:58,521 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:28:58).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 19:28:58,522 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 19:28:58,522 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:28:58,523 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744054138522, 'time': '2025-04-07 19:28:58'}
+2025-04-07 19:28:58,523 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:28:58,523 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:28:58,552 [WARNING]  * Debugger is active!
+2025-04-07 19:28:58,557 [INFO]  * Debugger PIN: 480-795-222
+2025-04-07 19:29:00,273 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:00] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 19:29:00,334 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:00] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:29:00,414 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:00] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:29:00,415 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:00] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:29:00,419 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:00] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:29:00,423 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:29:00,423 [INFO] Status API: Produkcyjne
+2025-04-07 19:29:00,428 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:00] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:29:00,437 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:00).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 19:29:00,438 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:00).
+Request → GET https://api.bybit.com/spot/v1/time: {}.. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 284, in get_account_balance
+    time_response = self.client.server_time()
+  File "/home/runner/workspace/.pythonlibs/lib/python3.10/site-packages/pybit/spot.py", line 382, in server_time
+    return self._submit_request(
+  File "/home/runner/workspace/.pythonlibs/lib/python3.10/site-packages/pybit/_http_manager.py", line 306, in _submit_request
+    raise FailedRequestError(
+pybit.exceptions.FailedRequestError: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:00).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 295, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:00).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+
+2025-04-07 19:29:00,439 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:00] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:29:00,441 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:29:00,441 [INFO]  * Detected change in '/home/runner/workspace/.pythonlibs/lib/python3.10/site-packages/pybit/spot.py', reloading
+2025-04-07 19:29:00,441 [INFO]  * Detected change in '/home/runner/workspace/.pythonlibs/lib/python3.10/site-packages/pybit/_http_manager.py', reloading
+2025-04-07 19:29:01,842 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:29:04,873 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:29:04,893 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:29:04,893 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:29:04,893 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:29:04,894 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:29:04,894 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:29:04,894 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:29:04,894 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:29:04,894 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:29:04,937 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 19:29:05,015 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:05).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 19:29:05,016 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 19:29:05,016 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:29:05,016 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744054145016, 'time': '2025-04-07 19:29:05'}
+2025-04-07 19:29:05,016 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:29:05,016 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:29:05,042 [WARNING]  * Debugger is active!
+2025-04-07 19:29:05,045 [INFO]  * Debugger PIN: 654-483-245
+2025-04-07 19:29:08,744 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:29:09,403 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:29:12,290 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:29:12,306 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:29:12,306 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:29:12,306 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:29:12,306 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:29:12,306 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:29:12,306 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:29:12,307 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:29:12,307 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:29:12,356 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 19:29:12,420 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:12).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 19:29:12,420 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 19:29:12,420 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:29:12,420 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744054152420, 'time': '2025-04-07 19:29:12'}
+2025-04-07 19:29:12,421 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:29:12,421 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:29:12,438 [WARNING]  * Debugger is active!
+2025-04-07 19:29:12,441 [INFO]  * Debugger PIN: 102-646-832
+2025-04-07 19:29:13,694 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:29:13,697 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:13] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:29:13,698 [INFO] Status API: Produkcyjne
+2025-04-07 19:29:13,700 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:13] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:29:13,703 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:13] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:29:13,706 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:13] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:29:13,708 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:13] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:29:13,715 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:13).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 19:29:13,721 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:13).
+Request → GET https://api.bybit.com/spot/v1/time: {}.. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 284, in get_account_balance
+    time_response = self.client.server_time()
+  File "/home/runner/workspace/.pythonlibs/lib/python3.10/site-packages/pybit/spot.py", line 382, in server_time
+    return self._submit_request(
+  File "/home/runner/workspace/.pythonlibs/lib/python3.10/site-packages/pybit/_http_manager.py", line 306, in _submit_request
+    raise FailedRequestError(
+pybit.exceptions.FailedRequestError: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:13).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 295, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:13).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+
+2025-04-07 19:29:13,721 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:13] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:29:13,727 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:29:13,735 [INFO]  * Detected change in '/home/runner/workspace/.pythonlibs/lib/python3.10/site-packages/pybit/spot.py', reloading
+2025-04-07 19:29:13,735 [INFO]  * Detected change in '/home/runner/workspace/.pythonlibs/lib/python3.10/site-packages/pybit/_http_manager.py', reloading
+2025-04-07 19:29:13,833 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:13] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 19:29:15,224 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:29:17,812 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:29:17,825 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:29:17,825 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:29:17,825 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:29:17,825 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:29:17,826 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:29:17,826 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:29:17,826 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:29:17,826 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:29:17,876 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 19:29:17,943 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:17).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 19:29:17,943 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 19:29:17,943 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:29:17,943 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744054157943, 'time': '2025-04-07 19:29:17'}
+2025-04-07 19:29:17,944 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:29:17,944 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:29:17,962 [WARNING]  * Debugger is active!
+2025-04-07 19:29:17,966 [INFO]  * Debugger PIN: 675-296-493
+2025-04-07 19:29:20,333 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:20] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:29:20,334 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:29:20,339 [INFO] Status API: Produkcyjne
+2025-04-07 19:29:20,343 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:20] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:29:20,357 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:20] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:29:20,355 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:20).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 19:29:20,367 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:20).
+Request → GET https://api.bybit.com/spot/v1/time: {}.. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 284, in get_account_balance
+    time_response = self.client.server_time()
+  File "/home/runner/workspace/.pythonlibs/lib/python3.10/site-packages/pybit/spot.py", line 382, in server_time
+    return self._submit_request(
+  File "/home/runner/workspace/.pythonlibs/lib/python3.10/site-packages/pybit/_http_manager.py", line 306, in _submit_request
+    raise FailedRequestError(
+pybit.exceptions.FailedRequestError: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:20).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 295, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:20).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+
+2025-04-07 19:29:20,368 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:20] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:29:20,378 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:20] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:29:20,380 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:20] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:29:20,381 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:29:20,391 [INFO]  * Detected change in '/home/runner/workspace/.pythonlibs/lib/python3.10/site-packages/pybit/spot.py', reloading
+2025-04-07 19:29:20,392 [INFO]  * Detected change in '/home/runner/workspace/.pythonlibs/lib/python3.10/site-packages/pybit/_http_manager.py', reloading
+2025-04-07 19:29:21,181 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:29:25,534 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:29:25,569 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:29:25,570 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:29:25,570 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:29:25,570 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:29:25,571 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:29:25,571 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:29:25,571 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:29:25,571 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:29:25,637 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 19:29:25,728 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:25).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 19:29:25,730 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 19:29:25,731 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:29:25,735 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744054165734, 'time': '2025-04-07 19:29:25'}
+2025-04-07 19:29:25,736 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:29:25,737 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:29:25,781 [WARNING]  * Debugger is active!
+2025-04-07 19:29:25,813 [INFO]  * Debugger PIN: 107-274-115
+2025-04-07 19:29:29,155 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:29] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 19:29:30,329 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:30] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:29:30,330 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:29:30,335 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:30] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:29:30,333 [INFO] Status API: Produkcyjne
+2025-04-07 19:29:30,341 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:30] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:29:30,342 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:30] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:29:30,344 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:30] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:29:30,349 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:30).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 19:29:30,350 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:30).
+Request → GET https://api.bybit.com/spot/v1/time: {}.. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 284, in get_account_balance
+    time_response = self.client.server_time()
+  File "/home/runner/workspace/.pythonlibs/lib/python3.10/site-packages/pybit/spot.py", line 382, in server_time
+    return self._submit_request(
+  File "/home/runner/workspace/.pythonlibs/lib/python3.10/site-packages/pybit/_http_manager.py", line 306, in _submit_request
+    raise FailedRequestError(
+pybit.exceptions.FailedRequestError: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:30).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 295, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:30).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+
+2025-04-07 19:29:30,350 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:30] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:29:30,353 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:29:30,353 [INFO]  * Detected change in '/home/runner/workspace/.pythonlibs/lib/python3.10/site-packages/pybit/spot.py', reloading
+2025-04-07 19:29:30,354 [INFO]  * Detected change in '/home/runner/workspace/.pythonlibs/lib/python3.10/site-packages/pybit/_http_manager.py', reloading
+2025-04-07 19:29:31,869 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:29:34,967 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:29:34,986 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:29:34,986 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:29:34,986 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:29:34,987 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:29:34,987 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:29:34,987 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:29:34,987 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:29:34,987 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:29:35,040 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 19:29:35,119 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 19:29:35,119 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 19:29:35,120 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:29:35,120 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744054175120, 'time': '2025-04-07 19:29:35'}
+2025-04-07 19:29:35,121 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:29:35,121 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:29:35,147 [WARNING]  * Debugger is active!
+2025-04-07 19:29:35,150 [INFO]  * Debugger PIN: 640-925-102
+2025-04-07 19:29:36,588 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:36] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:29:36,600 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:36] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:29:36,602 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:36] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:29:36,606 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:29:36,610 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:36] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:29:36,612 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:36] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 19:29:36,612 [INFO] Status API: Produkcyjne
+2025-04-07 19:29:36,630 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:36).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 19:29:36,633 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:29:36,636 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:36).
+Request → GET https://api.bybit.com/spot/v1/time: {}.. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 284, in get_account_balance
+    time_response = self.client.server_time()
+  File "/home/runner/workspace/.pythonlibs/lib/python3.10/site-packages/pybit/spot.py", line 382, in server_time
+    return self._submit_request(
+  File "/home/runner/workspace/.pythonlibs/lib/python3.10/site-packages/pybit/_http_manager.py", line 306, in _submit_request
+    raise FailedRequestError(
+pybit.exceptions.FailedRequestError: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:36).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 295, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:36).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+
+2025-04-07 19:29:36,637 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:36] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:29:36,638 [INFO]  * Detected change in '/home/runner/workspace/.pythonlibs/lib/python3.10/site-packages/pybit/spot.py', reloading
+2025-04-07 19:29:36,640 [INFO]  * Detected change in '/home/runner/workspace/.pythonlibs/lib/python3.10/site-packages/pybit/_http_manager.py', reloading
+2025-04-07 19:29:36,730 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:36] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:29:36,741 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:36] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 19:29:38,174 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:29:40,933 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:29:40,952 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:29:40,952 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:29:40,953 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:29:40,953 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:29:40,954 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:29:40,954 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:29:40,954 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:29:40,954 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:29:41,011 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 19:29:41,075 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:41).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 19:29:41,076 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 19:29:41,076 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:29:41,076 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744054181076, 'time': '2025-04-07 19:29:41'}
+2025-04-07 19:29:41,076 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:29:41,076 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:29:41,091 [WARNING]  * Debugger is active!
+2025-04-07 19:29:41,095 [INFO]  * Debugger PIN: 977-808-794
+2025-04-07 19:29:42,551 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:29:42,555 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:42] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:29:42,555 [INFO] Status API: Produkcyjne
+2025-04-07 19:29:42,558 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:42] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:29:42,566 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:42] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:29:42,570 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:42] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:29:42,572 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:42] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:29:42,587 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:42).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 19:29:42,673 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:42).
+Request → GET https://api.bybit.com/spot/v1/time: {}.. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 284, in get_account_balance
+    time_response = self.client.server_time()
+  File "/home/runner/workspace/.pythonlibs/lib/python3.10/site-packages/pybit/spot.py", line 382, in server_time
+    return self._submit_request(
+  File "/home/runner/workspace/.pythonlibs/lib/python3.10/site-packages/pybit/_http_manager.py", line 306, in _submit_request
+    raise FailedRequestError(
+pybit.exceptions.FailedRequestError: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:42).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 295, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:29:42).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+
+2025-04-07 19:29:42,674 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:42] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:29:42,676 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:29:42,676 [INFO]  * Detected change in '/home/runner/workspace/.pythonlibs/lib/python3.10/site-packages/pybit/spot.py', reloading
+2025-04-07 19:29:42,676 [INFO]  * Detected change in '/home/runner/workspace/.pythonlibs/lib/python3.10/site-packages/pybit/_http_manager.py', reloading
+2025-04-07 19:29:42,703 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:42] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 19:29:42,707 [INFO] 172.31.128.72 - - [07/Apr/2025 19:29:42] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 19:29:42,885 [INFO]  * Detected change in '/home/runner/workspace/data/execution/.bybit_connector.py.465337486~', reloading
+2025-04-07 19:29:42,891 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:29:44,252 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:29:46,839 [WARNING] Pomijam podpakiet 'execution' z powodu błędu: Nie udało się zaimportować modułu 'bybit_connector' z pakietu 'data.execution'.
+2025-04-07 19:29:47,807 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:31:09,158 [WARNING] Pomijam podpakiet 'execution' z powodu błędu: Nie udało się zaimportować modułu 'bybit_connector' z pakietu 'data.execution'.
+2025-04-07 19:31:09,898 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
