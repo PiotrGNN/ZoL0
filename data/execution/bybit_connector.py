@@ -803,15 +803,20 @@ class BybitConnector:
 # Przykład użycia
 if __name__ == "__main__":
     import os
-    #from dotenv import load_dotenv #Commented out to avoid pip dependency conflict
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+    except ImportError:
+        print("Moduł dotenv nie jest zainstalowany. Używam zmiennych systemowych.")
 
-    # Ładujemy zmienne środowiskowe -  Zastąp to odpowiednią metodą ładowania zmiennych środowiskowych dla Replit/Nix
+    # Ładujemy zmienne środowiskowe
     api_key = os.getenv("BYBIT_API_KEY")
     api_secret = os.getenv("BYBIT_API_SECRET")
     use_testnet = os.getenv("TEST_MODE", "true").lower() in ["true", "1", "t"]
 
     # Sprawdzamy, czy moduł requests jest dostępny
-    simulation_mode = requests is None
+    import sys
+    simulation_mode = 'requests' not in sys.modules
 
     # Inicjalizujemy konektor
     bybit = BybitConnector(

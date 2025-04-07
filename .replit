@@ -35,7 +35,7 @@ localPort = 5000
 externalPort = 80
 
 [workflows]
-runButton = "Fix and Run"
+runButton = "Run AI Trading System"
 
 [[workflows.workflow]]
 name = "Run"
@@ -51,7 +51,7 @@ task = "shell.exec"
 args = "python main.py"
 
 [[workflows.workflow]]
-name = "Fix and Run"
+name = "Run AI Trading System"
 author = 31819671
 mode = "sequential"
 
