@@ -4,255 +4,360 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trading Bot - Dashboard</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="/static/css/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-<div class="container">
-        <div class="header">
-            <div class="header-content">
-                <div class="logo">
-                    <i class="fas fa-robot"></i>
-                    <span>Trading Bot System</span>
+    <div class="container">
+        <header class="header">
+            <h1>Trading Bot Dashboard</h1>
+            <div class="header-buttons">
+                <button id="start-trading-btn" class="btn btn-success">Start Trading</button>
+                <button id="stop-trading-btn" class="btn btn-danger">Stop Trading</button>
+                <button id="reset-system-btn" class="btn btn-warning">Reset System</button>
+            </div>
+        </header>
+
+        <!-- Obszar dla komunikatów o błędach -->
+        <div id="error-container" style="display: none;"></div>
+
+        <!-- Nawigacja tabów -->
+        <div class="tab-navigation">
+            <button class="tab-button active" data-tab="dashboard-tab">Dashboard</button>
+            <button class="tab-button" data-tab="trades-tab">Transakcje</button>
+            <button class="tab-button" data-tab="analytics-tab">Analityka</button>
+            <button class="tab-button" data-tab="settings-tab">Ustawienia</button>
+            <button class="tab-button" data-tab="notifications-tab">
+                Powiadomienia
+                <span id="notifications-badge" class="alert-badge" style="display: none;">0</span>
+            </button>
+        </div>
+
+        <!-- Główny dashboard -->
+        <div id="dashboard-tab" class="tab-content" style="display: block;">
+            <div class="dashboard-grid">
+                <!-- Status komponentów -->
+                <div class="card">
+                    <h2>Status Komponentów</h2>
+                    <div class="component-status">
+                        <div id="api-connector" class="status-item status-online">
+                            <div class="status-name">API Connector</div>
+                            <div class="status-text">Online</div>
+                        </div>
+                        <div id="data-processor" class="status-item status-online">
+                            <div class="status-name">Data Processor</div>
+                            <div class="status-text">Online</div>
+                        </div>
+                        <div id="trading-engine" class="status-item status-warning">
+                            <div class="status-name">Trading Engine</div>
+                            <div class="status-text">Warning</div>
+                        </div>
+                        <div id="risk-manager" class="status-item status-online">
+                            <div class="status-name">Risk Manager</div>
+                            <div class="status-text">Online</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="status-pill">{{ system_mode }}</div>
-            </div>
-        </div>
 
-        <div class="summary-stats">
-            <div class="stat-card">
-                <div class="label">Tryb Systemu</div>
-                <div class="value">{{ system_mode }}</div>
-            </div>
-            <div class="stat-card">
-                <div class="label">Aktywne Strategie</div>
-                <div class="value">{{ active_strategies }}</div>
-            </div>
-            <div class="stat-card">
-                <div class="label">Poziom Ryzyka</div>
-                <div class="value">{{ risk_level }}</div>
-            </div>
-            <div class="stat-card">
-                <div class="label">Saldo Portfela</div>
-                <div class="value">1,000 USDT</div>
-            </div>
-        </div>
+                <!-- Wykres główny -->
+                <div class="card">
+                    <h2>Performance</h2>
+                    <div class="chart-container">
+                        <canvas id="main-chart"></canvas>
+                    </div>
+                </div>
 
-        <div class="dashboard-grid">
-            <div class="card grid-2">
-                <h2><i class="fas fa-chart-line"></i> Aktywność Systemu</h2>
-                <div class="chart-container">
-                    <canvas id="activityChart"></canvas>
-                    <div id="chartError" class="error-message" style="display: none;">
-                        Nie można załadować danych wykresu
+                <!-- Statystyki -->
+                <div class="card">
+                    <h2>Trading Stats</h2>
+                    <div class="summary-stats">
+                        <div class="stat-card">
+                            <div class="label">Total Profit</div>
+                            <div id="profit-value" class="value">$0.00</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="label">Total Trades</div>
+                            <div id="trades-value" class="value">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="label">Win Rate</div>
+                            <div id="win-rate-value" class="value">0%</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="label">Max Drawdown</div>
+                            <div id="drawdown-value" class="value">0%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status modeli AI -->
+                <div id="ai-models-section" class="card">
+                    <h2>Modele AI</h2>
+                    <div id="ai-models-container" class="ai-models-grid">
+                        {% for model in ai_models %}
+                        <div class="ai-model-card">
+                            <h4>{{ model.name }}</h4>
+                            <div class="model-details">
+                                <div>Typ: {{ model.type }}</div>
+                                <div>Dokładność: <span class="{% if model.accuracy >= 70 %}positive{% elif model.accuracy >= 50 %}neutral{% else %}negative{% endif %}">{{ model.accuracy }}%</span></div>
+                                <div>Status: <span class="status-{{ model.status|lower }}">{{ model.status }}</span></div>
+                                <div>Ostatnie użycie: {{ model.last_used }}</div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Ostatnie transakcje -->
+                <div class="card">
+                    <h2>Recent Trades</h2>
+                    <div id="recent-trades-list" class="activity-log">
+                        {% if trades %}
+                            {% for trade in trades %}
+                            <div class="trade-item">
+                                <div class="trade-symbol">{{ trade.symbol }}</div>
+                                <div class="trade-type">{{ trade.type }}</div>
+                                <div class="trade-time">{{ trade.time }}</div>
+                                <div class="trade-profit {% if trade.profit >= 0 %}positive{% else %}negative{% endif %}">
+                                    {{ trade.profit|string|first if trade.profit < 0 else '+' }}{{ trade.profit }}%
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="no-data">Brak transakcji</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Alerty -->
+                <div class="card">
+                    <h2>Alerts <span id="alerts-badge" class="alert-badge">{{ alerts|length if alerts else 0 }}</span></h2>
+                    <div id="alerts-list" class="activity-log">
+                        {% if alerts %}
+                            {% for alert in alerts %}
+                            <div class="alert-item status-{{ alert.level_class }}">
+                                <div class="alert-time">{{ alert.time }}</div>
+                                <div class="alert-message">{{ alert.message }}</div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="no-data">Brak alertów</div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
-
-            <div class="card">
-            <h2><i class="fas fa-wallet"></i> Portfolio</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Aktywo</th>
-                        <th>Ilość</th>
-                        <th>Wartość</th>
-                        <th>Zmiana 24h</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for asset in portfolio %}
-                    <tr>
-                        <td>{{ asset.symbol }}</td>
-                        <td>{{ asset.amount }}</td>
-                        <td>{{ asset.value }} USDT</td>
-                        <td class="{{ asset.change_class }}">{{ asset.change }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
         </div>
 
-            <div class="card">
-                <h2><i class="fas fa-cogs"></i> Status Komponentów</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Komponent</th>
-                            <th>Status</th>
-                            <th>Ostatnia Aktualizacja</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for component in components %}
-                        <tr>
-                            <td>{{ component.name }}</td>
-                            <td>
-                                <span class="status status-{{ component.status_class }}">
-                                    {{ component.status }}
-                                </span>
-                            </td>
-                            <td>{{ component.last_update }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="card">
-                <h2><i class="fas fa-robot"></i> Status Modeli AI</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Model</th>
-                            <th>Status</th>
-                            <th>Dokładność</th>
-                            <th>Ostatnie Użycie</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for model in ai_models %}
-                        <tr>
-                            <td>{{ model.name }}</td>
-                            <td>
-                                <span class="status status-{{ model.status_class }}">
-                                    {{ model.status }}
-                                </span>
-                            </td>
-                            <td>{{ model.accuracy }}</td>
-                            <td>{{ model.last_used }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="card">
-                <h2><i class="fas fa-exclamation-triangle"></i> Wykryte Anomalie</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Para</th>
-                            <th>Poziom</th>
-                            <th>Opis</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for anomaly in anomalies %}
-                        <tr>
-                            <td>{{ anomaly.date }}</td>
-                            <td>{{ anomaly.pair }}</td>
-                            <td>{{ anomaly.level }}</td>
-                            <td>{{ anomaly.description }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="card">
-                <h2><i class="fas fa-history"></i> Działania Systemu</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Czas</th>
-                            <th>Typ</th>
-                            <th>Opis</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for action in system_actions %}
-                        <tr>
-                            <td>{{ action.time }}</td>
-                            <td>{{ action.type }}</td>
-                            <td>{{ action.description }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="card">
-                <h2><i class="fas fa-comment-dots"></i> Analiza Sentymentu</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Źródło</th>
-                            <th>Sentyment</th>
-                            <th>Wolumen</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Twitter</td>
-                            <td><span class="status status-online">Pozytywny</span></td>
-                            <td>1250 postów</td>
-                        </tr>
-                        <tr>
-                            <td>Reddit</td>
-                            <td><span class="status status-warning">Neutralny</span></td>
-                            <td>850 postów</td>
-                        </tr>
-                        <tr>
-                            <td>News</td>
-                            <td><span class="status status-offline">Negatywny</span></td>
-                            <td>120 artykułów</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="card">
-                <h2><i class="fas fa-bullseye"></i> Strategia Trading</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nazwa</th>
-                            <th>Status</th>
-                            <th>Wydajność</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Trend Following</td>
-                            <td><span class="status status-online">Aktywna</span></td>
-                            <td>+3.5%</td>
-                        </tr>
-                        <tr>
-                            <td>Mean Reversion</td>
-                            <td><span class="status status-warning">Testowana</span></td>
-                            <td>+2.1%</td>
-                        </tr>
-                        <tr>
-                            <td>Breakout Strategy</td>
-                            <td><span class="status status-offline">Nieaktywna</span></td>
-                            <td>-0.8%</td>
-                        </tr>
-                    </tbody>
-                </table>
+        <!-- Transakcje -->
+        <div id="trades-tab" class="tab-content">
+            <div class="card full-width">
+                <h2>Historia Transakcji</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Data</th>
+                                <th>Symbol</th>
+                                <th>Typ</th>
+                                <th>Cena</th>
+                                <th>Ilość</th>
+                                <th>Wartość</th>
+                                <th>Profit</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trades-table-body">
+                            <tr>
+                                <td colspan="9" class="no-data">Ładowanie danych...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
-        <div class="action-buttons">
-            <button id="startSimulationBtn" class="btn btn-primary">
-                <i class="fas fa-play"></i> Uruchom Symulację
-            </button>
-            <button id="downloadReportBtn" class="btn btn-warning">
-                <i class="fas fa-download"></i> Pobierz Raport
-            </button>
-            <button id="refreshDataBtn" class="btn btn-success">
-                <i class="fas fa-sync"></i> Odśwież Dane
-            </button>
-            <button class="btn btn-danger">
-                <i class="fas fa-stop"></i> Zatrzymaj System
-            </button>
+        <!-- Analityka -->
+        <div id="analytics-tab" class="tab-content">
+            <div class="analytics-grid">
+                <!-- Analiza sentymentu -->
+                <div class="card">
+                    <h2>Analiza Sentymentu</h2>
+                    <div id="sentiment-container">
+                        {% if sentiment_data %}
+                            <div class="sentiment-score">
+                                <div class="sentiment-label">Ogólny sentyment:</div>
+                                <div class="sentiment-value 
+                                    {% if sentiment_data.overall_score > 0.1 %}positive
+                                    {% elif sentiment_data.overall_score < -0.1 %}negative
+                                    {% else %}neutral{% endif %}">
+                                    {{ sentiment_data.analysis }}
+                                </div>
+                            </div>
+
+                            <div class="sentiment-details">
+                                <h4>Źródła danych:</h4>
+                                <ul>
+                                    {% for source, data in sentiment_data.sources.items() %}
+                                    <li>
+                                        <strong>{{ source }}</strong>: 
+                                        <span class="{% if data.score > 0.1 %}positive{% elif data.score < -0.1 %}negative{% else %}neutral{% endif %}">
+                                            {{ data.score|round(2) }}
+                                        </span>
+                                        ({{ data.volume }} wzmianek)
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+
+                            <div class="sentiment-footer">
+                                <div>Zakres czasowy: {{ sentiment_data.timeframe }}</div>
+                                <div>Ostatnia aktualizacja: {{ sentiment_data.timestamp }}</div>
+                            </div>
+                        {% else %}
+                            <div class="no-data">Brak danych o sentymencie rynkowym</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Detekcja anomalii -->
+                <div class="card">
+                    <h2>Detekcja Anomalii</h2>
+                    <div id="anomalies-container">
+                        {% if anomalies and anomalies|length > 0 %}
+                            <div class="anomalies-summary">
+                                <div class="anomaly-count">Wykryte anomalie: <strong>{{ anomalies|length }}</strong></div>
+                                <div class="anomaly-severity">
+                                    Poziom zagrożenia: 
+                                    <span class="
+                                        {% if anomalies|length > 3 %}status-offline
+                                        {% elif anomalies|length > 1 %}status-warning
+                                        {% else %}status-online{% endif %}">
+                                        {{ 'Wysoki' if anomalies|length > 3 else 'Średni' if anomalies|length > 1 else 'Niski' }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <ul class="anomalies-list">
+                                {% for anomaly in anomalies %}
+                                <li class="anomaly-item">
+                                    <div class="anomaly-time">{{ anomaly.timestamp }}</div>
+                                    <div class="anomaly-details">
+                                        <div class="anomaly-title">{{ anomaly.type }}</div>
+                                        <div class="anomaly-description">{{ anomaly.description }}</div>
+                                        <div class="anomaly-score">Score: {{ anomaly.score|round(2) }}</div>
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <div class="no-anomalies">
+                                <div class="status-online">Nie wykryto anomalii</div>
+                                <p>System monitoruje dane rynkowe i wykryje nietypowe zachowania.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="footer">
-            <p>Trading Bot System &copy; 2025 | Wersja 1.0.0 | Środowisko: Replit</p>
+        <!-- Ustawienia -->
+        <div id="settings-tab" class="tab-content">
+            <div class="settings-grid">
+                <!-- Ustawienia systemu -->
+                <div class="card">
+                    <h2>Ustawienia Systemu</h2>
+                    <form id="system-settings-form" class="settings-form">
+                        <div class="form-group">
+                            <label for="risk-level">Poziom Ryzyka:</label>
+                            <select id="risk-level" name="risk_level" class="form-control">
+                                <option value="low" {% if settings.risk_level == 'low' %}selected{% endif %}>Niski</option>
+                                <option value="medium" {% if settings.risk_level == 'medium' %}selected{% endif %}>Średni</option>
+                                <option value="high" {% if settings.risk_level == 'high' %}selected{% endif %}>Wysoki</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="max-position-size">Maksymalny rozmiar pozycji (%):</label>
+                            <input type="number" id="max-position-size" name="max_position_size" 
+                                   min="0.1" max="100" step="0.1" 
+                                   value="{{ settings.max_position_size|default(10, true) }}" 
+                                   class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="auto-trading">Automatyczny trading:</label>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="auto-trading" name="enable_auto_trading" 
+                                       {% if settings.enable_auto_trading %}checked{% endif %}>
+                                <label for="auto-trading"></label>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Zapisz ustawienia</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Strategie -->
+                <div class="card">
+                    <h2>Ustawienia Strategii</h2>
+                    <div id="strategies-container">
+                        {% if strategies %}
+                            <div class="strategies-list">
+                                {% for strategy in strategies %}
+                                <div class="strategy-item">
+                                    <div class="strategy-header">
+                                        <div class="strategy-name">{{ strategy.name }}</div>
+                                        <div class="strategy-toggle">
+                                            <input type="checkbox" id="strategy-{{ loop.index }}" 
+                                                   class="strategy-toggle-input" 
+                                                   data-strategy-id="{{ strategy.id }}"
+                                                   {% if strategy.enabled %}checked{% endif %}>
+                                            <label for="strategy-{{ loop.index }}"></label>
+                                        </div>
+                                    </div>
+                                    <div class="strategy-description">{{ strategy.description }}</div>
+                                    <div class="strategy-metrics">
+                                        <div class="strategy-metric">
+                                            <div class="metric-label">Win Rate:</div>
+                                            <div class="metric-value {% if strategy.win_rate >= 60 %}positive{% elif strategy.win_rate >= 45 %}neutral{% else %}negative{% endif %}">
+                                                {{ strategy.win_rate }}%
+                                            </div>
+                                        </div>
+                                        <div class="strategy-metric">
+                                            <div class="metric-label">Profit Factor:</div>
+                                            <div class="metric-value {% if strategy.profit_factor >= 1.5 %}positive{% elif strategy.profit_factor >= 1 %}neutral{% else %}negative{% endif %}">
+                                                {{ strategy.profit_factor }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="no-data">Brak dostępnych strategii</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <!-- Powiadomienia -->
+        <div id="notifications-tab" class="tab-content">
+            <div class="card full-width">
+                <h2>Powiadomienia</h2>
+                <div id="notifications-list" class="notifications-container">
+                    <div class="no-data">Ładowanie powiadomień...</div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div>Trading Bot System v1.0.0</div>
+            <div>© 2025 Trading Bot</div>
+        </footer>
     </div>
 
     <script src="/static/js/dashboard.js"></script>
