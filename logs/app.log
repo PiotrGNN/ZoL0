@@ -25521,3 +25521,7 @@ Original error was: No module named 'numpy.core._multiarray_umath'
 2025-04-07 19:08:54,290 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
 2025-04-07 19:08:54,291 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
 2025-04-07 19:08:54,884 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:09:56,891 [WARNING] Pomijam podpakiet 'execution' z powodu błędu: Nie udało się zaimportować modułu 'bybit_connector' z pakietu 'data.execution'.
+2025-04-07 19:09:59,561 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:10:22,028 [WARNING] Pomijam podpakiet 'execution' z powodu błędu: Nie udało się zaimportować modułu 'bybit_connector' z pakietu 'data.execution'.
+2025-04-07 19:10:25,774 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
