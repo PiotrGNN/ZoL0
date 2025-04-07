@@ -653,3 +653,96 @@
 2025-04-07 11:32:33,972 [INFO] 172.31.128.12 - - [07/Apr/2025 11:32:33] "GET /api/chart-data HTTP/1.1" 200 -
 2025-04-07 11:32:34,204 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
 2025-04-07 11:32:34,204 [INFO] 172.31.128.12 - - [07/Apr/2025 11:32:34] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:32:53,600 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:32:53,600 [INFO] 172.31.128.12 - - [07/Apr/2025 11:32:53] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:32:53,831 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:32:53,831 [INFO] 172.31.128.12 - - [07/Apr/2025 11:32:53] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:33:23,598 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:33:23,598 [INFO] 172.31.128.12 - - [07/Apr/2025 11:33:23] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:33:23,829 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:33:23,830 [INFO] 172.31.128.12 - - [07/Apr/2025 11:33:23] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:33:33,969 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:33:33,969 [INFO] 172.31.128.12 - - [07/Apr/2025 11:33:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:33:34,201 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:33:34,201 [INFO] 172.31.128.12 - - [07/Apr/2025 11:33:34] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:33:54,972 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:33:54,972 [INFO] 172.31.128.12 - - [07/Apr/2025 11:33:54] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:33:55,206 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:33:55,206 [INFO] 172.31.128.12 - - [07/Apr/2025 11:33:55] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:34:24,965 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:34:24,965 [INFO] 172.31.128.12 - - [07/Apr/2025 11:34:24] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:34:25,210 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:34:25,211 [INFO] 172.31.128.12 - - [07/Apr/2025 11:34:25] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:34:33,966 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:34:33,966 [INFO] 172.31.128.12 - - [07/Apr/2025 11:34:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:34:34,198 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:34:34,198 [INFO] 172.31.128.12 - - [07/Apr/2025 11:34:34] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:35:34,037 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:35:34,038 [INFO] 172.31.128.12 - - [07/Apr/2025 11:35:34] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:35:34,320 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:35:34,320 [INFO] 172.31.128.12 - - [07/Apr/2025 11:35:34] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:36:46,373 [INFO] 172.31.128.12 - - [07/Apr/2025 11:36:46] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-04-07 11:37:15,966 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:37:15,968 [INFO] 172.31.128.12 - - [07/Apr/2025 11:37:15] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:37:16,962 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:37:16,962 [INFO] 172.31.128.12 - - [07/Apr/2025 11:37:16] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:37:37,113 [INFO] 172.31.128.12 - - [07/Apr/2025 11:37:37] "[32mGET / HTTP/1.1[0m" 302 -
+2025-04-07 11:37:37,246 [INFO] Renderowanie dashboardu z danymi: 3 komponenty, 2 anomalie, 4 modele AI, 4 aktywa
+2025-04-07 11:37:37,246 [INFO] 172.31.128.12 - - [07/Apr/2025 11:37:37] "GET /dashboard HTTP/1.1" 200 -
+2025-04-07 11:37:37,311 [INFO] 172.31.128.12 - - [07/Apr/2025 11:37:37] "[32mGET / HTTP/1.1[0m" 302 -
+2025-04-07 11:37:37,439 [INFO] 172.31.128.12 - - [07/Apr/2025 11:37:37] "GET /static/css/styles.css HTTP/1.1" 200 -
+2025-04-07 11:37:37,498 [INFO] Renderowanie dashboardu z danymi: 3 komponenty, 2 anomalie, 4 modele AI, 4 aktywa
+2025-04-07 11:37:37,498 [INFO] 172.31.128.12 - - [07/Apr/2025 11:37:37] "GET /dashboard HTTP/1.1" 200 -
+2025-04-07 11:37:37,662 [INFO] 172.31.128.12 - - [07/Apr/2025 11:37:37] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-04-07 11:37:37,856 [INFO] 172.31.128.12 - - [07/Apr/2025 11:37:37] "GET /static/js/dashboard.js HTTP/1.1" 200 -
+2025-04-07 11:37:38,052 [INFO] 172.31.128.12 - - [07/Apr/2025 11:37:38] "[36mGET /static/js/dashboard.js HTTP/1.1[0m" 304 -
+2025-04-07 11:37:38,623 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:37:38,624 [INFO] 172.31.128.12 - - [07/Apr/2025 11:37:38] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:37:38,871 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:37:38,871 [INFO] 172.31.128.12 - - [07/Apr/2025 11:37:38] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:37:45,959 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:37:45,959 [INFO] 172.31.128.12 - - [07/Apr/2025 11:37:45] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:37:46,958 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:37:46,958 [INFO] 172.31.128.12 - - [07/Apr/2025 11:37:46] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:38:08,979 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:38:08,980 [INFO] 172.31.128.12 - - [07/Apr/2025 11:38:08] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:38:09,213 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:38:09,213 [INFO] 172.31.128.12 - - [07/Apr/2025 11:38:09] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:38:09,447 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:38:09,448 [INFO] 172.31.128.12 - - [07/Apr/2025 11:38:09] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:38:09,735 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:38:09,736 [INFO] 172.31.128.12 - - [07/Apr/2025 11:38:09] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:38:16,367 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:38:16,368 [INFO] 172.31.128.12 - - [07/Apr/2025 11:38:16] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:38:16,960 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:38:16,961 [INFO] 172.31.128.12 - - [07/Apr/2025 11:38:16] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:38:38,597 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:38:38,597 [INFO] 172.31.128.12 - - [07/Apr/2025 11:38:38] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:38:38,833 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:38:38,833 [INFO] 172.31.128.12 - - [07/Apr/2025 11:38:38] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:38:39,059 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:38:39,060 [INFO] 172.31.128.12 - - [07/Apr/2025 11:38:39] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:38:39,289 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:38:39,289 [INFO] 172.31.128.12 - - [07/Apr/2025 11:38:39] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:38:45,960 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:38:45,961 [INFO] 172.31.128.12 - - [07/Apr/2025 11:38:45] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:39:08,626 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:39:08,626 [INFO] 172.31.128.12 - - [07/Apr/2025 11:39:08] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:39:08,864 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:39:08,864 [INFO] 172.31.128.12 - - [07/Apr/2025 11:39:08] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:39:09,095 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:39:09,095 [INFO] 172.31.128.12 - - [07/Apr/2025 11:39:09] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:39:09,324 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:39:09,324 [INFO] 172.31.128.12 - - [07/Apr/2025 11:39:09] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:39:33,969 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:39:33,970 [INFO] 172.31.128.12 - - [07/Apr/2025 11:39:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:39:34,201 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:39:34,201 [INFO] 172.31.128.12 - - [07/Apr/2025 11:39:34] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:39:38,590 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:39:38,591 [INFO] 172.31.128.12 - - [07/Apr/2025 11:39:38] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:39:38,823 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:39:38,824 [INFO] 172.31.128.12 - - [07/Apr/2025 11:39:38] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:39:39,057 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:39:39,058 [INFO] 172.31.128.12 - - [07/Apr/2025 11:39:39] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:39:39,290 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
+2025-04-07 11:39:39,291 [INFO] 172.31.128.12 - - [07/Apr/2025 11:39:39] "GET /api/chart-data HTTP/1.1" 200 -
