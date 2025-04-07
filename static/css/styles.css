@@ -368,3 +368,61 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+/* Portfolio Styles */
+.portfolio-value {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.total-value {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.pnl {
+    font-size: 16px;
+    margin: 0;
+}
+
+.pnl.positive {
+    color: #4caf50;
+}
+
+.pnl.negative {
+    color: #f44336;
+}
+
+.portfolio-table-container {
+    margin-bottom: 20px;
+    overflow-x: auto;
+}
+
+#portfolio-chart-container {
+    height: 300px;
+    margin-top: 20px;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+}
+
+.data-table th, 
+.data-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.data-table th {
+    background-color: #f5f7fa;
+    font-weight: 600;
+}
+
+.data-table tbody tr:hover {
+    background-color: #f5f7fa;
+}

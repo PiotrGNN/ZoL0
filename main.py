@@ -168,6 +168,25 @@ def get_notifications():
         ]
     })
 
+@app.route("/api/portfolio", methods=["GET"])
+def get_portfolio():
+    # Symulowane dane portfela
+    return jsonify({
+        "success": True,
+        "data": {
+            "total_value": 15240.75,
+            "assets": [
+                {"symbol": "BTC", "amount": 0.24, "value_usd": 8760.50, "allocation": 57.5, "pnl_24h": 3.8},
+                {"symbol": "ETH", "amount": 1.85, "value_usd": 3700.25, "allocation": 24.3, "pnl_24h": -1.2},
+                {"symbol": "SOL", "amount": 18.5, "value_usd": 1680.00, "allocation": 11.0, "pnl_24h": 5.4},
+                {"symbol": "USDT", "amount": 1100.00, "value_usd": 1100.00, "allocation": 7.2, "pnl_24h": 0.0}
+            ],
+            "pnl_total": 1240.75,
+            "pnl_percentage": 8.85,
+            "last_updated": "2025-04-07 12:45:30"
+        }
+    })
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
 

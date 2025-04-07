@@ -8,6 +8,49 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+    <header>
+        <h1>Trading Bot Dashboard</h1>
+        <p>Zaawansowana platforma zarządzania handlem z wykorzystaniem AI</p>
+    </header>
+    
+    <main>
+        <section id="summary-section" class="dashboard-section">
+            <h2>Podsumowanie</h2>
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <h3>Stan portfela</h3>
+                    <div class="portfolio-value">
+                        <p class="total-value">$<span id="total-portfolio-value">0.00</span></p>
+                        <p class="pnl" id="portfolio-pnl">0.00%</p>
+                    </div>
+                </div>
+                <!-- Inne karty podsumowania -->
+            </div>
+        </section>
+        
+        <section id="portfolio-section" class="dashboard-section">
+            <h2>Portfel</h2>
+            <div class="portfolio-table-container">
+                <table id="portfolio-table" class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Aktywo</th>
+                            <th>Ilość</th>
+                            <th>Wartość ($)</th>
+                            <th>Alokacja (%)</th>
+                            <th>PnL 24h (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="portfolio-assets">
+                        <!-- Dane aktywów będą wstawione przez JS -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="portfolio-chart-container">
+                <canvas id="portfolio-allocation-chart"></canvas>
+            </div>
+        </section>
+<body>
     <div class="container">
         <header class="header">
             <h1>Trading Bot Dashboard</h1>

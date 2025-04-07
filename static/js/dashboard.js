@@ -9,17 +9,22 @@ document.addEventListener('DOMContentLoaded', function() {
     fetchNotifications();
     setupEventListeners();
     initializeChart();
+    updatePortfolio(); // Initialize portfolio data on load
 
     // Interwały aktualizacji
     setInterval(updateDashboardData, 5000); // Co 5 sekund
     setInterval(updateComponentStatuses, 10000); // Co 10 sekund
     setInterval(fetchNotifications, 60000); // Co minutę
+    setInterval(updatePortfolio, 5000); // Update portfolio every 5 seconds
+
 });
 
 // Liczniki błędów dla obsługi ponownych prób
 let chartErrorCount = 0;
 let statusErrorCount = 0;
 let statsErrorCount = 0;
+let portfolioErrorCount = 0;
+
 
 // Ustawienie nawigacji tabów
 function setupTabNavigation() {
@@ -52,6 +57,7 @@ function updateDashboardData() {
     updateRecentTrades();
     updateAlerts();
     updateAIModels();
+    updatePortfolio(); // Include portfolio update in main data refresh
 }
 
 function updateComponentStatuses() {
@@ -592,4 +598,112 @@ function resetSystem() {
             alert('Wystąpił błąd podczas próby resetowania systemu.');
         });
     }
+}
+
+// Funkcja aktualizująca dane portfela
+function updatePortfolio() {
+    fetch('/api/portfolio')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Błąd pobierania danych portfela');
+            }
+            return response.json();
+        })
+        .then(data => {
+            portfolioErrorCount = 0;
+            if (data.success) {
+                displayPortfolioData(data.data);
+                renderPortfolioChart(data.data.assets);
+            } else {
+                console.error('Błąd pobierania danych portfela:', data.error);
+                portfolioErrorCount++;
+                if (portfolioErrorCount > 3) {
+                    showErrorMessage('Nie można pobrać danych portfela.');
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Błąd pobierania danych portfela:', error);
+            portfolioErrorCount++;
+            if (portfolioErrorCount > 3) {
+                showErrorMessage('Nie można pobrać danych portfela.');
+            }
+        });
+}
+
+// Wyświetlanie danych portfela
+function displayPortfolioData(portfolio) {
+    // Aktualizacja wartości portfela
+    document.getElementById('total-portfolio-value').textContent = portfolio.total_value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    // Aktualizacja PnL
+    const pnlElement = document.getElementById('portfolio-pnl');
+    const pnlValue = portfolio.pnl_percentage;
+    pnlElement.textContent = (pnlValue > 0 ? '+' : '') + pnlValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
+    pnlElement.className = 'pnl ' + (pnlValue >= 0 ? 'positive' : 'negative');
+
+    // Aktualizacja tabeli aktywów
+    const tableBody = document.getElementById('portfolio-assets');
+    tableBody.innerHTML = '';
+
+    portfolio.assets.forEach(asset => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${asset.symbol}</td>
+            <td>${asset.amount.toLocaleString('en-US', { minimumFractionDigits: asset.symbol === 'USDT' ? 2 : 8, maximumFractionDigits: asset.symbol === 'USDT' ? 2 : 8 })}</td>
+            <td>$${asset.value_usd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            <td>${asset.allocation.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%</td>
+            <td class="${asset.pnl_24h >= 0 ? 'positive' : 'negative'}">${(asset.pnl_24h > 0 ? '+' : '') + asset.pnl_24h.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%</td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+// Renderowanie wykresu alokacji portfela
+function renderPortfolioChart(assets) {
+    const ctx = document.getElementById('portfolio-allocation-chart').getContext('2d');
+
+    // Dane dla wykresu
+    const labels = assets.map(asset => asset.symbol);
+    const data = assets.map(asset => asset.value_usd);
+    const backgroundColors = [
+        'rgba(54, 162, 235, 0.8)',
+        'rgba(255, 99, 132, 0.8)',
+        'rgba(255, 206, 86, 0.8)',
+        'rgba(75, 192, 192, 0.8)',
+        'rgba(153, 102, 255, 0.8)',
+        'rgba(255, 159, 64, 0.8)',
+        'rgba(199, 199, 199, 0.8)'
+    ];
+
+    // Zniszcz istniejący wykres jeśli istnieje
+    if (window.portfolioChart) {
+        window.portfolioChart.destroy();
+    }
+
+    // Utwórz nowy wykres
+    window.portfolioChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: backgroundColors.slice(0, assets.length),
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                },
+                title: {
+                    display: true,
+                    text: 'Alokacja portfela'
+                }
+            }
+        }
+    });
 }
