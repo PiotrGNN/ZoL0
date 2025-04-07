@@ -35,59 +35,20 @@ deploymentTarget = "cloudrun"
 [gitHubImport]
 requiredFiles = [".replit", "replit.nix", ".gitignore"]
 
-[workflows]
-runButton = "Run"
+[workflows.run]
+command = "python main.py"
 
-[[workflows.workflow]]
-name = "Run"
-author = 31819671
-mode = "sequential"
+[workflows.Test]
+command = "pytest data/tests/"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python3 main.py"
+[workflows.Format Code]
+command = "black ."
 
-[[workflows.workflow]]
-name = "Test"
-author = 31819671
-mode = "sequential"
+[workflows.Lint Code]
+command = "flake8 ."
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "pytest data/tests/"
+[workflows.Test with Coverage]
+command = "pytest --cov=. --cov-report=term-missing data/tests/"
 
-[[workflows.workflow]]
-name = "Format Code"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "black ."
-
-[[workflows.workflow]]
-name = "Lint Code"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "flake8 ."
-
-[[workflows.workflow]]
-name = "Test with Coverage"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "pytest --cov=. --cov-report=term-missing data/tests/"
-
-[[workflows.workflow]]
-name = "Install Dependencies"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "pip install -r requirements.txt"
+[workflows.Install Dependencies]
+command = "pip install -r requirements.txt"
