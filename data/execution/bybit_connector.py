@@ -1,3 +1,4 @@
+
 """
 Bybit Connector - moduł do komunikacji z REST API Bybit.
 Obsługuje autentykację, wykonywanie zapytań i obsługę błędów.
@@ -7,17 +8,29 @@ import hashlib
 import hmac
 import json
 import logging
+import os
 import time
 from typing import Dict, List, Optional, Tuple, Union
 from urllib.parse import urlencode
 
-import requests
+# Upewniamy się, że folder logs istnieje
+os.makedirs("logs", exist_ok=True)
+
+# Sprawdzamy dostępność modułu requests
+try:
+    import requests
+except ImportError:
+    requests = None
+    logging.warning("Moduł 'requests' nie jest zainstalowany. BybitConnector będzie działał w trybie symulacji.")
 
 # Konfiguracja logowania
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[logging.FileHandler("logs/api_requests.log"), logging.StreamHandler()],
+    handlers=[
+        logging.FileHandler("logs/api_requests.log"),
+        logging.StreamHandler()
+    ],
 )
 logger = logging.getLogger("BybitConnector")
 
@@ -49,6 +62,7 @@ class BybitConnector:
         recv_window: int = 5000,
         max_retries: int = 3,
         retry_delay: int = 1,
+        simulation_mode: bool = False,
     ):
         """
         Inicjalizacja konektora Bybit.
@@ -60,19 +74,25 @@ class BybitConnector:
             recv_window: Okno czasowe dla żądań (ms)
             max_retries: Maksymalna liczba prób ponowienia żądania
             retry_delay: Opóźnienie między próbami ponowienia (s)
+            simulation_mode: Czy działać w trybie symulacji (bez rzeczywistych zapytań)
         """
         self.api_key = api_key
         self.api_secret = api_secret
         self.recv_window = recv_window
         self.max_retries = max_retries
         self.retry_delay = retry_delay
+        self.simulation_mode = simulation_mode or requests is None
 
         # Konfiguracja backendu
         self.base_url = self.API_URL_TESTNET if use_testnet else self.API_URL_MAINNET
-        self.session = requests.Session()
+        self.session = requests.Session() if requests else None
 
         env_type = "testnet" if use_testnet else "mainnet"
-        logger.info(f"BybitConnector zainicjalizowany dla {env_type}")
+        
+        if self.simulation_mode:
+            logger.warning(f"BybitConnector zainicjalizowany w trybie SYMULACJI dla {env_type}")
+        else:
+            logger.info(f"BybitConnector zainicjalizowany dla {env_type}")
 
     def _generate_signature(self, params: Dict) -> Tuple[int, str]:
         """
@@ -106,7 +126,7 @@ class BybitConnector:
 
         return timestamp, signature
 
-    def _handle_response(self, response: requests.Response) -> Dict:
+    def _handle_response(self, response: Optional[requests.Response]) -> Dict:
         """
         Przetwarza odpowiedź z API Bybit.
 
@@ -119,6 +139,18 @@ class BybitConnector:
         Raises:
             Exception: Jeśli wystąpił błąd w odpowiedzi API
         """
+        if self.simulation_mode or response is None:
+            # W trybie symulacji zwracamy fałszywe dane
+            return {
+                "ret_code": 0,
+                "ret_msg": "OK",
+                "result": {
+                    "timeSecond": int(time.time()),
+                    "timeNano": int(time.time() * 1_000_000_000),
+                    "list": []
+                }
+            }
+            
         try:
             data = response.json()
 
@@ -171,6 +203,68 @@ class BybitConnector:
         if data is None:
             data = {}
 
+        # W trybie symulacji zwracamy fałszywe dane
+        if self.simulation_mode:
+            logger.info(f"Symulacja: {method} {endpoint}")
+            
+            # Symulowane odpowiedzi dla różnych endpointów
+            if endpoint == "/v5/market/time":
+                return {
+                    "ret_code": 0,
+                    "ret_msg": "OK",
+                    "result": {
+                        "timeSecond": int(time.time()),
+                        "timeNano": int(time.time() * 1_000_000_000)
+                    }
+                }
+            elif endpoint == "/v5/market/tickers" and "symbol" in params:
+                symbol = params["symbol"]
+                return {
+                    "ret_code": 0,
+                    "ret_msg": "OK",
+                    "result": {
+                        "list": [
+                            {
+                                "symbol": symbol,
+                                "lastPrice": "65432.10",
+                                "volume24h": "12345.67",
+                                "change24h": "2.5"
+                            }
+                        ]
+                    }
+                }
+            elif endpoint == "/v5/account/wallet-balance":
+                return {
+                    "ret_code": 0,
+                    "ret_msg": "OK",
+                    "result": {
+                        "list": [
+                            {
+                                "totalEquity": "10000.00",
+                                "totalWalletBalance": "10000.00",
+                                "coin": [
+                                    {
+                                        "coin": "USDT",
+                                        "walletBalance": "10000.00",
+                                        "availableToWithdraw": "10000.00"
+                                    },
+                                    {
+                                        "coin": "BTC",
+                                        "walletBalance": "0.5",
+                                        "availableToWithdraw": "0.5"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            else:
+                return {
+                    "ret_code": 0,
+                    "ret_msg": "OK",
+                    "result": {}
+                }
+
         # Pełny URL
         url = f"{self.base_url}{endpoint}"
 
@@ -200,6 +294,11 @@ class BybitConnector:
         if data:
             log_msg += f", data: {data}"
         logger.debug(f"Wysyłanie zapytania: {log_msg}")
+
+        # Sprawdzamy, czy mamy dostęp do modułu requests
+        if not requests:
+            logger.error("Moduł 'requests' nie jest dostępny, nie można wykonać żądania")
+            return self._handle_response(None)
 
         # Wykonujemy zapytanie z obsługą retry
         retry_count = 0
@@ -244,10 +343,27 @@ class BybitConnector:
                     logger.info(f"Ponowienie za {retry_delay}s (próba {retry_count}/{self.max_retries})")
                     time.sleep(retry_delay)
                 else:
-                    raise
+                    # W przypadku błędu, jeśli jesteśmy w trybie symulacji, zwróć symulowane dane
+                    if self.simulation_mode:
+                        logger.info("Symulacja: Zwracam awaryjne dane symulowane po błędzie")
+                        return {
+                            "ret_code": 0,
+                            "ret_msg": "OK (symulacja)",
+                            "result": {}
+                        }
+                    else:
+                        raise
 
         # Jeśli dotarliśmy tutaj, wszystkie próby retry zawiodły
-        raise Exception(f"All retry attempts failed for {method} {url}")
+        if self.simulation_mode:
+            logger.info("Symulacja: Zwracam awaryjne dane symulowane po wyczerpaniu prób")
+            return {
+                "ret_code": 0,
+                "ret_msg": "OK (symulacja po wyczerpaniu prób)",
+                "result": {}
+            }
+        else:
+            raise Exception(f"All retry attempts failed for {method} {url}")
 
     # =========== Metody API Bybit ===========
 
@@ -512,8 +628,16 @@ if __name__ == "__main__":
     api_secret = os.getenv("BYBIT_API_SECRET")
     use_testnet = os.getenv("TEST_MODE", "true").lower() in ["true", "1", "t"]
 
+    # Sprawdzamy, czy moduł requests jest dostępny
+    simulation_mode = requests is None
+
     # Inicjalizujemy konektor
-    bybit = BybitConnector(api_key, api_secret, use_testnet)
+    bybit = BybitConnector(
+        api_key=api_key,
+        api_secret=api_secret,
+        use_testnet=use_testnet,
+        simulation_mode=simulation_mode
+    )
 
     # Testujemy połączenie
     if bybit.test_connectivity():

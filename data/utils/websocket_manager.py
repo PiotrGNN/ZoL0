@@ -1,3 +1,4 @@
+
 """
 WebSocket Manager - moduł odpowiedzialny za utrzymanie połączenia WebSocket
 z giełdą Bybit, obsługę reconnect i logowania komunikatów.
@@ -7,17 +8,29 @@ import json
 import logging
 import threading
 import time
-from typing import Callable, Dict, Optional
+import os
+from typing import Callable, Dict, Optional, List
 
-import websocket
+# Sprawdzamy dostępność modułu websocket
+try:
+    import websocket
+except ImportError:
+    websocket = None
+    logging.warning("Moduł 'websocket-client' nie jest zainstalowany. WebSocketManager będzie działał w trybie symulacji.")
 
 # Konfiguracja logowania
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[logging.FileHandler("logs/websocket.log"), logging.StreamHandler()],
+    handlers=[
+        logging.FileHandler("logs/websocket.log"),
+        logging.StreamHandler()
+    ],
 )
 logger = logging.getLogger("WebSocketManager")
+
+# Upewniamy się, że folder logs istnieje
+os.makedirs("logs", exist_ok=True)
 
 
 class WebSocketManager:
@@ -40,6 +53,7 @@ class WebSocketManager:
         ping_timeout: int = 10,
         reconnect_attempts: int = 5,
         reconnect_delay: int = 5,
+        simulation_mode: bool = False,
     ):
         """
         Inicjalizacja WebSocket Managera.
@@ -52,6 +66,7 @@ class WebSocketManager:
             ping_timeout: Timeout dla pinga w sekundach
             reconnect_attempts: Maksymalna liczba prób reconnectu
             reconnect_delay: Opóźnienie między próbami reconnectu w sekundach
+            simulation_mode: Czy działać w trybie symulacji (bez rzeczywistego połączenia)
         """
         self.url = url
         self.api_key = api_key
@@ -60,6 +75,7 @@ class WebSocketManager:
         self.ping_timeout = ping_timeout
         self.reconnect_attempts = reconnect_attempts
         self.reconnect_delay = reconnect_delay
+        self.simulation_mode = simulation_mode or websocket is None
 
         self.ws = None
         self.is_connected = False
@@ -67,10 +83,13 @@ class WebSocketManager:
         self.reconnect_count = 0
 
         self.subscriptions = set()
-        self.message_callbacks = []
+        self.message_callbacks: List[Callable] = []
         self.ws_thread = None
 
-        logger.info(f"WebSocketManager zainicjalizowany dla {url}")
+        if self.simulation_mode:
+            logger.warning("WebSocketManager działa w trybie symulacji (bez rzeczywistego połączenia)!")
+        else:
+            logger.info(f"WebSocketManager zainicjalizowany dla {url}")
 
     def connect(self) -> bool:
         """
@@ -79,7 +98,18 @@ class WebSocketManager:
         Returns:
             bool: True jeśli połączenie zostało nawiązane, False w przeciwnym razie
         """
+        # W trybie symulacji udajemy, że łączymy się z powodzeniem
+        if self.simulation_mode:
+            self.is_connected = True
+            self.reconnect_count = 0
+            logger.info("Symulacja: Połączenie WebSocket nawiązane")
+            return True
+
         try:
+            if websocket is None:
+                logger.error("Nie można nawiązać połączenia: moduł websocket-client nie jest zainstalowany.")
+                return False
+
             websocket.enableTrace(False)
             self.ws = websocket.WebSocketApp(
                 self.url,
@@ -115,6 +145,12 @@ class WebSocketManager:
     def disconnect(self) -> None:
         """Zamyka połączenie WebSocket."""
         self.should_reconnect = False
+        
+        if self.simulation_mode:
+            self.is_connected = False
+            logger.info("Symulacja: Połączenie WebSocket zostało zamknięte")
+            return
+            
         if self.ws:
             self.ws.close()
         logger.info("Połączenie WebSocket zostało zamknięte")
@@ -129,6 +165,11 @@ class WebSocketManager:
         if not self.is_connected:
             logger.warning("Próba subskrypcji bez aktywnego połączenia")
             self.subscriptions.update(topics)
+            return
+
+        if self.simulation_mode:
+            self.subscriptions.update(topics)
+            logger.info(f"Symulacja: Zasubskrybowano tematy: {topics}")
             return
 
         try:
@@ -156,6 +197,11 @@ class WebSocketManager:
             self.subscriptions -= set(topics)
             return
 
+        if self.simulation_mode:
+            self.subscriptions -= set(topics)
+            logger.info(f"Symulacja: Anulowano subskrypcję tematów: {topics}")
+            return
+
         try:
             for topic in topics:
                 if topic in self.subscriptions:
@@ -179,6 +225,20 @@ class WebSocketManager:
         self.message_callbacks.append(callback)
         logger.debug(f"Dodano nowy callback dla wiadomości (total: {len(self.message_callbacks)})")
 
+        # W trybie symulacji wywołujemy callback z przykładowymi danymi
+        if self.simulation_mode and self.is_connected:
+            example_data = {
+                "topic": "tickers.BTCUSDT",
+                "data": {
+                    "symbol": "BTCUSDT",
+                    "lastPrice": "65432.10",
+                    "volume24h": "12345.67",
+                    "change24h": "2.5"
+                },
+                "timestamp": int(time.time() * 1000)
+            }
+            callback(example_data)
+
     def send_message(self, message: Dict) -> bool:
         """
         Wysyła wiadomość przez WebSocket.
@@ -192,6 +252,10 @@ class WebSocketManager:
         if not self.is_connected:
             logger.warning("Próba wysłania wiadomości bez aktywnego połączenia")
             return False
+
+        if self.simulation_mode:
+            logger.info(f"Symulacja: Wysłano wiadomość: {message}")
+            return True
 
         try:
             self.ws.send(json.dumps(message))
@@ -299,9 +363,20 @@ class WebSocketManager:
             # Implementacja uwierzytelniania zależy od giełdy
             # Przykład dla Bybit - używa innego formatu uwierzytelniania
             # To jest uproszczona wersja, w rzeczywistości wymaga generowania podpisu
+            import hmac
+            import hashlib
+            
+            timestamp = int(time.time() * 1000)
+            signature_base = f"{timestamp}GET/realtime{self.api_key}"
+            signature = hmac.new(
+                bytes(self.api_secret, "utf-8"),
+                bytes(signature_base, "utf-8"),
+                hashlib.sha256
+            ).hexdigest()
+            
             auth_message = {
                 "op": "auth",
-                "args": [self.api_key, int(time.time() * 1000), "signature_placeholder"],
+                "args": [self.api_key, timestamp, signature],
             }
             self.ws.send(json.dumps(auth_message))
             logger.info("Wysłano żądanie uwierzytelnienia")
