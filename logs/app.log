@@ -25,16 +25,3 @@
 2025-04-07 10:13:31,325 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
 2025-04-07 10:13:31,325 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
 2025-04-07 10:13:31,325 [INFO] System tradingowy uruchomiony pomyślnie
-2025-04-07 10:24:05,492 [INFO] Ładowanie konfiguracji systemu...
-2025-04-07 10:24:05,492 [INFO] Inicjalizacja komponentów systemu...
-2025-04-07 10:24:06,789 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
-2025-04-07 10:24:07,787 [INFO] generated new fontManager
-2025-04-07 10:24:08,525 [WARNING] Pomijam podpakiet 'indicators' z powodu błędu: Nie udało się zaimportować modułu 'sentiment_analysis' z pakietu 'data.indicators'.
-2025-04-07 10:24:08,682 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
-2025-04-07 10:24:08,690 [ERROR] Błąd podczas inicjalizacji komponentów: StrategyManager.__init__() missing 2 required positional arguments: 'strategies' and 'exposure_limits'
-2025-04-07 10:24:08,691 [ERROR] Nie udało się zainicjalizować komponentów. Kończenie pracy.
-2025-04-07 10:24:08,691 [INFO] Środowisko zostało skonfigurowane
-2025-04-07 10:24:08,691 [INFO] Uruchamianie systemu tradingowego...
-2025-04-07 10:24:08,691 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
-2025-04-07 10:24:08,691 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
-2025-04-07 10:24:08,691 [INFO] System tradingowy uruchomiony pomyślnie

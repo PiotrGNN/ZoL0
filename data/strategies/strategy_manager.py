@@ -1,118 +1,142 @@
 """
 strategy_manager.py
-------------------
-Moduł zarządzający strategiami inwestycyjnymi.
+-------------------
+Moduł zarządzający zestawem strategii handlowych.
+Funkcjonalności:
+- Umożliwia aktywację i dezaktywację strategii w czasie rzeczywistym.
+- Monitoruje wyniki poszczególnych strategii i pozwala na raportowanie ich skuteczności.
+- Implementuje funkcje zarządzania priorytetami strategii oraz limitowania ekspozycji na każdą strategię.
+- Integruje się z modułami trade_executor.py i risk_management (np. stop_loss_manager.py), aby koordynować decyzje tradingowe.
+- Zawiera mechanizmy testowe, umożliwiające przeprowadzenie scenariuszy stress-test oraz logowanie decyzji.
 """
 
 import logging
-from typing import Dict, Any, Optional, List
+import threading
+import time
 
-logger = logging.getLogger(__name__)
+import numpy as np
+import pandas as pd
+
+# Konfiguracja logowania
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
 )
 
 
 class StrategyManager:
-    """
-    Klasa zarządzająca strategiami inwestycyjnymi.
-    Umożliwia dynamiczne wybieranie strategii w zależności od warunków rynkowych.
-    """
-
-    def __init__(self, strategies: Dict[str, Any], exposure_limits: Dict[str, float]):
+    def __init__(self, strategies: dict, exposure_limits: dict):
         """
-        Inicjalizacja managera strategii.
+        Inicjalizuje menedżera strategii.
 
-        Args:
-            strategies: Słownik zawierający strategie (nazwa: obiekt strategii)
-            exposure_limits: Limity ekspozycji dla każdej strategii
+        Parameters:
+            strategies (dict): Słownik strategii, gdzie kluczem jest nazwa strategii, a wartością obiekt strategii
+                               implementujący metodę `generate_signal(data)` i `evaluate_performance(data)`.
+            exposure_limits (dict): Limity ekspozycji dla poszczególnych strategii, np. {"trend_following": 0.5, "mean_reversion": 0.3}.
         """
-        self.strategies = strategies or {}  # Zabezpieczenie przed None
-        self.exposure_limits = exposure_limits or {}  # Zabezpieczenie przed None
-        self.active_strategy = None
+        self.strategies = strategies
+        self.exposure_limits = exposure_limits
+        self.active_strategies = {name: True for name in strategies.keys()}
+        self.strategy_results = {}
+        self.lock = threading.Lock()
+        logging.info(
+            "StrategyManager zainicjalizowany z strategiami: %s",
+            list(strategies.keys()),
+        )
 
-        logger.info(f"Zainicjalizowano StrategyManager z {len(self.strategies)} strategiami")
+    def activate_strategy(self, strategy_name: str):
+        with self.lock:
+            if strategy_name in self.strategies:
+                self.active_strategies[strategy_name] = True
+                logging.info("Strategia %s aktywowana.", strategy_name)
+            else:
+                logging.warning("Strategia %s nie istnieje.", strategy_name)
 
-    def add_strategy(self, name: str, strategy: Any, exposure_limit: float = 1.0):
+    def deactivate_strategy(self, strategy_name: str):
+        with self.lock:
+            if strategy_name in self.strategies:
+                self.active_strategies[strategy_name] = False
+                logging.info("Strategia %s dezaktywowana.", strategy_name)
+            else:
+                logging.warning("Strategia %s nie istnieje.", strategy_name)
+
+    def evaluate_strategies(self, market_data: pd.DataFrame):
         """
-        Dodaje nową strategię do managera.
+        Ocena wyników wszystkich aktywnych strategii na podstawie dostarczonych danych rynkowych.
 
-        Args:
-            name: Nazwa strategii
-            strategy: Obiekt strategii
-            exposure_limit: Limit ekspozycji (0.0-1.0)
+        Parameters:
+            market_data (pd.DataFrame): Dane rynkowe wykorzystywane do ewaluacji.
         """
-        self.strategies[name] = strategy
-        self.exposure_limits[name] = exposure_limit
-        logger.info(f"Dodano strategię {name} z limitem ekspozycji {exposure_limit}")
+        results = {}
+        for name, strategy in self.strategies.items():
+            if self.active_strategies.get(name, False):
+                try:
+                    signal = strategy.generate_signal(market_data)
+                    performance = strategy.evaluate_performance(market_data)
+                    results[name] = {"signal": signal, "performance": performance}
+                    logging.info(
+                        "Strategia %s - sygnał: %s, performance: %s",
+                        name,
+                        signal,
+                        performance,
+                    )
+                except Exception as e:
+                    logging.error("Błąd przy ocenie strategii %s: %s", name, e)
+            else:
+                logging.info("Strategia %s jest dezaktywowana.", name)
+        with self.lock:
+            self.strategy_results = results
+        return results
 
-    def activate_strategy(self, name: str) -> bool:
+    def limit_exposure(self, strategy_name: str, proposed_exposure: float) -> float:
         """
-        Aktywuje wybraną strategię.
+        Ogranicza proponowaną ekspozycję dla danej strategii zgodnie z ustalonym limitem.
 
-        Args:
-            name: Nazwa strategii do aktywowania
+        Parameters:
+            strategy_name (str): Nazwa strategii.
+            proposed_exposure (float): Proponowany procent ekspozycji (np. 0.6 oznacza 60% kapitału).
 
         Returns:
-            bool: True jeśli aktywacja się powiodła, False w przeciwnym wypadku
+            float: Ograniczona ekspozycja.
         """
-        if name in self.strategies:
-            self.active_strategy = name
-            logger.info(f"Aktywowano strategię {name}")
-            return True
-        else:
-            logger.warning(f"Próba aktywacji nieistniejącej strategii: {name}")
-            return False
+        limit = self.exposure_limits.get(strategy_name, 1.0)
+        adjusted_exposure = min(proposed_exposure, limit)
+        logging.info(
+            "Ekspozycja dla strategii %s ograniczona do: %.2f (proponowana: %.2f)",
+            strategy_name,
+            adjusted_exposure,
+            proposed_exposure,
+        )
+        return adjusted_exposure
 
-    def get_active_strategy(self) -> Optional[Any]:
+    def generate_report(self):
         """
-        Zwraca aktualnie aktywną strategię.
-
-        Returns:
-            Obiekt aktywnej strategii lub None jeśli żadna nie jest aktywna
-        """
-        if self.active_strategy and self.active_strategy in self.strategies:
-            return self.strategies[self.active_strategy]
-        return None
-
-    def get_exposure_limit(self) -> float:
-        """
-        Zwraca limit ekspozycji dla aktualnie aktywnej strategii.
+        Generuje raport podsumowujący wyniki strategii.
 
         Returns:
-            float: Limit ekspozycji lub 0.0 jeśli żadna strategia nie jest aktywna
+            dict: Raport zawierający wyniki oceny każdej strategii.
         """
-        if self.active_strategy and self.active_strategy in self.exposure_limits:
-            return self.exposure_limits[self.active_strategy]
-        return 0.0
+        with self.lock:
+            report = self.strategy_results.copy()
+        logging.info("Wygenerowano raport strategii: %s", report)
+        return report
 
-    def list_strategies(self) -> List[str]:
+    def stress_test(self, market_data: pd.DataFrame, test_duration: int = 60):
         """
-        Zwraca listę dostępnych strategii.
+        Przeprowadza stress-test wszystkich aktywnych strategii przez określony czas.
 
-        Returns:
-            List[str]: Lista nazw strategii
+        Parameters:
+            market_data (pd.DataFrame): Dane rynkowe używane w teście.
+            test_duration (int): Czas trwania testu w sekundach.
         """
-        return list(self.strategies.keys())
+        logging.info(
+            "Rozpoczynam stress-test strategii na okres %d sekund.", test_duration
+        )
+        start_time = time.time()
+        while time.time() - start_time < test_duration:
+            self.evaluate_strategies(market_data)
+            time.sleep(5)
+        logging.info("Stress-test zakończony.")
 
-    def update_exposure_limit(self, name: str, new_limit: float) -> bool:
-        """
-        Aktualizuje limit ekspozycji dla danej strategii.
-
-        Args:
-            name: Nazwa strategii
-            new_limit: Nowy limit ekspozycji (0.0-1.0)
-
-        Returns:
-            bool: True jeśli aktualizacja się powiodła, False w przeciwnym wypadku
-        """
-        if name in self.strategies:
-            self.exposure_limits[name] = max(0.0, min(1.0, new_limit))  # Ograniczenie do zakresu 0.0-1.0
-            logger.info(f"Zaktualizowano limit ekspozycji dla strategii {name} na {self.exposure_limits[name]}")
-            return True
-        else:
-            logger.warning(f"Próba aktualizacji limitu dla nieistniejącej strategii: {name}")
-            return False
 
 # -------------------- Przykładowe klasy strategii --------------------
 class DummyStrategy:
@@ -130,8 +154,6 @@ class DummyStrategy:
 
 # -------------------- Przykładowe użycie --------------------
 if __name__ == "__main__":
-    import numpy as np
-    import pandas as pd
     try:
         # Tworzymy przykładowe strategie
         strategies = {
@@ -156,20 +178,23 @@ if __name__ == "__main__":
             index=dates,
         )
 
-        # Aktywacja strategii i generowanie sygnału
-        manager.activate_strategy("trend_following")
-        active_strategy = manager.get_active_strategy()
-        if active_strategy:
-            signal = active_strategy.generate_signal(market_data)
-            logger.info(f"Sygnał z trend_following: {signal}")
+        # Ocena strategii
+        eval_results = manager.evaluate_strategies(market_data)
+        report = manager.generate_report()
+        logging.info("Raport strategii: %s", report)
 
-        # Wyświetlenie listy strategii
-        logger.info(f"Dostępne strategie: {manager.list_strategies()}")
+        # Przykładowe ograniczenie ekspozycji
+        proposed_exposure = 0.6
+        adjusted_exposure = manager.limit_exposure("trend_following", proposed_exposure)
+        logging.info(
+            "Dla strategii trend_following, proponowana ekspozycja %.2f, ograniczona do %.2f",
+            proposed_exposure,
+            adjusted_exposure,
+        )
 
-        # Aktualizacja limitu ekspozycji
-        manager.update_exposure_limit("mean_reversion", 0.6)
-
+        # Opcjonalnie, uruchomienie stress-testu
+        # manager.stress_test(market_data, test_duration=30)
 
     except Exception as e:
-        logger.error("Błąd w module strategy_manager.py: %s", e)
+        logging.error("Błąd w module strategy_manager.py: %s", e)
         raise

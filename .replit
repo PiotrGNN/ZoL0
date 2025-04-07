@@ -30,7 +30,7 @@ start = "pylsp"
 language = "python3"
 
 [deployment]
-run = ["sh", "-c", "python main.py"]
+run = ["python", "main.py"]
 deploymentTarget = "cloudrun"
 
 [gitHubImport]
