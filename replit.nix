@@ -1,5 +1,9 @@
 {pkgs}: {
   deps = [
+    pkgs.opencl-headers
+    pkgs.ocl-icd
+    pkgs.xsimd
+    pkgs.libxcrypt
     pkgs.tk
     pkgs.tcl
     pkgs.qhull
