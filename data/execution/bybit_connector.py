@@ -39,20 +39,58 @@ class BybitConnector:
 
             # Sprawdzamy wersję i dostosowujemy inicjalizację do odpowiedniej wersji API
             try:
-                # Próba inicjalizacji dla nowszej wersji API (2.4+)
+                # Próba inicjalizacji dla nowszej wersji API używając odpowiednich klas rynkowych
                 endpoint = "https://api-testnet.bybit.com" if self.use_testnet else "https://api.bybit.com"
-                self.client = pybit.HTTP(
-                    endpoint=endpoint,
-                    api_key=self.api_key,
-                    api_secret=self.api_secret,
-                    recv_window=20000  # Zwiększenie okna czasu na odpowiedź
-                )
-                self.api_version = "v2"
-                logging.info(f"Zainicjalizowano klienta ByBit API v2. Testnet: {self.use_testnet}")
-
+                
+                # Używanie odpowiednich klas rynkowych, zgodnie z ostrzeżeniem z biblioteki
+                try:
+                    # Najpierw próbujemy z spot API
+                    from pybit.spot import HTTP as SpotHTTP
+                    self.client = SpotHTTP(
+                        endpoint=endpoint,
+                        api_key=self.api_key,
+                        api_secret=self.api_secret,
+                        recv_window=20000  # Zwiększenie okna czasu na odpowiedź
+                    )
+                    self.api_version = "spot"
+                    logging.info(f"Zainicjalizowano klienta ByBit API Spot. Testnet: {self.use_testnet}")
+                except ImportError:
+                    # Jeśli nie ma spot, próbujemy z inverse_perpetual
+                    try:
+                        from pybit.inverse_perpetual import HTTP as PerpHTTP
+                        self.client = PerpHTTP(
+                            endpoint=endpoint,
+                            api_key=self.api_key,
+                            api_secret=self.api_secret,
+                            recv_window=20000
+                        )
+                        self.api_version = "inverse_perpetual"
+                        logging.info(f"Zainicjalizowano klienta ByBit API Inverse Perpetual. Testnet: {self.use_testnet}")
+                    except ImportError:
+                        # Ostatnia szansa - używamy ogólnego HTTP
+                        self.client = pybit.HTTP(
+                            endpoint=endpoint,
+                            api_key=self.api_key,
+                            api_secret=self.api_secret,
+                            recv_window=20000
+                        )
+                        self.api_version = "v2"
+                        logging.info(f"Zainicjalizowano klienta ByBit API v2 (ogólny). Testnet: {self.use_testnet}")
+                
                 # Testowe pobieranie czasu serwera w celu weryfikacji połączenia
                 try:
-                    server_time = self.client.get_server_time()
+                    # Sprawdzamy dostępne metody dla czasu serwera
+                    if hasattr(self.client, 'get_server_time'):
+                        server_time = self.client.get_server_time()
+                    elif hasattr(self.client, 'server_time'):
+                        server_time = self.client.server_time()
+                    elif hasattr(self.client, 'time'):
+                        server_time = self.client.time()
+                    else:
+                        # Jeśli żadna metoda nie jest dostępna, symulujemy czas
+                        server_time = {"timeNow": int(time.time() * 1000)}
+                        logging.warning("Brak metody do pobierania czasu serwera, używam czasu lokalnego")
+                        
                     logging.info(f"Połączenie z ByBit potwierdzone. Czas serwera: {server_time}")
                 except Exception as st_error:
                     logging.warning(f"Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: {st_error}")
@@ -239,31 +277,47 @@ class BybitConnector:
                 try:
                     # Testowanie połączenia z API
                     try:
-                        # Sprawdzanie dostępu do API - w nowszych wersjach pybit metoda jest inna
+                        # Sprawdzanie dostępu do API - w różnych wersjach pybit metoda jest inna
                         if hasattr(self.client, 'get_server_time'):
                             time_response = self.client.get_server_time()
-                        else:
-                            # Dla nowszych wersji pybit używamy time_service
+                        elif hasattr(self.client, 'server_time'):
+                            time_response = self.client.server_time()
+                        elif hasattr(self.client, 'time'):
                             time_response = self.client.time()
+                        else:
+                            # Jeśli nie ma dostępu do czasu serwera, używamy lokalnego
+                            time_response = {"timeNow": int(time.time() * 1000)}
+                            self.logger.warning("Brak metody do pobierania czasu serwera, używam czasu lokalnego")
+                        
                         self.logger.info(f"Test połączenia z API: {time_response}")
                     except Exception as time_error:
                         self.logger.error(f"Test połączenia z API nie powiódł się: {time_error}")
                         raise Exception(f"Brak dostępu do API Bybit: {time_error}")
 
-                    # Próba pobrania salda konta dla wersji v2
-                    try:
-                        wallet = self.client.get_wallet_balance()
-                    except Exception as wallet_error:
-                        self.logger.error(f"Błąd podczas pobierania salda portfela: {wallet_error}")
-                        # Próbujemy alternatywne metody API
-                        try:
-                            wallet = self.client.get_wallet_balance(coin="USDT")
-                        except:
-                            # Ostateczna próba
-                            if hasattr(self.client, 'query_account_info'):
-                                wallet = self.client.query_account_info()
-                            else:
-                                raise Exception("Brak dostępnych metod do pobrania salda portfela")
+                    # Próba pobrania salda konta z uwzględnieniem różnych API
+                    wallet = None
+                    wallet_methods = [
+                        ('get_wallet_balance', {}),
+                        ('get_wallet_balance', {'coin': 'USDT'}),
+                        ('query_account_info', {}),
+                        ('get_account_overview', {}),
+                        ('get_account_balance', {}),
+                        ('get_balances', {})
+                    ]
+                    
+                    for method_name, params in wallet_methods:
+                        if hasattr(self.client, method_name):
+                            try:
+                                method = getattr(self.client, method_name)
+                                wallet = method(**params)
+                                self.logger.info(f"Saldo pobrane metodą: {method_name}")
+                                break
+                            except Exception as method_error:
+                                self.logger.warning(f"Błąd podczas używania metody {method_name}: {method_error}")
+                    
+                    if wallet is None:
+                        self.logger.error("Wszystkie metody pobierania salda zawiodły")
+                        raise Exception("Brak dostępnych metod do pobrania salda portfela")
 
                     self.logger.info(f"Odpowiedź API Bybit: {str(wallet)[:200]}...")
 
