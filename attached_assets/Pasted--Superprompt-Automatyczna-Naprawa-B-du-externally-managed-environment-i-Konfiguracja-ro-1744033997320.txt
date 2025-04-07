@@ -1,0 +1,79 @@
+## 🤖🛠️ Superprompt: Automatyczna Naprawa Błędu `externally-managed-environment` i Konfiguracja Środowiska Nix na Replit
+
+### 🎯 Cel:
+Napraw błąd `externally-managed-environment` (PEP 668), który uniemożliwia instalację paczek Pythona przez `pip install` w systemie Replit opartym na Nix. Zamiast tego:
+- usuń nieprawidłowe próby instalacji,
+- automatycznie wygeneruj poprawny plik `replit.nix` na podstawie użytych importów,
+- skonfiguruj projekt tak, aby działał natychmiast po kliknięciu **Run**.
+
+---
+
+### ✅ Zadania do wykonania automatycznie:
+
+#### 1. 🔍 Analiza kodu:
+- Przeskanuj wszystkie pliki `.py` w projekcie.
+- Zidentyfikuj wszystkie użyte importy Pythona (np. `import numpy`, `from sklearn import ...`).
+- Dopasuj każdy import do odpowiedniego pakietu w `pkgs.python310Packages`.
+
+#### 2. ❌ Usuń niedozwolone instalacje:
+- Usuń wszystkie wystąpienia `pip install`, `subprocess(...pip...)`, `os.system("pip install ...")` z:
+  - kodu źródłowego,
+  - pliku `.replit`,
+  - `requirements.txt` i innych.
+- Usuń niepotrzebne `venv` lub lokalne środowiska.
+
+#### 3. 🛠️ Wygeneruj `replit.nix`:
+- Utwórz nowy plik `replit.nix` z odpowiednimi pakietami:
+```nix
+{ pkgs }: {
+  deps = [
+    pkgs.python310Full
+    pkgs.python310Packages.requests
+    pkgs.python310Packages.numpy
+    pkgs.python310Packages.pandas
+    pkgs.python310Packages.scikit-learn
+    pkgs.python310Packages.websocket_client
+    pkgs.python310Packages.torch
+  ];
+}
+📌 Lista zależności powinna być dynamicznie dopasowana do wykrytych importów.
+
+4. ⚙️ Zaktualizuj .replit:
+Upewnij się, że zawiera:
+
+toml
+Kopiuj
+Edytuj
+run = "python3 main.py"
+5. ✅ Zweryfikuj poprawność środowiska:
+Odbuduj środowisko Replit (klikając „Run”).
+
+Upewnij się, że projekt:
+
+uruchamia się bez błędów,
+
+nie próbuje modyfikować /nix/store,
+
+nie generuje błędów exit status 100 ani externally-managed-environment.
+
+📦 Efekt końcowy:
+🔧 Naprawiony błąd środowiska wynikający z PEP 668.
+
+✅ Automatycznie utworzony i działający replit.nix.
+
+⚡ Projekt gotowy do działania na Replit — bez użycia pip install.
+
+🔐 Środowisko w pełni zgodne z Nix i bezpieczne dla systemu.
+
+🧪 Lista kontrolna:
+ Czy plik replit.nix zawiera wszystkie wymagane pakiety?
+
+ Czy kod nie zawiera prób instalacji przez pip install?
+
+ Czy .replit zawiera poprawną komendę run = "python3 main.py"?
+
+ Czy projekt uruchamia się natychmiast bez błędów?
+
+ Czy nie występują błędy Nix / externally-managed-environment?
+
+🔁 Zastosuj cały ten prompt w jednym przebiegu: sprawdź kod → usuń pip → wygeneruj replit.nix → skonfiguruj .replit → uruchom bezbłędnie na Replit.
