@@ -41,7 +41,7 @@ class BybitConnector:
             try:
                 # Próba inicjalizacji dla nowszej wersji API używając odpowiednich klas rynkowych
                 endpoint = "https://api-testnet.bybit.com" if self.use_testnet else "https://api.bybit.com"
-                
+
                 # Używanie odpowiednich klas rynkowych, zgodnie z ostrzeżeniem z biblioteki
                 try:
                     # Najpierw próbujemy z spot API
@@ -76,7 +76,7 @@ class BybitConnector:
                         )
                         self.api_version = "v2"
                         logging.info(f"Zainicjalizowano klienta ByBit API v2 (ogólny). Testnet: {self.use_testnet}")
-                
+
                 # Testowe pobieranie czasu serwera w celu weryfikacji połączenia
                 try:
                     # Sprawdzamy dostępne metody dla czasu serwera
@@ -90,7 +90,7 @@ class BybitConnector:
                         # Jeśli żadna metoda nie jest dostępna, symulujemy czas
                         server_time = {"timeNow": int(time.time() * 1000)}
                         logging.warning("Brak metody do pobierania czasu serwera, używam czasu lokalnego")
-                        
+
                     logging.info(f"Połączenie z ByBit potwierdzone. Czas serwera: {server_time}")
                 except Exception as st_error:
                     logging.warning(f"Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: {st_error}")
@@ -233,7 +233,7 @@ class BybitConnector:
         max_retries = 3
         retry_count = 0
         retry_delay = 2.0  # sekundy
-        
+
         try:
             if self.client is None:
                 # Próba reinicjalizacji klienta
@@ -259,7 +259,7 @@ class BybitConnector:
                         "error": f"Klient API nie został zainicjalizowany. Błąd: {init_error}",
                         "note": "Dane przykładowe - błąd inicjalizacji klienta"
                     }
-            
+
             # Mechanizm ponawiania prób w przypadku przekroczenia limitów API
             while retry_count < max_retries:
                 try:
@@ -280,143 +280,143 @@ class BybitConnector:
                         # Przygotowanie zasłoniętego klucza do logów
                         masked_key = f"{self.api_key[:4]}{'*' * (len(self.api_key) - 4)}" if self.api_key else "Brak klucza"
                         self.logger.info(f"Próba pobrania danych z {'PRODUKCYJNEGO' if not self.use_testnet else 'TESTOWEGO'} API Bybit. Klucz: {masked_key}")
-                self.logger.info(f"Status API: {'Produkcyjne' if not self.use_testnet else 'Testnet'}")
+                    self.logger.info(f"Status API: {'Produkcyjne' if not self.use_testnet else 'Testnet'}")
 
-                try:
-                    # Testowanie połączenia z API z obsługą limitów zapytań
                     try:
-                        # Opóźnienie między zapytaniami, aby uniknąć przekroczenia limitów API
-                        # Przekroczenie limitu żądań zwykle wymaga dłuższej przerwy
-                        time.sleep(1.5)  # 1.5 sekundy przerwy między zapytaniami
-                        
-                        # Sprawdzanie dostępu do API - w różnych wersjach pybit metoda jest inna
-                        if hasattr(self.client, 'get_server_time'):
-                            time_response = self.client.get_server_time()
-                        elif hasattr(self.client, 'server_time'):
-                            time_response = self.client.server_time()
-                        elif hasattr(self.client, 'time'):
-                            time_response = self.client.time()
-                        else:
-                            # Jeśli nie ma dostępu do czasu serwera, używamy lokalnego
-                            time_response = {"timeNow": int(time.time() * 1000)}
-                            self.logger.warning("Brak metody do pobierania czasu serwera, używam czasu lokalnego")
-                        
-                        self.logger.info(f"Test połączenia z API: {time_response}")
-                    except Exception as time_error:
-                        error_str = str(time_error)
-                        self.logger.error(f"Test połączenia z API nie powiódł się: {time_error}")
-                        
-                        # Specjalna obsługa limitu żądań API
-                        if "rate limit" in error_str.lower() or "429" in error_str or "403" in error_str:
-                            self.logger.warning(f"Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.")
-                            # Zwracamy symulowane dane zamiast zgłaszania wyjątku
-                            return {
-                                "balances": {
-                                    "BTC": {"equity": 0.025, "available_balance": 0.020, "wallet_balance": 0.025},
-                                    "USDT": {"equity": 1500, "available_balance": 1450, "wallet_balance": 1500},
-                                    "ETH": {"equity": 0.5, "available_balance": 0.5, "wallet_balance": 0.5}
-                                },
-                                "success": True,
-                                "warning": "Przekroczono limit zapytań API. Dane symulowane.",
-                                "source": "simulation_rate_limited",
-                                "note": "Przekroczono limit zapytań API. Odczekaj chwilę przed ponowną próbą."
-                            }
-                        else:
-                            # Dla innych błędów zgłaszamy wyjątek
-                            raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+                        # Test połączenia z API z obsługą limitów zapytań
+                        try:
+                            # Opóźnienie między zapytaniami, aby uniknąć przekroczenia limitów API
+                            # Przekroczenie limitu żądań zwykle wymaga dłuższej przerwy
+                            time.sleep(1.5)  # 1.5 sekundy przerwy między zapytaniami
 
-                    # Próba pobrania salda konta z uwzględnieniem różnych API
-                    wallet = None
-                    wallet_methods = [
-                        ('get_wallet_balance', {}),
-                        ('get_wallet_balance', {'coin': 'USDT'}),
-                        ('query_account_info', {}),
-                        ('get_account_overview', {}),
-                        ('get_account_balance', {}),
-                        ('get_balances', {})
-                    ]
-                    
-                    for method_name, params in wallet_methods:
-                        if hasattr(self.client, method_name):
-                            try:
-                                method = getattr(self.client, method_name)
-                                wallet = method(**params)
-                                self.logger.info(f"Saldo pobrane metodą: {method_name}")
-                                break
-                            except Exception as method_error:
-                                self.logger.warning(f"Błąd podczas używania metody {method_name}: {method_error}")
-                    
-                    if wallet is None:
-                        self.logger.error("Wszystkie metody pobierania salda zawiodły")
-                        raise Exception("Brak dostępnych metod do pobrania salda portfela")
+                            # Sprawdzanie dostępu do API - w różnych wersjach pybit metoda jest inna
+                            if hasattr(self.client, 'get_server_time'):
+                                time_response = self.client.get_server_time()
+                            elif hasattr(self.client, 'server_time'):
+                                time_response = self.client.server_time()
+                            elif hasattr(self.client, 'time'):
+                                time_response = self.client.time()
+                            else:
+                                # Jeśli nie ma dostępu do czasu serwera, używamy lokalnego
+                                time_response = {"timeNow": int(time.time() * 1000)}
+                                self.logger.warning("Brak metody do pobierania czasu serwera, używam czasu lokalnego")
 
-                    self.logger.info(f"Odpowiedź API Bybit: {str(wallet)[:200]}...")
+                            self.logger.info(f"Test połączenia z API: {time_response}")
+                        except Exception as time_error:
+                            error_str = str(time_error)
+                            self.logger.error(f"Test połączenia z API nie powiódł się: {time_error}")
 
-                    # Sprawdzenie czy odpowiedź zawiera kod błędu
-                    if "retCode" in wallet and wallet["retCode"] != 0:
-                        error_msg = wallet.get("retMsg", "Nieznany błąd API")
-                        self.logger.error(f"API zwróciło błąd: {error_msg}")
-                        raise Exception(f"Błąd API ByBit: {error_msg}")
-
-                    result = {
-                        "balances": {},
-                        "success": True,
-                        "source": "API",
-                        "api_version": self.api_version
-                    }
-
-                    # Obsługa różnych formatów odpowiedzi w zależności od wersji API
-                    if wallet and "result" in wallet and "list" in wallet["result"]:
-                        # Nowsza struktura API ByBit
-                        for coin_data in wallet["result"]["list"]:
-                            coin = coin_data.get("coin")
-                            if coin:
-                                result["balances"][coin] = {
-                                    "equity": float(coin_data.get("equity", 0)),
-                                    "available_balance": float(coin_data.get("availableBalance", 0)),
-                                    "wallet_balance": float(coin_data.get("walletBalance", 0))
+                            # Specjalna obsługa limitu żądań API
+                            if "rate limit" in error_str.lower() or "429" in error_str or "403" in error_str:
+                                self.logger.warning(f"Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.")
+                                # Zwracamy symulowane dane zamiast zgłaszania wyjątku
+                                return {
+                                    "balances": {
+                                        "BTC": {"equity": 0.025, "available_balance": 0.020, "wallet_balance": 0.025},
+                                        "USDT": {"equity": 1500, "available_balance": 1450, "wallet_balance": 1500},
+                                        "ETH": {"equity": 0.5, "available_balance": 0.5, "wallet_balance": 0.5}
+                                    },
+                                    "success": True,
+                                    "warning": "Przekroczono limit zapytań API. Dane symulowane.",
+                                    "source": "simulation_rate_limited",
+                                    "note": "Przekroczono limit zapytań API. Odczekaj chwilę przed ponowną próbą."
                                 }
-                    elif wallet and "result" in wallet and isinstance(wallet["result"], dict):
-                        # Starsza struktura API ByBit lub format usdt_perpetual
-                        for coin, coin_data in wallet["result"].items():
-                            if isinstance(coin_data, dict):
-                                result["balances"][coin] = {
-                                    "equity": float(coin_data.get("equity", 0)),
-                                    "available_balance": float(coin_data.get("available_balance", 0) or coin_data.get("availableBalance", 0)),
-                                    "wallet_balance": float(coin_data.get("wallet_balance", 0) or coin_data.get("walletBalance", 0))
-                                }
-                    elif wallet and "result" in wallet and isinstance(wallet["result"], list):
-                        # Format odpowiedzi dla niektórych wersji API
-                        for coin_data in wallet["result"]:
-                            coin = coin_data.get("coin", "")
-                            if coin:
-                                result["balances"][coin] = {
-                                    "equity": float(coin_data.get("equity", 0)),
-                                    "available_balance": float(coin_data.get("available_balance", 0) or coin_data.get("availableBalance", 0)),
-                                    "wallet_balance": float(coin_data.get("wallet_balance", 0) or coin_data.get("walletBalance", 0))
-                                }
+                            else:
+                                # Dla innych błędów zgłaszamy wyjątek
+                                raise Exception(f"Brak dostępu do API Bybit: {time_error}")
 
-                    if not result["balances"]:
-                        self.logger.warning(f"API zwróciło pustą listę sald. Pełna odpowiedź: {wallet}")
-                        result["warning"] = "API zwróciło pustą listę sald"
-                        self.logger.info("Próba pobrania danych z API zwróciła pustą listę sald. Możliwe przyczyny: brak środków na koncie, nieprawidłowe konto, nieprawidłowe uprawnienia API.")
+                        # Próba pobrania salda konta z uwzględnieniem różnych API
+                        wallet = None
+                        wallet_methods = [
+                            ('get_wallet_balance', {}),
+                            ('get_wallet_balance', {'coin': 'USDT'}),
+                            ('query_account_info', {}),
+                            ('get_account_overview', {}),
+                            ('get_account_balance', {}),
+                            ('get_balances', {})
+                        ]
 
-                    return result
+                        for method_name, params in wallet_methods:
+                            if hasattr(self.client, method_name):
+                                try:
+                                    method = getattr(self.client, method_name)
+                                    wallet = method(**params)
+                                    self.logger.info(f"Saldo pobrane metodą: {method_name}")
+                                    break
+                                except Exception as method_error:
+                                    self.logger.warning(f"Błąd podczas używania metody {method_name}: {method_error}")
+
+                        if wallet is None:
+                            self.logger.error("Wszystkie metody pobierania salda zawiodły")
+                            raise Exception("Brak dostępnych metod do pobrania salda portfela")
+
+                        self.logger.info(f"Odpowiedź API Bybit: {str(wallet)[:200]}...")
+
+                        # Sprawdzenie czy odpowiedź zawiera kod błędu
+                        if "retCode" in wallet and wallet["retCode"] != 0:
+                            error_msg = wallet.get("retMsg", "Nieznany błąd API")
+                            self.logger.error(f"API zwróciło błąd: {error_msg}")
+                            raise Exception(f"Błąd API ByBit: {error_msg}")
+
+                        result = {
+                            "balances": {},
+                            "success": True,
+                            "source": "API",
+                            "api_version": self.api_version
+                        }
+
+                        # Obsługa różnych formatów odpowiedzi w zależności od wersji API
+                        if wallet and "result" in wallet and "list" in wallet["result"]:
+                            # Nowsza struktura API ByBit
+                            for coin_data in wallet["result"]["list"]:
+                                coin = coin_data.get("coin")
+                                if coin:
+                                    result["balances"][coin] = {
+                                        "equity": float(coin_data.get("equity", 0)),
+                                        "available_balance": float(coin_data.get("availableBalance", 0)),
+                                        "wallet_balance": float(coin_data.get("walletBalance", 0))
+                                    }
+                        elif wallet and "result" in wallet and isinstance(wallet["result"], dict):
+                            # Starsza struktura API ByBit lub format usdt_perpetual
+                            for coin, coin_data in wallet["result"].items():
+                                if isinstance(coin_data, dict):
+                                    result["balances"][coin] = {
+                                        "equity": float(coin_data.get("equity", 0)),
+                                        "available_balance": float(coin_data.get("available_balance", 0) or coin_data.get("availableBalance", 0)),
+                                        "wallet_balance": float(coin_data.get("wallet_balance", 0) or coin_data.get("walletBalance", 0))
+                                    }
+                        elif wallet and "result" in wallet and isinstance(wallet["result"], list):
+                            # Format odpowiedzi dla niektórych wersji API
+                            for coin_data in wallet["result"]:
+                                coin = coin_data.get("coin", "")
+                                if coin:
+                                    result["balances"][coin] = {
+                                        "equity": float(coin_data.get("equity", 0)),
+                                        "available_balance": float(coin_data.get("available_balance", 0) or coin_data.get("availableBalance", 0)),
+                                        "wallet_balance": float(coin_data.get("wallet_balance", 0) or coin_data.get("walletBalance", 0))
+                                    }
+
+                        if not result["balances"]:
+                            self.logger.warning(f"API zwróciło pustą listę sald. Pełna odpowiedź: {wallet}")
+                            result["warning"] = "API zwróciło pustą listę sald"
+                            self.logger.info("Próba pobrania danych z API zwróciła pustą listę sald. Możliwe przyczyny: brak środków na koncie, nieprawidłowe konto, nieprawidłowe uprawnienia API.")
+
+                        return result
+                    except Exception as e:
+                        self.logger.error(f"Błąd podczas pobierania danych z prawdziwego API: {e}. Traceback: {traceback.format_exc()}")
+                        # Dane symulowane w przypadku błędu
+                        return {
+                            "balances": {
+                                "BTC": {"equity": 0.025, "available_balance": 0.020, "wallet_balance": 0.025},
+                                "USDT": {"equity": 1500, "available_balance": 1450, "wallet_balance": 1500},
+                                "ETH": {"equity": 0.5, "available_balance": 0.5, "wallet_balance": 0.5}
+                            },
+                            "success": False,
+                            "error": str(e),
+                            "source": "simulation",
+                            "note": "Dane symulowane - błąd API: " + str(e)
+                        }
                 except Exception as e:
-                    self.logger.error(f"Błąd podczas pobierania danych z prawdziwego API: {e}. Traceback: {traceback.format_exc()}")
-                    # Dane symulowane w przypadku błędu
-                    return {
-                        "balances": {
-                            "BTC": {"equity": 0.025, "available_balance": 0.020, "wallet_balance": 0.025},
-                            "USDT": {"equity": 1500, "available_balance": 1450, "wallet_balance": 1500},
-                            "ETH": {"equity": 0.5, "available_balance": 0.5, "wallet_balance": 0.5}
-                        },
-                        "success": False,
-                        "error": str(e),
-                        "source": "simulation",
-                        "note": "Dane symulowane - błąd API: " + str(e)
-                    }
-        except Exception as e:
                     error_str = str(e)
                     # Sprawdzenie, czy błąd dotyczy przekroczenia limitu zapytań
                     if "rate limit" in error_str.lower() or "429" in error_str or "403" in error_str:
@@ -429,7 +429,7 @@ class BybitConnector:
                             continue
                         else:
                             self.logger.warning(f"Wykorzystano wszystkie próby ponawiania. Zwracam dane symulowane.")
-                    
+
                     self.logger.error(f"Krytyczny błąd podczas pobierania salda konta: {e}. Traceback: {traceback.format_exc()}")
                     # Dane symulowane w przypadku błędu
                     return {
@@ -442,10 +442,10 @@ class BybitConnector:
                         "source": "simulation_error",
                         "note": "Dane symulowane - wystąpił błąd: " + str(e)
                     }
-                
+
                 # Jeśli dotarliśmy tutaj, to znaczy, że zapytanie się powiodło
-                    break
-                
+                break
+
         except Exception as e:
             self.logger.error(f"Krytyczny błąd podczas pobierania salda konta: {e}. Traceback: {traceback.format_exc()}")
             # Dane symulowane w przypadku błędu
@@ -459,6 +459,17 @@ class BybitConnector:
                 "source": "simulation_critical_error",
                 "note": "Dane symulowane - wystąpił krytyczny błąd: " + str(e)
             }
+
+        return {
+            "balances": {
+                "BTC": {"equity": 0.01, "available_balance": 0.01, "wallet_balance": 0.01},
+                "USDT": {"equity": 1000, "available_balance": 950, "wallet_balance": 1000}
+            },
+            "success": False,
+            "error": "Nieudane pobieranie salda",
+            "source": "fallback",
+            "note": "Dane symulowane - żadna próba nie powiodła się"
+        }
 
     def place_order(self, symbol: str, side: str, price: float, quantity: float, 
                    order_type: str = "Limit") -> Dict[str, Any]:
