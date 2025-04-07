@@ -270,6 +270,28 @@ table tr:last-child td {
 }
 
 /* Responsive adjustments */
+/* Stany błędów i ładowania */
+.error-message {
+  color: var(--danger);
+  background-color: rgba(231, 76, 60, 0.1);
+  padding: 15px;
+  border-radius: 5px;
+  margin: 10px 0;
+  text-align: center;
+  border-left: 4px solid var(--danger);
+}
+
+.loading-indicator {
+  text-align: center;
+  padding: 20px;
+  color: var(--text-light);
+}
+
+.retry-button {
+  display: block;
+  margin: 10px auto;
+}
+
 @media (max-width: 768px) {
   .dashboard-grid {
     grid-template-columns: 1fr;

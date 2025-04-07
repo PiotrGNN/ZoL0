@@ -333,8 +333,12 @@ def chart_data():
     """Endpoint zwracający dane do wykresu aktywności."""
     from datetime import datetime, timedelta
     import random
+    import time
     
     try:
+        # Krótkie opóźnienie, aby zapobiec zbyt szybkim powtarzającym się żądaniom
+        time.sleep(0.1)
+        
         # Generowanie przykładowych danych dla wykresu (w rzeczywistej aplikacji byłyby pobierane z bazy danych)
         now = datetime.now()
         labels = [(now - timedelta(minutes=i*5)).strftime("%H:%M") for i in range(10)]
@@ -357,18 +361,21 @@ def chart_data():
                     "label": "Aktywność Detektora Anomalii",
                     "data": anomaly_activity,
                     "borderColor": "rgb(46, 204, 113)",
-                    "fill": False
+                    "backgroundColor": "rgba(46, 204, 113, 0.1)",
+                    "fill": True
                 },
                 {
                     "label": "Obciążenie Systemu",
                     "data": system_load,
                     "borderColor": "rgb(52, 152, 219)",
-                    "fill": False
+                    "backgroundColor": "rgba(52, 152, 219, 0.1)",
+                    "fill": True
                 },
                 {
                     "label": "Wykryte Anomalie",
                     "data": detected_anomalies,
                     "borderColor": "rgb(231, 76, 60)",
+                    "backgroundColor": "rgba(231, 76, 60, 0.3)",
                     "fill": False,
                     "pointRadius": 6
                 }
@@ -381,9 +388,10 @@ def chart_data():
         return jsonify(response_data)
     except Exception as e:
         logging.error("Błąd podczas generowania danych wykresu: %s", str(e))
-        # Zwracamy minimalny zestaw danych aby klient nie otrzymał błędu
+        # Zwracamy minimalny zestaw danych z kodem błędu 500
+        # Status 500 pomoże klientowi lepiej obsłużyć błąd i wyświetlić odpowiedni komunikat
         return jsonify({
-            "labels": ["Brak danych"],
+            "labels": ["Błąd danych"],
             "datasets": [
                 {
                     "label": "Dane niedostępne",
@@ -392,8 +400,8 @@ def chart_data():
                     "fill": False
                 }
             ],
-            "error": "Błąd generowania danych"
-        })
+            "error": f"Błąd generowania danych: {str(e)}"
+        }), 500
 
 def load_configuration():
     """Ładuje konfigurację systemu z plików."""

@@ -6,14 +6,19 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Dashboard załadowany');
 
-    // Inicjalizacja wykresów
-    initializeCharts();
+    try {
+        // Inicjalizacja wykresów
+        initializeCharts();
 
-    // Ustawienie interwału do pobierania danych
-    setInterval(updateDashboardData, 30000); // Co 30 sekund
+        // Ustawienie interwału do pobierania danych (co 30 sekund)
+        window.dashboardInterval = setInterval(updateDashboardData, 30000);
 
-    // Obsługa zdarzeń
-    setupEventListeners();
+        // Obsługa zdarzeń
+        setupEventListeners();
+    } catch (error) {
+        console.error("Błąd podczas inicjalizacji dashboardu:", error);
+        showNotification("Wystąpił błąd podczas ładowania dashboardu. Odśwież stronę.", "error");
+    }
 });
 
 /**
@@ -60,11 +65,15 @@ function initializeActivityChart() {
 function updateDashboardData() {
     console.log('Aktualizacja danych dashboardu...');
 
-    // Aktualizacja wykresu aktywności
-    fetchChartData(); // Use the new function to fetch and handle errors
-
-    // Symulacja aktualizacji statusów komponentów
-    updateComponentStatuses();
+    // Dodajemy prosty debounce, aby nie wysyłać zbyt wielu żądań
+    clearTimeout(window.updateTimeout);
+    window.updateTimeout = setTimeout(() => {
+        // Aktualizacja wykresu aktywności
+        fetchChartData();
+        
+        // Symulacja aktualizacji statusów komponentów
+        updateComponentStatuses();
+    }, 300);
 }
 
 
@@ -72,11 +81,24 @@ function updateDashboardData() {
 /**
  * Aktualizuje wykres aktywności
  */
-function updateActivityChart(data) { // Added data parameter
-    if (window.activityChart) {
-        window.activityChart.data.labels = data.labels;
-        window.activityChart.data.datasets = data.datasets;
-        window.activityChart.update();
+function updateActivityChart(data) {
+    try {
+        if (window.activityChart) {
+            window.activityChart.data.labels = data.labels;
+            window.activityChart.data.datasets = data.datasets;
+            window.activityChart.update();
+        } else {
+            console.error("Wykres aktywności nie jest zainicjalizowany");
+            initializeActivityChart(); // Próba ponownej inicjalizacji
+        }
+    } catch (error) {
+        console.error("Błąd podczas aktualizacji wykresu:", error);
+        // Próba naprawy wykresu
+        const ctx = document.getElementById('activityChart');
+        if (ctx) {
+            ctx.getContext('2d').clearRect(0, 0, ctx.width, ctx.height);
+            initializeActivityChart();
+        }
     }
 }
 
@@ -128,6 +150,16 @@ function setupEventListeners() {
                 });
         });
     }
+    
+    // Obsługa przycisku odświeżania danych
+    const refreshButton = document.getElementById('refreshDataBtn');
+    if (refreshButton) {
+        refreshButton.addEventListener('click', function() {
+            showNotification('Odświeżanie danych...', 'info');
+            fetchChartData();
+            updateComponentStatuses();
+        });
+    }
 }
 
 /**
@@ -156,10 +188,15 @@ function showNotification(message, type = 'info') {
 
 // Funkcja do pobierania danych wykresu z API
 function fetchChartData() {
-    // Usuń istniejący komunikat o błędzie, jeśli istnieje
+    // Usuń istniejący komunikat o błędzie i przycisk retry, jeśli istnieją
     const existingError = document.querySelector('.chart-container .error-message');
     if (existingError) {
         existingError.remove();
+    }
+    
+    const existingRetryBtn = document.querySelector('.chart-container .retry-button');
+    if (existingRetryBtn) {
+        existingRetryBtn.remove();
     }
     
     // Pokaż wykres (mógł być ukryty przez poprzedni błąd)
@@ -168,8 +205,23 @@ function fetchChartData() {
         chartCanvas.style.display = 'block';
     }
     
+    // Dodaj wskaźnik ładowania
+    const chartContainer = document.querySelector('.chart-container');
+    if (chartContainer) {
+        const loadingIndicator = document.createElement('div');
+        loadingIndicator.className = 'loading-indicator';
+        loadingIndicator.textContent = 'Ładowanie danych...';
+        chartContainer.appendChild(loadingIndicator);
+    }
+    
     fetch('/api/chart-data')
         .then(response => {
+            // Usuń wskaźnik ładowania
+            const loadingIndicator = document.querySelector('.loading-indicator');
+            if (loadingIndicator) {
+                loadingIndicator.remove();
+            }
+            
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
@@ -185,26 +237,28 @@ function fetchChartData() {
         .catch(error => {
             console.error("Błąd podczas pobierania danych wykresu:", error);
             
+            // Usuń wskaźnik ładowania jeśli wciąż istnieje
+            const loadingIndicator = document.querySelector('.loading-indicator');
+            if (loadingIndicator) {
+                loadingIndicator.remove();
+            }
+            
             // Wyświetl komunikat o błędzie na stronie
             if (chartCanvas) {
                 chartCanvas.style.display = 'none';
             }
             
-            const chartContainer = document.querySelector('.chart-container');
             if (chartContainer) {
                 const errorDiv = document.createElement('div');
                 errorDiv.className = 'error-message';
                 errorDiv.textContent = 'Nie udało się załadować danych wykresu. Spróbuj odświeżyć stronę.';
                 chartContainer.appendChild(errorDiv);
-            }
-            
-            // Dodajmy też przycisk do ręcznego odświeżenia
-            const retryButton = document.createElement('button');
-            retryButton.className = 'btn btn-primary';
-            retryButton.textContent = 'Odśwież dane';
-            retryButton.onclick = fetchChartData;
-            
-            if (chartContainer) {
+                
+                // Dodajmy też przycisk do ręcznego odświeżenia
+                const retryButton = document.createElement('button');
+                retryButton.className = 'btn btn-primary retry-button';
+                retryButton.textContent = 'Odśwież dane';
+                retryButton.onclick = fetchChartData;
                 chartContainer.appendChild(retryButton);
             }
         });
