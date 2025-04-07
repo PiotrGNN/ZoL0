@@ -1,0 +1,30 @@
+2025-04-07 19:21:34,354 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:21:34,357 [INFO] Status API: Produkcyjne
+2025-04-07 19:21:34,357 [ERROR] Test połączenia z API nie powiódł się: 'HTTP' object has no attribute 'time'
+2025-04-07 19:21:34,358 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'time'. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 247, in get_account_balance
+    time_response = self.client.time()
+AttributeError: 'HTTP' object has no attribute 'time'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 251, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'time'
+
+2025-04-07 19:21:34,359 [INFO] 172.31.128.72 - - [07/Apr/2025 19:21:34] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:21:34,708 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:21:37,140 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+'FLASK_ENV' is deprecated and will not be used in Flask 2.3. Use 'FLASK_DEBUG' instead.
+2025-04-07 19:21:37,158 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:21:37,158 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:21:37,158 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:21:37,158 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:21:37,158 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:21:37,159 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:21:37,159 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:21:37,159 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:21:37,163 [WARNING] This HTTP class is maintained for compatibility purposes. You should prefer importing market-specific classes, like so: from pybit.inverse_perpetual import HTTP; from pybit.spot import HTTP
+2025-04-07 19:21:37,164 [INFO] Zainicjalizowano klienta ByBit API v2. Testnet: False
+2025-04-07 19:21:37,164 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
