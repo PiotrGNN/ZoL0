@@ -10,6 +10,10 @@ import os
 import sys
 import time
 from dotenv import load_dotenv
+from flask import Flask, jsonify
+
+# Inicjalizacja aplikacji Flask
+app = Flask(__name__)
 
 # Utworzenie struktury katalogów
 os.makedirs("logs", exist_ok=True)
@@ -45,8 +49,8 @@ def initialize_components():
         logging.info("Inicjalizacja komponentów systemu...")
         
         # Import modułu wykrywania anomalii
-        from ai_models.anomaly_detection import AnomalyDetectionModel
-        anomaly_detector = AnomalyDetectionModel()
+        from ai_models.anomaly_detection import AnomalyDetector
+        anomaly_detector = AnomalyDetector()
         
         # Tutaj można dodać inicjalizację innych komponentów
         # na razie tylko symulacja
@@ -113,6 +117,33 @@ def display_welcome_message():
     =================================================================
     """)
 
+# Endpointy Flask dla serwera web
+@app.route('/')
+def index():
+    """Główny endpoint aplikacji."""
+    return jsonify({
+        "status": "online",
+        "service": "Trading Bot System",
+        "version": "1.0.0"
+    })
+
+@app.route('/health')
+def health_check():
+    """Endpoint do sprawdzania stanu aplikacji - używany przez Replit do health check."""
+    return jsonify({"status": "healthy"})
+
+@app.route('/api/status')
+def system_status():
+    """Endpoint zwracający status systemu."""
+    return jsonify({
+        "status": "operational",
+        "components": {
+            "anomaly_detector": "active",
+            "data_processor": "active",
+            "trading_engine": "standby"
+        }
+    })
+
 def main():
     """Główna funkcja systemu."""
     display_welcome_message()
@@ -133,6 +164,10 @@ def main():
     start_simulation_mode()
 
     logging.info("System zakończył pracę.")
+    
+    # Uruchomienie serwera Flask na 0.0.0.0, aby był dostępny publicznie
+    logging.info("Uruchamianie serwera web...")
+    app.run(host='0.0.0.0', port=5000)
 
 if __name__ == "__main__":
     try:
