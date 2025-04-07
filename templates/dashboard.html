@@ -1,337 +1,233 @@
-
 <!DOCTYPE html>
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Trading Bot</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f7fa;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 15px 20px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .card {
-            background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            grid-gap: 20px;
-        }
-        .metric {
-            text-align: center;
-            padding: 15px;
-        }
-        .metric h3 {
-            margin-top: 0;
-            color: #7f8c8d;
-        }
-        .metric p {
-            font-size: 2em;
-            font-weight: bold;
-            margin: 10px 0;
-            color: #2c3e50;
-        }
-        .status {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 3px;
-            font-weight: bold;
-        }
-        .status-online {
-            background-color: #2ecc71;
-            color: white;
-        }
-        .status-warning {
-            background-color: #f39c12;
-            color: white;
-        }
-        .status-offline {
-            background-color: #e74c3c;
-            color: white;
-        }
-        .chart-container {
-            height: 300px;
-            margin-bottom: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        .btn {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .btn:hover {
-            background-color: #2980b9;
-        }
-        .actions {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-    </style>
+    <title>Trading Bot - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="container">
+<div class="container">
         <div class="header">
-            <h1>🤖 Trading Bot - Dashboard</h1>
-            <span class="status status-online">ONLINE</span>
-        </div>
-
-        <div class="card">
-            <h2>Podsumowanie Systemu</h2>
-            <div class="grid">
-                <div class="metric">
-                    <h3>Status</h3>
-                    <p>Aktywny</p>
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-robot"></i>
+                    <span>Trading Bot System</span>
                 </div>
-                <div class="metric">
-                    <h3>Tryb Pracy</h3>
-                    <p>{{ system_mode }}</p>
-                </div>
-                <div class="metric">
-                    <h3>Aktywne Strategie</h3>
-                    <p>{{ active_strategies }}</p>
-                </div>
-                <div class="metric">
-                    <h3>Poziom Ryzyka</h3>
-                    <p>{{ risk_level }}</p>
-                </div>
+                <div class="status-pill">{{ system_mode }}</div>
             </div>
         </div>
 
-        <div class="card">
-            <h2>Komponenty Systemu</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Komponent</th>
-                        <th>Status</th>
-                        <th>Ostatnia Aktualizacja</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for component in components %}
-                    <tr>
-                        <td>{{ component.name }}</td>
-                        <td>
-                            <span class="status status-{{ component.status_class }}">
-                                {{ component.status }}
-                            </span>
-                        </td>
-                        <td>{{ component.last_update }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        
-        <div class="card">
-            <h2>Status Modeli AI</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Model</th>
-                        <th>Status</th>
-                        <th>Dokładność</th>
-                        <th>Ostatnie Użycie</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for model in ai_models %}
-                    <tr>
-                        <td>{{ model.name }}</td>
-                        <td>
-                            <span class="status status-{{ model.status_class }}">
-                                {{ model.status }}
-                            </span>
-                        </td>
-                        <td>{{ model.accuracy }}</td>
-                        <td>{{ model.last_used }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <div class="card">
-            <h2>Wykryte Anomalie</h2>
-            {% if anomalies %}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Data</th>
-                        <th>Para</th>
-                        <th>Poziom</th>
-                        <th>Opis</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for anomaly in anomalies %}
-                    <tr>
-                        <td>{{ anomaly.date }}</td>
-                        <td>{{ anomaly.pair }}</td>
-                        <td>{{ anomaly.level }}</td>
-                        <td>{{ anomaly.description }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            <p>Brak wykrytych anomalii w ostatnim czasie.</p>
-            {% endif %}
-        </div>
-        
-        <div class="card">
-            <h2>Ostatnie Działania Systemu</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Czas</th>
-                        <th>Typ</th>
-                        <th>Opis</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for action in system_actions %}
-                    <tr>
-                        <td>{{ action.time }}</td>
-                        <td>{{ action.type }}</td>
-                        <td>{{ action.description }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <div class="card">
-            <h2>Wykres Aktywności Systemu</h2>
-            <div id="chart-container" style="width: 100%; height: 300px;">
-                <canvas id="activityChart"></canvas>
+        <div class="summary-stats">
+            <div class="stat-card">
+                <div class="label">Tryb Systemu</div>
+                <div class="value">{{ system_mode }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Aktywne Strategie</div>
+                <div class="value">{{ active_strategies }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Poziom Ryzyka</div>
+                <div class="value">{{ risk_level }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Saldo Portfela</div>
+                <div class="value">1,000 USDT</div>
             </div>
         </div>
 
-        <div class="card">
-            <div class="actions">
-                <button class="btn" onclick="window.location.reload()">Odśwież Dashboard</button>
-                <button class="btn" onclick="window.location.href='/api/status'">Sprawdź Status API</button>
-                <button class="btn" onclick="window.location.href='/download-report'">Pobierz Raport</button>
-                <button class="btn" onclick="window.location.href='/start-simulation'">Uruchom Symulację</button>
+        <div class="dashboard-grid">
+            <div class="card grid-2">
+                <h2><i class="fas fa-chart-line"></i> Aktywność Systemu</h2>
+                <div class="chart-container">
+                    <canvas id="activityChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-cogs"></i> Status Komponentów</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Komponent</th>
+                            <th>Status</th>
+                            <th>Ostatnia Aktualizacja</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for component in components %}
+                        <tr>
+                            <td>{{ component.name }}</td>
+                            <td>
+                                <span class="status status-{{ component.status_class }}">
+                                    {{ component.status }}
+                                </span>
+                            </td>
+                            <td>{{ component.last_update }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-robot"></i> Status Modeli AI</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Status</th>
+                            <th>Dokładność</th>
+                            <th>Ostatnie Użycie</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for model in ai_models %}
+                        <tr>
+                            <td>{{ model.name }}</td>
+                            <td>
+                                <span class="status status-{{ model.status_class }}">
+                                    {{ model.status }}
+                                </span>
+                            </td>
+                            <td>{{ model.accuracy }}</td>
+                            <td>{{ model.last_used }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-exclamation-triangle"></i> Wykryte Anomalie</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Para</th>
+                            <th>Poziom</th>
+                            <th>Opis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for anomaly in anomalies %}
+                        <tr>
+                            <td>{{ anomaly.date }}</td>
+                            <td>{{ anomaly.pair }}</td>
+                            <td>{{ anomaly.level }}</td>
+                            <td>{{ anomaly.description }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-history"></i> Działania Systemu</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Czas</th>
+                            <th>Typ</th>
+                            <th>Opis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for action in system_actions %}
+                        <tr>
+                            <td>{{ action.time }}</td>
+                            <td>{{ action.type }}</td>
+                            <td>{{ action.description }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-comment-dots"></i> Analiza Sentymentu</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Źródło</th>
+                            <th>Sentyment</th>
+                            <th>Wolumen</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Twitter</td>
+                            <td><span class="status status-online">Pozytywny</span></td>
+                            <td>1250 postów</td>
+                        </tr>
+                        <tr>
+                            <td>Reddit</td>
+                            <td><span class="status status-warning">Neutralny</span></td>
+                            <td>850 postów</td>
+                        </tr>
+                        <tr>
+                            <td>News</td>
+                            <td><span class="status status-offline">Negatywny</span></td>
+                            <td>120 artykułów</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-bullseye"></i> Strategia Trading</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nazwa</th>
+                            <th>Status</th>
+                            <th>Wydajność</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Trend Following</td>
+                            <td><span class="status status-online">Aktywna</span></td>
+                            <td>+3.5%</td>
+                        </tr>
+                        <tr>
+                            <td>Mean Reversion</td>
+                            <td><span class="status status-warning">Testowana</span></td>
+                            <td>+2.1%</td>
+                        </tr>
+                        <tr>
+                            <td>Breakout Strategy</td>
+                            <td><span class="status status-offline">Nieaktywna</span></td>
+                            <td>-0.8%</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script>
-            // Inicjalizacja wykresu
-            const ctx = document.getElementById('activityChart').getContext('2d');
-            let activityChart;
-            
-            // Funkcja do inicjalizacji wykresu
-            function initChart(data) {
-                activityChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: data.labels,
-                        datasets: [
-                            {
-                                label: data.datasets[0].label,
-                                data: data.datasets[0].data,
-                                borderColor: data.datasets[0].borderColor,
-                                tension: 0.1,
-                                fill: false
-                            },
-                            {
-                                label: data.datasets[1].label,
-                                data: data.datasets[1].data,
-                                borderColor: data.datasets[1].borderColor,
-                                tension: 0.1,
-                                fill: false
-                            },
-                            {
-                                label: data.datasets[2].label,
-                                data: data.datasets[2].data,
-                                borderColor: data.datasets[2].borderColor,
-                                pointRadius: 6,
-                                pointHoverRadius: 8,
-                                showLine: false
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
-                    }
-                });
-            }
-            
-            // Funkcja do aktualizacji danych wykresu
-            function updateChart() {
-                fetch('/api/chart-data')
-                    .then(response => response.json())
-                    .then(data => {
-                        if (!activityChart) {
-                            initChart(data);
-                        } else {
-                            activityChart.data.labels = data.labels;
-                            for (let i = 0; i < data.datasets.length; i++) {
-                                activityChart.data.datasets[i].data = data.datasets[i].data;
-                            }
-                            activityChart.update();
-                        }
-                    })
-                    .catch(error => console.error('Błąd podczas pobierania danych wykresu:', error));
-            }
-            
-            // Inicjalne pobranie danych
-            updateChart();
-            
-            // Odświeżaj dane co 30 sekund
-            setInterval(updateChart, 30000);
-        </script>
+        <div class="action-buttons">
+            <button id="startSimulationBtn" class="btn btn-primary">
+                <i class="fas fa-play"></i> Uruchom Symulację
+            </button>
+            <button id="downloadReportBtn" class="btn btn-warning">
+                <i class="fas fa-download"></i> Pobierz Raport
+            </button>
+            <button class="btn btn-success">
+                <i class="fas fa-sync"></i> Odśwież Dane
+            </button>
+            <button class="btn btn-danger">
+                <i class="fas fa-stop"></i> Zatrzymaj System
+            </button>
+        </div>
+
+        <div class="footer">
+            <p>Trading Bot System &copy; 2025 | Wersja 1.0.0 | Środowisko: Replit</p>
+        </div>
     </div>
+
+    <script src="/static/js/dashboard.js"></script>
 </body>
 </html>

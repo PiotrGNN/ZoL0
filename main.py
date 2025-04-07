@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template
 
 # Inicjalizacja aplikacji Flask
-app = Flask(__name__, template_folder='templates')
+app = Flask(__name__, template_folder='templates', static_folder='static')
 
 # Utworzenie struktury katalogów
 os.makedirs("logs", exist_ok=True)

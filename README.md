@@ -1,11 +1,16 @@
-# 🚀 Trading System z wykorzystaniem AI
+
+# 🚀 Trading Bot System z wykorzystaniem AI
 
 Zaawansowany system tradingowy wykorzystujący modele sztucznej inteligencji do wykrywania anomalii rynkowych, predykcji trendów i automatycznego zarządzania transakcjami.
 
-## 📋 Wymagania systemowe
+## 📋 Funkcjonalności
 
-- Python 3.8+
-- Pakiety wymienione w `requirements.txt`
+- **Detekcja anomalii rynkowych** - Wykorzystanie uczenia maszynowego do wykrywania nietypowych zachowań rynku
+- **Analiza sentymentu** - Monitorowanie mediów społecznościowych i newsów w celu oceny nastrojów rynkowych
+- **Dashboard monitorujący** - Interaktywny interfejs użytkownika do śledzenia pracy systemu
+- **Zarządzanie ryzykiem** - Automatyczne dostosowanie pozycji do warunków rynkowych
+- **Strategie tradingowe** - Implementacja różnych strategii (trend following, mean reversion, breakout)
+- **Optymalizacja hiperparametrów** - Automatyczne dostrajanie parametrów modeli
 
 ## 🚀 Szybki start
 
@@ -25,70 +30,84 @@ pip install -r requirements.txt
 python main.py
 ```
 
-### Dostępne endpointy
+## 📚 Struktura projektu
 
-- `/` - Podstawowe API statusu systemu (JSON)
+```
+├── ai_models/              # Modele AI i uczenia maszynowego
+├── config/                 # Pliki konfiguracyjne
+├── data/                   # Logika biznesowa i komponenty 
+│   ├── indicators/         # Wskaźniki techniczne i analizy sentymentu
+│   ├── logging/            # Komponenty logowania
+│   ├── optimization/       # Optymalizatory
+│   ├── risk_management/    # Zarządzanie ryzykiem
+│   ├── strategies/         # Strategie tradingowe
+│   └── utils/              # Narzędzia pomocnicze
+├── logs/                   # Logi systemowe
+├── reports/                # Generowane raporty
+├── saved_models/           # Zapisane modele ML
+├── static/                 # Pliki statyczne dla interfejsu
+│   ├── css/                # Style CSS
+│   └── js/                 # Skrypty JavaScript
+├── templates/              # Szablony HTML dla dashboardu
+├── .env.example            # Przykładowe zmienne środowiskowe
+├── main.py                 # Główny plik aplikacji
+└── requirements.txt        # Zależności projektu
+```
+
+## 🔧 Konfiguracja
+
+System można skonfigurować poprzez zmienne środowiskowe lub plik `.env`:
+
+```
+# API Keys - Replace with your actual keys
+BINANCE_API_KEY=your_binance_api_key_here
+BINANCE_API_SECRET=your_binance_api_secret_here
+
+# Environment settings
+APP_ENV=development  # production, development, test
+
+# Trading parameters
+RISK_LEVEL=low  # low, medium, high
+ENABLE_AUTO_TRADING=false
+```
+
+## 🖥️ Dostępne endpointy
+
+- `/` - Przekierowanie do dashboardu
 - `/dashboard` - Panel administracyjny z wizualizacją stanu systemu
 - `/api/status` - Szczegółowy status API (JSON)
-- `/health` - Endpoint do sprawdzania stanu aplikacji
-
-## 🏗️ Struktura projektu
-
-```
-.
-├── ai_models/                # Modele AI i uczenia maszynowego
-├── config/                   # Pliki konfiguracyjne
-├── data/                     # Przetwarzanie i zarządzanie danymi
-│   ├── data/                 # Pobieranie i przetwarzanie danych
-│   ├── execution/            # Wykonywanie transakcji
-│   ├── indicators/           # Wskaźniki techniczne
-│   ├── logging/              # Logowanie zdarzeń
-│   ├── optimization/         # Optymalizacja strategii
-│   ├── risk_management/      # Zarządzanie ryzykiem
-│   ├── strategies/           # Strategie inwestycyjne
-│   ├── tests/                # Testy jednostkowe
-│   └── utils/                # Narzędzia pomocnicze
-├── logs/                     # Logi aplikacji
-├── saved_models/             # Zapisane modele ML
-├── main.py                   # Główny punkt wejścia
-└── requirements.txt          # Zależności projektu
-```
-
-## 🎛️ Dostępne workflowy
-
-W projekcie skonfigurowano następujące workflowy:
-
-1. **Run** - Uruchamia główny skrypt aplikacji
-2. **Test** - Uruchamia testy jednostkowe
-3. **Format Code** - Formatuje kod zgodnie z PEP 8 za pomocą Black
-4. **Lint Code** - Sprawdza jakość kodu za pomocą Flake8
-5. **Test with Coverage** - Uruchamia testy z raportem pokrycia
-6. **Install Dependencies** - Instaluje wymagane zależności
+- `/health` - Endpoint do monitorowania stanu aplikacji
+- `/api/chart-data` - Dane do wykresów (JSON)
+- `/start-simulation` - Uruchomienie symulacji (API)
+- `/download-report` - Wygenerowanie i pobranie raportu
 
 ## 🧪 Testowanie
+
+System zawiera testy jednostkowe i integracyjne:
 
 ```bash
 # Uruchomienie wszystkich testów
 pytest data/tests/
 
-# Uruchomienie testów z raportem pokrycia
+# Testy z pokryciem kodu
 pytest --cov=. --cov-report=term-missing data/tests/
 ```
 
-## 🔧 Narzędzia developerskie
+## 📝 Workflow Development
 
-- **Linter**: Flake8 - sprawdza jakość i zgodność kodu z PEP 8
-- **Formatter**: Black - automatycznie formatuje kod zgodnie z PEP 8
-- **Testy**: Pytest - framework do testów jednostkowych
+Dostępne workflow dla Replit:
 
-## 📊 Funkcjonalności
+1. **Run** - Uruchamia główną aplikację
+2. **Test** - Uruchamia testy
+3. **Format Code** - Formatuje kod za pomocą black
+4. **Lint Code** - Sprawdza jakość kodu przez flake8
+5. **Test with Coverage** - Uruchamia testy z raportem pokrycia
+6. **Install Dependencies** - Instaluje zależności
 
-1. **Wykrywanie anomalii rynkowych** - identyfikacja nietypowych wzorców cenowych
-2. **Zarządzanie ryzykiem** - dynamiczne dostosowanie wielkości pozycji i stop-lossów
-3. **Strategie inwestycyjne** - implementacja różnych strategii (trend following, mean reversion)
-4. **Optymalizacja strategii** - backtesting i optymalizacja hiperparametrów
-5. **Wykonywanie transakcji** - integracja z różnymi giełdami przez API
+## 🔒 Bezpieczeństwo
 
-## 📝 Licencja
+Zawsze używaj zmiennych środowiskowych do przechowywania poufnych danych jak klucze API. Nigdy nie przechowuj ich w kodzie. Użyj pliku `.env` lokalnie lub narzędzia "Secrets" w Replit.
 
-Ten projekt jest dostępny na licencji MIT.
+## 📄 Licencja
+
+Ten projekt jest udostępniony na licencji MIT.
