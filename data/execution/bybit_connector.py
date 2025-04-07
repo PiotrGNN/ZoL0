@@ -42,6 +42,11 @@ class BybitConnector:
                 # Próba inicjalizacji dla nowszej wersji API używając odpowiednich klas rynkowych
                 endpoint = "https://api-testnet.bybit.com" if self.use_testnet else "https://api.bybit.com"
 
+                # Inicjalizacja śledzenia limitów API
+                self.last_api_call = 0
+                self.min_time_between_calls = 0.5  # 500ms minimalny odstęp między zapytaniami
+                self.rate_limit_backoff = 5.0  # 5 sekund oczekiwania po przekroczeniu limitu
+
                 # Używanie odpowiednich klas rynkowych, zgodnie z ostrzeżeniem z biblioteki
                 try:
                     # Najpierw próbujemy z spot API
@@ -129,6 +134,7 @@ class BybitConnector:
             Dict[str, Any]: Czas serwera.
         """
         try:
+            self._apply_rate_limit()
             # Symulacja czasu serwera
             current_time = int(time.time() * 1000)
             return {
@@ -153,6 +159,7 @@ class BybitConnector:
             List[Dict[str, Any]]: Lista świec.
         """
         try:
+            self._apply_rate_limit()
             # Symulacja danych świecowych
             current_time = int(time.time())
             klines = []
@@ -200,6 +207,7 @@ class BybitConnector:
             Dict[str, Any]: Księga zleceń.
         """
         try:
+            self._apply_rate_limit()
             # Symulacja księgi zleceń
             base_price = 50000.0 if "BTC" in symbol else 3000.0  # Przykładowe ceny dla BTC lub innych par
 
@@ -235,6 +243,7 @@ class BybitConnector:
         retry_delay = 2.0  # sekundy
 
         try:
+            self._apply_rate_limit()
             if self.client is None:
                 # Próba reinicjalizacji klienta
                 try:
@@ -287,8 +296,7 @@ class BybitConnector:
                         try:
                             # Opóźnienie między zapytaniami, aby uniknąć przekroczenia limitów API
                             # Przekroczenie limitu żądań zwykle wymaga dłuższej przerwy
-                            time.sleep(1.5)  # 1.5 sekundy przerwy między zapytaniami
-
+                            self._apply_rate_limit()
                             # Sprawdzanie dostępu do API - w różnych wersjach pybit metoda jest inna
                             if hasattr(self.client, 'get_server_time'):
                                 time_response = self.client.get_server_time()
@@ -487,6 +495,7 @@ class BybitConnector:
             Dict[str, Any]: Wynik złożenia zlecenia.
         """
         try:
+            self._apply_rate_limit()
             # Sprawdzenie poprawności danych
             if side not in ["Buy", "Sell"]:
                 return {"success": False, "error": "Nieprawidłowa strona zlecenia. Musi być 'Buy' lub 'Sell'."}
@@ -532,6 +541,7 @@ class BybitConnector:
             Dict[str, Any]: Wynik anulowania zlecenia.
         """
         try:
+            self._apply_rate_limit()
             # Symulacja anulowania zlecenia
             self.logger.info(f"Anulowano zlecenie: {order_id}")
 
@@ -557,6 +567,7 @@ class BybitConnector:
             Dict[str, Any]: Status zlecenia.
         """
         try:
+            self._apply_rate_limit()
             # Symulacja pobierania statusu zlecenia
             statuses = ["New", "PartiallyFilled", "Filled", "Cancelled", "Rejected"]
             status = random.choice(statuses)
@@ -572,6 +583,16 @@ class BybitConnector:
         except Exception as e:
             self.logger.error(f"Błąd podczas pobierania statusu zlecenia: {e}")
             return {"success": False, "error": str(e)}
+
+    def _apply_rate_limit(self):
+        """Applies rate limiting to API calls."""
+        now = time.time()
+        time_since_last_call = now - self.last_api_call
+        if time_since_last_call < self.min_time_between_calls:
+            sleep_time = self.min_time_between_calls - time_since_last_call
+            time.sleep(sleep_time)
+        self.last_api_call = time.time()
+
 
 if __name__ == "__main__":
     # Przykład użycia

@@ -482,6 +482,36 @@ main {
     gap: 2rem;
 }
 
+
+/* Dodatkowe style dla komunikatów o błędach */
+.error-details {
+    font-size: 0.85em;
+    color: #888;
+    margin-bottom: 15px;
+}
+
+.retry-button {
+    background-color: #4a6cf7;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.retry-button:hover {
+    background-color: #3a5cd7;
+}
+
+.error-message {
+    padding: 15px;
+    border: 1px solid #ffcccc;
+    background-color: #fff8f8;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
 section {
     background-color: white;
     border-radius: 8px;

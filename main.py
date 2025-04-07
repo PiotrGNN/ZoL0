@@ -97,10 +97,12 @@ def initialize_system():
             if not use_testnet:
                 logging.warning("UWAGA: Używasz PRODUKCYJNEGO API ByBit. Operacje handlowe będą mieć realne skutki finansowe!")
 
+            # Użyj wartości z konfiguracji lub zmiennych środowiskowych
+            use_testnet = os.getenv("BYBIT_USE_TESTNET", "true").lower() == "true"
             bybit_client = BybitConnector(
                 api_key=api_key,
                 api_secret=api_secret,
-                use_testnet=False  # Ustawienie na False, aby używać produkcyjnego API
+                use_testnet=use_testnet  # Korzystamy z konfiguracji
             )
             server_time = bybit_client.get_server_time()
             logger.info(f"Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {server_time}")

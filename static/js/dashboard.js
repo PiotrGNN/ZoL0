@@ -164,6 +164,7 @@ function updatePortfolioData() {
                 portfolioContainer.innerHTML = `
                     <div class="error-message">
                         <p>Brak danych portfela lub problem z połączeniem z ByBit.</p>
+                        <p class="error-details">Możliwa przyczyna: przekroczenie limitu zapytań API (rate limit). Odczekaj chwilę i spróbuj ponownie.</p>
                         <button id="retry-portfolio" class="retry-button">Spróbuj ponownie</button>
                     </div>
                 `;
