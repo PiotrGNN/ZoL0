@@ -7,10 +7,11 @@ document.addEventListener('DOMContentLoaded', function() {
     updateComponentStatuses();
     fetchNotifications();
     setupEventListeners();
+    initializeChart(); // Added chart initialization
 
-    // Interwały aktualizacji
-    setInterval(updateDashboardData, 30000); // Co 30 sekund
-    setInterval(updateComponentStatuses, 30000); // Co 30 sekund
+    // Interwały aktualizacji - poprawione interwały
+    setInterval(updateDashboardData, 5000); // Co 5 sekund
+    setInterval(updateComponentStatuses, 10000); // Co 10 sekund
     setInterval(fetchNotifications, 60000); // Co minutę
 });
 
@@ -219,8 +220,13 @@ function hideChartError() {
 
 function retryLoadChart() {
     hideChartError();
-    updateCharts();
+    initializeChart(); // Call initializeChart instead of updateCharts
 }
+
+function initializeChart() {
+    updateCharts(); // Initialize the chart by calling updateCharts
+}
+
 
 function updateTradingStats() {
     fetch('/api/trading-stats')
