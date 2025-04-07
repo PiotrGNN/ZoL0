@@ -81,7 +81,11 @@ class BybitConnector:
         self.recv_window = recv_window
         self.max_retries = max_retries
         self.retry_delay = retry_delay
-        self.simulation_mode = simulation_mode or requests is None
+        # Włącz tryb symulacji jeśli określono explicite, brak kluczy lub brak modułu requests
+        self.simulation_mode = simulation_mode or not all([api_key, api_secret]) or requests is None
+
+        if self.simulation_mode:
+            logging.warning("BybitConnector działa w trybie symulacji. Żadne prawdziwe transakcje nie będą wykonywane.")
 
         # Konfiguracja backendu
         self.base_url = self.API_URL_TESTNET if use_testnet else self.API_URL_MAINNET
