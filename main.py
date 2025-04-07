@@ -75,9 +75,7 @@ def initialize_system():
             api_secret = os.getenv("BYBIT_API_SECRET")
             if not api_key or not api_secret:
                 logging.warning("Brak kluczy API ByBit w zmiennych środowiskowych. Sprawdź plik .env")
-                # Ustawiamy hardcoded klucze jako fallback - NIE ROBIC TEGO W PRODUKCJI!
-                api_key = "9VJok4aTxM7RRHJWCW"
-                api_secret = "EpQuWQiHwgVNQeKHqedA7i69Qv6mVFasxv2F"
+                return False
 
             bybit_client = BybitConnector(
                 api_key=api_key,
