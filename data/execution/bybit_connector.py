@@ -36,12 +36,33 @@ class BybitConnector:
         # Inicjalizacja klienta API
         try:
             import pybit
-            self.client = pybit.unified_trading.HTTP(
-                api_key=self.api_key,
-                api_secret=self.api_secret,
-                testnet=self.use_testnet
-            )
-            logging.info(f"Zainicjalizowano klienta ByBit API. Testnet: {self.use_testnet}")
+            
+            # Sprawdzamy wersję i dostosowujemy inicjalizację do odpowiedniej wersji API
+            # W nowszych wersjach używamy unified_trading, w starszych usdb_perpetual
+            if hasattr(pybit, 'unified_trading'):
+                self.client = pybit.unified_trading.HTTP(
+                    api_key=self.api_key,
+                    api_secret=self.api_secret,
+                    testnet=self.use_testnet
+                )
+                self.api_version = "unified"
+            elif hasattr(pybit, 'usdt_perpetual'):
+                self.client = pybit.usdt_perpetual.HTTP(
+                    endpoint="https://api-testnet.bybit.com" if self.use_testnet else "https://api.bybit.com",
+                    api_key=self.api_key,
+                    api_secret=self.api_secret
+                )
+                self.api_version = "usdt_perpetual"
+            else:
+                # Fallback dla najnowszej wersji pybit (po 2.5+)
+                self.client = pybit.HTTP(
+                    testnet=self.use_testnet,
+                    api_key=self.api_key,
+                    api_secret=self.api_secret
+                )
+                self.api_version = "v5"
+                
+            logging.info(f"Zainicjalizowano klienta ByBit API. Wersja: {self.api_version}, Testnet: {self.use_testnet}")
         except ImportError:
             logging.error("Nie można zaimportować modułu pybit. Sprawdź czy jest zainstalowany.")
             self.client = None
@@ -223,8 +244,14 @@ class BybitConnector:
                         self.logger.error(f"Test połączenia z API nie powiódł się: {time_error}")
                         raise Exception(f"Brak dostępu do API Bybit: {time_error}")
                     
-                    # Próba pobrania salda konta
-                    wallet = self.client.get_wallet_balance(accountType="UNIFIED")
+                    # Próba pobrania salda konta - dostosowana do różnych wersji API
+                    if self.api_version == "unified":
+                        wallet = self.client.get_wallet_balance(accountType="UNIFIED")
+                    elif self.api_version == "usdt_perpetual":
+                        wallet = self.client.get_wallet_balance()
+                    else:
+                        # Najnowsza wersja API (v5)
+                        wallet = self.client.get_wallet_balance(accountType="UNIFIED")
                     
                     self.logger.info(f"Odpowiedź API Bybit: {str(wallet)[:200]}...")
                     
@@ -237,9 +264,11 @@ class BybitConnector:
                     result = {
                         "balances": {},
                         "success": True,
-                        "source": "API"
+                        "source": "API",
+                        "api_version": self.api_version
                     }
 
+                    # Obsługa różnych formatów odpowiedzi w zależności od wersji API
                     if wallet and "result" in wallet and "list" in wallet["result"]:
                         # Nowsza struktura API ByBit
                         for coin_data in wallet["result"]["list"]:
@@ -250,14 +279,25 @@ class BybitConnector:
                                     "available_balance": float(coin_data.get("availableBalance", 0)),
                                     "wallet_balance": float(coin_data.get("walletBalance", 0))
                                 }
-                    elif wallet and "result" in wallet:
-                        # Starsza struktura API ByBit
-                        for coin in wallet["result"]:
-                            result["balances"][coin] = {
-                                "equity": float(wallet["result"][coin].get("equity", 0)),
-                                "available_balance": float(wallet["result"][coin].get("available_balance", 0)),
-                                "wallet_balance": float(wallet["result"][coin].get("wallet_balance", 0))
-                            }
+                    elif wallet and "result" in wallet and isinstance(wallet["result"], dict):
+                        # Starsza struktura API ByBit lub format usdt_perpetual
+                        for coin, coin_data in wallet["result"].items():
+                            if isinstance(coin_data, dict):
+                                result["balances"][coin] = {
+                                    "equity": float(coin_data.get("equity", 0)),
+                                    "available_balance": float(coin_data.get("available_balance", 0) or coin_data.get("availableBalance", 0)),
+                                    "wallet_balance": float(coin_data.get("wallet_balance", 0) or coin_data.get("walletBalance", 0))
+                                }
+                    elif wallet and "result" in wallet and isinstance(wallet["result"], list):
+                        # Format odpowiedzi dla niektórych wersji API
+                        for coin_data in wallet["result"]:
+                            coin = coin_data.get("coin", "")
+                            if coin:
+                                result["balances"][coin] = {
+                                    "equity": float(coin_data.get("equity", 0)),
+                                    "available_balance": float(coin_data.get("available_balance", 0) or coin_data.get("availableBalance", 0)),
+                                    "wallet_balance": float(coin_data.get("wallet_balance", 0) or coin_data.get("walletBalance", 0))
+                                }
                     
                     if not result["balances"]:
                         self.logger.warning(f"API zwróciło pustą listę sald. Pełna odpowiedź: {wallet}")
