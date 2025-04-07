@@ -46,7 +46,7 @@ class APIHandler:
     @lru_cache(maxsize=128)
     def get(self, endpoint: str, params: dict = None) -> dict:
         """
-        Wykonuje żądanie GET do API z retry i exponential backoff, cache'ując odpowiedzi.
+        Wykonuje żądanie GET do API z retry i exponential backoff, cache’ując odpowiedzi.
 
         Parameters:
             endpoint (str): Endpoint API (dopisany do base_url).
@@ -59,8 +59,6 @@ class APIHandler:
         params = params or {}
         attempt = 0
         delay = 1  # początkowe opóźnienie
-        last_exception = None
-
         while attempt < MAX_RETRIES:
             try:
                 logging.debug(
@@ -72,62 +70,19 @@ class APIHandler:
                 response = requests.get(
                     url, headers=self.headers, params=params, timeout=DEFAULT_TIMEOUT
                 )
-
-                # Loguj status i nagłówki niezależnie od powodzenia
-                logging.debug("Status odpowiedzi: %d, Nagłówki: %s", 
-                             response.status_code, response.headers)
-
-                # Pobierz surową treść odpowiedzi w przypadku błędu
-                if not response.ok:
-                    try:
-                        response_text = response.text
-                        logging.error(
-                            "Błąd HTTP %d: %s - %s", 
-                            response.status_code, response.reason, response_text
-                        )
-                    except Exception as text_ex:
-                        logging.error("Nie można odczytać treści odpowiedzi: %s", str(text_ex))
-                        response_text = "Nie można odczytać treści"
-
-                    raise requests.exceptions.HTTPError(
-                        f"HTTP {response.status_code}: {response.reason} - {response_text}",
-                        response=response
-                    )
-
-                # Próba parsowania JSON
-                try:
-                    data = response.json()
-                    logging.debug("Otrzymano odpowiedź JSON: %s", data)
-                    return data
-                except ValueError as json_err:
-                    logging.error("Nieprawidłowa odpowiedź JSON: %s", response.text[:500])
-                    raise ValueError(f"Nieprawidłowy format JSON: {json_err}. Odpowiedź: {response.text[:500]}...")
-
+                response.raise_for_status()
+                data = response.json()
+                logging.debug("Otrzymano odpowiedź: %s", data)
+                return data
             except requests.exceptions.RequestException as e:
                 attempt += 1
-                last_exception = e
                 logging.warning(
-                    "Błąd żądania GET (próba %d/%d): %s - %s", 
-                    attempt, MAX_RETRIES, type(e).__name__, str(e)
+                    "Błąd żądania GET (próba %d/%d): %s", attempt, MAX_RETRIES, e
                 )
-
-                # Loguj pełne dane wyjątku dla łatwiejszej diagnostyki
-                if hasattr(e, 'response') and e.response is not None:
-                    logging.warning(
-                        "Szczegóły błędu: Status=%s, Treść=%s", 
-                        e.response.status_code if hasattr(e.response, 'status_code') else 'N/A',
-                        e.response.text[:500] if hasattr(e.response, 'text') else 'N/A'
-                    )
-
                 time.sleep(delay)
                 delay *= BACKOFF_FACTOR
-
-        # Pełne logowanie ostatecznego błędu
-        error_msg = f"Przekroczono maksymalną liczbę prób ({MAX_RETRIES}) dla żądania GET do {url}"
-        logging.error("%s. Ostatni błąd: %s", error_msg, last_exception)
-
-        # Rzuć wyjątek z pełnymi informacjami
-        raise Exception(f"{error_msg}. Ostatni błąd: {str(last_exception)}")
+        logging.error("Przekroczono maksymalną liczbę prób dla żądania GET do %s.", url)
+        raise Exception(f"Nie udało się uzyskać odpowiedzi z {url}")
 
     def post(self, endpoint: str, data: dict = None, json_data: dict = None) -> dict:
         """

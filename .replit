@@ -1,15 +1,15 @@
-
-run = "python3 main.py"
-modules = ["python-3.10:v18-20230807-322e88b"]
-hidden = [".config", "**/__pycache__", "**/.mypy_cache", "**/*.pyc"]
+run = "python main.py"
+language = "python3"
+entrypoint = "main.py"
+hidden = [".git", ".config", "**/__pycache__", "**/.mypy_cache", "**/*.pyc"]
+modules = ["python-3.11"]
 
 [nix]
 channel = "stable-22_11"
 
 [env]
-PYTHONPATH = "${REPL_HOME}"
-PYTHONUNBUFFERED = "1"
-FLASK_ENV = "development"
+PYTHONPATH = "$PYTHONPATH:$PWD"
+PATH = "$PATH:$PWD"
 
 [packager]
 language = "python3"
@@ -19,18 +19,76 @@ ignoredPackages = ["unit_tests"]
 packageSearch = true
 guessImports = true
 
-[languages]
-
 [languages.python3]
 pattern = "**/*.py"
+syntax = "python"
 
 [languages.python3.languageServer]
 start = "pylsp"
 
+[unitTest]
+language = "python3"
+
 [deployment]
-run = ["sh", "-c", "python3 main.py"]
+run = ["sh", "-c", "python main.py"]
 deploymentTarget = "cloudrun"
 
-[[ports]]
-localPort = 5000
-externalPort = 80
+[gitHubImport]
+requiredFiles = [".replit", "replit.nix", ".gitignore"]
+
+[workflows]
+runButton = "Run"
+
+[[workflows.workflow]]
+name = "Run"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python3 main.py"
+
+[[workflows.workflow]]
+name = "Test"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pytest data/tests/"
+
+[[workflows.workflow]]
+name = "Format Code"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "black ."
+
+[[workflows.workflow]]
+name = "Lint Code"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "flake8 ."
+
+[[workflows.workflow]]
+name = "Test with Coverage"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pytest --cov=. --cov-report=term-missing data/tests/"
+
+[[workflows.workflow]]
+name = "Install Dependencies"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pip install -r requirements.txt"
