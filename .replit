@@ -1,28 +1,38 @@
-run = ["python", "main.py"]
+run = "python main.py"
 entrypoint = "main.py"
-hidden = [".config", "pyproject.toml", ".pylintrc", ".flake8", ".gitignore", "**/__pycache__", "**/.mypy_cache", "**/*.pyc"]
 modules = ["python-3.10:v18-20230807-322e88b"]
 
+hidden = [".config", "**/__pycache__", "**/.mypy_cache", "**/*.pyc"]
+
 [nix]
-channel = "stable-22_11"
+channel = "stable-23_05"
 
 [env]
-PYTHONPATH = "${PYTHONPATH}:${workspaceDir}"
-PORT = "5000"
+PYTHONPATH = "${REPL_HOME}"
 FLASK_APP = "main.py"
 FLASK_ENV = "development"
 
-[languages]
-python = "CPython 3.10"
+[packager]
+language = "python3"
 
-[languages.python]
+[packager.features]
+packageSearch = true
+guessImports = true
+
+[unitTest]
+language = "python3"
+
+[languages]
+
+[languages.python3]
 pattern = "**/*.py"
 
-[languages.python.languageServer]
-start = ["pylsp"]
+[languages.python3.languageServer]
+start = "pylsp"
 
-[webview]
-port = 5000
+[deployment]
+run = ["python", "main.py"]
+deploymentTarget = "cloudrun"
 
 [server]
 host = "0.0.0.0"

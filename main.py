@@ -543,5 +543,4 @@ if __name__ == "__main__":
     # Uruchomienie aplikacji - zawsze używamy 0.0.0.0 i portu 5000 w Replit
     port = int(os.environ.get("PORT", 5000))
     logging.info(f"Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie {port}")
-    print(f"\n\n*** Aplikacja uruchomiona - dostęp przez przeglądarkę na https://{os.environ.get('REPL_SLUG')}.{os.environ.get('REPL_OWNER')}.repl.co ***\n\n")
-    app.run(host='0.0.0.0', port=port, debug=True, use_reloader=False)
+    app.run(host='0.0.0.0', port=port, debug=True)
