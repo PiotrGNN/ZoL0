@@ -178,17 +178,37 @@ class BybitConnector:
                     
                 # Testowe pobieranie czasu serwera w celu weryfikacji połączenia
                 try:
-                    # Sprawdzamy dostępne metody dla czasu serwera
-                    if hasattr(self.client, 'get_server_time'):
-                        server_time = self.client.get_server_time()
-                    elif hasattr(self.client, 'server_time'):
-                        server_time = self.client.server_time()
-                    elif hasattr(self.client, 'time'):
-                        server_time = self.client.time()
-                    else:
-                        # Jeśli żadna metoda nie jest dostępna, symulujemy czas
+                    # Używamy bezpośredniego zapytania HTTP do publicznych endpointów bez autoryzacji
+                    try:
+                        # Próba z endpointem Unified v5 API - najnowszym i zalecanym
+                        v5_endpoint = f"{self.base_url}/v5/market/time"
+                        self.logger.debug(f"Próba pobierania czasu z endpointu v5: {v5_endpoint}")
+                        response = requests.get(v5_endpoint, timeout=5)
+                        if response.status_code == 200:
+                            data = response.json()
+                            if data.get("retCode") == 0 and "result" in data:
+                                server_time = {"timeNow": data["result"]["timeNano"] // 1000000}
+                                self.logger.debug(f"Czas serwera v5: {server_time}")
+                            else:
+                                raise Exception(f"Błędna odpowiedź z endpointu v5: {data}")
+                        else:
+                            # Próba z endpointem Spot API
+                            spot_endpoint = f"{self.base_url}/spot/v1/time"
+                            self.logger.debug(f"Próba pobierania czasu z endpointu spot: {spot_endpoint}")
+                            response = requests.get(spot_endpoint, timeout=5)
+                            if response.status_code == 200:
+                                data = response.json()
+                                if data.get("ret_code") == 0 and "serverTime" in data:
+                                    server_time = {"timeNow": data["serverTime"]}
+                                    self.logger.debug(f"Czas serwera spot: {server_time}")
+                                else:
+                                    raise Exception(f"Błędna odpowiedź z endpointu spot: {data}")
+                            else:
+                                raise Exception(f"Błąd HTTP {response.status_code} dla obu endpointów czasu serwera")
+                    except Exception as e:
+                        # Jeśli żadna metoda nie zadziała, używamy czasu lokalnego
                         server_time = {"timeNow": int(time.time() * 1000)}
-                        self.logger.warning("Brak metody do pobierania czasu serwera, używam czasu lokalnego")
+                        self.logger.warning(f"Brak dostępu do czasu serwera, używam czasu lokalnego. Błąd: {e}")
 
                     self.logger.info(f"Połączenie z ByBit potwierdzone. Czas serwera: {server_time}")
                     
@@ -292,17 +312,39 @@ class BybitConnector:
                         "source": "local_init_failed"
                     }
             
-            # Jeśli mamy klienta, spróbuj pobrać prawdziwy czas serwera (ale tylko jeśli nie przekroczono limitów)
-            if self.client and not self.rate_limit_exceeded:
+            # Próba pobrania prawdziwego czasu serwera bezpośrednio przez HTTP (bez autoryzacji)
+            if not self.rate_limit_exceeded:
                 try:
-                    if hasattr(self.client, 'get_server_time'):
-                        server_time = self.client.get_server_time()
-                    elif hasattr(self.client, 'server_time'):
-                        server_time = self.client.server_time()
-                    elif hasattr(self.client, 'time'):
-                        server_time = self.client.time()
+                    # Używamy endpointu v5 - najnowszego i preferowanego
+                    v5_endpoint = f"{self.base_url}/v5/market/time"
+                    self.logger.debug(f"Pobieranie czasu z V5 API: {v5_endpoint}")
+                    response = requests.get(v5_endpoint, timeout=5)
+                    
+                    if response.status_code == 200:
+                        data = response.json()
+                        if data.get("retCode") == 0 and "result" in data:
+                            server_time = {"timeNow": data["result"]["timeNano"] // 1000000}
+                            self.logger.debug(f"Pobrano czas serwera z V5 API: {server_time}")
+                        else:
+                            # Próba z endpointem Spot API jako fallback
+                            spot_endpoint = f"{self.base_url}/spot/v1/time"
+                            self.logger.debug(f"Pobieranie czasu z Spot API: {spot_endpoint}")
+                            response = requests.get(spot_endpoint, timeout=5)
+                            
+                            if response.status_code == 200:
+                                data = response.json()
+                                if data.get("ret_code") == 0 and "serverTime" in data:
+                                    server_time = {"timeNow": data["serverTime"]}
+                                    self.logger.debug(f"Pobrano czas serwera z Spot API: {server_time}")
+                                else:
+                                    raise Exception(f"Błędna odpowiedź z endpointu Spot: {data}")
+                            else:
+                                raise Exception(f"Błąd HTTP {response.status_code} dla obu endpointów czasu serwera")
                     else:
-                        raise AttributeError("Brak metody do pobierania czasu serwera")
+                        raise Exception(f"Błąd HTTP {response.status_code} dla V5 API")
+                except Exception as e:
+                    self.logger.warning(f"Nie udało się pobrać czasu serwera przez HTTP: {e}. Używam czasu lokalnego.")
+                    raise
                         
                     # Zapisz wynik w cache
                     try:
@@ -522,17 +564,39 @@ class BybitConnector:
                                 self.logger.info(f"Używam lokalnego czasu ({local_time}) zamiast odpytywania API (oszczędzanie limitów)")
                                 return {'success': True, 'time_ms': local_time, 'time': time.strftime('%Y-%m-%d %H:%M:%S')}
 
-                            # Sprawdzanie dostępu do API - w różnych wersjach pybit metoda jest inna
-                            if hasattr(self.client, 'get_server_time'):
-                                time_response = self.client.get_server_time()
-                            elif hasattr(self.client, 'server_time'):
-                                time_response = self.client.server_time()
-                            elif hasattr(self.client, 'time'):
-                                time_response = self.client.time()
-                            else:
-                                # Jeśli nie ma dostępu do czasu serwera, używamy lokalnego
+                            # Sprawdzanie dostępu do API przez bezpośrednie zapytanie HTTP do publicznego endpointu
+                            try:
+                                # Próba z endpointem Unified v5 API
+                                v5_endpoint = f"{self.base_url}/v5/market/time"
+                                self.logger.debug(f"Test połączenia z V5 API: {v5_endpoint}")
+                                response = requests.get(v5_endpoint, timeout=5)
+                                
+                                if response.status_code == 200:
+                                    data = response.json()
+                                    if data.get("retCode") == 0 and "result" in data:
+                                        time_response = {"timeNow": data["result"]["timeNano"] // 1000000}
+                                        self.logger.debug(f"Czas serwera V5: {time_response}")
+                                    else:
+                                        raise Exception(f"Nieprawidłowa odpowiedź z V5 API: {data}")
+                                else:
+                                    # Fallback do Spot API
+                                    spot_endpoint = f"{self.base_url}/spot/v1/time"
+                                    self.logger.debug(f"Test połączenia ze Spot API: {spot_endpoint}")
+                                    response = requests.get(spot_endpoint, timeout=5)
+                                    
+                                    if response.status_code == 200:
+                                        data = response.json()
+                                        if data.get("ret_code") == 0 and "serverTime" in data:
+                                            time_response = {"timeNow": data["serverTime"]}
+                                            self.logger.debug(f"Czas serwera Spot: {time_response}")
+                                        else:
+                                            raise Exception(f"Nieprawidłowa odpowiedź ze Spot API: {data}")
+                                    else:
+                                        raise Exception(f"Błąd HTTP {response.status_code} dla obu endpointów")
+                            except Exception as e:
+                                # Awaryjnie używamy czasu lokalnego
                                 time_response = {"timeNow": int(time.time() * 1000)}
-                                self.logger.warning("Brak metody do pobierania czasu serwera, używam czasu lokalnego")
+                                self.logger.warning(f"Brak dostępu do czasu serwera, używam czasu lokalnego. Błąd: {e}")
 
                             self.logger.info(f"Test połączenia z API: {time_response}")
                         except Exception as time_error:

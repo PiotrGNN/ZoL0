@@ -387,7 +387,7 @@ def get_api_status():
         # Sprawdź czy jesteśmy w stanie rate_limit
         rate_limited, found = get_cached_data("api_rate_limited")
         is_limited = found and rate_limited
-        
+
         # Sprawdź czy jesteśmy w fazie startowej (30 sekund od startu)
         startup_phase = is_in_startup_phase()
 
@@ -407,7 +407,7 @@ def is_in_startup_phase():
     """
     Sprawdza czy aplikacja jest w fazie startowej (pierwsze 30 sekund od uruchomienia).
     W fazie startowej szczególnie dbamy o limity API.
-    
+
     Returns:
         bool: True jeśli aplikacja jest w fazie startowej
     """
@@ -439,7 +439,7 @@ def set_rate_limit_parameters(max_calls_per_minute: int = None, min_interval: fl
 def init_cache():
     """Inicjalizuje cache i ustawia domyślne parametry."""
     # Ustaw konserwatywne limity dla Bybit API
-    set_rate_limit_parameters(max_calls_per_minute=30, min_interval=1.0)
+    set_rate_limit_parameters(max_calls_per_minute=6, min_interval=10.0)
 
     # Ustaw w cache flagę rate_limit na False
     store_cached_data("api_rate_limited", False)
