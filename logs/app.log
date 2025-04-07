@@ -37026,3 +37026,534 @@ Request → GET https://api.bybit.com/spot/v1/time: {}.
 Request → GET https://api.bybit.com/spot/v1/time: {}.
 2025-04-07 21:53:50,969 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych i zwiększam czas oczekiwania.
 2025-04-07 21:53:50,970 [INFO] 172.31.128.24 - - [07/Apr/2025 21:53:50] "GET /api/portfolio?_=1744062765634 HTTP/1.1" 200 -
+2025-04-07 21:54:00,184 [INFO] 172.31.128.24 - - [07/Apr/2025 21:54:00] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:54:00,185 [INFO] 172.31.128.24 - - [07/Apr/2025 21:54:00] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:54:00,187 [INFO] 172.31.128.24 - - [07/Apr/2025 21:54:00] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:54:00,315 [INFO] 172.31.128.24 - - [07/Apr/2025 21:54:00] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:54:00,319 [INFO] 172.31.128.24 - - [07/Apr/2025 21:54:00] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:54:07,470 [INFO] Używam lokalnego czasu (1744062847470) zamiast odpytywania API (oszczędzanie limitów)
+2025-04-07 21:54:07,472 [INFO] 172.31.128.24 - - [07/Apr/2025 21:54:07] "GET /api/portfolio?_=1744062825661 HTTP/1.1" 200 -
+2025-04-07 21:54:07,473 [INFO] Używam lokalnego czasu (1744062847473) zamiast odpytywania API (oszczędzanie limitów)
+2025-04-07 21:54:07,474 [INFO] 172.31.128.24 - - [07/Apr/2025 21:54:07] "GET /api/portfolio?_=1744062810650 HTTP/1.1" 200 -
+2025-04-07 21:54:15,187 [INFO] 172.31.128.24 - - [07/Apr/2025 21:54:15] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:54:15,190 [INFO] 172.31.128.24 - - [07/Apr/2025 21:54:15] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:54:15,192 [INFO] 172.31.128.24 - - [07/Apr/2025 21:54:15] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:54:15,193 [INFO] 172.31.128.24 - - [07/Apr/2025 21:54:15] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:54:15,322 [INFO] 172.31.128.24 - - [07/Apr/2025 21:54:15] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:54:23,996 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:54:23,996 [INFO] Status API: Produkcyjne
+2025-04-07 21:54:29,001 [INFO] Resetowanie stanu limitów API po okresie oczekiwania
+2025-04-07 21:54:29,021 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:54:29).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:54:29,021 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych i zwiększam czas oczekiwania.
+2025-04-07 21:54:29,021 [INFO] 172.31.128.24 - - [07/Apr/2025 21:54:29] "GET /api/portfolio?_=1744062840674 HTTP/1.1" 200 -
+2025-04-07 21:54:30,196 [INFO] 172.31.128.24 - - [07/Apr/2025 21:54:30] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:54:30,197 [INFO] 172.31.128.24 - - [07/Apr/2025 21:54:30] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:54:30,198 [INFO] 172.31.128.24 - - [07/Apr/2025 21:54:30] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:54:30,202 [INFO] 172.31.128.24 - - [07/Apr/2025 21:54:30] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:54:30,331 [INFO] 172.31.128.24 - - [07/Apr/2025 21:54:30] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:54:45,195 [INFO] 172.31.128.24 - - [07/Apr/2025 21:54:45] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:54:45,200 [INFO] 172.31.128.24 - - [07/Apr/2025 21:54:45] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:54:45,272 [INFO] 172.31.128.24 - - [07/Apr/2025 21:54:45] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:54:45,326 [INFO] 172.31.128.24 - - [07/Apr/2025 21:54:45] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:54:45,338 [INFO] 172.31.128.24 - - [07/Apr/2025 21:54:45] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:54:46,286 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:54:46,287 [INFO] Status API: Produkcyjne
+2025-04-07 21:54:49,643 [INFO]  * Detected change in '/home/runner/workspace/data/utils/cache_manager.py', reloading
+2025-04-07 21:54:50,456 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:54:52,608 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:54:52,625 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:54:52,626 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:54:52,626 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:54:52,626 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:54:52,626 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:54:52,628 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:54:52,628 [INFO] Inicjalizacja klienta ByBit - Klucz: aLYR****************************************************, Testnet: False
+2025-04-07 21:54:52,628 [INFO] Produkcyjne API jest WŁĄCZONE
+2025-04-07 21:54:52,628 [WARNING] !!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit. Operacje handlowe będą mieć realne skutki finansowe!
+2025-04-07 21:54:52,628 [WARNING] Upewnij się, że Twoje klucze API mają właściwe ograniczenia i są odpowiednio zabezpieczone.
+2025-04-07 21:54:52,673 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 21:54:52,760 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:54:52).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:54:52,760 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 21:54:52,761 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 21:54:52,761 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744062892761, 'time': '2025-04-07 21:54:52'}
+2025-04-07 21:54:52,761 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:54:52,761 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 21:54:52,777 [WARNING]  * Debugger is active!
+2025-04-07 21:54:52,779 [INFO]  * Debugger PIN: 139-005-457
+2025-04-07 21:54:54,504 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:54:54,507 [INFO] Status API: Produkcyjne
+2025-04-07 21:54:55,505 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:54:55,505 [INFO] Status API: Produkcyjne
+2025-04-07 21:54:55,506 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:54:55,507 [INFO] Status API: Produkcyjne
+2025-04-07 21:54:57,546 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:54:58,044 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:54:59,981 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:54:59,993 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:54:59,993 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:54:59,994 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:54:59,994 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:54:59,994 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:54:59,994 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:54:59,995 [INFO] Inicjalizacja klienta ByBit - Klucz: aLYR****************************************************, Testnet: False
+2025-04-07 21:54:59,995 [INFO] Produkcyjne API jest WŁĄCZONE
+2025-04-07 21:54:59,995 [WARNING] !!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit. Operacje handlowe będą mieć realne skutki finansowe!
+2025-04-07 21:54:59,995 [WARNING] Upewnij się, że Twoje klucze API mają właściwe ograniczenia i są odpowiednio zabezpieczone.
+2025-04-07 21:55:00,028 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 21:55:00,109 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:55:00).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:55:00,110 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 21:55:00,110 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 21:55:00,110 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744062900110, 'time': '2025-04-07 21:55:00'}
+2025-04-07 21:55:00,110 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:55:00,111 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 21:55:00,124 [WARNING]  * Debugger is active!
+2025-04-07 21:55:00,127 [INFO]  * Debugger PIN: 139-152-802
+2025-04-07 21:55:01,466 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:55:01,468 [INFO] Status API: Produkcyjne
+2025-04-07 21:55:01,472 [INFO] 172.31.128.24 - - [07/Apr/2025 21:55:01] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:55:01,474 [INFO] 172.31.128.24 - - [07/Apr/2025 21:55:01] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:55:01,602 [INFO] 172.31.128.24 - - [07/Apr/2025 21:55:01] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:55:01,604 [INFO] 172.31.128.24 - - [07/Apr/2025 21:55:01] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:55:01,735 [INFO] 172.31.128.24 - - [07/Apr/2025 21:55:01] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:55:02,467 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:55:02,467 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:55:02,467 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:55:02,468 [INFO] Status API: Produkcyjne
+2025-04-07 21:55:02,469 [INFO] Status API: Produkcyjne
+2025-04-07 21:55:02,471 [INFO] Status API: Produkcyjne
+2025-04-07 21:55:06,486 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:55:06).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:55:06,488 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych i zwiększam czas oczekiwania.
+2025-04-07 21:55:06,489 [INFO] 172.31.128.24 - - [07/Apr/2025 21:55:06] "GET /api/portfolio?_=1744062855679 HTTP/1.1" 200 -
+2025-04-07 21:55:15,206 [INFO] 172.31.128.24 - - [07/Apr/2025 21:55:15] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:55:15,209 [INFO] 172.31.128.24 - - [07/Apr/2025 21:55:15] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:55:15,339 [INFO] 172.31.128.24 - - [07/Apr/2025 21:55:15] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:55:15,343 [INFO] 172.31.128.24 - - [07/Apr/2025 21:55:15] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:55:15,471 [INFO] 172.31.128.24 - - [07/Apr/2025 21:55:15] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:55:22,989 [INFO] Używam lokalnego czasu (1744062922989) zamiast odpytywania API (oszczędzanie limitów)
+2025-04-07 21:55:22,990 [INFO] 172.31.128.24 - - [07/Apr/2025 21:55:22] "GET /api/portfolio?_=1744062870685 HTTP/1.1" 200 -
+2025-04-07 21:55:22,993 [INFO] Używam lokalnego czasu (1744062922993) zamiast odpytywania API (oszczędzanie limitów)
+2025-04-07 21:55:22,994 [INFO] 172.31.128.24 - - [07/Apr/2025 21:55:22] "GET /api/portfolio?_=1744062885689 HTTP/1.1" 200 -
+2025-04-07 21:55:22,990 [INFO] Używam lokalnego czasu (1744062922990) zamiast odpytywania API (oszczędzanie limitów)
+2025-04-07 21:55:22,995 [INFO] 172.31.128.24 - - [07/Apr/2025 21:55:22] "GET /api/portfolio?_=1744062900695 HTTP/1.1" 200 -
+2025-04-07 21:55:30,214 [INFO] 172.31.128.24 - - [07/Apr/2025 21:55:30] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:55:30,218 [INFO] 172.31.128.24 - - [07/Apr/2025 21:55:30] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:55:30,219 [INFO] 172.31.128.24 - - [07/Apr/2025 21:55:30] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:55:30,221 [INFO] 172.31.128.24 - - [07/Apr/2025 21:55:30] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:55:30,348 [INFO] 172.31.128.24 - - [07/Apr/2025 21:55:30] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:55:33,058 [INFO]  * Detected change in '/home/runner/workspace/data/utils/cache_manager.py', reloading
+2025-04-07 21:55:33,059 [INFO]  * Detected change in '/home/runner/workspace/data/utils/cache_manager.py', reloading
+2025-04-07 21:55:33,062 [INFO]  * Detected change in '/home/runner/workspace/data/utils/cache_manager.py', reloading
+2025-04-07 21:55:33,081 [INFO]  * Detected change in '/home/runner/workspace/data/utils/cache_manager.py', reloading
+2025-04-07 21:55:34,541 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:55:37,677 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:55:37,685 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
+2025-04-07 21:55:37,686 [INFO] Cache zainicjalizowany z domyślnymi parametrami
+2025-04-07 21:55:37,700 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:55:37,700 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:55:37,701 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:55:37,701 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:55:37,701 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:55:37,701 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:55:37,701 [INFO] Inicjalizacja klienta ByBit - Klucz: aLYR****************************************************, Testnet: False
+2025-04-07 21:55:37,702 [INFO] Produkcyjne API jest WŁĄCZONE
+2025-04-07 21:55:37,702 [WARNING] !!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit. Operacje handlowe będą mieć realne skutki finansowe!
+2025-04-07 21:55:37,702 [WARNING] Upewnij się, że Twoje klucze API mają właściwe ograniczenia i są odpowiednio zabezpieczone.
+2025-04-07 21:55:37,769 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 21:55:37,846 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:55:37).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:55:37,846 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 21:55:37,846 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 21:55:37,847 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
+2025-04-07 21:55:37,847 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744062937847, 'time': '2025-04-07 21:55:37'}
+2025-04-07 21:55:37,847 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:55:37,847 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 21:55:37,890 [WARNING]  * Debugger is active!
+2025-04-07 21:55:37,893 [INFO]  * Debugger PIN: 105-539-223
+2025-04-07 21:55:38,096 [INFO]  * Detected change in '/nix/store/j9q83kq60x1zd8mhh58x33za9zhc1qka-python3.10-pysocks-1.7.1/lib/python3.10/site-packages/socks.py', reloading
+2025-04-07 21:55:39,577 [INFO]  * Detected change in '/nix/store/61mhmxgj9fks2p2glq0f84pd2m5iif5k-python3.10-numpy-1.24.2/lib/python3.10/site-packages/numpy/testing/__init__.py', reloading
+2025-04-07 21:55:39,577 [INFO]  * Detected change in '/nix/store/61mhmxgj9fks2p2glq0f84pd2m5iif5k-python3.10-numpy-1.24.2/lib/python3.10/site-packages/numpy/testing/_private/__init__.py', reloading
+2025-04-07 21:55:39,578 [INFO]  * Detected change in '/nix/store/61mhmxgj9fks2p2glq0f84pd2m5iif5k-python3.10-numpy-1.24.2/lib/python3.10/site-packages/numpy/testing/_private/utils.py', reloading
+2025-04-07 21:55:39,634 [INFO]  * Detected change in '/nix/store/61mhmxgj9fks2p2glq0f84pd2m5iif5k-python3.10-numpy-1.24.2/lib/python3.10/site-packages/numpy/testing/_private/extbuild.py', reloading
+2025-04-07 21:55:39,738 [INFO]  * Detected change in '/nix/store/61mhmxgj9fks2p2glq0f84pd2m5iif5k-python3.10-numpy-1.24.2/lib/python3.10/site-packages/numpy/testing/_private/decorators.py', reloading
+2025-04-07 21:55:39,907 [INFO]  * Detected change in '/nix/store/61mhmxgj9fks2p2glq0f84pd2m5iif5k-python3.10-numpy-1.24.2/lib/python3.10/site-packages/numpy/testing/_private/nosetester.py', reloading
+2025-04-07 21:55:39,925 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:55:39,926 [INFO] Status API: Produkcyjne
+2025-04-07 21:55:40,499 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:55:43,137 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:55:43,140 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
+2025-04-07 21:55:43,140 [INFO] Cache zainicjalizowany z domyślnymi parametrami
+2025-04-07 21:55:43,152 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:55:43,152 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:55:43,153 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:55:43,153 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:55:43,153 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:55:43,153 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:55:43,153 [INFO] Inicjalizacja klienta ByBit - Klucz: aLYR****************************************************, Testnet: False
+2025-04-07 21:55:43,153 [INFO] Produkcyjne API jest WŁĄCZONE
+2025-04-07 21:55:43,154 [WARNING] !!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit. Operacje handlowe będą mieć realne skutki finansowe!
+2025-04-07 21:55:43,154 [WARNING] Upewnij się, że Twoje klucze API mają właściwe ograniczenia i są odpowiednio zabezpieczone.
+2025-04-07 21:55:43,193 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 21:55:43,256 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:55:43).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:55:43,256 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 21:55:43,257 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 21:55:43,257 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
+2025-04-07 21:55:43,257 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744062943257, 'time': '2025-04-07 21:55:43'}
+2025-04-07 21:55:43,257 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:55:43,257 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 21:55:43,271 [WARNING]  * Debugger is active!
+2025-04-07 21:55:43,274 [INFO]  * Debugger PIN: 121-302-655
+2025-04-07 21:55:44,409 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:55:44,666 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:55:45,113 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:55:47,418 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:55:47,421 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
+2025-04-07 21:55:47,421 [INFO] Cache zainicjalizowany z domyślnymi parametrami
+2025-04-07 21:55:47,431 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:55:47,432 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:55:47,432 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:55:47,432 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:55:47,432 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:55:47,432 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:55:47,433 [INFO] Inicjalizacja klienta ByBit - Klucz: aLYR****************************************************, Testnet: False
+2025-04-07 21:55:47,433 [INFO] Produkcyjne API jest WŁĄCZONE
+2025-04-07 21:55:47,433 [WARNING] !!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit. Operacje handlowe będą mieć realne skutki finansowe!
+2025-04-07 21:55:47,433 [WARNING] Upewnij się, że Twoje klucze API mają właściwe ograniczenia i są odpowiednio zabezpieczone.
+2025-04-07 21:55:47,470 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 21:55:47,531 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:55:47).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:55:47,531 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 21:55:47,532 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 21:55:47,532 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
+2025-04-07 21:55:47,533 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744062947533, 'time': '2025-04-07 21:55:47'}
+2025-04-07 21:55:47,533 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:55:47,534 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 21:55:47,549 [WARNING]  * Debugger is active!
+2025-04-07 21:55:47,552 [INFO]  * Debugger PIN: 387-291-325
+2025-04-07 21:55:48,894 [INFO] 172.31.128.24 - - [07/Apr/2025 21:55:48] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:55:48,897 [INFO] 172.31.128.24 - - [07/Apr/2025 21:55:48] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:55:48,898 [INFO] 172.31.128.24 - - [07/Apr/2025 21:55:48] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:55:49,010 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 21:55:49,026 [INFO] 172.31.128.24 - - [07/Apr/2025 21:55:49] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:55:49,031 [INFO] 172.31.128.24 - - [07/Apr/2025 21:55:49] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:55:49,533 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:55:49,534 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:55:49,534 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:55:49,534 [INFO] Status API: Produkcyjne
+2025-04-07 21:55:49,535 [INFO] Status API: Produkcyjne
+2025-04-07 21:55:49,536 [INFO] Status API: Produkcyjne
+2025-04-07 21:55:50,382 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:55:52,247 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:55:52,250 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
+2025-04-07 21:55:52,250 [INFO] Cache zainicjalizowany z domyślnymi parametrami
+2025-04-07 21:55:52,260 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:55:52,260 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:55:52,261 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:55:52,261 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:55:52,261 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:55:52,261 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:55:52,261 [INFO] Inicjalizacja klienta ByBit - Klucz: aLYR****************************************************, Testnet: False
+2025-04-07 21:55:52,261 [INFO] Produkcyjne API jest WŁĄCZONE
+2025-04-07 21:55:52,261 [WARNING] !!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit. Operacje handlowe będą mieć realne skutki finansowe!
+2025-04-07 21:55:52,262 [WARNING] Upewnij się, że Twoje klucze API mają właściwe ograniczenia i są odpowiednio zabezpieczone.
+2025-04-07 21:55:52,293 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 21:55:52,438 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:55:52).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:55:52,439 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 21:55:52,439 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 21:55:52,439 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
+2025-04-07 21:55:52,439 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744062952439, 'time': '2025-04-07 21:55:52'}
+2025-04-07 21:55:52,440 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:55:52,440 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 21:55:52,452 [WARNING]  * Debugger is active!
+2025-04-07 21:55:52,455 [INFO]  * Debugger PIN: 276-563-792
+2025-04-07 21:55:54,440 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:55:54,441 [INFO] Status API: Produkcyjne
+2025-04-07 21:55:56,182 [INFO]  * Detected change in '/home/runner/workspace/data/utils/cache_manager.py', reloading
+2025-04-07 21:55:57,318 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:55:59,165 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:55:59,168 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
+2025-04-07 21:55:59,168 [INFO] Cache zainicjalizowany z domyślnymi parametrami
+2025-04-07 21:55:59,178 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:55:59,178 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:55:59,178 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:55:59,178 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:55:59,179 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:55:59,179 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:55:59,179 [INFO] Inicjalizacja klienta ByBit - Klucz: aLYR****************************************************, Testnet: False
+2025-04-07 21:55:59,179 [INFO] Produkcyjne API jest WŁĄCZONE
+2025-04-07 21:55:59,179 [WARNING] !!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit. Operacje handlowe będą mieć realne skutki finansowe!
+2025-04-07 21:55:59,179 [WARNING] Upewnij się, że Twoje klucze API mają właściwe ograniczenia i są odpowiednio zabezpieczone.
+2025-04-07 21:55:59,212 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 21:55:59,271 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:55:59).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:55:59,272 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 21:55:59,272 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 21:55:59,272 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
+2025-04-07 21:55:59,273 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744062959272, 'time': '2025-04-07 21:55:59'}
+2025-04-07 21:55:59,273 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:55:59,273 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 21:55:59,284 [WARNING]  * Debugger is active!
+2025-04-07 21:55:59,286 [INFO]  * Debugger PIN: 144-632-420
+2025-04-07 21:56:00,604 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:00] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:56:00,606 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:00] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:56:00,608 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:00] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:56:00,609 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:00] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:56:00,736 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:00] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:56:01,273 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:56:01,273 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:56:01,274 [INFO] Status API: Produkcyjne
+2025-04-07 21:56:01,275 [INFO] Status API: Produkcyjne
+2025-04-07 21:56:03,306 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:56:03,309 [INFO]  * Detected change in '/home/runner/workspace/data/utils/cache_manager.py', reloading
+2025-04-07 21:56:04,100 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:56:06,555 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:56:06,558 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
+2025-04-07 21:56:06,558 [INFO] Cache zainicjalizowany z domyślnymi parametrami
+2025-04-07 21:56:06,569 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:56:06,569 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:56:06,569 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:56:06,570 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:56:06,570 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:56:06,570 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:56:06,571 [INFO] Inicjalizacja klienta ByBit - Klucz: aLYR****************************************************, Testnet: False
+2025-04-07 21:56:06,571 [INFO] Produkcyjne API jest WŁĄCZONE
+2025-04-07 21:56:06,571 [WARNING] !!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit. Operacje handlowe będą mieć realne skutki finansowe!
+2025-04-07 21:56:06,571 [WARNING] Upewnij się, że Twoje klucze API mają właściwe ograniczenia i są odpowiednio zabezpieczone.
+2025-04-07 21:56:06,617 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 21:56:06,705 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:56:06).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:56:06,705 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 21:56:06,706 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 21:56:06,706 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
+2025-04-07 21:56:06,706 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744062966706, 'time': '2025-04-07 21:56:06'}
+2025-04-07 21:56:06,706 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:56:06,706 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 21:56:06,724 [WARNING]  * Debugger is active!
+2025-04-07 21:56:06,730 [INFO]  * Debugger PIN: 463-128-182
+2025-04-07 21:56:08,579 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 21:56:08,583 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:56:08,607 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:56:08,608 [INFO] Status API: Produkcyjne
+2025-04-07 21:56:09,118 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:56:15,524 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:56:15,526 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
+2025-04-07 21:56:15,527 [INFO] Cache zainicjalizowany z domyślnymi parametrami
+2025-04-07 21:56:15,536 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:56:15,536 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:56:15,536 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:56:15,537 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:56:15,537 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:56:15,537 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:56:15,537 [INFO] Inicjalizacja klienta ByBit - Klucz: aLYR****************************************************, Testnet: False
+2025-04-07 21:56:15,537 [INFO] Produkcyjne API jest WŁĄCZONE
+2025-04-07 21:56:15,537 [WARNING] !!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit. Operacje handlowe będą mieć realne skutki finansowe!
+2025-04-07 21:56:15,537 [WARNING] Upewnij się, że Twoje klucze API mają właściwe ograniczenia i są odpowiednio zabezpieczone.
+2025-04-07 21:56:15,568 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 21:56:15,626 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:56:15).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:56:15,626 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 21:56:15,627 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 21:56:15,627 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
+2025-04-07 21:56:15,627 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744062975627, 'time': '2025-04-07 21:56:15'}
+2025-04-07 21:56:15,628 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:56:15,628 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 21:56:15,640 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.24:5000
+2025-04-07 21:56:15,640 [INFO] [33mPress CTRL+C to quit[0m
+2025-04-07 21:56:15,649 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:56:17,514 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:56:17,517 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
+2025-04-07 21:56:17,518 [INFO] Cache zainicjalizowany z domyślnymi parametrami
+2025-04-07 21:56:17,529 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:56:17,529 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:56:17,529 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:56:17,529 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:56:17,529 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:56:17,530 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:56:17,530 [INFO] Inicjalizacja klienta ByBit - Klucz: aLYR****************************************************, Testnet: False
+2025-04-07 21:56:17,530 [INFO] Produkcyjne API jest WŁĄCZONE
+2025-04-07 21:56:17,530 [WARNING] !!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit. Operacje handlowe będą mieć realne skutki finansowe!
+2025-04-07 21:56:17,530 [WARNING] Upewnij się, że Twoje klucze API mają właściwe ograniczenia i są odpowiednio zabezpieczone.
+2025-04-07 21:56:17,564 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 21:56:17,627 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:56:17).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:56:17,627 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 21:56:17,627 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 21:56:17,627 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
+2025-04-07 21:56:17,628 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744062977628, 'time': '2025-04-07 21:56:17'}
+2025-04-07 21:56:17,628 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:56:17,628 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 21:56:17,640 [WARNING]  * Debugger is active!
+2025-04-07 21:56:17,649 [INFO]  * Debugger PIN: 577-049-302
+2025-04-07 21:56:19,628 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:56:19,628 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:56:19,630 [INFO] Status API: Produkcyjne
+2025-04-07 21:56:19,628 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:56:19,631 [INFO] Status API: Produkcyjne
+2025-04-07 21:56:19,628 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:56:19,629 [INFO] Status API: Produkcyjne
+2025-04-07 21:56:19,628 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:56:19,628 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:56:19,632 [INFO] Status API: Produkcyjne
+2025-04-07 21:56:19,634 [INFO] Status API: Produkcyjne
+2025-04-07 21:56:19,634 [INFO] Status API: Produkcyjne
+2025-04-07 21:56:24,649 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:56:24).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:56:24,650 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych i zwiększam czas oczekiwania.
+2025-04-07 21:56:24,650 [INFO] Pobrano portfolio: {'balances': {'BTC': {'equity': 0.025, 'available_balance': 0.02, 'wallet_balance': 0.025}, 'USDT': {'equity': 1500, 'available_balance': 1450, 'wallet_balance': 1500}, 'ETH': {'equity': 0.5, 'available_balance': 0.5, 'wallet_balance': 0.5}}, 'success': True, 'warning': 'Przekroczono limit zapytań API. Dane symulowane.', 'source': 'simulation_rate_limited', 'note': 'Przekroczono limit zapytań API. Oczekiwanie 15.0s przed kolejnymi zapytaniami.'}
+2025-04-07 21:56:24,660 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/encodings/unicode_escape.py', reloading
+2025-04-07 21:56:24,686 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:24] "GET / HTTP/1.1" 200 -
+2025-04-07 21:56:25,216 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:25] "GET /static/css/styles.css HTTP/1.1" 200 -
+2025-04-07 21:56:25,218 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:25] "[36mGET /static/js/dashboard.js HTTP/1.1[0m" 304 -
+2025-04-07 21:56:25,500 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:56:27,436 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:56:27,438 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
+2025-04-07 21:56:27,438 [INFO] Cache zainicjalizowany z domyślnymi parametrami
+2025-04-07 21:56:27,448 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:56:27,448 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:56:27,449 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:56:27,449 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:56:27,449 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:56:27,449 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:56:27,449 [INFO] Inicjalizacja klienta ByBit - Klucz: aLYR****************************************************, Testnet: False
+2025-04-07 21:56:27,449 [INFO] Produkcyjne API jest WŁĄCZONE
+2025-04-07 21:56:27,449 [WARNING] !!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit. Operacje handlowe będą mieć realne skutki finansowe!
+2025-04-07 21:56:27,450 [WARNING] Upewnij się, że Twoje klucze API mają właściwe ograniczenia i są odpowiednio zabezpieczone.
+2025-04-07 21:56:27,481 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 21:56:27,539 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:56:27).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:56:27,539 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 21:56:27,539 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 21:56:27,540 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
+2025-04-07 21:56:27,540 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744062987540, 'time': '2025-04-07 21:56:27'}
+2025-04-07 21:56:27,540 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:56:27,540 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 21:56:27,552 [WARNING]  * Debugger is active!
+2025-04-07 21:56:27,555 [INFO]  * Debugger PIN: 888-203-877
+2025-04-07 21:56:28,948 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:28] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:56:28,950 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:28] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:56:28,952 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:28] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:56:28,953 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:28] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:56:28,955 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:28] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:56:29,083 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:29] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:56:29,086 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:29] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:56:29,540 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:56:29,541 [INFO] Status API: Produkcyjne
+2025-04-07 21:56:34,559 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:56:34).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:56:34,560 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych i zwiększam czas oczekiwania.
+2025-04-07 21:56:34,561 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:34] "GET /api/portfolio?_=1744062986168 HTTP/1.1" 200 -
+2025-04-07 21:56:40,697 [INFO] Rate limit przekroczony - oczekiwanie 22.5s przed próbą
+2025-04-07 21:56:40,700 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:40] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:56:40,707 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:40] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:56:40,709 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:40] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:56:40,711 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:40] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:56:40,714 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:40] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:56:55,712 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:55] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:56:55,715 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:55] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:56:55,716 [INFO] Rate limit przekroczony - oczekiwanie 22.5s przed próbą
+2025-04-07 21:56:55,717 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:55] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:56:55,719 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:55] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:56:55,843 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:55] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:57:03,220 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:57:03,221 [INFO] Status API: Produkcyjne
+2025-04-07 21:57:08,227 [INFO] Rate limit przekroczony - oczekiwanie 27.0s przed próbą
+2025-04-07 21:57:10,719 [INFO] Rate limit przekroczony - oczekiwanie 27.0s przed próbą
+2025-04-07 21:57:10,725 [INFO] 172.31.128.24 - - [07/Apr/2025 21:57:10] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:57:10,727 [INFO] 172.31.128.24 - - [07/Apr/2025 21:57:10] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:57:10,729 [INFO] 172.31.128.24 - - [07/Apr/2025 21:57:10] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:57:10,862 [INFO] 172.31.128.24 - - [07/Apr/2025 21:57:10] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:57:10,865 [INFO] 172.31.128.24 - - [07/Apr/2025 21:57:10] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:57:25,727 [INFO] Rate limit przekroczony - oczekiwanie 32.4s przed próbą
+2025-04-07 21:57:25,730 [INFO] 172.31.128.24 - - [07/Apr/2025 21:57:25] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:57:25,732 [INFO] 172.31.128.24 - - [07/Apr/2025 21:57:25] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:57:25,863 [INFO] 172.31.128.24 - - [07/Apr/2025 21:57:25] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:57:25,864 [INFO] 172.31.128.24 - - [07/Apr/2025 21:57:25] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:57:25,999 [INFO] 172.31.128.24 - - [07/Apr/2025 21:57:25] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:57:27,753 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:57:27,754 [INFO] Status API: Produkcyjne
+2025-04-07 21:57:32,759 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.5s
+2025-04-07 21:57:32,760 [INFO] Rate limit przekroczony - oczekiwanie 32.4s przed próbą
+2025-04-07 21:57:40,738 [INFO] 172.31.128.24 - - [07/Apr/2025 21:57:40] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:57:40,745 [INFO] Resetowanie stanu limitów API po okresie oczekiwania
+2025-04-07 21:57:40,746 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:57:40,747 [INFO] Status API: Produkcyjne
+2025-04-07 21:57:40,871 [INFO] 172.31.128.24 - - [07/Apr/2025 21:57:40] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:57:41,002 [INFO] 172.31.128.24 - - [07/Apr/2025 21:57:41] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:57:41,135 [INFO] 172.31.128.24 - - [07/Apr/2025 21:57:41] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:57:41,267 [INFO] 172.31.128.24 - - [07/Apr/2025 21:57:41] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:57:45,765 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:57:45).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:57:45,766 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych i zwiększam czas oczekiwania.
+2025-04-07 21:57:45,768 [INFO] 172.31.128.24 - - [07/Apr/2025 21:57:45] "GET /api/portfolio?_=1744063061230 HTTP/1.1" 200 -
+2025-04-07 21:57:54,633 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:57:54,678 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 21:57:54,679 [INFO]  * Detected change in '/home/runner/workspace/ai_models/real_exchange_env.py', reloading
+2025-04-07 21:57:54,680 [INFO]  * Detected change in '/home/runner/workspace/data/utils/notification_system.py', reloading
+2025-04-07 21:57:54,680 [INFO]  * Detected change in '/home/runner/workspace/data/tests/test_execution.py', reloading
+2025-04-07 21:57:54,681 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 21:57:54,681 [INFO]  * Detected change in '/home/runner/workspace/data/execution/advanced_order_execution.py', reloading
+2025-04-07 21:57:54,681 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 21:57:55,077 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:57:55,118 [INFO]  * Detected change in '/home/runner/workspace/data/utils/cache_manager.py', reloading
+2025-04-07 21:57:55,154 [INFO]  * Detected change in '/home/runner/workspace/config/settings.py', reloading
+2025-04-07 21:57:55,189 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 21:57:55,798 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:57:57,612 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:57:57,614 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
+2025-04-07 21:57:57,615 [INFO] Cache zainicjalizowany z domyślnymi parametrami
+2025-04-07 21:57:57,623 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:57:57,623 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:57:57,624 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:57:57,624 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:57:57,624 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:57:57,624 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:57:57,624 [INFO] Inicjalizacja klienta ByBit - Klucz: aLYR****************************************************, Testnet: False
+2025-04-07 21:57:57,625 [INFO] Produkcyjne API jest WŁĄCZONE
+2025-04-07 21:57:57,625 [WARNING] !!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit. Operacje handlowe będą mieć realne skutki finansowe!
+2025-04-07 21:57:57,625 [WARNING] Upewnij się, że Twoje klucze API mają właściwe ograniczenia i są odpowiednio zabezpieczone.
+2025-04-07 21:57:57,655 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 21:57:57,799 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:57:57).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:57:57,799 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 21:57:57,799 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 21:57:57,800 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
+2025-04-07 21:57:57,800 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744063077800, 'time': '2025-04-07 21:57:57'}
+2025-04-07 21:57:57,800 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:57:57,800 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 21:57:57,812 [WARNING]  * Debugger is active!
+2025-04-07 21:57:57,814 [INFO]  * Debugger PIN: 428-026-550
+2025-04-07 21:57:59,173 [INFO] 172.31.128.24 - - [07/Apr/2025 21:57:59] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:57:59,315 [INFO] 172.31.128.24 - - [07/Apr/2025 21:57:59] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:57:59,447 [INFO] 172.31.128.24 - - [07/Apr/2025 21:57:59] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:57:59,579 [INFO] 172.31.128.24 - - [07/Apr/2025 21:57:59] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:57:59,712 [INFO] 172.31.128.24 - - [07/Apr/2025 21:57:59] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:57:59,800 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:57:59,800 [INFO] Status API: Produkcyjne
+2025-04-07 21:57:59,801 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:57:59,801 [INFO] Status API: Produkcyjne
+2025-04-07 21:57:59,801 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:57:59,801 [INFO] Status API: Produkcyjne
+2025-04-07 21:57:59,801 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:57:59,801 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:57:59,802 [INFO] Status API: Produkcyjne
+2025-04-07 21:57:59,802 [INFO] Status API: Produkcyjne
+2025-04-07 21:58:04,819 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:58:04).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:58:04,819 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych i zwiększam czas oczekiwania.
+2025-04-07 21:58:04,820 [INFO] 172.31.128.24 - - [07/Apr/2025 21:58:04] "GET /api/portfolio?_=1744063076243 HTTP/1.1" 200 -
+2025-04-07 21:58:06,807 [INFO] Używam lokalnego czasu (1744063086807) zamiast odpytywania API (oszczędzanie limitów)
+2025-04-07 21:58:06,807 [INFO] Używam lokalnego czasu (1744063086807) zamiast odpytywania API (oszczędzanie limitów)
+2025-04-07 21:58:06,808 [INFO] 172.31.128.24 - - [07/Apr/2025 21:58:06] "GET /api/portfolio?_=1744063031212 HTTP/1.1" 200 -
+2025-04-07 21:58:06,807 [INFO] Używam lokalnego czasu (1744063086807) zamiast odpytywania API (oszczędzanie limitów)
+2025-04-07 21:58:06,818 [INFO] 172.31.128.24 - - [07/Apr/2025 21:58:06] "GET /api/portfolio?_=1744063016207 HTTP/1.1" 200 -
+2025-04-07 21:58:06,817 [INFO] 172.31.128.24 - - [07/Apr/2025 21:58:06] "GET /api/portfolio?_=1744063046218 HTTP/1.1" 200 -
+2025-04-07 21:58:06,808 [INFO] Używam lokalnego czasu (1744063086807) zamiast odpytywania API (oszczędzanie limitów)
+2025-04-07 21:58:06,821 [INFO] 172.31.128.24 - - [07/Apr/2025 21:58:06] "GET /api/portfolio?_=1744063001195 HTTP/1.1" 200 -

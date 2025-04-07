@@ -1,0 +1,94 @@
+2025-04-07 21:56:15,537 [INFO] Inicjalizacja klienta ByBit - Klucz: aLYR****************************************************, Testnet: False
+2025-04-07 21:56:15,537 [INFO] Produkcyjne API jest WŁĄCZONE
+2025-04-07 21:56:15,537 [WARNING] !!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit. Operacje handlowe będą mieć realne skutki finansowe!
+2025-04-07 21:56:15,537 [WARNING] Upewnij się, że Twoje klucze API mają właściwe ograniczenia i są odpowiednio zabezpieczone.
+
+
+========== PRODUKCYJNE API BYBIT ==========
+!!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit
+Operacje handlowe będą mieć realne skutki finansowe!
+===========================================
+
+
+2025-04-07 21:56:15,568 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 21:56:15,626 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:56:15).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:56:15,626 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 21:56:15,627 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 21:56:15,627 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
+2025-04-07 21:56:15,627 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
+2025-04-07 21:56:15,627 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744062975627, 'time': '2025-04-07 21:56:15'}
+2025-04-07 21:56:15,628 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:56:15,628 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+'FLASK_ENV' is deprecated and will not be used in Flask 2.3. Use 'FLASK_DEBUG' instead.
+'FLASK_ENV' is deprecated and will not be used in Flask 2.3. Use 'FLASK_DEBUG' instead.
+ * Serving Flask app 'main'
+ * Debug mode: on
+2025-04-07 21:56:15,640 [INFO] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.24:5000
+2025-04-07 21:56:15,640 [INFO] Press CTRL+C to quit
+2025-04-07 21:56:15,649 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:56:17,514 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:56:17,517 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
+2025-04-07 21:56:17,517 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
+2025-04-07 21:56:17,518 [INFO] Cache zainicjalizowany z domyślnymi parametrami
+2025-04-07 21:56:17,518 [INFO] Cache zainicjalizowany z domyślnymi parametrami
+'FLASK_ENV' is deprecated and will not be used in Flask 2.3. Use 'FLASK_DEBUG' instead.
+2025-04-07 21:56:17,529 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:56:17,529 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:56:17,529 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:56:17,529 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:56:17,529 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:56:17,530 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:56:17,530 [INFO] Inicjalizacja klienta ByBit - Klucz: aLYR****************************************************, Testnet: False
+2025-04-07 21:56:17,530 [INFO] Produkcyjne API jest WŁĄCZONE
+2025-04-07 21:56:17,530 [WARNING] !!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit. Operacje handlowe będą mieć realne skutki finansowe!
+2025-04-07 21:56:17,530 [WARNING] Upewnij się, że Twoje klucze API mają właściwe ograniczenia i są odpowiednio zabezpieczone.
+
+
+========== PRODUKCYJNE API BYBIT ==========
+!!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit
+Operacje handlowe będą mieć realne skutki finansowe!
+===========================================
+
+
+2025-04-07 21:56:17,564 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 21:56:17,627 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:56:17).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:56:17,627 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 21:56:17,627 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 21:56:17,627 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
+2025-04-07 21:56:17,627 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
+2025-04-07 21:56:17,628 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744062977628, 'time': '2025-04-07 21:56:17'}
+2025-04-07 21:56:17,628 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:56:17,628 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+'FLASK_ENV' is deprecated and will not be used in Flask 2.3. Use 'FLASK_DEBUG' instead.
+'FLASK_ENV' is deprecated and will not be used in Flask 2.3. Use 'FLASK_DEBUG' instead.
+2025-04-07 21:56:17,640 [WARNING]  * Debugger is active!
+2025-04-07 21:56:17,649 [INFO]  * Debugger PIN: 577-049-302
+2025-04-07 21:56:19,628 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:56:19,628 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:56:19,630 [INFO] Status API: Produkcyjne
+2025-04-07 21:56:19,628 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:56:19,631 [INFO] Status API: Produkcyjne
+2025-04-07 21:56:19,628 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:56:19,629 [INFO] Status API: Produkcyjne
+2025-04-07 21:56:19,628 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:56:19,628 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: aLYR****************************************************
+2025-04-07 21:56:19,632 [INFO] Status API: Produkcyjne
+2025-04-07 21:56:19,634 [INFO] Status API: Produkcyjne
+2025-04-07 21:56:19,634 [INFO] Status API: Produkcyjne
+2025-04-07 21:56:24,649 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:56:24).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:56:24,650 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych i zwiększam czas oczekiwania.
+2025-04-07 21:56:24,650 [INFO] Pobrano portfolio: {'balances': {'BTC': {'equity': 0.025, 'available_balance': 0.02, 'wallet_balance': 0.025}, 'USDT': {'equity': 1500, 'available_balance': 1450, 'wallet_balance': 1500}, 'ETH': {'equity': 0.5, 'available_balance': 0.5, 'wallet_balance': 0.5}}, 'success': True, 'warning': 'Przekroczono limit zapytań API. Dane symulowane.', 'source': 'simulation_rate_limited', 'note': 'Przekroczono limit zapytań API. Oczekiwanie 15.0s przed kolejnymi zapytaniami.'}
+2025-04-07 21:56:24,660 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/encodings/unicode_escape.py', reloading
+2025-04-07 21:56:24,686 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:24] "GET / HTTP/1.1" 200 -
+2025-04-07 21:56:25,216 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:25] "GET /static/css/styles.css HTTP/1.1" 200 -
+2025-04-07 21:56:25,218 [INFO] 172.31.128.24 - - [07/Apr/2025 21:56:25] "GET /static/js/dashboard.js HTTP/1.1" 304 -
+2025-04-07 21:56:25,500 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:56:27,436 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:56:27,438 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
+2025-04-07 21:56:27,438 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=30, min_interval=1.0s
