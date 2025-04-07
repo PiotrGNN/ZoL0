@@ -1,37 +1,37 @@
 # Core dependencies
-flask==2.2.3
-pandas==1.5.3
-numpy==1.24.2
-python-dotenv==1.0.0
-matplotlib==3.7.1
-scikit-learn==1.2.2
+flask>=2.2.0
+pandas>=1.3.5
+numpy>=1.21.0
+python-dotenv>=0.20.0
+matplotlib>=3.5.0
+scikit-learn>=1.0.2
 joblib>=1.1.0
-pytest==7.3.1
-pytest-cov==4.1.0
+pytest>=7.0.0
+pytest-cov>=3.0.0
 
 # Development tools
-black==23.3.0
-flake8==6.0.0
+black>=22.3.0
+flake8>=4.0.0
 pylint==2.17.0
 
 # AI/ML dependencies
 tensorflow==2.12.0
-xgboost==1.7.5
-transformers==4.27.4
+xgboost>=1.6.0
+transformers==4.28.1
 torch==2.0.0
 scikit-optimize==0.9.0
 
 # Data handling and visualization
 plotly>=5.10.0
 dash==2.9.3
-sqlalchemy==2.0.7
+sqlalchemy==2.0.9
 openpyxl==3.1.2
 pymongo>=4.0.0
 
 # API and networking
-requests==2.28.2
+requests>=2.28.0
 aiohttp==3.8.4
-ccxt==3.0.68
+ccxt>=3.0.0
 
 # Logging and monitoring
 sentry-sdk==1.19.1
@@ -46,5 +46,6 @@ tqdm>=4.64.0
 
 #Backtesting and NLP
 backtesting>=0.3.0  # Framework do backtestingu
-nltk==3.8.1 # Przetwarzanie języka naturalnego dla analizy sentymentu
-lightgbm==3.3.5
+nltk>=3.7.0 # Przetwarzanie języka naturalnego dla analizy sentymentu
+flask
+python-dotenv

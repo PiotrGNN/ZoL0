@@ -224,67 +224,6 @@ function retryLoadChart() {
 }
 
 function initializeChart() {
-    // Pobierz dane wykresu i zainicjalizuj wykres
-    fetch('/api/chart-data')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Błąd pobierania danych wykresu');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.success && data.data) {
-                // Renderuj wykres
-                renderChart(data.data);
-            } else {
-                throw new Error('Nieprawidłowy format danych wykresu');
-            }
-        })
-        .catch(error => {
-            console.error('Błąd inicjalizacji wykresu:', error);
-            showChartError();
-        });
-}
-
-function renderChart(data) {
-    const ctx = document.getElementById('portfolio-chart');
-    if (!ctx) return;
-    
-    // Usuń istniejący wykres jeśli istnieje
-    if (window.portfolioChart) {
-        window.portfolioChart.destroy();
-    }
-    
-    // Utwórz nowy wykres
-    window.portfolioChart = new Chart(ctx, {
-        type: 'line',
-        data: data,
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: {
-                    grid: {
-                        display: false
-                    }
-                },
-                y: {
-                    beginAtZero: false
-                }
-            },
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top'
-                },
-                tooltip: {
-                    mode: 'index',
-                    intersect: false
-                }
-            }
-        }
-    });
-} {
     updateCharts(); // Initialize the chart by calling updateCharts
 }
 

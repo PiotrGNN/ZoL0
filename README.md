@@ -1,88 +1,109 @@
-# Trading Bot - System Automatycznego Tradingu
 
-## 🚀 O Projekcie
+# 🤖 Trading Bot System
 
-System automatycznego tradingu bazujący na sztucznej inteligencji i analizie technicznej. Projekt łączy zaawansowane algorytmy uczenia maszynowego, analizę sentymentu rynkowego oraz tradycyjne strategie tradingowe, aby oferować kompleksowe rozwiązanie do handlu na rynkach kryptowalut.
+## Opis projektu
+System tradingowy oparty na sztucznej inteligencji, zoptymalizowany do działania w środowisku Replit. System umożliwia analizę rynku, wykrywanie anomalii cenowych, generowanie sygnałów tradingowych oraz przeprowadzanie symulacji strategii inwestycyjnych.
 
-## 🔧 Technologie
+## 🔑 Główne funkcje
 
-- **Backend**: Python, Flask
-- **Analiza danych**: Pandas, NumPy, SciKit-Learn
-- **AI/ML**: TensorFlow, XGBoost, NLTK, Transformers
-- **Frontend**: JavaScript, Chart.js
-- **Bazy danych**: SQLite, SQLAlchemy
-- **Exchange API**: CCXT, python-binance
+- **Dashboard analityczny** - wizualizacja danych rynkowych, statusów komponentów i wykrytych anomalii
+- **Detekcja anomalii** - wykrywanie nietypowych zachowań rynku z wykorzystaniem algorytmów ML
+- **Analiza sentymentu** - ocena wpływu informacji rynkowych na ceny instrumentów
+- **Strategie tradingowe** - zestaw zaimplementowanych strategii (trend following, mean reversion, breakout)
+- **Zarządzanie ryzykiem** - zaawansowane mechanizmy kontroli ryzyka i optymalizacji portfela
+- **System powiadomień** - alerty o istotnych zdarzeniach rynkowych i błędach systemu
 
-## 🚦 Instrukcja Uruchomienia
+## 🧪 Tryby pracy
 
-### Wymagania
+System może działać w trzech trybach:
+1. **Symulacja** - symulowanie danych rynkowych i działania strategii (domyślny)
+2. **Analiza** - analiza historycznych danych bez wykonywania transakcji
+3. **Testowanie** - uruchamianie testów jednostkowych i integracyjnych
 
-- Python 3.10+
-- Wszystkie zależności wymienione w `requirements.txt`
+## 📋 Struktura projektu
 
-### Instalacja
+```
+├── ai_models/              # Modele AI/ML do analizy i predykcji
+├── data/                   # Moduły danych, strategie i narzędzia
+│   ├── data/               # Pobieranie i przetwarzanie danych
+│   ├── execution/          # Wykonywanie transakcji
+│   ├── indicators/         # Wskaźniki techniczne i analizy
+│   ├── logging/            # System logowania i detekcji anomalii
+│   ├── optimization/       # Optymalizacja strategii i backtesting
+│   ├── risk_management/    # Zarządzanie ryzykiem
+│   ├── strategies/         # Strategie tradingowe
+│   ├── tests/              # Testy jednostkowe i integracyjne
+│   └── utils/              # Narzędzia pomocnicze
+├── logs/                   # Pliki logów
+├── reports/                # Raporty i analizy
+├── saved_models/           # Zapisane modele ML
+├── static/                 # Pliki statyczne dla interfejsu
+│   ├── css/                # Style CSS
+│   └── js/                 # Skrypty JavaScript
+├── templates/              # Szablony HTML
+├── .env.example            # Przykładowy plik konfiguracyjny
+└── main.py                 # Główny plik uruchomieniowy
+```
 
-1. Sklonuj repozytorium
-2. Zainstaluj zależności:
-   ```
+## 🚀 Uruchomienie projektu
+
+1. **Instalacja zależności**:
+   ```bash
    pip install -r requirements.txt
    ```
-3. Utwórz plik `.env` na podstawie `.env.example` i uzupełnij kluczowe wartości
-4. Uruchom aplikację:
-   ```
+
+2. **Konfiguracja środowiska**:
+   - Skopiuj `.env.example` do `.env` i uzupełnij zmienne środowiskowe
+   - Dostosuj ustawienia w `config/settings.py` według potrzeb
+
+3. **Uruchomienie systemu**:
+   ```bash
    python main.py
    ```
 
-### Dostęp do Dashboardu
+4. **Dostęp do dashboardu**:
+   - Po uruchomieniu, dashboard jest dostępny pod adresem: `http://localhost:5000/dashboard`
 
-Po uruchomieniu aplikacja będzie dostępna pod adresem: `http://0.0.0.0:5000/`
+## 🔧 Dostępne workflowy
 
-## 📊 Główne Funkcjonalności
+- **Run** - uruchamia główny system
+- **Test** - wykonuje testy jednostkowe
+- **Format Code** - formatuje kod za pomocą black
+- **Lint Code** - sprawdza jakość kodu za pomocą flake8
+- **Test with Coverage** - uruchamia testy z pomiarem pokrycia kodu
+- **Install Dependencies** - instaluje wymagane zależności
 
-- **Dashboard Analityczny**: Monitorowanie wyników, statystyk i otwartych pozycji
-- **Strategie Tradingowe**: Zestaw wbudowanych strategii (Trend Following, Mean Reversion, Breakout)
-- **Modele AI**: Predykcja cen, analiza sentymentu, wykrywanie anomalii
-- **Zarządzanie Ryzykiem**: Dynamiczne zarządzanie wielkością pozycji i stop-lossami
-- **Backtest**: Testowanie strategii na danych historycznych
-- **Powiadomienia**: System alertów o ważnych zdarzeniach rynkowych
+## 📊 Funkcje API
 
-## 📋 Struktura Projektu
+- `/api/chart-data` - zwraca dane do wykresów
+- `/api/system-status` - zwraca status systemu
+- `/api/components` - zwraca status poszczególnych komponentów
+- `/api/anomalies` - zwraca wykryte anomalie
 
-- `ai_models/` - Modele sztucznej inteligencji i uczenia maszynowego
-- `data/` - Moduły do pobierania, przetwarzania i zarządzania danymi
-  - `data/indicators/` - Wskaźniki techniczne i analiza sentymentu
-  - `data/strategies/` - Implementacje strategii tradingowych
-  - `data/risk_management/` - Zarządzanie ryzykiem i wielkością pozycji
-  - `data/execution/` - Wykonywanie zleceń i połączenia z giełdami
-- `static/` - Pliki statyczne dla front-endu (JS, CSS)
-- `templates/` - Szablony HTML dla dashboardu
-- `logs/` - Logi aplikacji
+## 🔍 Diagnostyka i debugowanie
 
-## 🔍 Testowanie
+W przypadku problemów, sprawdź:
+- Logi w katalogu `logs/`
+- Status komponentów w dashboardzie
+- Błędy importów i zależności
 
-Uruchom testy jednostkowe:
-```
-pytest data/tests/
-```
+## 📦 Zależności
 
-Testy z raportowaniem pokrycia kodu:
-```
-pytest --cov=. --cov-report=term-missing data/tests/
-```
+Główne biblioteki:
+- Flask - framework webowy
+- Pandas/NumPy - przetwarzanie danych
+- Scikit-learn - modele ML do analizy i predykcji
+- Matplotlib/Chart.js - wizualizacja danych
 
-## 📝 Konfiguracja
+## 👨‍💻 Rozwój projektu
 
-Konfiguracja systemu odbywa się przez:
-- Plik `.env` - Zmienne środowiskowe, klucze API
-- `config/settings.py` - Główne ustawienia aplikacji
-- Dashboard webowy - Konfiguracja parametrów strategii
+System jest zaprojektowany modułowo, co umożliwia łatwe dodawanie nowych:
+- Strategii tradingowych
+- Modeli AI/ML
+- Wskaźników technicznych
+- Mechanizmów zarządzania ryzykiem
 
-## 🛡️ Bezpieczeństwo
+## ⚠️ Uwagi
 
-- Klucze API przechowywane są w zmiennych środowiskowych
-- Szyfrowanie wrażliwych danych
-- System monitorowania bezpieczeństwa
-
-## 📜 Licencja
-
-Ten projekt jest udostępniany na licencji MIT.
+System działa domyślnie w trybie symulacji i nie wykonuje rzeczywistych transakcji.
+Aby włączyć tryb handlu rzeczywistego, należy dostosować odpowiednie parametry w pliku konfiguracyjnym.
