@@ -39,7 +39,7 @@ localPort = 5000
 externalPort = 80
 
 [workflows]
-runButton = "Run Trading System"
+runButton = "Run"
 
 [[workflows.workflow]]
 name = "Run"
@@ -48,17 +48,4 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "pip install -r requirements.txt --break-system-packages"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python main.py"
-
-[[workflows.workflow]]
-name = "Run Trading System"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python main.py"
+args = "python3 main.py"

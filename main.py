@@ -26,6 +26,13 @@ from data.execution.bybit_connector import BybitConnector
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", os.urandom(24))
 
+# Deklaracja zmiennych globalnych
+global bybit_client, notification_system, sentiment_analyzer, anomaly_detector
+bybit_client = None
+notification_system = None
+sentiment_analyzer = None
+anomaly_detector = None
+
 # Inicjalizacja komponentów systemu (import wewnątrz funkcji dla uniknięcia cyklicznych importów)
 def initialize_system():
     try:
@@ -38,7 +45,7 @@ def initialize_system():
         exclude_modules_from_auto_import(["tests"])
         logging.info("Wykluczam podpakiet 'tests' z automatycznego importu.")
 
-        global notification_system, sentiment_analyzer, anomaly_detector
+        global notification_system, sentiment_analyzer, anomaly_detector, bybit_client
 
         notification_system = NotificationSystem()
         logging.info("Zainicjalizowano system powiadomień z 2 kanałami.")
@@ -48,7 +55,6 @@ def initialize_system():
         anomaly_detector = AnomalyDetector()
 
         # Inicjalizacja klienta ByBit (tylko raz podczas startu aplikacji)
-        global bybit_client
         try:
             api_key = os.getenv("BYBIT_API_KEY")
             api_secret = os.getenv("BYBIT_API_SECRET")
