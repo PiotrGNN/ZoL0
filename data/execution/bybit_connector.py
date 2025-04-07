@@ -263,9 +263,8 @@ class BybitConnector:
             # Mechanizm ponawiania prób w przypadku przekroczenia limitów API
             while retry_count < max_retries:
                 try:
-
-            # Testowa implementacja (symulacja)
-            if self.use_testnet:
+                    # Testowa implementacja (symulacja)
+                    if self.use_testnet:
                 # Symulowane dane do celów testowych
                 self.logger.info("Pobieranie danych z testnet")
                 return {
@@ -445,7 +444,7 @@ class BybitConnector:
                     }
                 
                 # Jeśli dotarliśmy tutaj, to znaczy, że zapytanie się powiodło
-                break
+                    break
                 
         except Exception as e:
             self.logger.error(f"Krytyczny błąd podczas pobierania salda konta: {e}. Traceback: {traceback.format_exc()}")
