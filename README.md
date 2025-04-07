@@ -13,6 +13,7 @@ Zaawansowany system tradingowy wykorzystujący modele sztucznej inteligencji do 
 
 1. Kliknij przycisk "Run" w środowisku Replit
 2. System zostanie automatycznie skonfigurowany i uruchomiony
+3. Dostęp do dashboardu: `https://[nazwa-repl].replit.app/dashboard`
 
 ### Manualna instalacja
 
@@ -23,6 +24,13 @@ pip install -r requirements.txt
 # Uruchomienie aplikacji
 python main.py
 ```
+
+### Dostępne endpointy
+
+- `/` - Podstawowe API statusu systemu (JSON)
+- `/dashboard` - Panel administracyjny z wizualizacją stanu systemu
+- `/api/status` - Szczegółowy status API (JSON)
+- `/health` - Endpoint do sprawdzania stanu aplikacji
 
 ## 🏗️ Struktura projektu
 

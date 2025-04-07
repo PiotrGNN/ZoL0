@@ -1,0 +1,228 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Trading Bot</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-gap: 20px;
+        }
+        .metric {
+            text-align: center;
+            padding: 15px;
+        }
+        .metric h3 {
+            margin-top: 0;
+            color: #7f8c8d;
+        }
+        .metric p {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #2c3e50;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        .status-online {
+            background-color: #2ecc71;
+            color: white;
+        }
+        .status-warning {
+            background-color: #f39c12;
+            color: white;
+        }
+        .status-offline {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .chart-container {
+            height: 300px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Trading Bot - Dashboard</h1>
+            <span class="status status-online">ONLINE</span>
+        </div>
+
+        <div class="card">
+            <h2>Podsumowanie Systemu</h2>
+            <div class="grid">
+                <div class="metric">
+                    <h3>Status</h3>
+                    <p>Aktywny</p>
+                </div>
+                <div class="metric">
+                    <h3>Tryb Pracy</h3>
+                    <p>{{ system_mode }}</p>
+                </div>
+                <div class="metric">
+                    <h3>Aktywne Strategie</h3>
+                    <p>{{ active_strategies }}</p>
+                </div>
+                <div class="metric">
+                    <h3>Poziom Ryzyka</h3>
+                    <p>{{ risk_level }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Komponenty Systemu</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Komponent</th>
+                        <th>Status</th>
+                        <th>Ostatnia Aktualizacja</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for component in components %}
+                    <tr>
+                        <td>{{ component.name }}</td>
+                        <td>
+                            <span class="status status-{{ component.status_class }}">
+                                {{ component.status }}
+                            </span>
+                        </td>
+                        <td>{{ component.last_update }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>Wykryte Anomalie</h2>
+            {% if anomalies %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Para</th>
+                        <th>Poziom</th>
+                        <th>Opis</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for anomaly in anomalies %}
+                    <tr>
+                        <td>{{ anomaly.date }}</td>
+                        <td>{{ anomaly.pair }}</td>
+                        <td>{{ anomaly.level }}</td>
+                        <td>{{ anomaly.description }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>Brak wykrytych anomalii w ostatnim czasie.</p>
+            {% endif %}
+        </div>
+        
+        <div class="card">
+            <h2>Ostatnie Działania Systemu</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Czas</th>
+                        <th>Typ</th>
+                        <th>Opis</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for action in system_actions %}
+                    <tr>
+                        <td>{{ action.time }}</td>
+                        <td>{{ action.type }}</td>
+                        <td>{{ action.description }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="actions">
+                <button class="btn" onclick="window.location.href='/api/status'">Odśwież Status API</button>
+                <button class="btn" onclick="window.location.href='/download-report'">Pobierz Raport</button>
+                <button class="btn" onclick="window.location.href='/start-simulation'">Uruchom Symulację</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

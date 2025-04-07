@@ -9,7 +9,7 @@ import os
 import sys
 import time
 from dotenv import load_dotenv
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 
 # Inicjalizacja aplikacji Flask
 app = Flask(__name__)
@@ -42,6 +42,81 @@ def index():
         "version": "1.0.0"
     })
 
+@app.route('/dashboard')
+def dashboard():
+    """Strona z dashboardem systemu."""
+    from datetime import datetime
+    
+    # Dane przykładowe - w rzeczywistości byłyby pobierane z systemu
+    system_mode = "Symulacja"
+    active_strategies = 3
+    risk_level = "Niski"
+    
+    # Przykładowe komponenty systemu
+    components = [
+        {
+            "name": "Detektor Anomalii",
+            "status": "Aktywny",
+            "status_class": "online",
+            "last_update": datetime.now().strftime("%H:%M:%S")
+        },
+        {
+            "name": "Przetwarzanie Danych",
+            "status": "Aktywny",
+            "status_class": "online",
+            "last_update": datetime.now().strftime("%H:%M:%S")
+        },
+        {
+            "name": "Silnik Tradingowy",
+            "status": "Oczekiwanie",
+            "status_class": "warning",
+            "last_update": datetime.now().strftime("%H:%M:%S")
+        }
+    ]
+    
+    # Przykładowe anomalie
+    anomalies = [
+        {
+            "date": "2025-04-07 10:15:00",
+            "pair": "BTC/USDT",
+            "level": "Średni",
+            "description": "Nagły wzrost wolumenu"
+        },
+        {
+            "date": "2025-04-07 10:22:30",
+            "pair": "ETH/USDT",
+            "level": "Niski",
+            "description": "Nietypowa zmiana ceny"
+        }
+    ]
+    
+    # Przykładowe działania systemu
+    system_actions = [
+        {
+            "time": "10:25:10",
+            "type": "Analiza",
+            "description": "Zakończono analizę par walutowych"
+        },
+        {
+            "time": "10:20:05",
+            "type": "System",
+            "description": "Uruchomiono detektor anomalii"
+        },
+        {
+            "time": "10:15:00",
+            "type": "Dane",
+            "description": "Zaktualizowano historyczne dane rynkowe"
+        }
+    ]
+    
+    return render_template('dashboard.html', 
+                          system_mode=system_mode,
+                          active_strategies=active_strategies,
+                          risk_level=risk_level,
+                          components=components,
+                          anomalies=anomalies,
+                          system_actions=system_actions)
+
 @app.route('/health')
 def health_check():
     """Endpoint do sprawdzania stanu aplikacji - używany przez Replit do health check."""
@@ -57,6 +132,25 @@ def system_status():
             "data_processor": "active",
             "trading_engine": "standby"
         }
+    })
+
+@app.route('/download-report')
+def download_report():
+    """Endpoint do pobierania raportu z działania systemu."""
+    # W rzeczywistym przypadku tutaj byłaby generowanie i pobieranie raportu
+    return jsonify({
+        "status": "success",
+        "message": "Raport zostanie wygenerowany i wysłany na email"
+    })
+
+@app.route('/start-simulation')
+def start_simulation():
+    """Endpoint do uruchamiania symulacji na żądanie."""
+    # W rzeczywistości tutaj byłoby rozpoczynanie nowej symulacji
+    logging.info("Uruchomiono symulację z panelu administratora")
+    return jsonify({
+        "status": "success",
+        "message": "Symulacja została uruchomiona"
     })
 
 def load_configuration():
