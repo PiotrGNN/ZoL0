@@ -1,4 +1,3 @@
-
 import logging
 import os
 from datetime import datetime, timedelta
@@ -29,13 +28,13 @@ def initialize_system():
         from data.utils.notification_system import NotificationSystem
         from data.indicators.sentiment_analysis import SentimentAnalyzer
         from ai_models.anomaly_detection import AnomalyDetector
-        
+
         global notification_system, sentiment_analyzer, anomaly_detector
-        
+
         notification_system = NotificationSystem()
         sentiment_analyzer = SentimentAnalyzer()
         anomaly_detector = AnomalyDetector()
-        
+
         logging.info("System zainicjalizowany poprawnie")
         return True
     except Exception as e:
@@ -51,7 +50,7 @@ def dashboard():
         'max_position_size': 10,
         'enable_auto_trading': False
     }
-    
+
     # Przykładowe dane AI modeli
     ai_models = [
         {
@@ -76,7 +75,7 @@ def dashboard():
             'last_used': '2025-04-07 09:45'
         }
     ]
-    
+
     # Przykładowe dane strategii
     strategies = [
         {
@@ -104,7 +103,7 @@ def dashboard():
             'profit_factor': 1.65
         }
     ]
-    
+
     return render_template(
         'dashboard.html',
         settings=default_settings,
@@ -148,7 +147,7 @@ def get_chart_data():
         days = 30
         dates = [(datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d') for i in range(days)]
         dates.reverse()
-        
+
         # Symulacja wartości portfela
         import random
         initial_value = 10000
@@ -156,7 +155,7 @@ def get_chart_data():
         for i in range(1, days):
             change = random.uniform(-200, 300)
             values.append(round(values[-1] + change, 2))
-        
+
         return jsonify({
             'success': True,
             'data': {
@@ -203,7 +202,7 @@ def get_notifications():
                 'timestamp': (datetime.now() - timedelta(minutes=5)).strftime('%Y-%m-%d %H:%M:%S')
             }
         ]
-        
+
         return jsonify({
             'success': True,
             'notifications': notifications
@@ -251,11 +250,10 @@ def get_component_status():
                 'last_updated': (datetime.now() - timedelta(minutes=2)).strftime('%Y-%m-%d %H:%M:%S')
             }
         ]
-        
+
         return jsonify({
             'success': True,
-            'components': components,
-            'last_updated': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            'components': components
         })
     except Exception as e:
         logging.error(f"Błąd podczas pobierania statusu komponentów: {e}")
@@ -380,7 +378,7 @@ def get_recent_trades():
                 'strategy': 'Mean Reversion'
             }
         ]
-        
+
         return jsonify({
             'success': True,
             'trades': trades,
@@ -421,7 +419,7 @@ def get_alerts():
                 'status': 'active'
             }
         ]
-        
+
         return jsonify({
             'success': True,
             'alerts': alerts,
@@ -465,7 +463,7 @@ def get_ai_models_status():
                 'last_prediction': (datetime.now() - timedelta(minutes=8)).strftime('%Y-%m-%d %H:%M')
             }
         ]
-        
+
         return jsonify({
             'success': True,
             'models': models,
@@ -482,9 +480,9 @@ def get_ai_models_status():
 if __name__ == "__main__":
     # Tworzenie katalogu logs jeśli nie istnieje
     os.makedirs("logs", exist_ok=True)
-    
+
     # Inicjalizacja systemu
     initialize_system()
-    
+
     # Uruchomienie aplikacji
     app.run(host='0.0.0.0', port=5000, debug=True)

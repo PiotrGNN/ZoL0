@@ -1,88 +1,149 @@
-# Trading Bot - System Automatycznego Tradingu
 
-## 🚀 O Projekcie
+# 🚀 AI Trading System
 
-System automatycznego tradingu bazujący na sztucznej inteligencji i analizie technicznej. Projekt łączy zaawansowane algorytmy uczenia maszynowego, analizę sentymentu rynkowego oraz tradycyjne strategie tradingowe, aby oferować kompleksowe rozwiązanie do handlu na rynkach kryptowalut.
+Zaawansowany system tradingowy integrujący modele sztucznej inteligencji z giełdami kryptowalut.
 
-## 🔧 Technologie
+## 📋 Funkcjonalności
 
-- **Backend**: Python, Flask
-- **Analiza danych**: Pandas, NumPy, SciKit-Learn
-- **AI/ML**: TensorFlow, XGBoost, NLTK, Transformers
-- **Frontend**: JavaScript, Chart.js
-- **Bazy danych**: SQLite, SQLAlchemy
-- **Exchange API**: CCXT, python-binance
+- 🧠 **Modele AI/ML** - predykcja ruchów cenowych, analiza sentymentu, wykrywanie anomalii
+- 📊 **Zarządzanie ryzykiem** - dynamiczne pozycjonowanie, kontrola ryzyka, optymalizacja dźwigni
+- 🔄 **Integracja z giełdami** - Bybit, Binance (REST + WebSocket)
+- 📈 **Strategie handlowe** - Trend following, Mean reversion, Breakout
+- 🔍 **Backtesting** - Testowanie na danych historycznych
+- 💼 **Dashboard webowy** - Monitorowanie systemu, alertów i metryk
 
-## 🚦 Instrukcja Uruchomienia
+## 🛠️ Instalacja
 
 ### Wymagania
 
-- Python 3.10+
-- Wszystkie zależności wymienione w `requirements.txt`
+- Python 3.9+
+- Konto na Bybit i/lub Binance
+- Klucze API z odpowiednimi uprawnieniami
 
-### Instalacja
+### Konfiguracja
 
 1. Sklonuj repozytorium
 2. Zainstaluj zależności:
    ```
    pip install -r requirements.txt
    ```
-3. Utwórz plik `.env` na podstawie `.env.example` i uzupełnij kluczowe wartości
-4. Uruchom aplikację:
+3. Utwórz plik `.env` na podstawie `.env.example`:
    ```
-   python main.py
+   cp .env.example .env
    ```
+4. Dodaj swoje klucze API do pliku `.env` lub Replit Secrets
 
-### Dostęp do Dashboardu
+## 🚀 Uruchomienie
 
-Po uruchomieniu aplikacja będzie dostępna pod adresem: `http://0.0.0.0:5000/`
+### Standardowe uruchomienie
 
-## 📊 Główne Funkcjonalności
-
-- **Dashboard Analityczny**: Monitorowanie wyników, statystyk i otwartych pozycji
-- **Strategie Tradingowe**: Zestaw wbudowanych strategii (Trend Following, Mean Reversion, Breakout)
-- **Modele AI**: Predykcja cen, analiza sentymentu, wykrywanie anomalii
-- **Zarządzanie Ryzykiem**: Dynamiczne zarządzanie wielkością pozycji i stop-lossami
-- **Backtest**: Testowanie strategii na danych historycznych
-- **Powiadomienia**: System alertów o ważnych zdarzeniach rynkowych
-
-## 📋 Struktura Projektu
-
-- `ai_models/` - Modele sztucznej inteligencji i uczenia maszynowego
-- `data/` - Moduły do pobierania, przetwarzania i zarządzania danymi
-  - `data/indicators/` - Wskaźniki techniczne i analiza sentymentu
-  - `data/strategies/` - Implementacje strategii tradingowych
-  - `data/risk_management/` - Zarządzanie ryzykiem i wielkością pozycji
-  - `data/execution/` - Wykonywanie zleceń i połączenia z giełdami
-- `static/` - Pliki statyczne dla front-endu (JS, CSS)
-- `templates/` - Szablony HTML dla dashboardu
-- `logs/` - Logi aplikacji
-
-## 🔍 Testowanie
-
-Uruchom testy jednostkowe:
+```bash
+python main.py
 ```
+
+### Tryb testowy (Testnet)
+
+```bash
+# Upewnij się, że w .env jest ustawione TEST_MODE=true
+python main.py
+```
+
+### Narzędzia developerskie
+
+```bash
+# Testy
 pytest data/tests/
-```
 
-Testy z raportowaniem pokrycia kodu:
-```
+# Formatowanie kodu
+black .
+
+# Lint
+flake8 .
+
+# Testy z pokryciem kodu
 pytest --cov=. --cov-report=term-missing data/tests/
 ```
 
-## 📝 Konfiguracja
+## 🧩 Struktura projektu
 
-Konfiguracja systemu odbywa się przez:
-- Plik `.env` - Zmienne środowiskowe, klucze API
-- `config/settings.py` - Główne ustawienia aplikacji
-- Dashboard webowy - Konfiguracja parametrów strategii
+```
+├── ai_models/             # Modele AI/ML
+├── config/                # Konfiguracja systemu
+├── data/                  # Moduły tradingowe
+│   ├── data/              # Pobieranie i przetwarzanie danych
+│   ├── execution/         # Wykonywanie zleceń
+│   ├── indicators/        # Wskaźniki techniczne
+│   ├── risk_management/   # Zarządzanie ryzykiem
+│   ├── strategies/        # Strategie handlowe
+│   ├── tests/             # Testy
+│   └── utils/             # Narzędzia pomocnicze
+├── logs/                  # Logi systemu
+├── saved_models/          # Zapisane modele AI
+├── static/                # Zasoby statyczne dla GUI
+├── templates/             # Szablony HTML
+├── .env.example           # Przykładowy plik konfiguracyjny
+├── main.py                # Punkt wejściowy
+└── requirements.txt       # Zależności
+```
 
-## 🛡️ Bezpieczeństwo
+## 🔒 Bezpieczeństwo
 
-- Klucze API przechowywane są w zmiennych środowiskowych
-- Szyfrowanie wrażliwych danych
-- System monitorowania bezpieczeństwa
+- Przechowuj klucze API używając Replit Secrets Manager (`Tools → Secrets`)
+- Ogranicz uprawnienia kluczy API do minimum
+- Używaj trybu testowego (testnet) do testowania nowych strategii
+- Ustaw odpowiednie limity ryzyka w konfiguracji
+
+## 📈 Integracja z Bybit API
+
+System integruje się z Bybit API dla spot i futures:
+
+```python
+from data.execution.bybit_connector import BybitConnector
+
+# Inicjalizacja
+bybit = BybitConnector(test_mode=True)
+
+# REST API
+ticker = bybit.get_tickers("BTCUSDT")
+orderbook = bybit.get_orderbook("BTCUSDT")
+balance = bybit.get_wallet_balance()
+
+# WebSocket
+bybit.connect_websocket()
+bybit.subscribe("orderbook.50.BTCUSDT", process_data_callback)
+```
+
+## 🧠 Wykorzystanie modeli AI
+
+System obsługuje różne modele AI do predykcji rynkowych:
+
+```python
+from ai_models.model_training import train_price_predictor
+from data.execution.ai_trade_bridge import AITradeBridge
+
+# Inicjalizacja mostu AI-Trading
+bridge = AITradeBridge()
+
+# Przetwarzanie predykcji
+prediction = {"action": "BUY", "confidence": 0.85, "price": 50000.0}
+result = bridge.process_ai_prediction(prediction, symbol="BTCUSDT")
+```
+
+## 📊 Monitorowanie systemu
+
+System udostępnia dashboard webowy na porcie 5000:
+
+```
+http://localhost:5000/dashboard
+```
+
+## 🏆 Dobre praktyki
+
+- Zacznij od małych alokacji kapitału
+- Regularnie monitoruj logi i metryki systemu
+- Testuj nowe strategie na testnecie przed uruchomieniem na rynku rzeczywistym
+- Regularnie aktualizuj modele AI nowymi danymi
 
 ## 📜 Licencja
 
-Ten projekt jest udostępniany na licencji MIT.
+Ten projekt jest zastrzeżony i nie jest dostępny publicznie bez zgody autora.

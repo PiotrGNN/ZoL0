@@ -12,11 +12,177 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
 
+# Import the newly added config loader
+import os
+import json
+import yaml
+from dotenv import load_dotenv
+
+# Konfiguracja loggera
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s"
+)
+logger = logging.getLogger(__name__)
+
+class ConfigLoader:
+    """
+    Klasa odpowiedzialna za ładowanie konfiguracji z różnych źródeł:
+    - Replit Secrets
+    - Plik .env
+    - Pliki konfiguracyjne (YAML, JSON)
+    """
+
+    def __init__(self):
+        # Ładowanie zmiennych środowiskowych z .env
+        self.load_env_vars()
+        self.config = {}
+
+    def load_env_vars(self):
+        """Ładuje zmienne środowiskowe z pliku .env"""
+        try:
+            # Ładuje zmienne ze standardowej lokalizacji .env
+            load_dotenv()
+            logger.info("Zmienne środowiskowe załadowane z .env")
+        except Exception as e:
+            logger.warning(f"Nie udało się załadować pliku .env: {e}")
+
+    def get_secret(self, key, default=None):
+        """
+        Pobiera sekret z Replit Secrets, zmiennych środowiskowych lub plików konfiguracyjnych
+        """
+        # Pierwszeństwo: Replit Secrets
+        replit_secret = os.environ.get(key)
+        if replit_secret:
+            return replit_secret
+
+        # Następnie sprawdź w config
+        if key in self.config:
+            return self.config[key]
+
+        # Domyślna wartość
+        logger.warning(f"Nie znaleziono klucza {key} w żadnym źródle konfiguracji")
+        return default
+
+    def load_config_file(self, file_path, format_type=None):
+        """
+        Ładuje konfigurację z pliku (YAML lub JSON)
+
+        Args:
+            file_path (str): Ścieżka do pliku konfiguracyjnego
+            format_type (str, optional): Format pliku ('yaml', 'json'). Jeśli None, format zostanie określony na podstawie rozszerzenia.
+        """
+        try:
+            if not os.path.exists(file_path):
+                logger.warning(f"Plik konfiguracyjny {file_path} nie istnieje")
+                return False
+
+            if format_type is None:
+                if file_path.endswith('.yaml') or file_path.endswith('.yml'):
+                    format_type = 'yaml'
+                elif file_path.endswith('.json'):
+                    format_type = 'json'
+                else:
+                    logger.error(f"Nieznany format pliku: {file_path}")
+                    return False
+
+            with open(file_path, 'r') as f:
+                if format_type == 'yaml':
+                    loaded_config = yaml.safe_load(f)
+                elif format_type == 'json':
+                    loaded_config = json.load(f)
+                else:
+                    logger.error(f"Nieobsługiwany format: {format_type}")
+                    return False
+
+                # Aktualizacja konfiguracji
+                if isinstance(loaded_config, dict):
+                    self.config.update(loaded_config)
+                    logger.info(f"Konfiguracja załadowana z {file_path}")
+                    return True
+                else:
+                    logger.error(f"Nieprawidłowy format pliku {file_path}. Oczekiwano słownika.")
+                    return False
+
+        except Exception as e:
+            logger.error(f"Błąd podczas ładowania pliku konfiguracyjnego {file_path}: {e}")
+            return False
+
+    def get_api_keys(self, exchange='bybit'):
+        """
+        Pobiera klucze API dla danej giełdy
+
+        Args:
+            exchange (str): Nazwa giełdy ('bybit', 'binance', itp.)
+
+        Returns:
+            dict: Słownik zawierający klucze API lub None w przypadku błędu
+        """
+        exchange = exchange.upper()
+
+        try:
+            api_key = self.get_secret(f"{exchange}_API_KEY")
+            api_secret = self.get_secret(f"{exchange}_API_SECRET")
+
+            if not api_key or not api_secret:
+                logger.warning(f"Brak kluczy API dla {exchange}. Sprawdź konfigurację.")
+                return None
+
+            return {
+                "api_key": api_key,
+                "api_secret": api_secret
+            }
+        except Exception as e:
+            logger.error(f"Błąd podczas pobierania kluczy API dla {exchange}: {e}")
+            return None
+
+    def get_test_mode(self):
+        """Sprawdza, czy system działa w trybie testowym"""
+        test_mode = self.get_secret("TEST_MODE", "false").lower()
+        return test_mode in ["true", "1", "yes", "t"]
+
+    def get_bybit_endpoints(self):
+        """Pobiera endpointy dla Bybit w zależności od trybu testowego"""
+        is_test = self.get_test_mode()
+
+        if is_test:
+            return {
+                "rest_api": "https://api-testnet.bybit.com",
+                "websocket": "wss://stream-testnet.bybit.com"
+            }
+        else:
+            return {
+                "rest_api": "https://api.bybit.com",
+                "websocket": "wss://stream.bybit.com"
+            }
+
+# Instancja globalna
+config_loader = ConfigLoader()
+
+# Załaduj pliki konfiguracyjne
+def initialize_configuration():
+    """Inicjalizuje konfigurację systemu"""
+    # Kolejność ładowania ma znaczenie - ostatni plik ma najwyższy priorytet
+    config_files = [
+        "config/settings.yml",
+        "config/settings.json",
+        "config/secrets.json"
+    ]
+
+    for file_path in config_files:
+        config_loader.load_config_file(file_path)
+
+    # Informacje o trybie pracy
+    test_mode = config_loader.get_test_mode()
+    logger.info(f"System uruchomiony w trybie {'TESTOWYM' if test_mode else 'PRODUKCYJNYM'}")
+
+    return config_loader
+
+
 # Konfiguracja logowania
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
 )
-
 
 def optimize_portfolio_markowitz(
     returns: pd.DataFrame, risk_free_rate: float = 0.0
@@ -160,6 +326,12 @@ def generate_report(optimization_results: List[Dict[str, Any]]):
 
 if __name__ == "__main__":
     try:
+        # Initialize configuration before running optimization
+        config_loader = initialize_configuration()
+        bybit_keys = config_loader.get_api_keys()
+        if bybit_keys:
+            logging.info(f"Bybit API Keys loaded: {bybit_keys}")  # Log the keys (carefully consider security implications in production)
+
         np.random.seed(42)
         dates = pd.date_range(start="2020-01-01", periods=252, freq="B")
         returns_data = np.random.normal(0.001, 0.02, size=(252, 4))

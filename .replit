@@ -1,43 +1,52 @@
 run = "python main.py"
-language = "python3"
 entrypoint = "main.py"
-hidden = [".git", ".config", "**/__pycache__", "**/.mypy_cache", "**/*.pyc"]
-modules = ["python-3.11"]
+modules = ["python-3.10:v18-20230807-322e88b"]
+
+hidden = [".config", "**/__pycache__", "**/.mypy_cache", "**/*.pyc"]
 
 [nix]
-channel = "stable-22_11"
+channel = "stable-23_05"
 
 [env]
-PYTHONPATH = "$PYTHONPATH:$PWD"
-PATH = "$PATH:$PWD"
+PYTHONPATH = "${PYTHONPATH}:${REPL_HOME}"
+PYTHONUNBUFFERED = "1"
 
 [packager]
 language = "python3"
-ignoredPackages = ["unit_tests"]
 
 [packager.features]
+enabledForHosting = false
 packageSearch = true
 guessImports = true
-
-[languages.python3]
-pattern = "**/*.py"
-syntax = "python"
-
-[languages.python3.languageServer]
-start = "pylsp"
 
 [unitTest]
 language = "python3"
 
 [deployment]
-run = ["sh", "-c", "python main.py"]
+run = ["python", "main.py"]
 deploymentTarget = "cloudrun"
 
-[gitHubImport]
-requiredFiles = [".replit", "replit.nix", ".gitignore"]
+[languages]
 
-[workflows]
-runButton = "Run"
+[languages.python]
+pattern = "**/*.py"
+
+[languages.python.languageServer]
+start = "pylsp"
+
+[interpreter]
+command = ["python", "-m", "flask", "run", "--host=0.0.0.0", "--port=5000"]
+
+[gitHubImport]
+requiredFiles = [".replit", "replit.nix", ".config", "requirements.txt"]
+
+[auth]
+pageEnabled = false
+buttonEnabled = false
+
+[[ports]]
+localPort = 5000
+externalPort = 80
 
 [[workflows.workflow]]
 name = "Run"
@@ -92,7 +101,3 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "pip install -r requirements.txt"
-
-[[ports]]
-localPort = 5000
-externalPort = 80
