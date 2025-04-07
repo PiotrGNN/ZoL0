@@ -240,32 +240,18 @@ class BybitConnector:
                     "result": {
                         "list": [
                             {
-                                "totalEquity": "15240.75",
-                                "totalWalletBalance": "15240.75",
+                                "totalEquity": "10000.00",
+                                "totalWalletBalance": "10000.00",
                                 "coin": [
                                     {
                                         "coin": "USDT",
-                                        "walletBalance": "1100.00",
-                                        "availableToWithdraw": "1100.00",
-                                        "unrealisedPnl": "0.0"
+                                        "walletBalance": "10000.00",
+                                        "availableToWithdraw": "10000.00"
                                     },
                                     {
                                         "coin": "BTC",
-                                        "walletBalance": "0.24",
-                                        "availableToWithdraw": "0.24",
-                                        "unrealisedPnl": "332.9"
-                                    },
-                                    {
-                                        "coin": "ETH",
-                                        "walletBalance": "1.85",
-                                        "availableToWithdraw": "1.85",
-                                        "unrealisedPnl": "-44.4"
-                                    },
-                                    {
-                                        "coin": "SOL",
-                                        "walletBalance": "18.5",
-                                        "availableToWithdraw": "18.5",
-                                        "unrealisedPnl": "90.72"
+                                        "walletBalance": "0.5",
+                                        "availableToWithdraw": "0.5"
                                     }
                                 ]
                             }

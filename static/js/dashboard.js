@@ -603,109 +603,30 @@ function resetSystem() {
 // Funkcja aktualizująca dane portfela
 function updatePortfolio() {
     fetch('/api/portfolio')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Błąd pobierania danych portfela');
+            }
+            return response.json();
+        })
         .then(data => {
+            portfolioErrorCount = 0;
             if (data.success) {
-                const portfolioData = data.data;
-
-                // Aktualizacja sumy portfela
-                document.getElementById('portfolio-total-value').textContent = '$' + portfolioData.total_value.toFixed(2);
-                document.getElementById('portfolio-pnl').textContent = portfolioData.pnl_total >= 0 ? '+$' + portfolioData.pnl_total.toFixed(2) : '-$' + Math.abs(portfolioData.pnl_total).toFixed(2);
-                document.getElementById('portfolio-pnl').className = portfolioData.pnl_total >= 0 ? 'text-success' : 'text-danger';
-                document.getElementById('portfolio-pnl-percent').textContent = portfolioData.pnl_percentage >= 0 ? '+' + portfolioData.pnl_percentage.toFixed(2) + '%' : '-' + Math.abs(portfolioData.pnl_percentage).toFixed(2) + '%';
-                document.getElementById('portfolio-pnl-percent').className = portfolioData.pnl_percentage >= 0 ? 'text-success' : 'text-danger';
-
-                // Aktualizacja ostatniej aktualizacji
-                document.getElementById('portfolio-last-updated').textContent = portfolioData.last_updated;
-
-                // Aktualizacja informacji o trybie danych (rzeczywiste/symulowane)
-                const modeElement = document.getElementById('portfolio-mode');
-                if (modeElement) {
-                    modeElement.textContent = portfolioData.mode || 'dane rzeczywiste';
-                    modeElement.className = portfolioData.mode && portfolioData.mode.includes('symulacja') ? 'badge bg-warning' : 'badge bg-success';
-                }
-
-                // Aktualizacja informacji o połączeniu
-                const apiStatusElement = document.getElementById('api-connection-status');
-                if (apiStatusElement) {
-                    apiStatusElement.textContent = portfolioData.api_connection || 'aktywne';
-                    apiStatusElement.className = portfolioData.api_connection && portfolioData.api_connection.includes('problem') ? 'badge bg-danger' : 'badge bg-success';
-                }
-
-                // Czyszczenie i aktualizacja tabeli aktywów
-                const tableBody = document.getElementById('portfolio-assets');
-                tableBody.innerHTML = '';
-
-                portfolioData.assets.forEach(asset => {
-                    const row = document.createElement('tr');
-
-                    // Symbol
-                    const symbolCell = document.createElement('td');
-                    symbolCell.textContent = asset.symbol;
-                    symbolCell.className = 'fw-bold';
-                    row.appendChild(symbolCell);
-
-                    // Ilość
-                    const amountCell = document.createElement('td');
-                    amountCell.textContent = asset.amount;
-                    row.appendChild(amountCell);
-
-                    // Cena (dodane)
-                    const priceCell = document.createElement('td');
-                    priceCell.textContent = asset.price ? '$' + parseFloat(asset.price).toFixed(2) : '-';
-                    row.appendChild(priceCell);
-
-                    // Wartość
-                    const valueCell = document.createElement('td');
-                    valueCell.textContent = '$' + asset.value_usd.toFixed(2);
-                    row.appendChild(valueCell);
-
-                    // Alokacja
-                    const allocationCell = document.createElement('td');
-                    allocationCell.textContent = asset.allocation.toFixed(1) + '%';
-                    row.appendChild(allocationCell);
-
-                    // PnL
-                    const pnlCell = document.createElement('td');
-                    pnlCell.textContent = asset.pnl_24h >= 0 ? '+' + asset.pnl_24h.toFixed(1) + '%' : asset.pnl_24h.toFixed(1) + '%';
-                    pnlCell.className = asset.pnl_24h >= 0 ? 'text-success' : 'text-danger';
-                    row.appendChild(pnlCell);
-
-                    tableBody.appendChild(row);
-                });
-
-                // Aktualizacja wykresu alokacji portfela
-                updatePortfolioChart(portfolioData.assets);
-
-                // Dodaj informację o źródle danych
-                const portfolioSource = document.getElementById('portfolio-source');
-                if (portfolioSource) {
-                    portfolioSource.textContent = portfolioData.mode || 'Dane rzeczywiste z giełdy';
-                    portfolioSource.className = portfolioData.mode && portfolioData.mode.includes('symulacja') 
-                        ? 'text-warning small mt-2' 
-                        : 'text-success small mt-2';
-                }
+                displayPortfolioData(data.data);
+                renderPortfolioChart(data.data.assets);
             } else {
-                console.error('Błąd podczas pobierania danych portfela:', data.error);
-
-                // Wyświetl informację o błędzie
-                const errorInfo = document.getElementById('portfolio-error');
-                if (errorInfo) {
-                    errorInfo.textContent = data.error || 'Nie udało się pobrać danych portfela';
-                    errorInfo.className = 'text-danger small mt-2';
-                    errorInfo.style.display = 'block';
+                console.error('Błąd pobierania danych portfela:', data.error);
+                portfolioErrorCount++;
+                if (portfolioErrorCount > 3) {
+                    showErrorMessage('Nie można pobrać danych portfela.');
                 }
             }
         })
         .catch(error => {
-            console.error('Błąd podczas pobierania danych portfela:', error);
-
-            // Wyświetl informację o błędzie
-            const errorInfo = document.getElementById('portfolio-error');
-            if (errorInfo) {
-                errorInfo.textContent = 'Błąd sieci: ' + error.message;
-                errorInfo.className = 'text-danger small mt-2';
-                errorInfo.style.display = 'block';
+            console.error('Błąd pobierania danych portfela:', error);
+            portfolioErrorCount++;
+            if (portfolioErrorCount > 3) {
+                showErrorMessage('Nie można pobrać danych portfela.');
             }
         });
 }
@@ -720,14 +641,14 @@ function displayPortfolioData(portfolio) {
     const pnlValue = portfolio.pnl_percentage;
     pnlElement.textContent = (pnlValue > 0 ? '+' : '') + pnlValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
     pnlElement.className = 'pnl ' + (pnlValue >= 0 ? 'positive' : 'negative');
-
+    
     // Wyświetlanie informacji o trybie (dane rzeczywiste vs symulacja)
     const modeElement = document.getElementById('portfolio-mode');
     if (modeElement) {
         modeElement.textContent = portfolio.mode;
         modeElement.className = portfolio.mode.includes('rzeczywiste') ? 'mode-real' : 'mode-sim';
     }
-
+    
     // Wyświetlanie informacji o połączeniu z API
     const apiConnectionElement = document.getElementById('api-connection-status');
     if (apiConnectionElement && portfolio.api_connection) {
@@ -750,7 +671,7 @@ function displayPortfolioData(portfolio) {
         `;
         tableBody.appendChild(row);
     });
-
+    
     // Dodanie informacji o ostatniej aktualizacji
     const lastUpdateElement = document.getElementById('portfolio-last-update');
     if (lastUpdateElement) {
@@ -875,7 +796,7 @@ function setupModelTraining() {
                 fetch('/api/ai-models-status')
                     .then(response => response.json())
                     .then(data => {
-                        //                        // ... Tutaj można zaktualizować tabelę modeli
+                        // ... Tutaj można zaktualizować tabelę modeli
                         updateDashboardData();
                     });
             } else {
@@ -907,52 +828,3 @@ document.addEventListener('DOMContentLoaded', function() {
 
     console.log("Dashboard załadowany");
 });
-
-// Funkcja aktualizująca wykres alokacji portfela
-function updatePortfolioChart(assets) {
-    const ctx = document.getElementById('portfolio-allocation-chart').getContext('2d');
-
-    // Dane dla wykresu
-    const labels = assets.map(asset => asset.symbol);
-    const data = assets.map(asset => asset.value_usd);
-    const backgroundColors = [
-        'rgba(54, 162, 235, 0.8)',
-        'rgba(255, 99, 132, 0.8)',
-        'rgba(255, 206, 86, 0.8)',
-        'rgba(75, 192, 192, 0.8)',
-        'rgba(153, 102, 255, 0.8)',
-        'rgba(255, 159, 64, 0.8)',
-        'rgba(199, 199, 199, 0.8)'
-    ];
-
-    // Zniszcz istniejący wykres jeśli istnieje
-    if (window.portfolioChart) {
-        window.portfolioChart.destroy();
-    }
-
-    // Utwórz nowy wykres
-    window.portfolioChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: labels,
-            datasets: [{
-                data: data,
-                backgroundColor: backgroundColors.slice(0, assets.length),
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'right',
-                },
-                title: {
-                    display: true,
-                    text: 'Alokacja portfela'
-                }
-            }
-        }
-    });
-}

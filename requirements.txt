@@ -1,28 +1,16 @@
+
 # Core dependencies
-flask==2.2.5
-flask-cors==4.0.0
-python-dotenv==1.0.0
-requests==2.31.0
-websocket-client==1.6.4
+flask
+flask-cors
+python-dotenv
+requests
+websocket-client
 
-# Data processing & visualization
-matplotlib==3.7.2
-pandas==2.0.3
-numpy==1.24.4
-scikit-learn==1.2.2
+# Charts and data processing
+matplotlib
+pandas
+numpy
 
-# Trading APIs and extensions
-pybit==2.4.1
-ccxt==4.1.86
-
-# AI/ML related
-xgboost==2.0.2
-optuna==3.3.0
-
-# Development tools
-pytest==7.4.0
-flake8==6.1.0
-black==23.7.0
-
-# Added dependency
-nltk
+# Optional trading APIs (zakomentowane, odkomentuj jeśli potrzebujesz)
+# pybit
+# ccxt

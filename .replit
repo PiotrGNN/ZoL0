@@ -1,24 +1,41 @@
-run = "python3 main.py"
+run = "python main.py"
+language = "python3"
 entrypoint = "main.py"
-modules = ["python-3.10:v18-20230807-322e88b"]
-hidden = [".pythonlibs"]
+hidden = [".config", "**/__pycache__", "**/.pyc"]
 
 [nix]
 channel = "stable-23_05"
 
 [env]
-PYTHONPATH = "$PYTHONPATH:${REPL_HOME}"
+PYTHONPATH = "${REPL_HOME}"
 PYTHONUNBUFFERED = "1"
 
-[[ports]]
-localPort = 5000
-externalPort = 80
+[packager]
+language = "python3"
+
+[packager.features]
+enabledForHosting = false
+packageSearch = true
+guessImports = true
+
+[unitTest]
+language = "python3"
+
+[deployment]
+run = ["sh", "-c", "python main.py"]
+deploymentTarget = "cloudrun"
+
+[languages]
 
 [languages.python3]
 pattern = "**/*.py"
 
 [languages.python3.languageServer]
-start = ["pylsp"]
+start = "pylsp"
+
+[[ports]]
+localPort = 5000
+externalPort = 80
 
 [workflows]
 runButton = "Run"
@@ -30,4 +47,4 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python3 main.py"
+args = "python main.py"

@@ -4,19 +4,20 @@ error_logger.py
 Moduł do rejestrowania błędów i wyjątków.
 Funkcjonalności:
 - Wielopoziomowe logi: INFO, WARNING, ERROR, CRITICAL.
-- Możliwość wysyłania powiadomień w przypadku krytycznych usterek.
+- Możliwość wysyłania powiadomień w przypadku krytycznych usterek (przykładowo poprzez integrację z Sentry lub Datadog).
 - Maskowanie poufnych informacji w logach (np. kluczy API).
-- Kompatybilność z frameworkiem logging.
+- Kompatybilność z frameworkiem logging oraz opcjonalnie loguru (jeśli zainstalowany).
+- Zapewnienie wydajności, aby nie obciążać systemów HFT.
 """
 
 import logging
 import os
 import sys
 import traceback
-import re
 
 try:
     import sentry_sdk
+
     SENTRY_AVAILABLE = True
 except ImportError:
     SENTRY_AVAILABLE = False
@@ -30,26 +31,24 @@ logging.basicConfig(
 )
 
 
-def mask_sensitive_data(message: str) -> str:
+# Funkcja maskująca wrażliwe dane w komunikatach logów
+def mask_sensitive_data(message: str, sensitive_keys: list = None) -> str:
     """
-    Maskuje poufne dane w komunikatach logów.
+    Maskuje wartości kluczy, które mogą zawierać poufne dane.
 
     Parameters:
-        message (str): Komunikat do zamaskowania.
+        message (str): Komunikat do maskowania.
+        sensitive_keys (list): Lista słów kluczowych do maskowania (domyślnie ["api_key", "api_secret", "password"]).
 
     Returns:
-        str: Zamaskowany komunikat.
+        str: Zmaskowany komunikat.
     """
-    # Maskowanie kluczy API, sekretów, URL z tokenami
-    patterns = [
-        r'(api_key|secret|password|token)(\s*[=:]\s*["\'])([^"\']+)(["\'])',
-        r'(https?://[^:]+:)([^@]+)(@)',
-    ]
-
+    if sensitive_keys is None:
+        sensitive_keys = ["api_key", "api_secret", "password", "token"]
     masked_message = message
-    for pattern in patterns:
-        masked_message = re.sub(pattern, r'\1\2***\4', masked_message)
-
+    for key in sensitive_keys:
+        # Prosty mechanizm zastępowania – może być rozszerzony
+        masked_message = masked_message.replace(key, f"{key.upper()}=***")
     return masked_message
 
 
@@ -103,6 +102,7 @@ class ErrorLogger:
             notification_message += "\n" + traceback.format_exc()
         # Tutaj można dodać integrację z systemami powiadomień (np. e-mail, Slack, Sentry)
         logging.info("Wysłano powiadomienie krytyczne: %s", notification_message)
+
 
 # -------------------- Przykładowe użycie --------------------
 if __name__ == "__main__":

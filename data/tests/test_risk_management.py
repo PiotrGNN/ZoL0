@@ -13,17 +13,11 @@ oraz funkcji optymalizacji dźwigni finansowej.
 
 import logging
 import unittest
-import sys
-import os
-import pandas as pd
-from unittest.mock import Mock, patch
-import numpy as np
+from typing import Any
 
-# Importy głównych modułów
-from data.risk_management.portfolio_risk import PortfolioRiskManager
-from data.risk_management.stop_loss_manager import StopLossManager
-from data.risk_management.advanced_risk_manager import AdvancedRiskManager
-from data.risk_management.position_sizing import PositionSizingCalculator
+import numpy as np
+import pandas as pd
+from data.data.historical_data import HistoricalDataManager
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
