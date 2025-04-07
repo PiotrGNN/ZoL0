@@ -345,16 +345,25 @@ class BybitConnector:
                             error_str = str(time_error)
                             self.logger.error(f"Test połączenia z API nie powiódł się: {time_error}")
 
-                            # Specjalna obsługa limitu żądań API
-                            if "rate limit" in error_str.lower() or "429" in error_str or "403" in error_str:
+                            # Specjalna obsługa limitu żądań API oraz błędów CloudFront
+                            if "rate limit" in error_str.lower() or "429" in error_str or "403" in error_str or "cloudfront" in error_str.lower():
                                 self.rate_limit_exceeded = True
                                 self.last_rate_limit_reset = time.time()
                                 self.remaining_rate_limit = 0
-                                self.logger.warning(f"Przekroczono limit zapytań API. Używam symulowanych danych i zwiększam czas oczekiwania.")
-
-                                # Zwiększ dynamicznie czas oczekiwania przy kolejnych przekroczeniach limitu
-                                self.min_time_between_calls = min(3.0, self.min_time_between_calls * 1.5)  # max 3s między zapytaniami
-                                self.rate_limit_backoff = min(60.0, self.rate_limit_backoff * 1.5)  # max 60s backoff
+                                
+                                # Wykryj specyficzny błąd CloudFront i dostosuj czas oczekiwania
+                                if "cloudfront" in error_str.lower() or "The Amazon CloudFront distribution" in error_str:
+                                    self.logger.critical(f"Wykryto blokadę CloudFront! Bardzo agresywny backoff zostanie zastosowany.")
+                                    # Bardzo agresywny backoff dla problemu z CloudFront
+                                    self.min_time_between_calls = min(10.0, self.min_time_between_calls * 3.0)  # max 10s między zapytaniami
+                                    self.rate_limit_backoff = min(300.0, self.rate_limit_backoff * 3.0)  # max 5 min backoff
+                                else:
+                                    self.logger.warning(f"Przekroczono limit zapytań API. Używam symulowanych danych i zwiększam czas oczekiwania.")
+                                    # Zwiększ dynamicznie czas oczekiwania przy kolejnych przekroczeniach limitu
+                                    self.min_time_between_calls = min(5.0, self.min_time_between_calls * 2.0)  # max 5s między zapytaniami
+                                    self.rate_limit_backoff = min(120.0, self.rate_limit_backoff * 2.0)  # max 2 min backoff
+                                
+                                self.logger.info(f"Nowe parametry: min_interval={self.min_time_between_calls:.1f}s, backoff={self.rate_limit_backoff:.1f}s")
 
                                 # Zwracamy symulowane dane zamiast zgłaszania wyjątku
                                 return {
@@ -638,14 +647,21 @@ class BybitConnector:
         now = time.time()
 
         # Synchronizuj parametry rate limiter'a z cache_manager
-        if not hasattr(self, '_rate_limit_synced') or now- getattr(self, '_last_sync_time', 0) > 60:
-            # Bardziej konserwatywne limity dla produkcyjnego API
-            max_calls = 20 if not self.use_testnet else 30
-            min_interval = 2.0 if not self.use_testnet else 1.0
+        if not hasattr(self, '_rate_limit_synced') or now - getattr(self, '_last_sync_time', 0) > 60:
+            # Znacznie bardziej konserwatywne limity po napotkaniu błędów 403/CloudFront
+            max_calls = 10 if not self.use_testnet else 15
+            min_interval = 3.0 if not self.use_testnet else 2.0
+            
+            # Sprawdź, czy wystąpiły wcześniej błędy rate limit
+            if hasattr(self, 'rate_limit_exceeded') and self.rate_limit_exceeded:
+                # Jeszcze bardziej konserwatywne parametry po wystąpieniu błędu
+                max_calls = max(5, max_calls // 2)
+                min_interval = min(10.0, min_interval * 2)
+                self.logger.warning(f"Zastosowano bardzo konserwatywne parametry rate limiting: max_calls={max_calls}, min_interval={min_interval}s")
 
             # Synchronizuj parametry tylko raz na minutę dla wydajności
             set_rate_limit_parameters(
-                max_calls_per_minute=max_calls,  # Bardziej konserwatywny limit dla produkcyjnego API
+                max_calls_per_minute=max_calls,
                 min_interval=min_interval
             )
             self._rate_limit_synced = True
@@ -653,6 +669,7 @@ class BybitConnector:
 
             # Zaktualizuj lokalne zmienne
             self.min_time_between_calls = min_interval
+            self.logger.info(f"Zaktualizowano parametry rate limitera: max_calls={max_calls}, min_interval={min_interval}s")
 
         # Jeśli przekroczono limit, stosuj znacznie dłuższe opóźnienie dla produkcyjnego API
         if self.rate_limit_exceeded or api_status["rate_limited"]:

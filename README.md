@@ -92,6 +92,26 @@ Główne biblioteki (z oryginalnego projektu, może wymagać aktualizacji):
 
 ## 🔧 Rozwiązywanie problemów
 
+### Problemy z limitami API (403/429 Errors)
+Jeśli napotkasz błędy związane z przekroczeniem limitów API:
+
+```
+You have breached the ip rate limit. (ErrCode: 403)
+```
+
+lub błędy CloudFront:
+
+```
+The Amazon CloudFront distribution is configured to block access from your country.
+```
+
+Rozwiązania:
+1. Zmodyfikuj zmienną `USE_TESTNET` w pliku `.env` na `true`
+2. Poczekaj 5-10 minut przed następną próbą połączenia
+3. Zmniejsz częstotliwość odpytywania API w `data/utils/cache_manager.py`
+4. Korzystaj z innego adresu IP (np. przez VPN lub proxy)
+5. Dla testów używaj trybu symulacji - ustaw `USE_SIMULATED_DATA=true` w `.env`
+
 ### Problemy z zależnościami
 W przypadku konfliktów zależności, możesz użyć:
 ```
