@@ -19,13 +19,12 @@ seaborn==0.12.2
 plotly==5.15.0
 
 # Biblioteki analityczne
-ta-lib==0.4.26
 yfinance==0.2.27
 
 # Biblioteki AI/ML
 tensorflow==2.13.0
 xgboost==1.7.6
-pytorch==2.0.1
+torch==2.0.1
 transformers==4.30.2
 
 # Narzędzia
@@ -34,5 +33,4 @@ flake8==6.1.0
 black==23.7.0
 jupyter==1.0.0
 psutil
-pybit
-scikit-learn
+js2py
