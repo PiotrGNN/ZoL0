@@ -47,3 +47,5 @@ tqdm>=4.64.0
 #Backtesting and NLP
 backtesting>=0.3.0  # Framework do backtestingu
 nltk>=3.7.0 # Przetwarzanie języka naturalnego dla analizy sentymentu
+flask
+python-dotenv

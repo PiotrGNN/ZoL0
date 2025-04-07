@@ -1,7 +1,7 @@
 
 import logging
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, request
@@ -71,83 +71,6 @@ def dashboard():
         {
             'name': 'Volatility Predictor',
             'type': 'XGBoost',
-
-@app.route('/api/chart-data')
-def get_chart_data():
-    """Endpoint dostarczający dane do wykresów"""
-    try:
-        # Symulowane dane do wykresu
-        days = 30
-        dates = [(datetime.now() - datetime.timedelta(days=i)).strftime('%Y-%m-%d') for i in range(days)]
-        dates.reverse()
-        
-        # Symulacja wartości portfela
-        import random
-        initial_value = 10000
-        values = [initial_value]
-        for i in range(1, days):
-            change = random.uniform(-200, 300)
-            values.append(round(values[-1] + change, 2))
-        
-        return jsonify({
-            'success': True,
-            'data': {
-                'labels': dates,
-                'datasets': [
-                    {
-                        'label': 'Wartość Portfela',
-                        'data': values,
-                        'borderColor': '#4CAF50',
-                        'backgroundColor': 'rgba(76, 175, 80, 0.1)'
-                    }
-                ]
-            }
-
-@app.route('/api/notifications')
-def get_notifications():
-    """Endpoint do pobierania powiadomień systemowych"""
-    try:
-        # Przykładowe powiadomienia
-        notifications = [
-            {
-                'id': 1,
-                'type': 'info',
-                'message': 'System został uruchomiony poprawnie.',
-                'timestamp': (datetime.now() - datetime.timedelta(minutes=15)).strftime('%Y-%m-%d %H:%M:%S')
-            },
-            {
-                'id': 2,
-                'type': 'warning',
-                'message': 'Wykryto zwiększoną zmienność na rynku BTC/USDT.',
-                'timestamp': (datetime.now() - datetime.timedelta(minutes=10)).strftime('%Y-%m-%d %H:%M:%S')
-            },
-            {
-                'id': 3,
-                'type': 'success',
-                'message': 'Transakcja kupna ETH/USDT zakończona powodzeniem.',
-                'timestamp': (datetime.now() - datetime.timedelta(minutes=5)).strftime('%Y-%m-%d %H:%M:%S')
-            }
-        ]
-        
-        return jsonify({
-            'success': True,
-            'notifications': notifications
-        })
-    except Exception as e:
-        logging.error(f"Błąd podczas pobierania powiadomień: {e}")
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
-
-        })
-    except Exception as e:
-        logging.error(f"Błąd podczas generowania danych wykresu: {e}")
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
-
             'accuracy': 75.1,
             'status': 'Active',
             'last_used': '2025-04-07 09:45'
@@ -212,6 +135,81 @@ def get_dashboard_data():
         })
     except Exception as e:
         logging.error(f"Błąd podczas pobierania danych dashboardu: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/chart-data')
+def get_chart_data():
+    """Endpoint dostarczający dane do wykresów"""
+    try:
+        # Symulowane dane do wykresu
+        days = 30
+        dates = [(datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d') for i in range(days)]
+        dates.reverse()
+        
+        # Symulacja wartości portfela
+        import random
+        initial_value = 10000
+        values = [initial_value]
+        for i in range(1, days):
+            change = random.uniform(-200, 300)
+            values.append(round(values[-1] + change, 2))
+        
+        return jsonify({
+            'success': True,
+            'data': {
+                'labels': dates,
+                'datasets': [
+                    {
+                        'label': 'Wartość Portfela',
+                        'data': values,
+                        'borderColor': '#4CAF50',
+                        'backgroundColor': 'rgba(76, 175, 80, 0.1)'
+                    }
+                ]
+            }
+        })
+    except Exception as e:
+        logging.error(f"Błąd podczas generowania danych wykresu: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/notifications')
+def get_notifications():
+    """Endpoint do pobierania powiadomień systemowych"""
+    try:
+        # Przykładowe powiadomienia
+        notifications = [
+            {
+                'id': 1,
+                'type': 'info',
+                'message': 'System został uruchomiony poprawnie.',
+                'timestamp': (datetime.now() - timedelta(minutes=15)).strftime('%Y-%m-%d %H:%M:%S')
+            },
+            {
+                'id': 2,
+                'type': 'warning',
+                'message': 'Wykryto zwiększoną zmienność na rynku BTC/USDT.',
+                'timestamp': (datetime.now() - timedelta(minutes=10)).strftime('%Y-%m-%d %H:%M:%S')
+            },
+            {
+                'id': 3,
+                'type': 'success',
+                'message': 'Transakcja kupna ETH/USDT zakończona powodzeniem.',
+                'timestamp': (datetime.now() - timedelta(minutes=5)).strftime('%Y-%m-%d %H:%M:%S')
+            }
+        ]
+        
+        return jsonify({
+            'success': True,
+            'notifications': notifications
+        })
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania powiadomień: {e}")
         return jsonify({
             'success': False,
             'error': str(e)
