@@ -38,29 +38,19 @@ class BybitConnector:
             import pybit
             
             # Sprawdzamy wersję i dostosowujemy inicjalizację do odpowiedniej wersji API
-            # W nowszych wersjach używamy unified_trading, w starszych usdb_perpetual
-            if hasattr(pybit, 'unified_trading'):
-                self.client = pybit.unified_trading.HTTP(
-                    api_key=self.api_key,
-                    api_secret=self.api_secret,
-                    testnet=self.use_testnet
-                )
-                self.api_version = "unified"
-            elif hasattr(pybit, 'usdt_perpetual'):
-                self.client = pybit.usdt_perpetual.HTTP(
-                    endpoint="https://api-testnet.bybit.com" if self.use_testnet else "https://api.bybit.com",
-                    api_key=self.api_key,
-                    api_secret=self.api_secret
-                )
-                self.api_version = "usdt_perpetual"
-            else:
-                # Fallback dla najnowszej wersji pybit (po 2.5+)
+            try:
+                # Próba inicjalizacji dla nowszej wersji API (2.4+)
+                endpoint = "https://api-testnet.bybit.com" if self.use_testnet else "https://api.bybit.com"
                 self.client = pybit.HTTP(
-                    testnet=self.use_testnet,
+                    endpoint=endpoint,
                     api_key=self.api_key,
                     api_secret=self.api_secret
                 )
-                self.api_version = "v5"
+                self.api_version = "v2"
+                logging.info(f"Zainicjalizowano klienta ByBit API v2. Testnet: {self.use_testnet}")
+            except Exception as e:
+                logging.error(f"Błąd inicjalizacji klienta PyBit: {e}")
+                raise
                 
             logging.info(f"Zainicjalizowano klienta ByBit API. Wersja: {self.api_version}, Testnet: {self.use_testnet}")
         except ImportError:
@@ -199,10 +189,11 @@ class BybitConnector:
                 try:
                     import pybit
                     self.logger.info(f"Próba reinicjalizacji klienta API. API key: {self.api_key[:5]}..., Testnet: {self.use_testnet}")
-                    self.client = pybit.unified_trading.HTTP(
+                    endpoint = "https://api-testnet.bybit.com" if self.use_testnet else "https://api.bybit.com"
+                    self.client = pybit.HTTP(
+                        endpoint=endpoint,
                         api_key=self.api_key,
-                        api_secret=self.api_secret,
-                        testnet=self.use_testnet
+                        api_secret=self.api_secret
                     )
                     self.logger.info("Klient API został pomyślnie reinicjalizowany.")
                 except Exception as init_error:
@@ -244,14 +235,20 @@ class BybitConnector:
                         self.logger.error(f"Test połączenia z API nie powiódł się: {time_error}")
                         raise Exception(f"Brak dostępu do API Bybit: {time_error}")
                     
-                    # Próba pobrania salda konta - dostosowana do różnych wersji API
-                    if self.api_version == "unified":
-                        wallet = self.client.get_wallet_balance(accountType="UNIFIED")
-                    elif self.api_version == "usdt_perpetual":
+                    # Próba pobrania salda konta dla wersji v2
+                    try:
                         wallet = self.client.get_wallet_balance()
-                    else:
-                        # Najnowsza wersja API (v5)
-                        wallet = self.client.get_wallet_balance(accountType="UNIFIED")
+                    except Exception as wallet_error:
+                        self.logger.error(f"Błąd podczas pobierania salda portfela: {wallet_error}")
+                        # Próbujemy alternatywne metody API
+                        try:
+                            wallet = self.client.get_wallet_balance(coin="USDT")
+                        except:
+                            # Ostateczna próba
+                            if hasattr(self.client, 'query_account_info'):
+                                wallet = self.client.query_account_info()
+                            else:
+                                raise Exception("Brak dostępnych metod do pobrania salda portfela")
                     
                     self.logger.info(f"Odpowiedź API Bybit: {str(wallet)[:200]}...")
                     
