@@ -1,323 +1,443 @@
-"""
-cache_manager.py
-----------------
-Moduł zarządzający pamięcią podręczną (cache).
-
-Funkcjonalności:
-- Implementacja strategii wygasania: time-based oraz LRU.
-- Konfigurowalny rozmiar cache i czas wygaśnięcia wpisów.
-- Mechanizmy monitoringu rozmiaru cache oraz automatycznego oczyszczania przy przekroczeniu limitów.
-- Testy wydajnościowe i obsługa scenariuszy brzegowych (np. brak miejsca na dysku).
-"""
 
 import logging
 import time
-from collections import OrderedDict
-
-# Konfiguracja logowania
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
-)
-
-
-class CacheEntry:
-    def __init__(self, value, timestamp, ttl):
-        self.value = value
-        self.timestamp = timestamp
-        self.ttl = ttl  # Time to live in seconds
-
-    def is_expired(self):
-        return (time.time() - self.timestamp) > self.ttl
-
-
-class CacheManager:
-    def __init__(
-        self, max_size: int = 128, default_ttl: int = 300, strategy: str = "LRU"
-    ):
-        """
-        Inicjalizuje CacheManager.
-
-        Parameters:
-            max_size (int): Maksymalna liczba wpisów w cache.
-            default_ttl (int): Domyślny czas wygaśnięcia wpisu (w sekundach).
-            strategy (str): Strategia zarządzania cache, np. 'LRU'.
-        """
-        self.max_size = max_size
-        self.default_ttl = default_ttl
-        self.strategy = strategy.upper()
-        if self.strategy != "LRU":
-            raise ValueError("Obecnie obsługiwana jest tylko strategia LRU.")
-        self.cache = OrderedDict()
-        logging.info(
-            "CacheManager zainicjalizowany (max_size=%d, default_ttl=%d, strategy=%s).",
-            self.max_size,
-            self.default_ttl,
-            self.strategy,
-        )
-
-    def set(self, key, value, ttl: int = None):
-        """
-        Dodaje lub aktualizuje wpis w cache.
-
-        Parameters:
-            key: Klucz identyfikujący wpis.
-            value: Wartość do zapamiętania.
-            ttl (int): Czas wygaśnięcia wpisu w sekundach. Jeśli None, używany jest default_ttl.
-        """
-        ttl = ttl if ttl is not None else self.default_ttl
-        current_time = time.time()
-        if key in self.cache:
-            logging.debug("Aktualizacja istniejącego wpisu dla klucza: %s", key)
-            del self.cache[key]  # Usuwamy, aby dodać wpis na końcu (najświeższy)
-        self.cache[key] = CacheEntry(value, current_time, ttl)
-        logging.debug("Wpis dodany: %s -> %s", key, value)
-        self._ensure_capacity()
-
-    def get(self, key):
-        """
-        Pobiera wartość z cache, jeśli wpis nie wygasł.
-
-        Parameters:
-            key: Klucz wpisu.
-
-        Returns:
-            Wartość wpisu lub None, jeśli wpis nie istnieje lub wygasł.
-        """
-        if key not in self.cache:
-            logging.debug("Klucz %s nie znaleziony w cache.", key)
-            return None
-        entry = self.cache[key]
-        if entry.is_expired():
-            logging.debug("Wpis dla klucza %s wygasł.", key)
-            del self.cache[key]
-            return None
-        # Przenieś wpis na koniec, aby oznaczyć go jako ostatnio używany (LRU)
-        self.cache.move_to_end(key)
-        logging.debug("Pobrano wpis z cache dla klucza %s.", key)
-        return entry.value
-
-    def delete(self, key):
-        """
-        Usuwa wpis z cache.
-
-        Parameters:
-            key: Klucz wpisu.
-        """
-        if key in self.cache:
-            del self.cache[key]
-            logging.debug("Usunięto wpis z cache dla klucza %s.", key)
-
-    def _ensure_capacity(self):
-        """
-        Sprawdza, czy rozmiar cache nie przekracza limitu i usuwa najstarsze wpisy, jeśli to konieczne.
-        """
-        while len(self.cache) > self.max_size:
-            removed_key, removed_entry = self.cache.popitem(last=False)
-            logging.info(
-                "Cache przekroczony limit. Usunięto najstarszy wpis: %s", removed_key
-            )
-
-    def clear_expired(self):
-        """
-        Usuwa wszystkie wygasłe wpisy z cache.
-        """
-        keys_to_delete = [
-            key for key, entry in self.cache.items() if entry.is_expired()
-        ]
-        for key in keys_to_delete:
-            del self.cache[key]
-            logging.debug("Usunięto wygasły wpis dla klucza: %s", key)
-
-    def cache_size(self):
-        """
-        Zwraca aktualny rozmiar cache.
-        """
-        return len(self.cache)
-
-
-# -------------------- Testy jednostkowe --------------------
-if __name__ == "__main__":
-    # Proste testy wydajnościowe i funkcjonalne dla CacheManager
-    import unittest
-
-    class TestCacheManager(unittest.TestCase):
-        def setUp(self):
-            self.cache = CacheManager(
-                max_size=5, default_ttl=2
-            )  # Krótki TTL dla testów
-
-        def test_set_and_get(self):
-            self.cache.set("a", 1)
-            self.assertEqual(
-                self.cache.get("a"), 1, "Wartość dla klucza 'a' powinna być 1."
-            )
-
-        def test_expiration(self):
-            self.cache.set("b", 2, ttl=1)  # TTL = 1 sekunda
-            time.sleep(1.1)
-            self.assertIsNone(
-                self.cache.get("b"), "Wpis dla klucza 'b' powinien wygasnąć."
-            )
-
-        def test_capacity(self):
-            # Dodajemy 6 wpisów, max_size = 5, więc najstarszy powinien zostać usunięty.
-            for i in range(6):
-                self.cache.set(f"key{i}", i)
-            self.assertEqual(
-                self.cache.cache_size(), 5, "Rozmiar cache powinien wynosić 5."
-            )
-
-        def test_delete(self):
-            self.cache.set("c", 3)
-            self.cache.delete("c")
-            self.assertIsNone(
-                self.cache.get("c"), "Wpis dla klucza 'c' powinien zostać usunięty."
-            )
-
-        def test_clear_expired(self):
-            self.cache.set("d", 4, ttl=1)
-            self.cache.set("e", 5, ttl=5)
-            time.sleep(1.2)
-            self.cache.clear_expired()
-            self.assertIsNone(
-                self.cache.get("d"),
-                "Wpis dla klucza 'd' powinien zostać usunięty po wygaśnięciu.",
-            )
-            self.assertEqual(
-                self.cache.get("e"), 5, "Wpis dla klucza 'e' powinien nadal istnieć."
-            )
-
-    unittest.main()
-"""
-cache_manager.py
------------------
-Moduł obsługujący cache'owanie danych z API, aby zmniejszyć liczbę zapytań.
-"""
-
-import time
-import logging
+import threading
+import os
+import json
+from typing import Any, Dict, List, Tuple, Optional
 from functools import wraps
-from typing import Dict, Any, Callable, Optional, Tuple
+
+# Utworzenie katalogu cache, jeśli nie istnieje
+CACHE_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "cache")
+os.makedirs(CACHE_DIR, exist_ok=True)
 
 # Konfiguracja logowania
 logger = logging.getLogger("cache_manager")
 if not logger.handlers:
-    handler = logging.StreamHandler()
-    formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
     logger.setLevel(logging.INFO)
+    formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
+    
+    # Handler do pliku
+    file_handler = logging.FileHandler(os.path.join("logs", "cache_manager.log"))
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+    
+    # Handler do konsoli
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(formatter)
+    logger.addHandler(console_handler)
 
-# Główny cache przechowujący dane
-_CACHE: Dict[str, Dict[str, Any]] = {}
+# Singleton do przechowywania cache'a w pamięci
+_memory_cache = {}
+_cache_timestamps = {}
+_cache_lock = threading.RLock()
 
-def cache_data(ttl: int = 30) -> Callable:
+# Konfiguracja cache'a
+DEFAULT_TTL = 60  # Domyślny czas życia cache'a w sekundach
+LONG_TTL = 300    # Długi czas życia dla kosztownych zapytań (5 minut)
+EMERGENCY_TTL = 1800  # Awaryjny czas życia (30 minut) w przypadku przekroczenia limitów API
+
+# Ratelimiter globalny
+_rate_limiter = {
+    "last_call": 0,
+    "min_interval": 0.5,  # Minimalny odstęp między zapytaniami (500ms)
+    "calls_count": 0,
+    "window_start": 0,
+    "max_calls_per_minute": 40,  # Maksymalna liczba zapytań na minutę
+    "lock": threading.RLock()
+}
+
+
+def get_cached_data(key: str) -> Tuple[Any, bool]:
     """
-    Dekorator do cache'owania wyników funkcji.
+    Pobiera dane z cache'a.
     
     Args:
-        ttl: Czas życia cache'u w sekundach (domyślnie 30s)
-    
+        key: Klucz pod którym zapisano dane
+        
     Returns:
-        Callable: Dekorator
+        Tuple zawierający (dane, czy_znaleziono)
     """
-    def decorator(func: Callable) -> Callable:
-        @wraps(func)
-        def wrapper(*args, **kwargs) -> Any:
-            # Generowanie klucza cache'u
-            cache_key = f"{func.__name__}:{str(args)}:{str(kwargs)}"
-            
-            # Sprawdzenie czy dane są w cache'u i aktualne
-            if cache_key in _CACHE:
-                entry = _CACHE[cache_key]
-                if time.time() - entry["timestamp"] < ttl:
-                    logger.debug(f"Cache hit for {func.__name__}")
-                    return entry["data"]
-            
-            # Wywołanie oryginalnej funkcji
-            result = func(*args, **kwargs)
-            
-            # Zapisanie wyniku w cache'u
-            _CACHE[cache_key] = {
-                "data": result,
-                "timestamp": time.time()
-            }
-            logger.debug(f"Cache store for {func.__name__}")
-            
-            return result
-        return wrapper
-    return decorator
-
-def get_cached_data(key: str) -> Optional[Tuple[Any, float]]:
-    """
-    Pobiera dane z cache'u.
+    with _cache_lock:
+        if key in _memory_cache:
+            return _memory_cache[key], True
     
-    Args:
-        key: Klucz cache'u
+    # Sprawdź cache na dysku
+    file_path = os.path.join(CACHE_DIR, f"{key}.json")
+    if os.path.exists(file_path):
+        try:
+            with open(file_path, 'r') as f:
+                data = json.load(f)
+                with _cache_lock:
+                    _memory_cache[key] = data
+                    _cache_timestamps[key] = os.path.getmtime(file_path)
+                return data, True
+        except Exception as e:
+            logger.warning(f"Błąd podczas odczytu cache z dysku dla klucza {key}: {e}")
     
-    Returns:
-        Optional[Tuple[Any, float]]: Dane i timestamp lub None jeśli brak danych
-    """
-    if key in _CACHE:
-        entry = _CACHE[key]
-        return entry["data"], entry["timestamp"]
-    return None
+    return None, False
 
-def store_cached_data(key: str, data: Any) -> None:
+
+def store_cached_data(key: str, data: Any, persist: bool = True) -> None:
     """
     Zapisuje dane w cache'u.
     
     Args:
-        key: Klucz cache'u
+        key: Klucz pod którym zapisać dane
         data: Dane do zapisania
+        persist: Czy zapisać dane na dysku
     """
-    _CACHE[key] = {
-        "data": data,
-        "timestamp": time.time()
-    }
+    with _cache_lock:
+        _memory_cache[key] = data
+        _cache_timestamps[key] = time.time()
+    
+    if persist:
+        try:
+            file_path = os.path.join(CACHE_DIR, f"{key}.json")
+            with open(file_path, 'w') as f:
+                json.dump(data, f)
+        except Exception as e:
+            logger.warning(f"Błąd podczas zapisu cache na dysk dla klucza {key}: {e}")
 
-def is_cache_valid(key: str, ttl: int = 30) -> bool:
+
+def is_cache_valid(key: str, ttl: int = DEFAULT_TTL) -> bool:
     """
-    Sprawdza czy dane w cache'u są aktualne.
+    Sprawdza czy cache jest wciąż ważny.
     
     Args:
-        key: Klucz cache'u
-        ttl: Czas życia cache'u w sekundach
-    
+        key: Klucz cache'a
+        ttl: Czas życia w sekundach
+        
     Returns:
-        bool: True jeśli dane są aktualne, False w przeciwnym przypadku
+        bool: True jeśli cache jest ważny, False w przeciwnym wypadku
     """
-    if key in _CACHE:
-        return time.time() - _CACHE[key]["timestamp"] < ttl
-    return False
+    with _cache_lock:
+        if key not in _cache_timestamps:
+            return False
+        
+        current_time = time.time()
+        last_update = _cache_timestamps[key]
+        
+        return current_time - last_update < ttl
 
-def clear_cache() -> None:
-    """Czyści cały cache."""
-    global _CACHE
-    _CACHE = {}
-    logger.info("Cache cleared")
 
-def clear_expired_cache(ttl: int = 30) -> int:
+def clear_cache(key: str = None) -> None:
     """
-    Czyści wygasłe dane z cache'u.
+    Czyści cache.
     
     Args:
-        ttl: Czas życia cache'u w sekundach
+        key: Opcjonalny klucz. Jeśli None, czyści cały cache.
+    """
+    with _cache_lock:
+        if key is None:
+            _memory_cache.clear()
+            _cache_timestamps.clear()
+            
+            # Usuń pliki cache z dysku
+            for file_name in os.listdir(CACHE_DIR):
+                if file_name.endswith('.json'):
+                    try:
+                        os.remove(os.path.join(CACHE_DIR, file_name))
+                    except Exception as e:
+                        logger.warning(f"Nie można usunąć pliku cache {file_name}: {e}")
+        else:
+            if key in _memory_cache:
+                del _memory_cache[key]
+            if key in _cache_timestamps:
+                del _cache_timestamps[key]
+            
+            # Usuń plik cache z dysku
+            file_path = os.path.join(CACHE_DIR, f"{key}.json")
+            if os.path.exists(file_path):
+                try:
+                    os.remove(file_path)
+                except Exception as e:
+                    logger.warning(f"Nie można usunąć pliku cache {key}: {e}")
+
+
+def cache_with_ttl(ttl: int = DEFAULT_TTL, key_prefix: str = ""):
+    """
+    Dekorator do cachowania wyników funkcji.
+    
+    Args:
+        ttl: Czas życia cache'a w sekundach
+        key_prefix: Prefiks dla klucza cache'a
+        
+    Returns:
+        Dekorowana funkcja
+    """
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            # Generuj klucz na podstawie argumentów funkcji
+            args_str = str(args) + str(sorted(kwargs.items()))
+            cache_key = f"{key_prefix}_{func.__name__}_{hash(args_str)}"
+            
+            # Sprawdź czy dane są w cache'u
+            if is_cache_valid(cache_key, ttl):
+                data, found = get_cached_data(cache_key)
+                if found:
+                    logger.debug(f"Używam cache'owanych danych dla: {func.__name__}")
+                    return data
+            
+            # Wywołaj funkcję i zapisz wynik w cache'u
+            result = func(*args, **kwargs)
+            store_cached_data(cache_key, result)
+            return result
+        return wrapper
+    return decorator
+
+
+def rate_limit(func):
+    """
+    Dekorator do ograniczania częstotliwości wywołań funkcji (rate limiting).
+    Zapobiega przekroczeniu limitów API.
+    
+    Args:
+        func: Funkcja do udekorowania
+        
+    Returns:
+        Dekorowana funkcja
+    """
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        with _rate_limiter["lock"]:
+            current_time = time.time()
+            
+            # Sprawdź czy należy zresetować licznik (po minucie)
+            if current_time - _rate_limiter["window_start"] > 60:
+                _rate_limiter["window_start"] = current_time
+                _rate_limiter["calls_count"] = 0
+            
+            # Sprawdź czy nie przekroczono limitu zapytań na minutę
+            if _rate_limiter["calls_count"] >= _rate_limiter["max_calls_per_minute"]:
+                sleep_time = 60 - (current_time - _rate_limiter["window_start"]) + 0.1
+                if sleep_time > 0:
+                    logger.warning(f"Przekroczono limit zapytań na minutę. Oczekiwanie {sleep_time:.2f}s")
+                    time.sleep(sleep_time)
+                    current_time = time.time()
+                    _rate_limiter["window_start"] = current_time
+                    _rate_limiter["calls_count"] = 0
+            
+            # Zachowaj minimalny odstęp między zapytaniami
+            time_since_last_call = current_time - _rate_limiter["last_call"]
+            if time_since_last_call < _rate_limiter["min_interval"]:
+                sleep_time = _rate_limiter["min_interval"] - time_since_last_call
+                time.sleep(sleep_time)
+            
+            # Aktualizuj liczniki
+            _rate_limiter["last_call"] = time.time()
+            _rate_limiter["calls_count"] += 1
+        
+        # Wywołaj oryginalną funkcję
+        return func(*args, **kwargs)
+    
+    return wrapper
+
+
+def adaptive_cache(func):
+    """
+    Dekorator łączący cache i rate limiting z adaptacyjnym TTL.
+    Automatycznie wydłuża TTL w przypadku błędów API.
+    
+    Args:
+        func: Funkcja do udekorowania
+        
+    Returns:
+        Dekorowana funkcja
+    """
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        # Generuj klucz cache'a
+        args_str = str(args) + str(sorted(kwargs.items()))
+        cache_key = f"adaptive_{func.__name__}_{hash(args_str)}"
+        
+        # Sprawdź czy dane są w cache'u
+        ttl = DEFAULT_TTL
+        
+        # W przypadku API statusu sprawdzamy również flagę rate_limit
+        rate_limit_key = "api_rate_limited"
+        rate_limited, found = get_cached_data(rate_limit_key)
+        if found and rate_limited:
+            ttl = EMERGENCY_TTL
+            logger.info(f"Wykryto flagę rate_limit, używam dłuższego TTL: {EMERGENCY_TTL}s")
+        
+        if is_cache_valid(cache_key, ttl):
+            data, found = get_cached_data(cache_key)
+            if found:
+                logger.debug(f"Używam cache'owanych danych dla: {func.__name__} (TTL: {ttl}s)")
+                return data
+        
+        try:
+            # Zastosuj rate limiting
+            with _rate_limiter["lock"]:
+                current_time = time.time()
+                
+                # Sprawdź czy należy zresetować licznik (po minucie)
+                if current_time - _rate_limiter["window_start"] > 60:
+                    _rate_limiter["window_start"] = current_time
+                    _rate_limiter["calls_count"] = 0
+                
+                # Sprawdź czy nie przekroczono limitu zapytań na minutę
+                if _rate_limiter["calls_count"] >= _rate_limiter["max_calls_per_minute"]:
+                    sleep_time = 60 - (current_time - _rate_limiter["window_start"]) + 0.1
+                    if sleep_time > 0:
+                        logger.warning(f"Przekroczono limit zapytań na minutę. Oczekiwanie {sleep_time:.2f}s")
+                        time.sleep(sleep_time)
+                        current_time = time.time()
+                        _rate_limiter["window_start"] = current_time
+                        _rate_limiter["calls_count"] = 0
+                
+                # Zachowaj minimalny odstęp między zapytaniami
+                time_since_last_call = current_time - _rate_limiter["last_call"]
+                if time_since_last_call < _rate_limiter["min_interval"]:
+                    sleep_time = _rate_limiter["min_interval"] - time_since_last_call
+                    time.sleep(sleep_time)
+                
+                # Aktualizuj liczniki
+                _rate_limiter["last_call"] = time.time()
+                _rate_limiter["calls_count"] += 1
+            
+            # Wywołaj oryginalną funkcję
+            result = func(*args, **kwargs)
+            
+            # Zapisz wynik w cache'u
+            store_cached_data(cache_key, result)
+            
+            # Resetuj flagę rate_limit jeśli funkcja zakończyła się sukcesem
+            store_cached_data(rate_limit_key, False)
+            
+            return result
+        except Exception as e:
+            # Sprawdź czy błąd dotyczy przekroczenia limitu zapytań
+            error_str = str(e).lower()
+            if "rate limit" in error_str or "429" in error_str or "403" in error_str:
+                logger.warning(f"Wykryto przekroczenie limitu API w funkcji {func.__name__}. Ustawiam flagę rate_limit.")
+                
+                # Ustaw flagę rate_limit
+                store_cached_data(rate_limit_key, True)
+                
+                # Próbuj użyć ostatnich znanych danych z cache'a (nawet jeśli TTL minęło)
+                data, found = get_cached_data(cache_key)
+                if found:
+                    logger.info(f"Używam przeterminowanych danych z cache dla {func.__name__} z powodu limitu API.")
+                    return data
+            
+            # Propaguj wyjątek dalej
+            raise
+    
+    return wrapper
+
+
+def get_api_status():
+    """
+    Sprawdza status limitów API i zwraca informacje o dostępności.
     
     Returns:
-        int: Liczba usuniętych wpisów
+        Dict zawierający informacje o statusie API
     """
-    global _CACHE
-    current_time = time.time()
-    expired_keys = [
-        key for key, entry in _CACHE.items() 
-        if current_time - entry["timestamp"] > ttl
-    ]
+    with _rate_limiter["lock"]:
+        current_time = time.time()
+        time_in_window = current_time - _rate_limiter["window_start"]
+        calls_left = _rate_limiter["max_calls_per_minute"] - _rate_limiter["calls_count"]
+        
+        # Resetuj okno jeśli minęła minuta
+        if time_in_window > 60:
+            calls_left = _rate_limiter["max_calls_per_minute"]
+            time_in_window = 0
+        
+        # Sprawdź czy jesteśmy w stanie rate_limit
+        rate_limited, found = get_cached_data("api_rate_limited")
+        is_limited = found and rate_limited
+        
+        return {
+            "rate_limited": is_limited,
+            "calls_in_current_window": _rate_limiter["calls_count"],
+            "calls_left": max(0, calls_left),
+            "window_reset_in": max(0, 60 - time_in_window),
+            "last_call": _rate_limiter["last_call"],
+            "min_interval": _rate_limiter["min_interval"]
+        }
+
+
+def set_rate_limit_parameters(max_calls_per_minute: int = None, min_interval: float = None):
+    """
+    Ustawia parametry rate limitera.
     
-    for key in expired_keys:
-        del _CACHE[key]
+    Args:
+        max_calls_per_minute: Maksymalna liczba zapytań na minutę
+        min_interval: Minimalny odstęp między zapytaniami w sekundach
+    """
+    with _rate_limiter["lock"]:
+        if max_calls_per_minute is not None:
+            _rate_limiter["max_calls_per_minute"] = max_calls_per_minute
+        
+        if min_interval is not None:
+            _rate_limiter["min_interval"] = min_interval
+        
+        logger.info(f"Ustawiono parametry rate limitera: max_calls_per_minute={_rate_limiter['max_calls_per_minute']}, min_interval={_rate_limiter['min_interval']}s")
+
+
+# Inicjalizacja cache'a
+def init_cache():
+    """Inicjalizuje cache i ustawia domyślne parametry."""
+    # Ustaw konserwatywne limity dla Bybit API
+    set_rate_limit_parameters(max_calls_per_minute=30, min_interval=1.0)
     
-    if expired_keys:
-        logger.info(f"Cleared {len(expired_keys)} expired cache entries")
+    # Ustaw w cache flagę rate_limit na False
+    store_cached_data("api_rate_limited", False)
     
-    return len(expired_keys)
+    logger.info("Cache zainicjalizowany z domyślnymi parametrami")
+
+
+# Automatyczna inicjalizacja przy imporcie
+init_cache()
+
+
+if __name__ == "__main__":
+    # Przykład użycia
+    @cache_with_ttl(ttl=10)
+    def slow_function(param):
+        logger.info(f"Wywołanie slow_function({param})")
+        time.sleep(2)  # Symulacja długiego przetwarzania
+        return f"Wynik {param}"
+    
+    @rate_limit
+    def api_function(param):
+        logger.info(f"Wywołanie api_function({param})")
+        return f"API Wynik {param}"
+    
+    @adaptive_cache
+    def smart_api_function(param):
+        logger.info(f"Wywołanie smart_api_function({param})")
+        
+        # Symulacja czasami przekraczająca limit
+        if param % 3 == 0:
+            raise Exception("You have breached the rate limit. (ErrCode: 403)")
+        
+        return f"Smart API Wynik {param}"
+    
+    # Test cache'owania
+    for i in range(5):
+        logger.info(f"Test {i+1}")
+        result = slow_function(1)
+        logger.info(f"Wynik: {result}")
+        time.sleep(1)
+    
+    # Test rate limitingu
+    for i in range(5):
+        result = api_function(i)
+        logger.info(f"API Wynik: {result}")
+    
+    # Test adaptacyjnego cache'a
+    for i in range(10):
+        try:
+            result = smart_api_function(i)
+            logger.info(f"Smart API Wynik: {result}")
+        except Exception as e:
+            logger.error(f"Błąd: {e}")
+        time.sleep(0.1)
+    
+    # Sprawdź status API
+    status = get_api_status()
+    logger.info(f"Status API: {status}")
