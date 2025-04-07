@@ -9,6 +9,8 @@ System tradingowy z integracją ByBit API, zoptymalizowany do działania w środ
 - Obsługa kont testowych (testnet) i rzeczywistych
 - Analiza techniczna z wykorzystaniem popularnych wskaźników
 - Dashboard z wizualizacją danych i alarmami
+- Zaawansowane zarządzanie limitami API
+- Inteligentne buforowanie danych
 
 ## 🔧 Wymagania
 
@@ -17,15 +19,17 @@ System tradingowy z integracją ByBit API, zoptymalizowany do działania w środ
 
 ## ⚙️ Konfiguracja
 
-1. Skonfiguruj zmienne środowiskowe w zakładce Secrets w Replit:
+1. Skonfiguruj plik `.env` w katalogu głównym (możesz wykorzystać `.env.example` jako szablon):
+   ```
+   BYBIT_API_KEY=twój_klucz_api
+   BYBIT_API_SECRET=twój_sekret_api
+   BYBIT_USE_TESTNET=true  # Zmień na false dla produkcyjnego API
+   ```
+
+   Alternatywnie możesz użyć narzędzia Secrets w Replit:
    - `BYBIT_API_KEY` - Klucz API ByBit
    - `BYBIT_API_SECRET` - Sekret API ByBit
    - `BYBIT_USE_TESTNET` - Ustawić na "false" dla API produkcyjnego lub "true" dla środowiska testowego
-
-UWAGA: Podczas pracy z produkcyjnymi kluczami API, upewnij się że:
-- Klucze API mają ograniczone uprawnienia (tylko odczyt, jeśli nie potrzebujesz handlu)
-- Włączone są dodatkowe zabezpieczenia na koncie ByBit (2FA, ograniczenia IP)
-- Regularnie zmieniasz klucze API, jeśli wykryjesz jakiekolwiek niestandardowe zachowanie
 
 2. Zainstaluj zależności:
    ```
@@ -37,11 +41,30 @@ UWAGA: Podczas pracy z produkcyjnymi kluczami API, upewnij się że:
    python main.py
    ```
 
+## ⚠️ Bezpieczeństwo API
+
+UWAGA: Podczas pracy z produkcyjnymi kluczami API:
+- Zawsze używaj kluczy z minimalnymi wymaganymi uprawnieniami (tylko odczyt jeśli nie potrzebujesz handlu)
+- Włącz dodatkowe zabezpieczenia na koncie ByBit (2FA, ograniczenia IP)
+- Regularnie zmieniaj klucze API
+- Ustaw odpowiednie limity handlowe w panelu API ByBit
+- Nigdy nie pushuj pliku .env do repozytorium!
+
 ## 📊 Dashboard
 
 Dashboard jest dostępny na głównej stronie aplikacji i zawiera:
-- Aktualne dane rynkowe
+- Aktualne dane rynkowe i wskaźniki techniczne
 - Stan konta i otwarte pozycje
+- Alerty i powiadomienia
+- Statystyki handlowe
+- Status komponentów systemu
+
+## 🔍 Rozwiązywanie problemów
+
+Jeśli napotkasz problemy z limitami API (błędy 403 lub CloudFront):
+1. Zmniejsz częstotliwość odpytywania API poprzez edycję parametrów w `data/utils/cache_manager.py`
+2. Upewnij się, że używasz testnet podczas rozwoju aplikacji
+3. Sprawdź logi błędów w katalogu `logs/`
 - Wykresy analityczne
 - Powiadomienia i alerty
 

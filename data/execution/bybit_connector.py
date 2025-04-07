@@ -648,16 +648,19 @@ class BybitConnector:
 
         # Synchronizuj parametry rate limiter'a z cache_manager
         if not hasattr(self, '_rate_limit_synced') or now - getattr(self, '_last_sync_time', 0) > 60:
-            # Znacznie bardziej konserwatywne limity po napotkaniu błędów 403/CloudFront
-            max_calls = 10 if not self.use_testnet else 15
-            min_interval = 3.0 if not self.use_testnet else 2.0
+            # Bardzo konserwatywne limity aby uniknąć blokad CloudFront i 403
+            max_calls = 6 if not self.use_testnet else 10
+            min_interval = 5.0 if not self.use_testnet else 3.0
             
             # Sprawdź, czy wystąpiły wcześniej błędy rate limit
             if hasattr(self, 'rate_limit_exceeded') and self.rate_limit_exceeded:
-                # Jeszcze bardziej konserwatywne parametry po wystąpieniu błędu
-                max_calls = max(5, max_calls // 2)
-                min_interval = min(10.0, min_interval * 2)
-                self.logger.warning(f"Zastosowano bardzo konserwatywne parametry rate limiting: max_calls={max_calls}, min_interval={min_interval}s")
+                # Drastycznie zmniejsz limity po wystąpieniu błędu
+                max_calls = max(3, max_calls // 2)
+                min_interval = min(15.0, min_interval * 2)
+                self.logger.warning(f"Zastosowano bardzo restrykcyjne parametry rate limiting: max_calls={max_calls}, min_interval={min_interval}s")
+                
+                # Dodatkowa pauza po wykryciu przekroczenia limitu
+                time.sleep(2.0)
 
             # Synchronizuj parametry tylko raz na minutę dla wydajności
             set_rate_limit_parameters(
