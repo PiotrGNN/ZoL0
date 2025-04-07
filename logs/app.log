@@ -25722,3 +25722,941 @@ Original error was: No module named 'numpy.core._multiarray_umath'
 2025-04-07 19:15:09,832 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
 2025-04-07 19:15:10,052 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
 2025-04-07 19:15:11,228 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:15:17,327 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:15:17,348 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:15:17,348 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:15:17,349 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:15:17,349 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:15:17,350 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:15:17,350 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:15:17,350 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:15:17,350 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:15:17,363 [WARNING] This HTTP class is maintained for compatibility purposes. You should prefer importing market-specific classes, like so: from pybit.inverse_perpetual import HTTP; from pybit.spot import HTTP
+2025-04-07 19:15:17,363 [INFO] Zainicjalizowano klienta ByBit API v2. Testnet: True
+2025-04-07 19:15:17,363 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:15:17,363 [INFO] Zainicjalizowano klienta ByBit API. Wersja: v2, Testnet: True
+2025-04-07 19:15:17,363 [INFO] BybitConnector zainicjalizowany. Testnet: True
+2025-04-07 19:15:17,364 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744053317364, 'time': '2025-04-07 19:15:17'}
+2025-04-07 19:15:17,364 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:15:17,364 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:15:17,388 [WARNING]  * Debugger is active!
+2025-04-07 19:15:17,410 [INFO]  * Debugger PIN: 133-186-104
+2025-04-07 19:15:18,354 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 19:15:19,241 [INFO] Pobieranie danych z testnet
+2025-04-07 19:15:19,243 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:19] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:15:19,251 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:19] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:15:19,252 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:19] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:15:19,254 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:19] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:15:19,256 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:19] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:15:19,258 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:19] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:15:19,796 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:15:22,040 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:15:22,053 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:15:22,053 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:15:22,053 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:15:22,053 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:15:22,054 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:15:22,054 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:15:22,054 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:15:22,054 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:15:22,057 [WARNING] This HTTP class is maintained for compatibility purposes. You should prefer importing market-specific classes, like so: from pybit.inverse_perpetual import HTTP; from pybit.spot import HTTP
+2025-04-07 19:15:22,057 [INFO] Zainicjalizowano klienta ByBit API v2. Testnet: True
+2025-04-07 19:15:22,057 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:15:22,057 [INFO] Zainicjalizowano klienta ByBit API. Wersja: v2, Testnet: True
+2025-04-07 19:15:22,058 [INFO] BybitConnector zainicjalizowany. Testnet: True
+2025-04-07 19:15:22,058 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744053322058, 'time': '2025-04-07 19:15:22'}
+2025-04-07 19:15:22,058 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:15:22,058 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:15:22,069 [WARNING]  * Debugger is active!
+2025-04-07 19:15:22,072 [INFO]  * Debugger PIN: 614-579-608
+2025-04-07 19:15:23,322 [INFO] Pobieranie danych z testnet
+2025-04-07 19:15:23,331 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:23] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:15:23,332 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:23] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:15:23,333 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:23] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:15:23,336 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:23] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:15:23,338 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:23] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:15:23,340 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:23] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:15:23,470 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:23] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 19:15:23,473 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:23] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 19:15:24,672 [INFO]  * Detected change in '/home/runner/workspace/.main.py.2553406951~', reloading
+2025-04-07 19:15:24,680 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 19:15:25,899 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:15:28,801 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:15:28,813 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:15:28,813 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:15:28,813 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:15:28,813 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:15:28,813 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:15:28,814 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:15:28,814 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:15:28,814 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:15:28,817 [WARNING] This HTTP class is maintained for compatibility purposes. You should prefer importing market-specific classes, like so: from pybit.inverse_perpetual import HTTP; from pybit.spot import HTTP
+2025-04-07 19:15:28,817 [INFO] Zainicjalizowano klienta ByBit API v2. Testnet: False
+2025-04-07 19:15:28,817 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:15:28,817 [INFO] Zainicjalizowano klienta ByBit API. Wersja: v2, Testnet: False
+2025-04-07 19:15:28,817 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:15:28,817 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744053328817, 'time': '2025-04-07 19:15:28'}
+2025-04-07 19:15:28,817 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:15:28,818 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:15:28,830 [WARNING]  * Debugger is active!
+2025-04-07 19:15:28,832 [INFO]  * Debugger PIN: 452-690-674
+2025-04-07 19:15:31,816 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:15:31,829 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:15:31,829 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:15:31,829 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:15:31,830 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:15:31,830 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:15:31,830 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:15:31,830 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:15:31,830 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:15:31,833 [WARNING] This HTTP class is maintained for compatibility purposes. You should prefer importing market-specific classes, like so: from pybit.inverse_perpetual import HTTP; from pybit.spot import HTTP
+2025-04-07 19:15:31,833 [INFO] Zainicjalizowano klienta ByBit API v2. Testnet: False
+2025-04-07 19:15:31,833 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:15:31,833 [INFO] Zainicjalizowano klienta ByBit API. Wersja: v2, Testnet: False
+2025-04-07 19:15:31,834 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:15:31,834 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744053331834, 'time': '2025-04-07 19:15:31'}
+2025-04-07 19:15:31,834 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:15:31,834 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:15:31,850 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.72:5000
+2025-04-07 19:15:31,850 [INFO] [33mPress CTRL+C to quit[0m
+2025-04-07 19:15:31,863 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:15:34,584 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:15:34,596 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:15:34,597 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:15:34,597 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:15:34,597 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:15:34,597 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:15:34,598 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:15:34,598 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:15:34,598 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:15:34,600 [WARNING] This HTTP class is maintained for compatibility purposes. You should prefer importing market-specific classes, like so: from pybit.inverse_perpetual import HTTP; from pybit.spot import HTTP
+2025-04-07 19:15:34,601 [INFO] Zainicjalizowano klienta ByBit API v2. Testnet: False
+2025-04-07 19:15:34,601 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:15:34,601 [INFO] Zainicjalizowano klienta ByBit API. Wersja: v2, Testnet: False
+2025-04-07 19:15:34,601 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:15:34,601 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744053334601, 'time': '2025-04-07 19:15:34'}
+2025-04-07 19:15:34,601 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:15:34,602 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:15:34,614 [WARNING]  * Debugger is active!
+2025-04-07 19:15:34,617 [INFO]  * Debugger PIN: 120-520-690
+2025-04-07 19:15:35,821 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:15:35,823 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:15:35,829 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:35] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 19:15:35,831 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:35] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:15:35,825 [INFO] Status API: Produkcyjne
+2025-04-07 19:15:35,829 [INFO] Status API: Produkcyjne
+2025-04-07 19:15:35,834 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:35] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:15:35,838 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:35] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:15:35,838 [ERROR] Test połączenia z API nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:15:35,839 [ERROR] Test połączenia z API nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:15:35,840 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:35] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:15:35,844 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 243, in get_account_balance
+    time_response = self.client.get_server_time()
+AttributeError: 'HTTP' object has no attribute 'get_server_time'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 247, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'
+
+2025-04-07 19:15:35,846 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:15:35,848 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:15:35,845 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 243, in get_account_balance
+    time_response = self.client.get_server_time()
+AttributeError: 'HTTP' object has no attribute 'get_server_time'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 247, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'
+
+2025-04-07 19:15:35,852 [INFO] Pobrano portfolio: {'balances': {'BTC': {'equity': 0.025, 'available_balance': 0.02, 'wallet_balance': 0.025}, 'USDT': {'equity': 1500, 'available_balance': 1450, 'wallet_balance': 1500}, 'ETH': {'equity': 0.5, 'available_balance': 0.5, 'wallet_balance': 0.5}}, 'success': False, 'error': "Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'", 'source': 'simulation', 'note': "Dane symulowane - błąd API: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'"}
+2025-04-07 19:15:35,863 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/encodings/unicode_escape.py', reloading
+2025-04-07 19:15:35,952 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:35] "GET / HTTP/1.1" 200 -
+2025-04-07 19:15:35,963 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:35] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:15:35,967 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:35] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 19:15:36,136 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:36] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-04-07 19:15:36,267 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:36] "[36mGET /static/js/dashboard.js HTTP/1.1[0m" 304 -
+2025-04-07 19:15:37,054 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:37] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:15:37,056 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:37] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:15:37,057 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:37] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:15:37,060 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:15:37,064 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:37] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:15:37,062 [INFO] Status API: Produkcyjne
+2025-04-07 19:15:37,065 [ERROR] Test połączenia z API nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:15:37,066 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 243, in get_account_balance
+    time_response = self.client.get_server_time()
+AttributeError: 'HTTP' object has no attribute 'get_server_time'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 247, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'
+
+2025-04-07 19:15:37,067 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:37] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:15:37,069 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:37] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:15:37,502 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:15:40,523 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:15:40,534 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:15:40,534 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:15:40,535 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:15:40,535 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:15:40,535 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:15:40,536 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:15:40,536 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:15:40,536 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:15:40,539 [WARNING] This HTTP class is maintained for compatibility purposes. You should prefer importing market-specific classes, like so: from pybit.inverse_perpetual import HTTP; from pybit.spot import HTTP
+2025-04-07 19:15:40,540 [INFO] Zainicjalizowano klienta ByBit API v2. Testnet: False
+2025-04-07 19:15:40,540 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:15:40,540 [INFO] Zainicjalizowano klienta ByBit API. Wersja: v2, Testnet: False
+2025-04-07 19:15:40,540 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:15:40,540 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744053340540, 'time': '2025-04-07 19:15:40'}
+2025-04-07 19:15:40,540 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:15:40,541 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:15:40,555 [WARNING]  * Debugger is active!
+2025-04-07 19:15:40,557 [INFO]  * Debugger PIN: 957-891-626
+2025-04-07 19:15:41,733 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:41] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 19:15:41,734 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:41] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 19:15:47,066 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:47] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:15:47,069 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:47] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:15:47,071 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:47] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:15:47,073 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:47] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:15:47,074 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:47] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:15:47,130 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:15:47,132 [INFO] Status API: Produkcyjne
+2025-04-07 19:15:47,133 [ERROR] Test połączenia z API nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:15:47,136 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:15:47,134 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 243, in get_account_balance
+    time_response = self.client.get_server_time()
+AttributeError: 'HTTP' object has no attribute 'get_server_time'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 247, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'
+
+2025-04-07 19:15:47,137 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:47] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:15:48,307 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:15:50,446 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:15:50,458 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:15:50,458 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:15:50,458 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:15:50,458 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:15:50,459 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:15:50,459 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:15:50,459 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:15:50,459 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:15:50,462 [WARNING] This HTTP class is maintained for compatibility purposes. You should prefer importing market-specific classes, like so: from pybit.inverse_perpetual import HTTP; from pybit.spot import HTTP
+2025-04-07 19:15:50,462 [INFO] Zainicjalizowano klienta ByBit API v2. Testnet: False
+2025-04-07 19:15:50,462 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:15:50,462 [INFO] Zainicjalizowano klienta ByBit API. Wersja: v2, Testnet: False
+2025-04-07 19:15:50,463 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:15:50,463 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744053350463, 'time': '2025-04-07 19:15:50'}
+2025-04-07 19:15:50,463 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:15:50,463 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:15:50,475 [WARNING]  * Debugger is active!
+2025-04-07 19:15:50,478 [INFO]  * Debugger PIN: 114-429-181
+2025-04-07 19:15:52,056 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:52] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 19:15:57,060 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:57] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:15:57,062 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:57] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:15:57,063 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:57] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:15:57,064 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:15:57,067 [INFO] Status API: Produkcyjne
+2025-04-07 19:15:57,067 [ERROR] Test połączenia z API nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:15:57,067 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 243, in get_account_balance
+    time_response = self.client.get_server_time()
+AttributeError: 'HTTP' object has no attribute 'get_server_time'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 247, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'
+
+2025-04-07 19:15:57,068 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:57] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:15:57,069 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:15:57,071 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:57] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:15:57,073 [INFO] 172.31.128.72 - - [07/Apr/2025 19:15:57] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:15:58,146 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:16:02,461 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:16:02,492 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:16:02,493 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:16:02,493 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:16:02,494 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:16:02,494 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:16:02,494 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:16:02,494 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:16:02,494 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:16:02,503 [WARNING] This HTTP class is maintained for compatibility purposes. You should prefer importing market-specific classes, like so: from pybit.inverse_perpetual import HTTP; from pybit.spot import HTTP
+2025-04-07 19:16:02,505 [INFO] Zainicjalizowano klienta ByBit API v2. Testnet: False
+2025-04-07 19:16:02,507 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:16:02,507 [INFO] Zainicjalizowano klienta ByBit API. Wersja: v2, Testnet: False
+2025-04-07 19:16:02,507 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:16:02,507 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744053362507, 'time': '2025-04-07 19:16:02'}
+2025-04-07 19:16:02,507 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:16:02,507 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:16:02,535 [WARNING]  * Debugger is active!
+2025-04-07 19:16:02,537 [INFO]  * Debugger PIN: 368-527-767
+2025-04-07 19:16:07,102 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:16:07,104 [INFO] Status API: Produkcyjne
+2025-04-07 19:16:07,106 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:07] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:16:07,105 [ERROR] Test połączenia z API nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:16:07,113 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:16:07,122 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:07] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:16:07,122 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 243, in get_account_balance
+    time_response = self.client.get_server_time()
+AttributeError: 'HTTP' object has no attribute 'get_server_time'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 247, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'
+
+2025-04-07 19:16:07,125 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:07] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:16:07,129 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:07] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:16:07,135 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:07] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:16:07,137 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:07] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:16:07,255 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:07] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 19:16:08,600 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:16:11,283 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:16:11,311 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:16:11,311 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:16:11,311 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:16:11,312 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:16:11,312 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:16:11,312 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:16:11,313 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:16:11,313 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:16:11,317 [WARNING] This HTTP class is maintained for compatibility purposes. You should prefer importing market-specific classes, like so: from pybit.inverse_perpetual import HTTP; from pybit.spot import HTTP
+2025-04-07 19:16:11,317 [INFO] Zainicjalizowano klienta ByBit API v2. Testnet: False
+2025-04-07 19:16:11,318 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:16:11,318 [INFO] Zainicjalizowano klienta ByBit API. Wersja: v2, Testnet: False
+2025-04-07 19:16:11,318 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:16:11,319 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744053371318, 'time': '2025-04-07 19:16:11'}
+2025-04-07 19:16:11,319 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:16:11,319 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:16:11,336 [WARNING]  * Debugger is active!
+2025-04-07 19:16:11,342 [INFO]  * Debugger PIN: 758-728-242
+2025-04-07 19:16:17,064 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:16:17,064 [INFO] Status API: Produkcyjne
+2025-04-07 19:16:17,065 [ERROR] Test połączenia z API nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:16:17,065 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 243, in get_account_balance
+    time_response = self.client.get_server_time()
+AttributeError: 'HTTP' object has no attribute 'get_server_time'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 247, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'
+
+2025-04-07 19:16:17,069 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:17] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:16:17,072 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:17] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:16:17,074 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:16:17,076 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:17] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:16:17,078 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:17] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:16:17,088 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:17] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:16:17,092 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:17] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:16:18,721 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:16:23,657 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:16:23,696 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:16:23,697 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:16:23,697 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:16:23,699 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:16:23,701 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:16:23,701 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:16:23,701 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:16:23,702 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:16:23,715 [WARNING] This HTTP class is maintained for compatibility purposes. You should prefer importing market-specific classes, like so: from pybit.inverse_perpetual import HTTP; from pybit.spot import HTTP
+2025-04-07 19:16:23,719 [INFO] Zainicjalizowano klienta ByBit API v2. Testnet: False
+2025-04-07 19:16:23,719 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:16:23,720 [INFO] Zainicjalizowano klienta ByBit API. Wersja: v2, Testnet: False
+2025-04-07 19:16:23,720 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:16:23,721 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744053383721, 'time': '2025-04-07 19:16:23'}
+2025-04-07 19:16:23,722 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:16:23,722 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:16:23,753 [WARNING]  * Debugger is active!
+2025-04-07 19:16:23,806 [INFO]  * Debugger PIN: 245-570-027
+2025-04-07 19:16:29,486 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:29] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 19:16:29,493 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:29] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:16:29,492 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:16:29,495 [INFO] Status API: Produkcyjne
+2025-04-07 19:16:29,495 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:29] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:16:29,498 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:29] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:16:29,496 [ERROR] Test połączenia z API nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:16:29,499 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:29] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:16:29,502 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:16:29,503 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 243, in get_account_balance
+    time_response = self.client.get_server_time()
+AttributeError: 'HTTP' object has no attribute 'get_server_time'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 247, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'
+
+2025-04-07 19:16:29,504 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:29] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:16:29,627 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:29] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:16:31,203 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:16:36,336 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:16:36,360 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:16:36,361 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:16:36,361 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:16:36,362 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:16:36,362 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:16:36,363 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:16:36,365 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:16:36,365 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:16:36,371 [WARNING] This HTTP class is maintained for compatibility purposes. You should prefer importing market-specific classes, like so: from pybit.inverse_perpetual import HTTP; from pybit.spot import HTTP
+2025-04-07 19:16:36,372 [INFO] Zainicjalizowano klienta ByBit API v2. Testnet: False
+2025-04-07 19:16:36,372 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:16:36,372 [INFO] Zainicjalizowano klienta ByBit API. Wersja: v2, Testnet: False
+2025-04-07 19:16:36,372 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:16:36,372 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744053396372, 'time': '2025-04-07 19:16:36'}
+2025-04-07 19:16:36,373 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:16:36,373 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:16:36,400 [WARNING]  * Debugger is active!
+2025-04-07 19:16:36,422 [INFO]  * Debugger PIN: 117-955-690
+2025-04-07 19:16:38,831 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:38] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 19:16:38,827 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:16:38,836 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:38] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:16:38,836 [INFO] Status API: Produkcyjne
+2025-04-07 19:16:38,839 [ERROR] Test połączenia z API nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:16:38,842 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:16:38,841 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 243, in get_account_balance
+    time_response = self.client.get_server_time()
+AttributeError: 'HTTP' object has no attribute 'get_server_time'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 247, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'
+
+2025-04-07 19:16:38,844 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:38] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:16:38,845 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:38] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:16:38,847 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:38] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:16:38,849 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:38] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:16:38,852 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:16:38,854 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:38] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:16:38,853 [INFO] Status API: Produkcyjne
+2025-04-07 19:16:38,856 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:38] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:16:38,857 [ERROR] Test połączenia z API nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:16:38,858 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:38] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:16:38,861 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:38] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:16:38,861 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 243, in get_account_balance
+    time_response = self.client.get_server_time()
+AttributeError: 'HTTP' object has no attribute 'get_server_time'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 247, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'
+
+2025-04-07 19:16:38,863 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:38] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:16:38,866 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:38] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:16:38,968 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:38] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 19:16:38,992 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:38] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 19:16:39,004 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:39] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 19:16:39,035 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:39] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:16:40,445 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:16:49,891 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:16:49,939 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:16:49,940 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:16:49,940 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:16:49,941 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:16:49,941 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:16:49,941 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:16:49,941 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:16:49,941 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:16:49,950 [WARNING] This HTTP class is maintained for compatibility purposes. You should prefer importing market-specific classes, like so: from pybit.inverse_perpetual import HTTP; from pybit.spot import HTTP
+2025-04-07 19:16:49,951 [INFO] Zainicjalizowano klienta ByBit API v2. Testnet: False
+2025-04-07 19:16:49,951 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:16:49,951 [INFO] Zainicjalizowano klienta ByBit API. Wersja: v2, Testnet: False
+2025-04-07 19:16:49,951 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:16:49,953 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744053409953, 'time': '2025-04-07 19:16:49'}
+2025-04-07 19:16:49,953 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:16:49,960 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:16:50,093 [WARNING]  * Debugger is active!
+2025-04-07 19:16:50,623 [INFO]  * Debugger PIN: 134-719-841
+2025-04-07 19:16:57,078 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:16:57,082 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:57] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:16:57,082 [INFO] Status API: Produkcyjne
+2025-04-07 19:16:57,083 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:57] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:16:57,084 [ERROR] Test połączenia z API nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:16:57,086 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:57] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:16:57,087 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:57] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:16:57,089 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:57] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:16:57,096 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:16:57,095 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 243, in get_account_balance
+    time_response = self.client.get_server_time()
+AttributeError: 'HTTP' object has no attribute 'get_server_time'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 247, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'
+
+2025-04-07 19:16:57,099 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:57] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:16:57,227 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:57] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:16:57,229 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:57] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:16:57,231 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:57] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 19:16:57,236 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:57] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:16:57,237 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:57] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:16:57,238 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:57] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:16:57,362 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:16:57,363 [INFO] Status API: Produkcyjne
+2025-04-07 19:16:57,364 [ERROR] Test połączenia z API nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:16:57,365 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 243, in get_account_balance
+    time_response = self.client.get_server_time()
+AttributeError: 'HTTP' object has no attribute 'get_server_time'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 247, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'
+
+2025-04-07 19:16:57,366 [INFO] 172.31.128.72 - - [07/Apr/2025 19:16:57] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:16:58,810 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:17:08,031 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:17:08,045 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:17:08,045 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:17:08,045 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:17:08,045 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:17:08,045 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:17:08,046 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:17:08,046 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:17:08,046 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:17:08,049 [WARNING] This HTTP class is maintained for compatibility purposes. You should prefer importing market-specific classes, like so: from pybit.inverse_perpetual import HTTP; from pybit.spot import HTTP
+2025-04-07 19:17:08,049 [INFO] Zainicjalizowano klienta ByBit API v2. Testnet: False
+2025-04-07 19:17:08,049 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:17:08,050 [INFO] Zainicjalizowano klienta ByBit API. Wersja: v2, Testnet: False
+2025-04-07 19:17:08,050 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:17:08,050 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744053428050, 'time': '2025-04-07 19:17:08'}
+2025-04-07 19:17:08,050 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:17:08,050 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:17:08,065 [WARNING]  * Debugger is active!
+2025-04-07 19:17:08,067 [INFO]  * Debugger PIN: 120-006-177
+2025-04-07 19:17:09,424 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:17:09,434 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:09] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:17:09,436 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:09] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:17:09,435 [INFO] Status API: Produkcyjne
+2025-04-07 19:17:09,439 [ERROR] Test połączenia z API nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:17:09,440 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 243, in get_account_balance
+    time_response = self.client.get_server_time()
+AttributeError: 'HTTP' object has no attribute 'get_server_time'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 247, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'
+
+2025-04-07 19:17:09,441 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:09] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:17:09,444 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:17:09,448 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:09] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:17:09,452 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:09] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:17:09,453 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:09] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:17:09,582 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:09] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 19:17:11,195 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:17:14,095 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:17:14,111 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:17:14,111 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:17:14,112 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:17:14,112 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:17:14,112 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:17:14,112 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:17:14,112 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:17:14,112 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:17:14,116 [WARNING] This HTTP class is maintained for compatibility purposes. You should prefer importing market-specific classes, like so: from pybit.inverse_perpetual import HTTP; from pybit.spot import HTTP
+2025-04-07 19:17:14,116 [INFO] Zainicjalizowano klienta ByBit API v2. Testnet: False
+2025-04-07 19:17:14,116 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:17:14,116 [INFO] Zainicjalizowano klienta ByBit API. Wersja: v2, Testnet: False
+2025-04-07 19:17:14,116 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:17:14,116 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744053434116, 'time': '2025-04-07 19:17:14'}
+2025-04-07 19:17:14,117 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:17:14,117 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:17:14,133 [WARNING]  * Debugger is active!
+2025-04-07 19:17:14,137 [INFO]  * Debugger PIN: 547-544-342
+2025-04-07 19:17:17,056 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:17:17,060 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:17] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:17:17,060 [INFO] Status API: Produkcyjne
+2025-04-07 19:17:17,062 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:17] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:17:17,064 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:17] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:17:17,063 [ERROR] Test połączenia z API nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:17:17,066 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:17] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:17:17,069 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:17:17,068 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 243, in get_account_balance
+    time_response = self.client.get_server_time()
+AttributeError: 'HTTP' object has no attribute 'get_server_time'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 247, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'
+
+2025-04-07 19:17:17,077 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:17] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:17:17,070 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:17] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:17:18,119 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:17:20,737 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:17:20,754 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:17:20,754 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:17:20,754 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:17:20,755 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:17:20,755 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:17:20,755 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:17:20,755 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:17:20,755 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:17:20,759 [WARNING] This HTTP class is maintained for compatibility purposes. You should prefer importing market-specific classes, like so: from pybit.inverse_perpetual import HTTP; from pybit.spot import HTTP
+2025-04-07 19:17:20,759 [INFO] Zainicjalizowano klienta ByBit API v2. Testnet: False
+2025-04-07 19:17:20,759 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:17:20,759 [INFO] Zainicjalizowano klienta ByBit API. Wersja: v2, Testnet: False
+2025-04-07 19:17:20,760 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:17:20,760 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744053440760, 'time': '2025-04-07 19:17:20'}
+2025-04-07 19:17:20,760 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:17:20,760 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:17:20,775 [WARNING]  * Debugger is active!
+2025-04-07 19:17:20,778 [INFO]  * Debugger PIN: 211-789-064
+2025-04-07 19:17:22,067 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:22] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 19:17:27,067 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:27] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:17:27,070 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:27] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:17:27,065 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:17:27,078 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:27] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:17:27,079 [INFO] Status API: Produkcyjne
+2025-04-07 19:17:27,081 [ERROR] Test połączenia z API nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:17:27,082 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:27] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:17:27,089 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:17:27,098 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:27] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:17:27,100 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 243, in get_account_balance
+    time_response = self.client.get_server_time()
+AttributeError: 'HTTP' object has no attribute 'get_server_time'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 247, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'
+
+2025-04-07 19:17:27,104 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:27] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:17:27,567 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:17:31,617 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:17:31,652 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:17:31,652 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:17:31,652 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:17:31,653 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:17:31,653 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:17:31,654 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:17:31,654 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:17:31,654 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:17:31,666 [WARNING] This HTTP class is maintained for compatibility purposes. You should prefer importing market-specific classes, like so: from pybit.inverse_perpetual import HTTP; from pybit.spot import HTTP
+2025-04-07 19:17:31,667 [INFO] Zainicjalizowano klienta ByBit API v2. Testnet: False
+2025-04-07 19:17:31,668 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:17:31,668 [INFO] Zainicjalizowano klienta ByBit API. Wersja: v2, Testnet: False
+2025-04-07 19:17:31,668 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:17:31,669 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744053451669, 'time': '2025-04-07 19:17:31'}
+2025-04-07 19:17:31,669 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:17:31,669 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:17:31,698 [WARNING]  * Debugger is active!
+2025-04-07 19:17:31,726 [INFO]  * Debugger PIN: 135-123-528
+2025-04-07 19:17:33,787 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:17:33,846 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:17:33,854 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 19:17:33,850 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:17:33,855 [INFO] Status API: Produkcyjne
+2025-04-07 19:17:33,856 [ERROR] Test połączenia z API nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:17:33,861 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 243, in get_account_balance
+    time_response = self.client.get_server_time()
+AttributeError: 'HTTP' object has no attribute 'get_server_time'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 247, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'
+
+2025-04-07 19:17:33,864 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:33] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:17:33,873 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:17:33,879 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:17:33,881 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:17:33,975 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:17:33,983 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 19:17:35,607 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:17:39,479 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:17:39,497 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:17:39,499 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:17:39,500 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:17:39,503 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:17:39,504 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:17:39,506 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:17:39,508 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:17:39,508 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:17:39,514 [WARNING] This HTTP class is maintained for compatibility purposes. You should prefer importing market-specific classes, like so: from pybit.inverse_perpetual import HTTP; from pybit.spot import HTTP
+2025-04-07 19:17:39,516 [INFO] Zainicjalizowano klienta ByBit API v2. Testnet: False
+2025-04-07 19:17:39,517 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:17:39,517 [INFO] Zainicjalizowano klienta ByBit API. Wersja: v2, Testnet: False
+2025-04-07 19:17:39,517 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:17:39,517 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744053459517, 'time': '2025-04-07 19:17:39'}
+2025-04-07 19:17:39,518 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:17:39,518 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:17:39,534 [WARNING]  * Debugger is active!
+2025-04-07 19:17:39,537 [INFO]  * Debugger PIN: 129-351-157
+2025-04-07 19:17:40,815 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:40] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:17:40,817 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:40] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:17:40,822 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:17:40,824 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:40] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:17:40,825 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:40] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:17:40,826 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:40] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:17:40,826 [INFO] Status API: Produkcyjne
+2025-04-07 19:17:40,828 [ERROR] Test połączenia z API nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:17:40,830 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 243, in get_account_balance
+    time_response = self.client.get_server_time()
+AttributeError: 'HTTP' object has no attribute 'get_server_time'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 247, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'
+
+2025-04-07 19:17:40,831 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:17:40,831 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:40] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:17:40,951 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:40] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 19:17:40,960 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:40] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 19:17:42,324 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:17:44,550 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:17:44,565 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:17:44,567 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:17:44,568 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:17:44,569 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:17:44,569 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:17:44,569 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:17:44,569 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:17:44,570 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:17:44,577 [WARNING] This HTTP class is maintained for compatibility purposes. You should prefer importing market-specific classes, like so: from pybit.inverse_perpetual import HTTP; from pybit.spot import HTTP
+2025-04-07 19:17:44,577 [INFO] Zainicjalizowano klienta ByBit API v2. Testnet: False
+2025-04-07 19:17:44,578 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:17:44,578 [INFO] Zainicjalizowano klienta ByBit API. Wersja: v2, Testnet: False
+2025-04-07 19:17:44,578 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:17:44,578 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744053464578, 'time': '2025-04-07 19:17:44'}
+2025-04-07 19:17:44,578 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:17:44,578 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:17:44,592 [WARNING]  * Debugger is active!
+2025-04-07 19:17:44,595 [INFO]  * Debugger PIN: 895-647-161
+2025-04-07 19:17:47,077 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:47] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:17:47,082 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:47] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:17:47,084 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:47] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:17:47,086 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:17:47,087 [INFO] Status API: Produkcyjne
+2025-04-07 19:17:47,088 [ERROR] Test połączenia z API nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:17:47,091 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:17:47,091 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 243, in get_account_balance
+    time_response = self.client.get_server_time()
+AttributeError: 'HTTP' object has no attribute 'get_server_time'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 247, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'
+
+2025-04-07 19:17:47,093 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:47] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:17:47,094 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:47] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:17:47,109 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:47] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:17:48,478 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:17:51,598 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:17:51,612 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:17:51,612 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:17:51,613 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:17:51,613 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:17:51,613 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:17:51,613 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:17:51,613 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:17:51,613 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:17:51,617 [WARNING] This HTTP class is maintained for compatibility purposes. You should prefer importing market-specific classes, like so: from pybit.inverse_perpetual import HTTP; from pybit.spot import HTTP
+2025-04-07 19:17:51,617 [INFO] Zainicjalizowano klienta ByBit API v2. Testnet: False
+2025-04-07 19:17:51,617 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:17:51,617 [INFO] Zainicjalizowano klienta ByBit API. Wersja: v2, Testnet: False
+2025-04-07 19:17:51,618 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:17:51,618 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744053471618, 'time': '2025-04-07 19:17:51'}
+2025-04-07 19:17:51,618 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:17:51,618 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:17:51,638 [WARNING]  * Debugger is active!
+2025-04-07 19:17:51,641 [INFO]  * Debugger PIN: 119-731-720
+2025-04-07 19:17:52,941 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:52] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 19:17:57,061 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:57] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:17:57,063 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:57] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:17:57,060 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:17:57,065 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:57] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:17:57,068 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:57] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:17:57,069 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:57] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:17:57,069 [INFO] Status API: Produkcyjne
+2025-04-07 19:17:57,074 [ERROR] Test połączenia z API nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:17:57,076 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:17:57,077 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 243, in get_account_balance
+    time_response = self.client.get_server_time()
+AttributeError: 'HTTP' object has no attribute 'get_server_time'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 247, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'
+
+2025-04-07 19:17:57,078 [INFO] 172.31.128.72 - - [07/Apr/2025 19:17:57] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:17:57,654 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:18:04,057 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:18:04,077 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:18:04,077 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:18:04,077 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:18:04,078 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:18:04,078 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:18:04,078 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:18:04,079 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:18:04,079 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:18:04,084 [WARNING] This HTTP class is maintained for compatibility purposes. You should prefer importing market-specific classes, like so: from pybit.inverse_perpetual import HTTP; from pybit.spot import HTTP
+2025-04-07 19:18:04,085 [INFO] Zainicjalizowano klienta ByBit API v2. Testnet: False
+2025-04-07 19:18:04,085 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:18:04,085 [INFO] Zainicjalizowano klienta ByBit API. Wersja: v2, Testnet: False
+2025-04-07 19:18:04,085 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:18:04,085 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744053484085, 'time': '2025-04-07 19:18:04'}
+2025-04-07 19:18:04,085 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:18:04,085 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:18:04,109 [WARNING]  * Debugger is active!
+2025-04-07 19:18:04,447 [INFO]  * Debugger PIN: 113-531-793
+2025-04-07 19:18:07,531 [INFO] 172.31.128.72 - - [07/Apr/2025 19:18:07] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:18:07,597 [INFO] 172.31.128.72 - - [07/Apr/2025 19:18:07] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:18:07,603 [INFO] 172.31.128.72 - - [07/Apr/2025 19:18:07] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:18:07,605 [INFO] 172.31.128.72 - - [07/Apr/2025 19:18:07] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:18:07,606 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:18:07,608 [INFO] 172.31.128.72 - - [07/Apr/2025 19:18:07] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:18:07,608 [INFO] Status API: Produkcyjne
+2025-04-07 19:18:07,609 [ERROR] Test połączenia z API nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:18:07,610 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 243, in get_account_balance
+    time_response = self.client.get_server_time()
+AttributeError: 'HTTP' object has no attribute 'get_server_time'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 247, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'
+
+2025-04-07 19:18:07,612 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:18:07,612 [INFO] 172.31.128.72 - - [07/Apr/2025 19:18:07] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:18:07,734 [INFO] 172.31.128.72 - - [07/Apr/2025 19:18:07] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 19:18:09,190 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:18:11,426 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:18:11,437 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:18:11,438 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:18:11,438 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:18:11,438 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:18:11,438 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:18:11,438 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:18:11,439 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:18:11,439 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:18:11,441 [WARNING] This HTTP class is maintained for compatibility purposes. You should prefer importing market-specific classes, like so: from pybit.inverse_perpetual import HTTP; from pybit.spot import HTTP
+2025-04-07 19:18:11,442 [INFO] Zainicjalizowano klienta ByBit API v2. Testnet: False
+2025-04-07 19:18:11,442 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:18:11,442 [INFO] Zainicjalizowano klienta ByBit API. Wersja: v2, Testnet: False
+2025-04-07 19:18:11,442 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:18:11,442 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744053491442, 'time': '2025-04-07 19:18:11'}
+2025-04-07 19:18:11,442 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:18:11,442 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:18:11,454 [WARNING]  * Debugger is active!
+2025-04-07 19:18:11,457 [INFO]  * Debugger PIN: 101-752-111
+2025-04-07 19:18:17,059 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:18:17,062 [INFO] 172.31.128.72 - - [07/Apr/2025 19:18:17] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:18:17,063 [INFO] 172.31.128.72 - - [07/Apr/2025 19:18:17] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:18:17,062 [INFO] Status API: Produkcyjne
+2025-04-07 19:18:17,067 [ERROR] Test połączenia z API nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:18:17,065 [INFO] 172.31.128.72 - - [07/Apr/2025 19:18:17] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:18:17,068 [INFO] 172.31.128.72 - - [07/Apr/2025 19:18:17] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:18:17,070 [INFO] 172.31.128.72 - - [07/Apr/2025 19:18:17] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:18:17,070 [ERROR] Błąd podczas pobierania danych z prawdziwego API: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'. Traceback: Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 243, in get_account_balance
+    time_response = self.client.get_server_time()
+AttributeError: 'HTTP' object has no attribute 'get_server_time'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 247, in get_account_balance
+    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+Exception: Brak dostępu do API Bybit: 'HTTP' object has no attribute 'get_server_time'
+
+2025-04-07 19:18:17,072 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:18:17,073 [INFO] 172.31.128.72 - - [07/Apr/2025 19:18:17] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:18:17,731 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:18:19,880 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:18:19,893 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:18:19,893 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:18:19,894 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:18:19,894 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:18:19,894 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:18:19,894 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:18:19,895 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:18:19,895 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:18:19,897 [WARNING] This HTTP class is maintained for compatibility purposes. You should prefer importing market-specific classes, like so: from pybit.inverse_perpetual import HTTP; from pybit.spot import HTTP
+2025-04-07 19:18:19,898 [INFO] Zainicjalizowano klienta ByBit API v2. Testnet: False
+2025-04-07 19:18:19,898 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:18:19,898 [INFO] Zainicjalizowano klienta ByBit API. Wersja: v2, Testnet: False
+2025-04-07 19:18:19,898 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:18:19,898 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744053499898, 'time': '2025-04-07 19:18:19'}
+2025-04-07 19:18:19,898 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:18:19,899 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:18:19,910 [WARNING]  * Debugger is active!
+2025-04-07 19:18:19,914 [INFO]  * Debugger PIN: 294-439-433
+2025-04-07 19:18:22,088 [INFO] 172.31.128.72 - - [07/Apr/2025 19:18:22] "GET /api/system/status HTTP/1.1" 200 -
