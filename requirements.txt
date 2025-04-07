@@ -2,9 +2,9 @@
 requests==2.31.0
 pandas==2.0.3
 numpy==1.24.3
-python-dateutil==2.8.2
 Flask==2.3.3
 python-dotenv==1.0.0
+websocket-client==1.6.4
 
 # Analiza danych i AI
 matplotlib==3.7.2
@@ -18,7 +18,6 @@ optuna==3.3.0
 # Giełda i trading
 ccxt==4.0.90
 python-binance==1.0.19
-websocket-client==1.6.4
 colorama==0.4.6
 pybit==5.0.0
 
@@ -44,12 +43,12 @@ waitress==2.0.0
 # API i obsługa danych (additional packages)
 seaborn==0.12.2
 xgboost==1.7.6
+scikit-learn==1.3.0
 
 # Inne narzędzia
 tqdm==4.66.1
 pyyaml==6.0.1
 nltk==3.8.1
 pyjwt==2.8.0
-scikit-learn==1.3.0
 scipy==1.11.1
 pymysql==1.1.0
