@@ -44,10 +44,18 @@ class BybitConnector:
                 self.client = pybit.HTTP(
                     endpoint=endpoint,
                     api_key=self.api_key,
-                    api_secret=self.api_secret
+                    api_secret=self.api_secret,
+                    recv_window=20000  # Zwiększenie okna czasu na odpowiedź
                 )
                 self.api_version = "v2"
                 logging.info(f"Zainicjalizowano klienta ByBit API v2. Testnet: {self.use_testnet}")
+
+                # Testowe pobieranie czasu serwera w celu weryfikacji połączenia
+                try:
+                    server_time = self.client.get_server_time()
+                    logging.info(f"Połączenie z ByBit potwierdzone. Czas serwera: {server_time}")
+                except Exception as st_error:
+                    logging.warning(f"Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: {st_error}")
             except Exception as e:
                 logging.error(f"Błąd inicjalizacji klienta PyBit: {e}")
                 raise

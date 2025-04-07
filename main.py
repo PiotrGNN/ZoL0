@@ -517,6 +517,11 @@ def get_bybit_account_balance():
         logger.error(f"Błąd podczas pobierania stanu konta ByBit: {e}", exc_info=True) #Dodatkowe informacje o błędzie
         return jsonify({"error": str(e)}), 500
 
+@app.route('/api/portfolio', methods=["GET"])
+def get_portfolio():
+    """Endpoint zwracający dane portfela - przekierowanie do /api/bybit/account-balance."""
+    return get_bybit_account_balance()
+
 
 # Uruchomienie aplikacji
 if __name__ == "__main__":
