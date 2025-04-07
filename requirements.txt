@@ -14,7 +14,7 @@ Flask-Cors>=3.0.10
 
 # API giełdowe
 ccxt==2.0.50
-pybit==2.4.1
+pybit==2.4.0
 
 # Narzędzia deweloperskie
 pytest==6.2.5

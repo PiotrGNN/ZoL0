@@ -64,12 +64,4 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "mkdir -p logs templates static/css static/js"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "pip install -r requirements.txt"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python main.py"
+args = "python3 main.py"
