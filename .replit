@@ -1,5 +1,4 @@
-
-run = "python3 main.py"
+run = "bash -c 'python3 -m main'"
 modules = ["python-3.10:v18-20230807-322e88b"]
 hidden = [".pythonlibs"]
 
@@ -23,7 +22,7 @@ guessImports = true
 language = "python3"
 
 [deployment]
-run = "python3 main.py"
+run = "bash -c 'python3 -m main'"
 deploymentTarget = "cloudrun"
 
 [languages]
@@ -48,4 +47,4 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python3 main.py"
+args = "bash -c \"python3 -m main\""
