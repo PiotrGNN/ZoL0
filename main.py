@@ -26,7 +26,69 @@ app = Flask(__name__)
 # Trasy API dla dashboardu
 @app.route("/")
 def index():
-    return render_template("dashboard.html")
+    # Przykładowe dane dla szablonu
+    settings = {
+        "risk_level": "low",
+        "max_position_size": 10.0,
+        "enable_auto_trading": False
+    }
+    
+    # Przykładowe dane dla modeli AI
+    ai_models = [
+        {"name": "Trend Predictor", "type": "XGBoost", "accuracy": 78, "status": "Active", "last_used": "2025-04-07 10:15:22"},
+        {"name": "Volatility Model", "type": "LSTM", "accuracy": 82, "status": "Active", "last_used": "2025-04-07 09:45:10"},
+        {"name": "Sentiment Analyzer", "type": "Transformer", "accuracy": 65, "status": "Inactive", "last_used": "2025-04-06 18:30:45"}
+    ]
+    
+    # Przykładowe dane dla strategii
+    strategies = [
+        {"id": 1, "name": "Trend Following", "description": "Podąża za trendem rynkowym", "enabled": True, "win_rate": 68, "profit_factor": 1.8},
+        {"id": 2, "name": "Mean Reversion", "description": "Wykorzystuje powroty do średniej", "enabled": False, "win_rate": 55, "profit_factor": 1.3},
+        {"id": 3, "name": "Breakout", "description": "Wykrywa i wykorzystuje wybicia", "enabled": True, "win_rate": 62, "profit_factor": 1.5}
+    ]
+    
+    # Przykładowe dane dla alertów
+    alerts = [
+        {"level_class": "warning", "time": "10:15", "message": "Wysoka zmienność na BTC/USDT"},
+        {"level_class": "offline", "time": "09:30", "message": "Utracono połączenie z API"}
+    ]
+    
+    # Przykładowe dane dla transakcji
+    trades = [
+        {"symbol": "BTC/USDT", "type": "BUY", "time": "10:05", "profit": 2.5},
+        {"symbol": "ETH/USDT", "type": "SELL", "time": "09:45", "profit": -1.2},
+        {"symbol": "SOL/USDT", "type": "BUY", "time": "09:15", "profit": 3.8}
+    ]
+    
+    # Przykładowe dane dla sentymentu
+    sentiment_data = {
+        "overall_score": 0.25,
+        "analysis": "Umiarkowanie pozytywny",
+        "sources": {
+            "Twitter": {"score": 0.35, "volume": 1250},
+            "Reddit": {"score": 0.18, "volume": 850},
+            "News": {"score": 0.22, "volume": 320}
+        },
+        "timeframe": "24h",
+        "timestamp": "2025-04-07 08:30:00"
+    }
+    
+    # Przykładowe dane dla anomalii
+    anomalies = [
+        {"timestamp": "10:05", "type": "Spike Detection", "description": "Nagły wzrost wolumenu BTC", "score": 0.85},
+        {"timestamp": "09:30", "type": "Price Pattern", "description": "Nietypowy wzór cenowy na ETH", "score": 0.72}
+    ]
+    
+    return render_template(
+        "dashboard.html",
+        settings=settings,
+        ai_models=ai_models,
+        strategies=strategies,
+        alerts=alerts,
+        trades=trades,
+        sentiment_data=sentiment_data,
+        anomalies=anomalies
+    )
 
 @app.route("/api/dashboard/data", methods=["GET"])
 def get_dashboard_data():
