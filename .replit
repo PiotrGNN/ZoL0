@@ -30,7 +30,7 @@ start = "pylsp"
 language = "python3"
 
 [deployment]
-run = ["python", "main.py"]
+run = ["sh", "-c", "python main.py"]
 deploymentTarget = "cloudrun"
 
 [gitHubImport]
@@ -46,7 +46,7 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python3 main.py"
+args = "python main.py"
 
 [[workflows.workflow]]
 name = "Test"
@@ -92,3 +92,7 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "pip install -r requirements.txt"
+
+[[ports]]
+localPort = 5000
+externalPort = 80

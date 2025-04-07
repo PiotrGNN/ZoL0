@@ -1,86 +1,88 @@
-# 🚀 Trading System z wykorzystaniem AI
+# Trading Bot - System Automatycznego Tradingu
 
-Zaawansowany system tradingowy wykorzystujący modele sztucznej inteligencji do wykrywania anomalii rynkowych, predykcji trendów i automatycznego zarządzania transakcjami.
+## 🚀 O Projekcie
 
-## 📋 Wymagania systemowe
+System automatycznego tradingu bazujący na sztucznej inteligencji i analizie technicznej. Projekt łączy zaawansowane algorytmy uczenia maszynowego, analizę sentymentu rynkowego oraz tradycyjne strategie tradingowe, aby oferować kompleksowe rozwiązanie do handlu na rynkach kryptowalut.
 
-- Python 3.8+
-- Pakiety wymienione w `requirements.txt`
+## 🔧 Technologie
 
-## 🚀 Szybki start
+- **Backend**: Python, Flask
+- **Analiza danych**: Pandas, NumPy, SciKit-Learn
+- **AI/ML**: TensorFlow, XGBoost, NLTK, Transformers
+- **Frontend**: JavaScript, Chart.js
+- **Bazy danych**: SQLite, SQLAlchemy
+- **Exchange API**: CCXT, python-binance
 
-### Uruchomienie w Replit
+## 🚦 Instrukcja Uruchomienia
 
-1. Kliknij przycisk "Run" w środowisku Replit
-2. System zostanie automatycznie skonfigurowany i uruchomiony
+### Wymagania
 
-### Manualna instalacja
+- Python 3.10+
+- Wszystkie zależności wymienione w `requirements.txt`
 
-```bash
-# Instalacja zależności
-pip install -r requirements.txt
+### Instalacja
 
-# Uruchomienie aplikacji
-python main.py
+1. Sklonuj repozytorium
+2. Zainstaluj zależności:
+   ```
+   pip install -r requirements.txt
+   ```
+3. Utwórz plik `.env` na podstawie `.env.example` i uzupełnij kluczowe wartości
+4. Uruchom aplikację:
+   ```
+   python main.py
+   ```
+
+### Dostęp do Dashboardu
+
+Po uruchomieniu aplikacja będzie dostępna pod adresem: `http://0.0.0.0:5000/`
+
+## 📊 Główne Funkcjonalności
+
+- **Dashboard Analityczny**: Monitorowanie wyników, statystyk i otwartych pozycji
+- **Strategie Tradingowe**: Zestaw wbudowanych strategii (Trend Following, Mean Reversion, Breakout)
+- **Modele AI**: Predykcja cen, analiza sentymentu, wykrywanie anomalii
+- **Zarządzanie Ryzykiem**: Dynamiczne zarządzanie wielkością pozycji i stop-lossami
+- **Backtest**: Testowanie strategii na danych historycznych
+- **Powiadomienia**: System alertów o ważnych zdarzeniach rynkowych
+
+## 📋 Struktura Projektu
+
+- `ai_models/` - Modele sztucznej inteligencji i uczenia maszynowego
+- `data/` - Moduły do pobierania, przetwarzania i zarządzania danymi
+  - `data/indicators/` - Wskaźniki techniczne i analiza sentymentu
+  - `data/strategies/` - Implementacje strategii tradingowych
+  - `data/risk_management/` - Zarządzanie ryzykiem i wielkością pozycji
+  - `data/execution/` - Wykonywanie zleceń i połączenia z giełdami
+- `static/` - Pliki statyczne dla front-endu (JS, CSS)
+- `templates/` - Szablony HTML dla dashboardu
+- `logs/` - Logi aplikacji
+
+## 🔍 Testowanie
+
+Uruchom testy jednostkowe:
 ```
-
-## 🏗️ Struktura projektu
-
-```
-.
-├── ai_models/                # Modele AI i uczenia maszynowego
-├── config/                   # Pliki konfiguracyjne
-├── data/                     # Przetwarzanie i zarządzanie danymi
-│   ├── data/                 # Pobieranie i przetwarzanie danych
-│   ├── execution/            # Wykonywanie transakcji
-│   ├── indicators/           # Wskaźniki techniczne
-│   ├── logging/              # Logowanie zdarzeń
-│   ├── optimization/         # Optymalizacja strategii
-│   ├── risk_management/      # Zarządzanie ryzykiem
-│   ├── strategies/           # Strategie inwestycyjne
-│   ├── tests/                # Testy jednostkowe
-│   └── utils/                # Narzędzia pomocnicze
-├── logs/                     # Logi aplikacji
-├── saved_models/             # Zapisane modele ML
-├── main.py                   # Główny punkt wejścia
-└── requirements.txt          # Zależności projektu
-```
-
-## 🎛️ Dostępne workflowy
-
-W projekcie skonfigurowano następujące workflowy:
-
-1. **Run** - Uruchamia główny skrypt aplikacji
-2. **Test** - Uruchamia testy jednostkowe
-3. **Format Code** - Formatuje kod zgodnie z PEP 8 za pomocą Black
-4. **Lint Code** - Sprawdza jakość kodu za pomocą Flake8
-5. **Test with Coverage** - Uruchamia testy z raportem pokrycia
-6. **Install Dependencies** - Instaluje wymagane zależności
-
-## 🧪 Testowanie
-
-```bash
-# Uruchomienie wszystkich testów
 pytest data/tests/
+```
 
-# Uruchomienie testów z raportem pokrycia
+Testy z raportowaniem pokrycia kodu:
+```
 pytest --cov=. --cov-report=term-missing data/tests/
 ```
 
-## 🔧 Narzędzia developerskie
+## 📝 Konfiguracja
 
-- **Linter**: Flake8 - sprawdza jakość i zgodność kodu z PEP 8
-- **Formatter**: Black - automatycznie formatuje kod zgodnie z PEP 8
-- **Testy**: Pytest - framework do testów jednostkowych
+Konfiguracja systemu odbywa się przez:
+- Plik `.env` - Zmienne środowiskowe, klucze API
+- `config/settings.py` - Główne ustawienia aplikacji
+- Dashboard webowy - Konfiguracja parametrów strategii
 
-## 📊 Funkcjonalności
+## 🛡️ Bezpieczeństwo
 
-1. **Wykrywanie anomalii rynkowych** - identyfikacja nietypowych wzorców cenowych
-2. **Zarządzanie ryzykiem** - dynamiczne dostosowanie wielkości pozycji i stop-lossów
-3. **Strategie inwestycyjne** - implementacja różnych strategii (trend following, mean reversion)
-4. **Optymalizacja strategii** - backtesting i optymalizacja hiperparametrów
-5. **Wykonywanie transakcji** - integracja z różnymi giełdami przez API
+- Klucze API przechowywane są w zmiennych środowiskowych
+- Szyfrowanie wrażliwych danych
+- System monitorowania bezpieczeństwa
 
-## 📝 Licencja
+## 📜 Licencja
 
-Ten projekt jest dostępny na licencji MIT.
+Ten projekt jest udostępniany na licencji MIT.
