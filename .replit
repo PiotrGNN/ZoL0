@@ -1,4 +1,4 @@
-run = "python main.py"
+run = "/home/runner/.pythonlibs/bin/python3 -m main"
 language = "python3"
 entrypoint = "main.py"
 
@@ -6,7 +6,7 @@ entrypoint = "main.py"
 channel = "stable-22_11"
 
 [deployment]
-run = "python main.py"
+run = "/home/runner/.pythonlibs/bin/python3 -m main"
 deploymentTarget = "cloudrun"
 
 [env]
@@ -24,16 +24,3 @@ externalPort = 80
 
 [workflows]
 runButton = "Run"
-
-[[workflows.workflow]]
-name = "Run"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "pip install -r requirements.txt"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python main.py"
