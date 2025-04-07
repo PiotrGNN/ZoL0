@@ -1,39 +1,47 @@
 # Podstawowe
-flask==2.0.1
-python-dotenv==0.19.0
-requests==2.26.0
-numpy==1.21.2
-pandas==1.3.3
-matplotlib==3.4.3
-scipy==1.7.1
+flask==2.3.3
+flask-cors==4.0.0
+requests==2.31.0
+numpy==1.26.0
+pandas==2.1.1
+python-dotenv==1.0.0
 
 # Analiza danych i AI
-scikit-learn==1.0.0
-xgboost==1.4.2
-tensorflow==2.6.0
-keras==2.6.0
-statsmodels==0.13.0
-prophet==1.0.1
-pyod==0.9.5
+scikit-learn==1.3.1
+matplotlib==3.8.0
+tensorflow==2.6.0 # Retaining this version as it's not updated in edited snippet.
+keras==2.6.0      # Retaining this version as it's not updated in edited snippet.
+statsmodels==0.13.0 # Retaining this version as it's not updated in edited snippet.
+prophet==1.0.1     # Retaining this version as it's not updated in edited snippet.
+pyod==0.9.5       # Retaining this version as it's not updated in edited snippet.
 
 # Giełda i trading
-python-binance==1.0.16
-ccxt==1.60.78
+ccxt==4.0.90
+python-binance==1.0.19
+websocket-client==1.6.4
+colorama==0.4.6
+pybit==2.4.1
 
 # Bazy danych
-sqlalchemy==1.4.25
-pymongo==3.12.0
+sqlalchemy==1.4.25 # Retaining this version as it's not updated in edited snippet.
+pymongo==3.12.0    # Retaining this version as it's not updated in edited snippet.
 
 # Narzędzia deweloperskie
-pytest==6.2.5
-flake8==3.9.2
-black==21.9b0
-mypy==0.910
+pytest==7.4.2
+flake8==3.9.2 # Retaining this version as it's not updated in edited snippet.
+black==21.9b0  # Retaining this version as it's not updated in edited snippet.
+mypy==0.910    # Retaining this version as it's not updated in edited snippet.
 
 # Optymalizacja
-optuna==2.10.0
-hyperopt==0.2.7
+optuna==2.10.0 # Retaining this version as it's not updated in edited snippet.
+hyperopt==0.2.7 # Retaining this version as it's not updated in edited snippet.
 
 # Wdrożenie
-gunicorn==20.1.0
-waitress==2.0.0
+gunicorn==20.1.0 # Retaining this version as it's not updated in edited snippet.
+waitress==2.0.0 # Retaining this version as it's not updated in edited snippet.
+
+# Added packages from edited snippet
+tqdm==4.66.1
+nltk==3.8.1
+pyjwt==2.8.0
+python-dateutil==2.8.2

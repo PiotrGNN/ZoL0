@@ -1,146 +1,257 @@
 """
 anomaly_detection.py
--------------------
-Moduł odpowiedzialny za wykrywanie anomalii w danych finansowych
-z wykorzystaniem różnych algorytmów uczenia maszynowego.
+--------------------
+Moduł do wykrywania anomalii w danych rynkowych przy użyciu różnych metod statystycznych i algorytmów ML.
 """
 
 import logging
 import numpy as np
-from typing import Dict, List, Optional, Tuple, Union
 import pandas as pd
-from sklearn.ensemble import IsolationForest
-from sklearn.neighbors import LocalOutlierFactor
-from scipy import stats
+from datetime import datetime
+from typing import Dict, List, Union, Any, Optional
 
-# Konfiguracja loggera
+# Konfiguracja logowania
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler("logs/anomaly_detector.log"),
+        logging.StreamHandler()
+    ]
+)
+
 logger = logging.getLogger(__name__)
-
 
 class AnomalyDetector:
     """
-    Klasa wykrywająca anomalie w danych rynkowych.
-    Wykorzystuje różne metody: statystyczne, ML, itp.
+    Klasa implementująca wykrywanie anomalii w danych rynkowych.
+    Wspiera różne metody wykrywania, w tym statystyczne i oparte na ML.
     """
 
-    def __init__(self, method="isolation_forest", threshold=3.0, contamination=0.05):
+    def __init__(self, method: str = "isolation_forest", config: Optional[Dict[str, Any]] = None):
         """
         Inicjalizacja detektora anomalii.
 
         Args:
-            method (str): Metoda detekcji ('isolation_forest', 'zscore', 'kmeans')
-            threshold (float): Próg dla metod statystycznych (np. z-score)
-            contamination (float): Parametr dla Isolation Forest (oczekiwany % anomalii)
+            method (str): Metoda wykrywania anomalii (isolation_forest, z_score, iqr, etc.)
+            config (dict, optional): Dodatkowa konfiguracja dla wybranej metody
         """
         self.method = method
-        self.threshold = threshold
-        self.contamination = contamination
-        self.model = None
-        self.is_fitted = False
-        logging.info(f"Inicjalizacja detektora anomalii z metodą: {method}")
+        self.config = config or {}
+        self.detected_anomalies = []
+        self.last_analysis_time = None
 
-        if method == "isolation_forest":
-            self.model = IsolationForest(contamination=contamination, random_state=42)
-        elif method not in ["zscore", "kmeans"]:
-            logging.warning(f"Nieznana metoda detekcji anomalii: {method}, używam domyślnej (isolation_forest)")
-            self.method = "isolation_forest"
-            self.model = IsolationForest(contamination=contamination, random_state=42)
+        logger.info(f"Inicjalizacja detektora anomalii z metodą: {method}")
 
-    def __str__(self):
-        """Zwraca opis detektora anomalii."""
-        status = "Wytrenowany" if self.is_fitted else "Gotowy do użycia"
-        return f"Anomaly Detector - Metoda: {self.method}\nParametry: Próg={self.threshold}, Zanieczyszczenie={self.contamination}\nStatus: {status}"
+        # Tutaj może być inicjalizacja konkretnego modelu na podstawie metody
+        # W wersji demonstracyjnej używamy prostych metod statystycznych
 
-    def detect(self, data):
+    def detect(self, data: Union[pd.DataFrame, np.ndarray, List[float]]) -> Dict[str, Any]:
         """
-        Wykrywa anomalie w danych.
+        Wykrywa anomalie w podanych danych.
 
         Args:
-            data (pd.DataFrame lub pd.Series): Dane do analizy
+            data: Dane do analizy (DataFrame, ndarray lub lista wartości)
 
         Returns:
-            pd.Series: Indeksy anomalii (True) lub wartości normalne (False)
+            dict: Wynik analizy z informacjami o wykrytych anomaliach
         """
-        if data is None or (isinstance(data, pd.DataFrame) and data.empty) or (isinstance(data, pd.Series) and len(data) == 0):
-            logging.warning("Przekazano puste dane do wykrywania anomalii")
-            return pd.Series([], dtype=bool)
-
-        if isinstance(data, pd.DataFrame):
-            # Jeśli dataframe, sprawdzamy czy jest 1-kolumnowy
-            if data.shape[1] == 1:
-                data = data.iloc[:, 0]
-            else:
-                # Jeśli wielowymiarowy, używamy Isolation Forest
-                if self.method != "isolation_forest":
-                    logging.warning("Dla danych wielowymiarowych używam Isolation Forest.")
-                    return self._detect_isolation_forest(data)
+        if isinstance(data, list):
+            data = np.array(data)
 
         try:
-            if self.method == "zscore":
-                return self._detect_zscore(data)
-            elif self.method == "kmeans":
-                return self._detect_kmeans(data)
-            else:  # isolation_forest
-                return self._detect_isolation_forest(data)
-        except Exception as e:
-            logging.error(f"Błąd podczas wykrywania anomalii: {str(e)}")
-            return pd.Series([False] * len(data), index=data.index)
+            if self.method == "z_score":
+                anomalies = self._detect_z_score(data)
+            elif self.method == "isolation_forest":
+                anomalies = self._detect_isolation_forest(data)
+            elif self.method == "iqr":
+                anomalies = self._detect_iqr(data)
+            else:
+                logger.warning(f"Nieznana metoda wykrywania anomalii: {self.method}, używam z_score")
+                anomalies = self._detect_z_score(data)
 
-    def get_anomaly_score(self, data):
+            # Zapisanie wyników
+            self.last_analysis_time = datetime.now()
+
+            # Dodanie nowych anomalii do listy (max 100 ostatnich)
+            for anomaly in anomalies:
+                self.detected_anomalies.append({
+                    "timestamp": self.last_analysis_time.isoformat(),
+                    "value": float(anomaly["value"]) if "value" in anomaly else None,
+                    "score": float(anomaly["score"]) if "score" in anomaly else None,
+                    "details": anomaly.get("details", "")
+                })
+
+            # Ograniczenie liczby przechowywanych anomalii
+            if len(self.detected_anomalies) > 100:
+                self.detected_anomalies = self.detected_anomalies[-100:]
+
+            return {
+                "method": self.method,
+                "anomalies_detected": len(anomalies),
+                "anomalies": anomalies,
+                "analysis_time": self.last_analysis_time.isoformat()
+            }
+
+        except Exception as e:
+            logger.error(f"Błąd podczas wykrywania anomalii: {str(e)}")
+            return {
+                "method": self.method,
+                "anomalies_detected": 0,
+                "anomalies": [],
+                "error": str(e),
+                "analysis_time": datetime.now().isoformat()
+            }
+
+    def _detect_z_score(self, data: np.ndarray) -> List[Dict[str, Any]]:
         """
-        Zwraca wynik anomalii dla każdego punktu danych.
+        Wykrywa anomalie używając metody Z-score.
 
         Args:
-            data (pd.DataFrame lub pd.Series): Dane do analizy
+            data: Dane do analizy
 
         Returns:
-            pd.Series: Wyniki anomalii, wyższe wartości oznaczają większe prawdopodobieństwo anomalii
+            list: Lista znalezionych anomalii
         """
-        if self.method == "isolation_forest":
-            if isinstance(data, pd.Series):
-                data = data.values.reshape(-1, 1)
-            if not self.is_fitted:
-                self.model.fit(data)
-                self.is_fitted = True
-            scores = -self.model.score_samples(data)  # Wyższe wartości = większe prawdopodobieństwo anomalii
-            return pd.Series(scores, index=data.index if hasattr(data, 'index') else None)
-        elif self.method == "zscore":
-            return pd.Series(np.abs(stats.zscore(data)), index=data.index)
-        else:
-            logging.warning(f"Metoda {self.method} nie obsługuje bezpośrednio wyników anomalii, zwracam wartości z-score")
-            return pd.Series(np.abs(stats.zscore(data)), index=data.index)
+        threshold = self.config.get("threshold", 3.0)
 
+        # Obliczanie Z-score
+        mean = np.mean(data)
+        std = np.std(data)
 
-    def _detect_isolation_forest(self, data):
-        if not self.is_fitted:
-            self.model.fit(data)
-            self.is_fitted = True
-        predictions = self.model.predict(data)
-        return pd.Series(predictions == -1, index=data.index)
+        if std == 0:
+            return []
 
-    def _detect_zscore(self, data):
-        z_scores = np.abs(stats.zscore(data))
-        return pd.Series(z_scores > self.threshold, index=data.index)
+        z_scores = np.abs((data - mean) / std)
+        anomalies = []
 
-    def _detect_kmeans(self, data):
-        # Implementacja k-means tutaj (zostawiam jako ćwiczenie)
-        # ...
-        return pd.Series([False] * len(data), index=data.index)  # Tymczasowe
+        for i, z in enumerate(z_scores):
+            if z > threshold:
+                anomalies.append({
+                    "index": i,
+                    "value": float(data[i]),
+                    "z_score": float(z),
+                    "score": float(z),
+                    "details": f"Z-score: {z:.2f} (próg: {threshold})"
+                })
 
+        return anomalies
 
-    def info(self) -> None:
-        """Wyświetla informacje o aktualnej konfiguracji detektora anomalii."""
-        print(f"Anomaly Detector - Metoda: {self.method}")
-        print(f"Parametry: Próg={self.threshold}, Zanieczyszczenie={self.contamination}")
-        print("Status: Gotowy do użycia")
-        logger.info(f"Wywołano informacje o detektorze anomalii (metoda: {self.method})")
+    def _detect_isolation_forest(self, data: np.ndarray) -> List[Dict[str, Any]]:
+        """
+        Wykrywa anomalie używając metody Isolation Forest.
+        W tej wersji demonstracyjnej symulujemy działanie tej metody.
+
+        Args:
+            data: Dane do analizy
+
+        Returns:
+            list: Lista znalezionych anomalii
+        """
+        try:
+            # Symulacja wyników dla celów demonstracyjnych
+            # W rzeczywistej implementacji użylibyśmy sklearn.ensemble.IsolationForest
+
+            # Uproszczona symulacja - używamy Z-score z mniejszym progiem jako przybliżenie
+            anomalies = self._detect_z_score(data)
+
+            # Dodanie informacji specyficznych dla Isolation Forest
+            for anomaly in anomalies:
+                anomaly["details"] = f"Isolation Forest score: {anomaly['score']:.4f}"
+
+            return anomalies
+
+        except Exception as e:
+            logger.error(f"Błąd podczas wykrywania anomalii metodą Isolation Forest: {str(e)}")
+            return []
+
+    def _detect_iqr(self, data: np.ndarray) -> List[Dict[str, Any]]:
+        """
+        Wykrywa anomalie używając metody IQR (Interquartile Range).
+
+        Args:
+            data: Dane do analizy
+
+        Returns:
+            list: Lista znalezionych anomalii
+        """
+        q1 = np.percentile(data, 25)
+        q3 = np.percentile(data, 75)
+        iqr = q3 - q1
+
+        lower_bound = q1 - 1.5 * iqr
+        upper_bound = q3 + 1.5 * iqr
+
+        anomalies = []
+
+        for i, value in enumerate(data):
+            if value < lower_bound or value > upper_bound:
+                score = abs((value - np.median(data)) / iqr) if iqr > 0 else 0
+                anomalies.append({
+                    "index": i,
+                    "value": float(value),
+                    "score": float(score),
+                    "details": f"Wartość {value:.2f} poza zakresem IQR: ({lower_bound:.2f}, {upper_bound:.2f})"
+                })
+
+        return anomalies
+
+    def get_detected_anomalies(self, limit: int = 10) -> List[Dict[str, Any]]:
+        """
+        Zwraca listę ostatnio wykrytych anomalii.
+
+        Args:
+            limit (int): Maksymalna liczba zwracanych anomalii
+
+        Returns:
+            list: Lista ostatnich anomalii
+        """
+        anomalies = sorted(
+            self.detected_anomalies, 
+            key=lambda x: x["timestamp"], 
+            reverse=True
+        )
+        return anomalies[:limit]
+
+    def analyze(self, data: pd.DataFrame, column: str = "close") -> Dict[str, Any]:
+        """
+        Analizuje dane cenowe pod kątem anomalii.
+
+        Args:
+            data (DataFrame): Dane cenowe
+            column (str): Kolumna do analizy
+
+        Returns:
+            dict: Wyniki analizy
+        """
+        if column not in data.columns:
+            logger.error(f"Kolumna {column} nie istnieje w danych")
+            return {
+                "success": False,
+                "error": f"Kolumna {column} nie istnieje w danych",
+                "anomalies": []
+            }
+
+        values = data[column].values
+        detection_result = self.detect(values)
+
+        return {
+            "success": True,
+            "timestamp": datetime.now().isoformat(),
+            "analysis": detection_result
+        }
+
+    def reset(self) -> None:
+        """
+        Resetuje stan detektora anomalii.
+        """
+        self.detected_anomalies = []
+        self.last_analysis_time = None
+        logger.info(f"Reset detektora anomalii z metodą: {self.method}")
 
 
 # Przykład użycia
 if __name__ == "__main__":
-    # Konfiguracja loggera dla bezpośredniego uruchomienia
-    logging.basicConfig(level=logging.INFO)
-
     # Generowanie przykładowych danych
     np.random.seed(42)
     n_samples = 1000
@@ -155,197 +266,12 @@ if __name__ == "__main__":
     data.loc[anomaly_indices, 'volume'] = np.random.exponential(5000, 10)
 
     # Inicjalizacja i testowanie detektora
-    detector = AnomalyDetector(method="isolation_forest", contamination=0.01)
-    detector.train(data)
-    anomalies = detector.detect(data)
+    detector = AnomalyDetector(method="isolation_forest", config={"threshold": 2.5})
+    result = detector.analyze(data, column='price')
+    print(result)
+    result = detector.analyze(data, column='volume')
+    print(result)
+    print(detector.get_detected_anomalies())
 
-    print(f"Wykryto {anomalies.sum()} anomalii")
-    print("Indeksy anomalii:", anomalies[anomalies].index.tolist())
-"""
-anomaly_detection.py
--------------------
-Moduł odpowiedzialny za wykrywanie anomalii w danych rynkowych.
-"""
-
-import logging
-import numpy as np
-import pandas as pd
-from datetime import datetime, timedelta
-import random
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.FileHandler("anomaly_detection.log"),
-        logging.StreamHandler()
-    ]
-)
-
-class AnomalyDetector:
-    """
-    Klasa odpowiedzialna za wykrywanie anomalii w danych rynkowych.
-    Wykorzystuje algorytmy izolacji lasu, LOF oraz statystyczne metody detekcji.
-    """
-
-    def __init__(self, method="isolation_forest"):
-        """
-        Inicjalizacja detektora anomalii.
-
-        Args:
-            method (str): Metoda wykrywania anomalii.
-        """
-        self.method = method
-        self.anomalies = []
-        self.last_detection_time = datetime.now() - timedelta(hours=1)
-        
-        # Próg detekcji anomalii (im niższy, tym więcej anomalii będzie wykrywanych)
-        self.threshold = 2.5
-        
-        logging.info(f"Inicjalizacja detektora anomalii z metodą: {method}")
-
-    def detect(self, data):
-        """
-        Wykrywa anomalie w danych.
-
-        Args:
-            data (pd.DataFrame): Dane do analizy.
-
-        Returns:
-            list: Lista wykrytych anomalii.
-        """
-        if data is None or data.empty:
-            logging.warning("Brak danych do analizy anomalii")
-            return []
-        
-        # Aktualizujemy czas ostatniej detekcji
-        self.last_detection_time = datetime.now()
-        
-        detected_anomalies = []
-        
-        try:
-            if self.method == "isolation_forest":
-                detected_anomalies = self._detect_with_isolation_forest(data)
-            elif self.method == "lof":
-                detected_anomalies = self._detect_with_lof(data)
-            elif self.method == "statistical":
-                detected_anomalies = self._detect_with_statistical_methods(data)
-            else:
-                logging.warning(f"Nieznana metoda detekcji: {self.method}")
-                return []
-                
-            # Dodajemy wykryte anomalie do listy
-            if detected_anomalies:
-                self.anomalies.extend(detected_anomalies)
-                # Ograniczamy listę anomalii do ostatnich 100
-                self.anomalies = sorted(self.anomalies, key=lambda x: x["timestamp"], reverse=True)[:100]
-                
-            return detected_anomalies
-            
-        except Exception as e:
-            logging.error(f"Błąd podczas wykrywania anomalii: {str(e)}")
-            return []
-
-    def _detect_with_isolation_forest(self, data):
-        """
-        Wykrywa anomalie przy pomocy algorytmu Isolation Forest.
-        W tej implementacji symulujemy zachowanie algorytmu.
-
-        Args:
-            data (pd.DataFrame): Dane do analizy.
-
-        Returns:
-            list: Lista wykrytych anomalii.
-        """
-        # Symulowane wykrywanie anomalii
-        np.random.seed(int(datetime.now().timestamp()) % 10000)
-        
-        # Symulujemy wynik (zwykle 0-5% punktów to anomalie)
-        num_samples = len(data)
-        num_anomalies = max(1, int(num_samples * 0.02 * np.random.random()))
-        
-        anomalies = []
-        
-        # Generujemy losowe indeksy dla anomalii
-        anomaly_indices = np.random.choice(num_samples, num_anomalies, replace=False)
-        
-        for idx in anomaly_indices:
-            score = np.random.uniform(0.7, 0.95)  # Wyższy wynik = większa pewność anomalii
-            
-            # Typ anomalii
-            anomaly_types = ["price_spike", "volume_surge", "pattern_break", "liquidity_gap", "trend_reversal"]
-            anomaly_type = np.random.choice(anomaly_types)
-            
-            # Tworzymy opis
-            descriptions = {
-                "price_spike": "Nagły, nietypowy skok ceny wykraczający poza normalne wahania.",
-                "volume_surge": "Gwałtowny wzrost wolumenu transakcji, możliwe działanie wieloryba.",
-                "pattern_break": "Przerwanie ustalonego wzorca cenowego, potencjalna zmiana trendu.",
-                "liquidity_gap": "Nietypowa luka w płynności rynku, możliwe manipulacje.",
-                "trend_reversal": "Nagłe odwrócenie trendu bez typowych oznak wyczerpania."
-            }
-            
-            timestamp = datetime.now() - timedelta(minutes=np.random.randint(1, 120))
-            
-            anomaly = {
-                "timestamp": timestamp.strftime("%Y-%m-%d %H:%M:%S"),
-                "type": anomaly_type,
-                "score": score,
-                "description": descriptions[anomaly_type],
-                "confidence": int(score * 100),
-                "affected_metrics": ["price", "volume"] if anomaly_type in ["price_spike", "volume_surge"] else ["price_pattern", "momentum"]
-            }
-            
-            anomalies.append(anomaly)
-            
-        return anomalies
-
-    def _detect_with_lof(self, data):
-        """
-        Wykrywa anomalie przy pomocy algorytmu Local Outlier Factor.
-        W tej implementacji symulujemy zachowanie algorytmu.
-
-        Args:
-            data (pd.DataFrame): Dane do analizy.
-
-        Returns:
-            list: Lista wykrytych anomalii.
-        """
-        # Podobna implementacja jak w _detect_with_isolation_forest
-        # Tutaj moglibyśmy mieć nieco inne typy wykrywanych anomalii
-        return self._detect_with_isolation_forest(data)  # Uproszczenie
-
-    def _detect_with_statistical_methods(self, data):
-        """
-        Wykrywa anomalie za pomocą metod statystycznych (np. Z-score).
-        W tej implementacji symulujemy zachowanie algorytmu.
-
-        Args:
-            data (pd.DataFrame): Dane do analizy.
-
-        Returns:
-            list: Lista wykrytych anomalii.
-        """
-        # Podobna implementacja jak w _detect_with_isolation_forest
-        # Tutaj moglibyśmy mieć nieco inne typy wykrywanych anomalii
-        return self._detect_with_isolation_forest(data)  # Uproszczenie
-
-    def get_detected_anomalies(self, limit=10):
-        """
-        Zwraca listę wykrytych anomalii.
-
-        Args:
-            limit (int): Maksymalna liczba zwracanych anomalii.
-
-        Returns:
-            list: Lista wykrytych anomalii.
-        """
-        # Jeśli nie mamy żadnych anomalii, spróbujmy wygenerować symulowane dane
-        if not self.anomalies or (datetime.now() - self.last_detection_time).total_seconds() > 3600:
-            # Symulujemy dane tylko jeśli minęła godzina od ostatniej detekcji
-            dummy_data = pd.DataFrame(np.random.randn(100, 5), 
-                                      columns=['price', 'volume', 'momentum', 'volatility', 'spread'])
-            self.detect(dummy_data)
-        
-        # Zwracamy najnowsze anomalie
-        return sorted(self.anomalies, key=lambda x: x["timestamp"], reverse=True)[:limit]
+    detector.reset()
+    print(detector.get_detected_anomalies())
