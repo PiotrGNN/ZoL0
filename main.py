@@ -84,11 +84,13 @@ def initialize_system():
             masked_secret = f"{api_secret[:4]}{'*' * (len(api_secret) - 4)}" if api_secret else "Brak sekretu"
             logging.info(f"Inicjalizacja klienta ByBit - Klucz: {masked_key}, Testnet: {use_testnet}")
             logging.info(f"Produkcyjne API jest {'WŁĄCZONE' if not use_testnet else 'WYŁĄCZONE'}")
+            if not use_testnet:
+                logging.warning("UWAGA: Używasz PRODUKCYJNEGO API ByBit. Operacje handlowe będą mieć realne skutki finansowe!")
 
             bybit_client = BybitConnector(
                 api_key=api_key,
                 api_secret=api_secret,
-                use_testnet=os.getenv("BYBIT_USE_TESTNET", "true").lower() == "true"
+                use_testnet=False  # Ustawienie na False, aby używać produkcyjnego API
             )
             server_time = bybit_client.get_server_time()
             logger.info(f"Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {server_time}")
