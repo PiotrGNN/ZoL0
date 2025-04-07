@@ -32151,3 +32151,5 @@ Request → GET https://api.bybit.com/spot/v1/time: {}.
 2025-04-07 19:43:12,525 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
 2025-04-07 19:49:27,321 [WARNING] Pomijam podpakiet 'execution' z powodu błędu: Nie udało się zaimportować modułu 'bybit_connector' z pakietu 'data.execution'.
 2025-04-07 19:50:36,645 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:51:23,905 [WARNING] Pomijam podpakiet 'execution' z powodu błędu: expected 'except' or 'finally' block (bybit_connector.py, line 283)
+2025-04-07 19:51:24,541 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
