@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Licznik błędów dla każdego typu danych
-const errorCounts = {
+let errorCounts = {
     'chart': 0,
     'balance': 0,
     'tradingStats': 0,
