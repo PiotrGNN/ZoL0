@@ -746,3 +746,37 @@
 2025-04-07 11:39:39,058 [INFO] 172.31.128.12 - - [07/Apr/2025 11:39:39] "GET /api/chart-data HTTP/1.1" 200 -
 2025-04-07 11:39:39,290 [INFO] Wygenerowano dane wykresu: 10 etykiet, 3 zestawów danych
 2025-04-07 11:39:39,291 [INFO] 172.31.128.12 - - [07/Apr/2025 11:39:39] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 11:43:11,942 [WARNING] Biblioteka NLTK nie jest dostępna. Używam symulowanych danych sentymentu.
+2025-04-07 11:43:14,438 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 11:43:14,466 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 11:43:14,466 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 11:43:14,467 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 11:43:14,467 [INFO] System zainicjalizowany poprawnie
+2025-04-07 11:43:14,503 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.12:5000
+2025-04-07 11:43:14,503 [INFO] [33mPress CTRL+C to quit[0m
+2025-04-07 11:43:14,506 [INFO]  * Restarting with stat
+2025-04-07 11:43:15,810 [WARNING] Biblioteka NLTK nie jest dostępna. Używam symulowanych danych sentymentu.
+2025-04-07 11:43:16,661 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 11:43:16,664 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 11:43:16,664 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 11:43:16,664 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 11:43:16,664 [INFO] System zainicjalizowany poprawnie
+2025-04-07 11:43:16,676 [WARNING]  * Debugger is active!
+2025-04-07 11:43:16,706 [INFO]  * Debugger PIN: 184-790-230
+2025-04-07 11:43:22,909 [INFO] 172.31.128.12 - - [07/Apr/2025 11:43:22] "[35m[1mGET / HTTP/1.1[0m" 500 -
+2025-04-07 11:43:23,104 [INFO] 172.31.128.12 - - [07/Apr/2025 11:43:23] "[35m[1mGET / HTTP/1.1[0m" 500 -
+2025-04-07 11:43:23,217 [INFO] 172.31.128.12 - - [07/Apr/2025 11:43:23] "GET /?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+2025-04-07 11:43:23,351 [INFO] 172.31.128.12 - - [07/Apr/2025 11:43:23] "[36mGET /?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-04-07 11:43:23,478 [INFO] 172.31.128.12 - - [07/Apr/2025 11:43:23] "GET /?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+2025-04-07 11:43:23,670 [INFO] 172.31.128.12 - - [07/Apr/2025 11:43:23] "[36mGET /?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-04-07 11:43:33,864 [INFO] 172.31.128.12 - - [07/Apr/2025 11:43:33] "[33mGET /api/chart-data HTTP/1.1[0m" 404 -
+2025-04-07 11:43:33,997 [INFO] 172.31.128.12 - - [07/Apr/2025 11:43:33] "[33mGET /api/chart-data HTTP/1.1[0m" 404 -
+2025-04-07 11:43:39,854 [INFO] 172.31.128.12 - - [07/Apr/2025 11:43:39] "[33mGET /api/chart-data HTTP/1.1[0m" 404 -
+2025-04-07 11:43:39,987 [INFO] 172.31.128.12 - - [07/Apr/2025 11:43:39] "[33mGET /api/chart-data HTTP/1.1[0m" 404 -
+2025-04-07 11:43:45,866 [INFO] 172.31.128.12 - - [07/Apr/2025 11:43:45] "[33mGET /api/chart-data HTTP/1.1[0m" 404 -
+2025-04-07 11:43:51,853 [INFO] 172.31.128.12 - - [07/Apr/2025 11:43:51] "[33mGET /api/chart-data HTTP/1.1[0m" 404 -
+2025-04-07 11:43:57,867 [INFO] 172.31.128.12 - - [07/Apr/2025 11:43:57] "[33mGET /api/chart-data HTTP/1.1[0m" 404 -
+2025-04-07 11:44:03,851 [INFO] 172.31.128.12 - - [07/Apr/2025 11:44:03] "[33mGET /api/chart-data HTTP/1.1[0m" 404 -
