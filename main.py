@@ -79,7 +79,7 @@ def initialize_system():
                 logging.warning("Brak kluczy API ByBit w zmiennych środowiskowych. Sprawdź zakładkę Secrets.")
                 return False
                 
-            logging.info(f"Inicjalizacja klienta ByBit z kluczem: {api_key[:4]}*** testnet={use_testnet}")9Qv6mVFasxv2F"
+            logging.info(f"Inicjalizacja klienta ByBit z kluczem: {api_key[:4]}*** testnet={use_testnet}")
 
             bybit_client = BybitConnector(
                 api_key=api_key,
