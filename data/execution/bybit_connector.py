@@ -242,21 +242,21 @@ class BybitConnector:
         """Pobiera saldo konta z zastosowaniem zaawansowanego cache i rate limitingu."""
         # Import managera cache
         from data.utils.cache_manager import get_cached_data, store_cached_data, is_cache_valid, get_api_status
-        
+
         # Klucz cache
         cache_key = f"account_balance_{self.api_key[:8]}_{self.use_testnet}"
-        
+
         # Sprawdź status API - jeśli przekroczono limity, użyj dłuższego TTL
         api_status = get_api_status()
         ttl = 300 if api_status["rate_limited"] else 30  # 5 minut w stanie przekroczenia limitów, 30s normalnie
-        
+
         # Sprawdzenie czy dane są w cache i ważne
         if is_cache_valid(cache_key, ttl=ttl):
             cached_data = get_cached_data(cache_key)
             if cached_data and cached_data[0]:
                 self.logger.debug(f"Używam danych z cache dla account_balance (TTL: {ttl}s)")
                 return cached_data[0]
-                
+
         # Zmienna do śledzenia prób ponowienia
         max_retries = 3
         retry_count = 0
@@ -351,11 +351,11 @@ class BybitConnector:
                                 self.last_rate_limit_reset = time.time()
                                 self.remaining_rate_limit = 0
                                 self.logger.warning(f"Przekroczono limit zapytań API. Używam symulowanych danych i zwiększam czas oczekiwania.")
-                                
+
                                 # Zwiększ dynamicznie czas oczekiwania przy kolejnych przekroczeniach limitu
                                 self.min_time_between_calls = min(3.0, self.min_time_between_calls * 1.5)  # max 3s między zapytaniami
                                 self.rate_limit_backoff = min(60.0, self.rate_limit_backoff * 1.5)  # max 60s backoff
-                                
+
                                 # Zwracamy symulowane dane zamiast zgłaszania wyjątku
                                 return {
                                     "balances": {
@@ -453,7 +453,7 @@ class BybitConnector:
                         cache_key = f"account_balance_{self.api_key[:8]}_{self.use_testnet}"
                         store_cached_data(cache_key, result)
                         self.logger.debug("Zapisano dane portfolio w cache")
-                        
+
                         return result
                     except Exception as e:
                         self.logger.error(f"Błąd podczas pobierania danych z prawdziwego API: {e}. Traceback: {traceback.format_exc()}")
@@ -632,17 +632,17 @@ class BybitConnector:
     def _apply_rate_limit(self):
         """Applies rate limiting to API calls with adaptive backoff and integration with cache_manager."""
         from data.utils.cache_manager import get_api_status, set_rate_limit_parameters, store_cached_data
-        
+
         # Pobierz aktualny status API z cache_manager
         api_status = get_api_status()
         now = time.time()
-        
+
         # Synchronizuj parametry rate limiter'a z cache_manager
-        if not hasattr(self, '_rate_limit_synced') or now - getattr(self, '_last_sync_time', 0) > 60:
+        if not hasattr(self, '_rate_limit_synced') or now- getattr(self, '_last_sync_time', 0) > 60:
             # Bardziej konserwatywne limity dla produkcyjnego API
             max_calls = 20 if not self.use_testnet else 30
             min_interval = 2.0 if not self.use_testnet else 1.0
-            
+
             # Synchronizuj parametry tylko raz na minutę dla wydajności
             set_rate_limit_parameters(
                 max_calls_per_minute=max_calls,  # Bardziej konserwatywny limit dla produkcyjnego API
@@ -650,50 +650,50 @@ class BybitConnector:
             )
             self._rate_limit_synced = True
             self._last_sync_time = now
-            
+
             # Zaktualizuj lokalne zmienne
             self.min_time_between_calls = min_interval
-        
+
         # Jeśli przekroczono limit, stosuj znacznie dłuższe opóźnienie dla produkcyjnego API
         if self.rate_limit_exceeded or api_status["rate_limited"]:
             # Resetuj stan po okresie oczekiwania
             reset_time = 120.0 if not self.use_testnet else 60.0  # Dłuższy czas resetu dla produkcyjnego API
-            
+
             if now - self.last_rate_limit_reset > reset_time:
                 self.logger.info("Resetowanie stanu limitów API po okresie oczekiwania")
                 self.rate_limit_exceeded = False
                 self.remaining_rate_limit = 30 if not self.use_testnet else 50  # Bardziej konserwatywne dla produkcji
-                
+
                 # Zapisz również stan w cache_manager
                 store_cached_data("api_rate_limited", False)
             else:
                 # Bardziej agresywne oczekiwanie przy przekroczeniu limitu
                 max_sleep = 120.0 if not self.use_testnet else 60.0  # Dłuższe dla produkcyjnego API
                 sleep_time = min(max_sleep, self.rate_limit_backoff * 1.5)
-                
+
                 # Użyj wyeksponowanego backoffu, aby uniknąć częstych problemów z limitami
                 if not self.use_testnet:
                     sleep_time = min(max_sleep, sleep_time * 1.5)  # Dodatkowy mnożnik dla produkcyjnego API
-                
+
                 self.logger.info(f"Rate limit przekroczony - oczekiwanie {sleep_time:.1f}s przed próbą")
                 time.sleep(sleep_time)
-                
+
                 # Zwiększamy backoff przy każdym kolejnym przekroczeniu
                 self.rate_limit_backoff = min(max_sleep, self.rate_limit_backoff * 1.3)
-        
+
         # Standardowe opóźnienie między wywołaniami z minimalnym buforem
         time_since_last_call = now - self.last_api_call
         # Znacznie dłuższe minimalne opóźnienie dla produkcyjnego API
         min_time = 3.0 if not self.use_testnet else max(1.5, self.min_time_between_calls)
-        
+
         if time_since_last_call < min_time:
             sleep_time = min_time - time_since_last_call
             if sleep_time > 0.1:  # Ignoruj bardzo małe opóźnienia
                 time.sleep(sleep_time)
-        
+
         # Aktualizacja czasu ostatniego wywołania
         self.last_api_call = time.time()
-        
+
         # Po kilku wywołaniach, zmniejszamy trochę backoff, aby system mógł się adaptować
         if hasattr(self, '_call_count'):
             self._call_count += 1
@@ -702,6 +702,28 @@ class BybitConnector:
         else:
             self._call_count = 1
 
+
+    def is_production_api(self):
+        """Sprawdza czy używane jest produkcyjne API.
+
+        Returns:
+            bool: True jeśli używane jest produkcyjne API, False dla testnet.
+        """
+        # Sprawdzenie czy używamy produkcyjnego API
+        is_prod = not self.use_testnet
+
+        # Dodatkowy log dla produkcyjnego API
+        if is_prod:
+            self.logger.warning("!!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit. Operacje handlowe będą mieć realne skutki finansowe!")
+            self.logger.warning("Upewnij się, że Twoje klucze API mają właściwe ograniczenia i są odpowiednio zabezpieczone.")
+            print("\n========== PRODUKCYJNE API BYBIT ==========")
+            print("!!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit")
+            print("Operacje handlowe będą mieć realne skutki finansowe!")
+            print("===========================================\n")
+        else:
+            self.logger.info("Używasz testnet API (środowisko testowe).")
+
+        return is_prod
 
 if __name__ == "__main__":
     # Przykład użycia

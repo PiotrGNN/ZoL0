@@ -1,3 +1,4 @@
+
 // Dashboard.js - Główny skrypt dla dashboardu tradingowego
 // Zoptymalizowana wersja z lepszym zarządzaniem zapytaniami API
 
@@ -133,15 +134,13 @@ async function updateDashboardData() {
 
     try {
         // Pobierz dane portfela jeśli widoczny jest dashboard
-        if (document.getElementById('dashboard-tab').style.display === 'block') {
+        if (document.getElementById('dashboard-tab') && document.getElementById('dashboard-tab').style.display === 'block') {
             fetchPortfolioData();
         }
         updateTradingStats();
         updateRecentTrades();
         updateAlerts();
         updateNotifications();
-
-
     } catch (error) {
         handleApiError('dashboard');
         console.error('Błąd podczas aktualizacji danych dashboardu:', error);
@@ -279,12 +278,12 @@ async function updateTradingStats() {
     try {
         const data = await fetchWithRateLimit('/api/trading-stats');
 
-        // Aktualizacja elementów UI
+        // Aktualizacja elementów UI - dodano sprawdzenie czy element istnieje
         if (data) {
-            document.getElementById('profit-value').textContent = data.profit || '$0.00';
-            document.getElementById('trades-count').textContent = data.trades_count || '0';
-            document.getElementById('win-rate').textContent = data.win_rate || '0%';
-            document.getElementById('max-drawdown').textContent = data.max_drawdown || '0%';
+            safeUpdateElement('profit-value', data.profit || '$0.00');
+            safeUpdateElement('trades-count', data.trades_count || '0');
+            safeUpdateElement('win-rate', data.win_rate || '0%');
+            safeUpdateElement('max-drawdown', data.max_drawdown || '0%');
         }
     } catch (error) {
         handleApiError('stats');
@@ -588,7 +587,7 @@ function renderChart(canvas, data) {
     });
 }
 
-
+// Bezpieczna aktualizacja elementu - sprawdza czy element istnieje
 function safeUpdateElement(elementId, value) {
     const element = document.getElementById(elementId);
     if (element) {

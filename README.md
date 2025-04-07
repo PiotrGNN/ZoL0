@@ -110,3 +110,56 @@ Aby naprawić i uruchomić testy:
 ```
 python fix_tests.py
 ```
+# System Tradingowy - Dashboard
+
+## Opis projektu
+System tradingowy z dashboardem do monitorowania i zarządzania strategiami handlu automatycznego na giełdach kryptowalut.
+
+## Funkcjonalności
+- Połączenie z API giełdy ByBit (testnet i produkcja)
+- Dashboard wizualizujący dane portfela
+- Śledzenie statystyk tradingowych
+- Monitoring ostatnich transakcji
+- System alertów i powiadomień
+
+## Instalacja i uruchomienie
+
+### Wymagania
+- Python 3.8+
+- Przeglądarka internetowa z obsługą JavaScript
+
+### Instalacja
+1. Sklonuj repozytorium
+2. Zainstaluj wymagane zależności:
+```
+pip install -r requirements.txt
+```
+3. Skonfiguruj zmienne środowiskowe w pliku `.env` (na podstawie `.env.example`)
+
+### Uruchomienie
+```
+python main.py
+```
+
+Po uruchomieniu, dashboard będzie dostępny pod adresem: `http://localhost:5000`
+
+## Konfiguracja API
+Aby połączyć się z giełdą ByBit, należy:
+1. Utworzyć klucze API na platformie ByBit
+2. Uzupełnić dane w pliku `.env`:
+```
+BYBIT_API_KEY=twój_klucz_api
+BYBIT_API_SECRET=twój_sekret_api
+USE_PRODUCTION_API=false  # zmień na true dla połączenia produkcyjnego
+```
+
+## Bezpieczeństwo
+- Używaj testnet do testowania działania systemu
+- Przed użyciem produkcyjnego API, upewnij się, że Twoje klucze API mają odpowiednie ograniczenia
+- Rozpoczynaj od małych transakcji, aby przetestować działanie systemu
+
+## Rozwiązywanie problemów
+Jeśli napotkasz problemy z wyświetlaniem dashboard, sprawdź:
+1. Czy wszystkie biblioteki zostały poprawnie zainstalowane
+2. Czy aplikacja Flask działa prawidłowo (sprawdź logi)
+3. Czy masz dostęp do API ByBit (sprawdź połączenie internetowe i ważność kluczy API)
