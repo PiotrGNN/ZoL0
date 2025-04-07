@@ -42,20 +42,29 @@ def initialize_system():
 
         notification_system = NotificationSystem()
         logging.info("Zainicjalizowano system powiadomień z 2 kanałami.")
-        
+
         sentiment_analyzer = SentimentAnalyzer()
-        
+
         anomaly_detector = AnomalyDetector()
 
         # Inicjalizacja klienta ByBit (tylko raz podczas startu aplikacji)
         global bybit_client
         try:
+            api_key = os.getenv("BYBIT_API_KEY")
+            api_secret = os.getenv("BYBIT_API_SECRET")
+            if not api_key or not api_secret:
+                logging.warning("Brak kluczy API ByBit w zmiennych środowiskowych. Sprawdź plik .env")
+                # Ustawiamy hardcoded klucze jako fallback - NIE ROBIC TEGO W PRODUKCJI!
+                api_key = "YOUR_BYBIT_API_KEY"  # Replace with your actual API key
+                api_secret = "YOUR_BYBIT_API_SECRET" # Replace with your actual API secret
+
             bybit_client = BybitConnector(
-                api_key=os.getenv("BYBIT_API_KEY"),
-                api_secret=os.getenv("BYBIT_API_SECRET"),
+                api_key=api_key,
+                api_secret=api_secret,
                 use_testnet=os.getenv("BYBIT_USE_TESTNET", "false").lower() == "true"
             )
-            logger.info("Klient API ByBit zainicjalizowany pomyślnie")
+            server_time = bybit_client.get_server_time()
+            logger.info(f"Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {server_time}")
         except Exception as e:
             logger.error(f"Błąd inicjalizacji klienta ByBit: {e}")
             bybit_client = None
@@ -130,6 +139,16 @@ def dashboard():
         }
     ]
 
+    # Pobieranie stanu portfela
+    portfolio = None
+    if bybit_client:
+        try:
+            portfolio = bybit_client.get_account_balance()
+            logging.info(f"Pobrano portfolio: {portfolio}")
+        except Exception as e:
+            logging.error(f"Błąd podczas pobierania portfolio: {e}")
+            portfolio = {"error": str(e)}
+
     return render_template(
         'dashboard.html',
         settings=default_settings,
@@ -138,7 +157,8 @@ def dashboard():
         trades=[],
         alerts=[],
         sentiment_data=None,
-        anomalies=[]
+        anomalies=[],
+        portfolio=portfolio
     )
 
 # API endpoints
@@ -463,10 +483,10 @@ def get_bybit_account_balance():
 if __name__ == "__main__":
     # Tworzenie katalogu logs jeśli nie istnieje
     os.makedirs("logs", exist_ok=True)
-    
+
     # Inicjalizacja systemu
     initialize_system()
-    
+
     # Uruchomienie aplikacji - zawsze używamy 0.0.0.0 i portu 5000 w Replit
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port, debug=True)

@@ -25,8 +25,48 @@ function updateDashboardData() {
     console.log('Aktualizacja danych dashboardu...');
     updateCharts();
     updateTradingStats();
+
+function updatePortfolio() {
+    fetch('/api/portfolio')
+        .then(response => response.json())
+        .then(data => {
+            const portfolioContainer = document.getElementById('portfolio-container');
+            if (!portfolioContainer) return;
+            
+            if (data.error) {
+                portfolioContainer.innerHTML = `<div class="no-data">Błąd: ${data.error}</div>`;
+                return;
+            }
+            
+            if (!data.coins || data.coins.length === 0) {
+                portfolioContainer.innerHTML = '<div class="no-data">Brak danych portfela.</div>';
+                return;
+            }
+            
+            let html = '';
+            data.coins.forEach(coin => {
+                html += `
+                <div class="portfolio-item">
+                    <div class="coin-name">${coin.coin}</div>
+                    <div class="coin-balance">Balans: ${coin.walletBalance}</div>
+                    <div class="coin-value">Wartość: ${coin.usdValue || 'N/A'}</div>
+                </div>`;
+            });
+            
+            portfolioContainer.innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Błąd podczas pobierania danych portfela:', error);
+            const portfolioContainer = document.getElementById('portfolio-container');
+            if (portfolioContainer) {
+                portfolioContainer.innerHTML = `<div class="no-data">Błąd połączenia. Spróbuj ponownie.</div>`;
+            }
+        });
+}
+
     updateRecentTrades();
     updateAlerts();
+    updatePortfolio();
     updateAIModelsStatus();
 }
 

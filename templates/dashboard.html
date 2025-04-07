@@ -36,6 +36,25 @@
         <!-- Główny dashboard -->
         <div id="dashboard-tab" class="tab-content" style="display: block;">
             <div class="dashboard-grid">
+                <!-- Portfolio -->
+                <div class="card">
+                    <h2>Portfolio ByBit</h2>
+                    <div id="portfolio-container" class="portfolio-data">
+                        {% if portfolio and 'coins' in portfolio %}
+                            {% for coin in portfolio.coins %}
+                                <div class="portfolio-item">
+                                    <div class="coin-name">{{ coin.coin }}</div>
+                                    <div class="coin-balance">Balans: {{ coin.walletBalance }}</div>
+                                    <div class="coin-value">Wartość: {{ coin.usdValue }}</div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="no-data">Brak danych portfela lub problem z połączeniem z ByBit.</div>
+                            <div class="error-details">{{ portfolio.message if portfolio and 'message' in portfolio else '' }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
                 <!-- Status komponentów -->
                 <div class="card">
                     <h2>Status Komponentów</h2>

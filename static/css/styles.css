@@ -198,6 +198,40 @@ table tr:last-child td {
   color: white;
 }
 
+/* Stylowanie sekcji portfolio */
+.portfolio-data {
+    margin-top: 15px;
+}
+
+.portfolio-item {
+    background-color: #2a2a2a;
+    border-radius: 5px;
+    padding: 12px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-left: 3px solid #4CAF50;
+}
+
+.coin-name {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 5px;
+    color: #fff;
+}
+
+.coin-balance, .coin-value {
+    font-size: 14px;
+    color: #ccc;
+    margin-bottom: 3px;
+}
+
+.error-details {
+    color: #ff6b6b;
+    font-style: italic;
+    margin-top: 10px;
+}
+
+
 .btn-warning:hover {
   background-color: #e67e22;
 }
