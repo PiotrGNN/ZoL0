@@ -206,3 +206,57 @@ Jeśli napotkasz problemy z wyświetlaniem dashboard, sprawdź:
 1. Czy wszystkie biblioteki zostały poprawnie zainstalowane
 2. Czy aplikacja Flask działa prawidłowo (sprawdź logi)
 3. Czy masz dostęp do API ByBit (sprawdź połączenie internetowe i ważność kluczy API)
+
+## Trading Bot
+
+Inteligentny bot tradingowy do automatycznego handlu na giełdzie kryptowalut.
+
+### Funkcje
+
+- Analiza techniczna i fundamentalna rynku
+- Wykonywanie transakcji na podstawie sygnałów
+- Zarządzanie ryzykiem i kapitałem
+- Optymalizacja strategii handlowych
+- Inteligentne zarządzanie limitami API i cache
+
+### Instalacja
+
+```bash
+pip install -r requirements.txt
+```
+
+### Konfiguracja
+
+Skopiuj plik `.env.example` do `.env` i ustaw swoje klucze API:
+
+```
+BYBIT_API_KEY=twoj_klucz_api
+BYBIT_API_SECRET=twoj_sekret_api
+BYBIT_USE_TESTNET=true  # Ustaw na true dla testowego API
+```
+
+#### Zarządzanie limitami API
+
+System posiada zaawansowany mechanizm zarządzania limitami API, który:
+
+- Używa inteligentnego cache'owania danych
+- Stosuje opóźnioną inicjalizację (lazy initialization) klientów API
+- Dynamicznie dostosowuje częstotliwość zapytań w zależności od statusu API
+- Zabezpiecza przed przekroczeniem limitów zapytań API
+
+Możesz dostroić parametry w pliku `.env`:
+
+```
+API_RATE_LIMIT=true
+API_CACHE_ENABLED=true
+API_MIN_INTERVAL=5.0  # Minimalny czas między zapytaniami API (sekundy)
+API_MAX_CALLS_PER_MINUTE=6  # Limit zapytań API na minutę
+```
+
+### Uruchomienie
+
+```bash
+python main.py
+```
+
+Po uruchomieniu, interfejs webowy będzie dostępny pod adresem [http://localhost:5000](http://localhost:5000)

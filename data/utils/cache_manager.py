@@ -43,14 +43,18 @@ EMERGENCY_TTL = 3600   # Awaryjny czas życia (60 minut) w przypadku przekroczen
 # Parametry dla różnych środowisk
 ENVIRONMENT_CONFIG = {
     'production': {
-        'min_interval': 5.0,        # Zwiększony minimalny odstęp między zapytaniami (5000ms)
-        'max_calls_per_minute': 10, # Bardzo konserwatywny limit dla produkcji
-        'cache_ttl_multiplier': 5.0 # Znacznie dłuższy czas cache'owania dla produkcji
+        'min_interval': 10.0,       # Bardzo konserwatywny odstęp między zapytaniami (10000ms)
+        'max_calls_per_minute': 6,  # Drastycznie zmniejszony limit dla produkcji
+        'cache_ttl_multiplier': 8.0,# Bardzo długi czas cache'owania dla produkcji
+        'server_time_ttl': 600,     # 10 minut cache'owania czasu serwera (by uniknąć odpytywania)
+        'rate_limit_reset_time': 600# 10 minut po przekroczeniu limitu zanim spróbujemy ponownie
     },
     'development': {
-        'min_interval': 3.0,        # Zwiększony minimalny odstęp między zapytaniami (3000ms)
-        'max_calls_per_minute': 15, # Konserwatywny limit dla środowiska deweloperskiego
-        'cache_ttl_multiplier': 3.0 # Dłuższy czas cache'owania
+        'min_interval': 5.0,        # Zwiększony minimalny odstęp między zapytaniami (5000ms)
+        'max_calls_per_minute': 10, # Konserwatywny limit dla środowiska deweloperskiego
+        'cache_ttl_multiplier': 4.0,# Dłuższy czas cache'owania
+        'server_time_ttl': 300,     # 5 minut cache'owania czasu serwera
+        'rate_limit_reset_time': 300# 5 minut po przekroczeniu limitu zanim spróbujemy ponownie
     }
 }
 
@@ -68,7 +72,11 @@ _rate_limiter = {
     "max_calls_per_minute": _env_config['max_calls_per_minute'],
     "lock": threading.RLock(),
     "environment": 'production' if _is_production else 'development',
-    "cache_ttl_multiplier": _env_config['cache_ttl_multiplier']
+    "cache_ttl_multiplier": _env_config['cache_ttl_multiplier'],
+    "last_rate_limit_exceeded": 0,  # Czas ostatniego przekroczenia limitu
+    "rate_limit_reset_time": _env_config['rate_limit_reset_time'],  # Czas po którym próbujemy ponownie po przekroczeniu limitu
+    "server_time_ttl": _env_config['server_time_ttl'],  # TTL dla czasu serwera
+    "startup_time": time.time()     # Czas startu aplikacji - pomocne przy zarządzaniu limitami
 }
 
 # Zapisz informację o środowisku w logu
@@ -379,6 +387,9 @@ def get_api_status():
         # Sprawdź czy jesteśmy w stanie rate_limit
         rate_limited, found = get_cached_data("api_rate_limited")
         is_limited = found and rate_limited
+        
+        # Sprawdź czy jesteśmy w fazie startowej (30 sekund od startu)
+        startup_phase = is_in_startup_phase()
 
         return {
             "rate_limited": is_limited,
@@ -386,8 +397,24 @@ def get_api_status():
             "calls_left": max(0, calls_left),
             "window_reset_in": max(0, 60 - time_in_window),
             "last_call": _rate_limiter["last_call"],
-            "min_interval": _rate_limiter["min_interval"]
+            "min_interval": _rate_limiter["min_interval"],
+            "in_startup_phase": startup_phase,
+            "time_since_startup": current_time - _rate_limiter["startup_time"],
+            "environment": _rate_limiter["environment"]
         }
+
+def is_in_startup_phase():
+    """
+    Sprawdza czy aplikacja jest w fazie startowej (pierwsze 30 sekund od uruchomienia).
+    W fazie startowej szczególnie dbamy o limity API.
+    
+    Returns:
+        bool: True jeśli aplikacja jest w fazie startowej
+    """
+    with _rate_limiter["lock"]:
+        current_time = time.time()
+        time_since_startup = current_time - _rate_limiter["startup_time"]
+        return time_since_startup < 30  # 30 sekund to faza startowa
 
 
 def set_rate_limit_parameters(max_calls_per_minute: int = None, min_interval: float = None):

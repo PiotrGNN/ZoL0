@@ -19,7 +19,7 @@ class BybitConnector:
     Klasa do komunikacji z giełdą Bybit.
     """
 
-    def __init__(self, api_key: str = None, api_secret: str = None, use_testnet: bool = True):
+    def __init__(self, api_key: str = None, api_secret: str = None, use_testnet: bool = True, lazy_connect: bool = True):
         """
         Inicjalizuje połączenie z Bybit.
 
@@ -27,93 +27,26 @@ class BybitConnector:
             api_key (str): Klucz API Bybit.
             api_secret (str): Sekret API Bybit.
             use_testnet (bool): Czy używać środowiska testowego.
+            lazy_connect (bool): Czy opóźnić połączenie z API do pierwszego użycia.
         """
         self.api_key = api_key
         self.api_secret = api_secret
         self.use_testnet = use_testnet
         self.base_url = "https://api-testnet.bybit.com" if use_testnet else "https://api.bybit.com"
+        self.client = None
+        self.api_version = None
+        self._connection_initialized = False
+        self._connection_test_time = 0
+        self._connection_test_result = None
 
-        # Inicjalizacja klienta API
-        try:
-            import pybit
-
-            # Sprawdzamy wersję i dostosowujemy inicjalizację do odpowiedniej wersji API
-            try:
-                # Próba inicjalizacji dla nowszej wersji API używając odpowiednich klas rynkowych
-                endpoint = "https://api-testnet.bybit.com" if self.use_testnet else "https://api.bybit.com"
-
-                # Inicjalizacja śledzenia limitów API
-                self.last_api_call = 0
-                self.min_time_between_calls = 1.0  # 1000ms minimalny odstęp między zapytaniami
-                self.rate_limit_backoff = 10.0  # 10 sekund oczekiwania po przekroczeniu limitu
-                self.remaining_rate_limit = 50  # Bezpieczniejszy limit początkowy
-                self.rate_limit_exceeded = False  # Flaga oznaczająca przekroczenie limitu
-                self.last_rate_limit_reset = time.time()  # Czas ostatniego resetu limitu
-
-                # Używanie odpowiednich klas rynkowych, zgodnie z ostrzeżeniem z biblioteki
-                try:
-                    # Najpierw próbujemy z spot API
-                    from pybit.spot import HTTP as SpotHTTP
-                    self.client = SpotHTTP(
-                        endpoint=endpoint,
-                        api_key=self.api_key,
-                        api_secret=self.api_secret,
-                        recv_window=20000  # Zwiększenie okna czasu na odpowiedź
-                    )
-                    self.api_version = "spot"
-                    logging.info(f"Zainicjalizowano klienta ByBit API Spot. Testnet: {self.use_testnet}")
-                except ImportError:
-                    # Jeśli nie ma spot, próbujemy z inverse_perpetual
-                    try:
-                        from pybit.inverse_perpetual import HTTP as PerpHTTP
-                        self.client = PerpHTTP(
-                            endpoint=endpoint,
-                            api_key=self.api_key,
-                            api_secret=self.api_secret,
-                            recv_window=20000
-                        )
-                        self.api_version = "inverse_perpetual"
-                        logging.info(f"Zainicjalizowano klienta ByBit API Inverse Perpetual. Testnet: {self.use_testnet}")
-                    except ImportError:
-                        # Ostatnia szansa - używamy ogólnego HTTP
-                        self.client = pybit.HTTP(
-                            endpoint=endpoint,
-                            api_key=self.api_key,
-                            api_secret=self.api_secret,
-                            recv_window=20000
-                        )
-                        self.api_version = "v2"
-                        logging.info(f"Zainicjalizowano klienta ByBit API v2 (ogólny). Testnet: {self.use_testnet}")
-
-                # Testowe pobieranie czasu serwera w celu weryfikacji połączenia
-                try:
-                    # Sprawdzamy dostępne metody dla czasu serwera
-                    if hasattr(self.client, 'get_server_time'):
-                        server_time = self.client.get_server_time()
-                    elif hasattr(self.client, 'server_time'):
-                        server_time = self.client.server_time()
-                    elif hasattr(self.client, 'time'):
-                        server_time = self.client.time()
-                    else:
-                        # Jeśli żadna metoda nie jest dostępna, symulujemy czas
-                        server_time = {"timeNow": int(time.time() * 1000)}
-                        logging.warning("Brak metody do pobierania czasu serwera, używam czasu lokalnego")
-
-                    logging.info(f"Połączenie z ByBit potwierdzone. Czas serwera: {server_time}")
-                except Exception as st_error:
-                    logging.warning(f"Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: {st_error}")
-            except Exception as e:
-                logging.error(f"Błąd inicjalizacji klienta PyBit: {e}")
-                raise
-
-            logging.info(f"Zainicjalizowano klienta ByBit API. Wersja: {self.api_version}, Testnet: {self.use_testnet}")
-        except ImportError:
-            logging.error("Nie można zaimportować modułu pybit. Sprawdź czy jest zainstalowany.")
-            self.client = None
-        except Exception as e:
-            logging.error(f"Błąd podczas inicjalizacji klienta ByBit: {e}")
-            self.client = None
-
+        # Inicjalizacja śledzenia limitów API
+        self.last_api_call = 0
+        self.min_time_between_calls = 5.0 if not use_testnet else 3.0  # Konserwatywne limity od początku
+        self.rate_limit_backoff = 15.0 if not use_testnet else 10.0  # Dłuższy backoff dla produkcji
+        self.remaining_rate_limit = 30 if not use_testnet else 50  # Bezpieczniejszy limit początkowy
+        self.rate_limit_exceeded = False  # Flaga oznaczająca przekroczenie limitu
+        self.last_rate_limit_reset = time.time()  # Czas ostatniego resetu limitu
+        
         # Konfiguracja logowania
         log_dir = "logs"
         os.makedirs(log_dir, exist_ok=True)
@@ -127,7 +60,188 @@ class BybitConnector:
             self.logger.addHandler(file_handler)
             self.logger.setLevel(logging.INFO)
 
-        self.logger.info(f"BybitConnector zainicjalizowany. Testnet: {use_testnet}")
+        # Sprawdź, czy już mamy informację o przekroczeniu limitów w cache
+        try:
+            from data.utils.cache_manager import get_cached_data
+            rate_limited_data, found = get_cached_data("api_rate_limited")
+            if found and rate_limited_data:
+                self.rate_limit_exceeded = True
+                self.logger.warning("Wykryto zapisaną flagę przekroczenia limitów API. Ustawiam tryb oszczędzania limitów.")
+        except Exception as e:
+            self.logger.warning(f"Nie można sprawdzić stanu limitów API: {e}")
+
+        # Kontynuuj tylko inicjalizację komponentów, ale nie testuj API jeśli lazy_connect
+        if not lazy_connect:
+            self._initialize_client()
+        else:
+            self.logger.info(f"BybitConnector w trybie lazy initialization. Testnet: {use_testnet}")
+            
+        # Sprawdź czy używamy produkcyjnego API i pokaż ostrzeżenie
+        if self.is_production_api():
+            # Ostrzeżenie jest pokazywane w is_production_api()
+            pass
+        else:
+            self.logger.info("Używasz testnet API (środowisko testowe).")
+            
+        self.logger.info(f"BybitConnector zainicjalizowany. Testnet: {use_testnet}, Lazy connect: {lazy_connect}")
+
+    def _initialize_client(self, force=False):
+        """
+        Inicjalizuje klienta API. Wywołuje się automatycznie przy pierwszym użyciu API.
+        
+        Parameters:
+            force (bool): Czy wymusić reinicjalizację, nawet jeśli klient już istnieje.
+        """
+        # Jeśli klient istnieje i nie wymuszamy, to pomijamy
+        if self.client is not None and not force and self._connection_initialized:
+            return True
+            
+        # Sprawdź czy minęło wystarczająco dużo czasu od ostatniego testu połączenia
+        # aby uniknąć częstego odpytywania API
+        current_time = time.time()
+        if self._connection_test_time > 0 and current_time - self._connection_test_time < 60:
+            self.logger.debug("Pomijam test połączenia - zbyt krótki czas od ostatniego testu.")
+            return self._connection_test_result
+
+        # Jeśli już wiemy, że przekroczyliśmy limit, to opóźniamy inicjalizację
+        if self.rate_limit_exceeded:
+            reset_time = 300.0 if not self.use_testnet else 120.0
+            if current_time - self.last_rate_limit_reset < reset_time:
+                self.logger.warning(f"Odczekuję z inicjalizacją klienta - przekroczono limity API. Pozostało: {reset_time - (current_time - self.last_rate_limit_reset):.1f}s")
+                return False
+            else:
+                self.rate_limit_exceeded = False
+                self.logger.info("Reset stanu przekroczenia limitów API.")
+
+        try:
+            import pybit
+
+            # Sprawdzamy wersję i dostosowujemy inicjalizację do odpowiedniej wersji API
+            try:
+                # Próba inicjalizacji dla nowszej wersji API używając odpowiednich klas rynkowych
+                endpoint = "https://api-testnet.bybit.com" if self.use_testnet else "https://api.bybit.com"
+
+                # Używanie odpowiednich klas rynkowych, zgodnie z ostrzeżeniem z biblioteki
+                try:
+                    # Najpierw próbujemy z spot API
+                    from pybit.spot import HTTP as SpotHTTP
+                    self.client = SpotHTTP(
+                        endpoint=endpoint,
+                        api_key=self.api_key,
+                        api_secret=self.api_secret,
+                        recv_window=20000  # Zwiększenie okna czasu na odpowiedź
+                    )
+                    self.api_version = "spot"
+                    self.logger.info(f"Zainicjalizowano klienta ByBit API Spot. Testnet: {self.use_testnet}")
+                except ImportError:
+                    # Jeśli nie ma spot, próbujemy z inverse_perpetual
+                    try:
+                        from pybit.inverse_perpetual import HTTP as PerpHTTP
+                        self.client = PerpHTTP(
+                            endpoint=endpoint,
+                            api_key=self.api_key,
+                            api_secret=self.api_secret,
+                            recv_window=20000
+                        )
+                        self.api_version = "inverse_perpetual"
+                        self.logger.info(f"Zainicjalizowano klienta ByBit API Inverse Perpetual. Testnet: {self.use_testnet}")
+                    except ImportError:
+                        # Ostatnia szansa - używamy ogólnego HTTP
+                        self.client = pybit.HTTP(
+                            endpoint=endpoint,
+                            api_key=self.api_key,
+                            api_secret=self.api_secret,
+                            recv_window=20000
+                        )
+                        self.api_version = "v2"
+                        self.logger.info(f"Zainicjalizowano klienta ByBit API v2 (ogólny). Testnet: {self.use_testnet}")
+
+                # Sprawdź czy już mamy w cache czas serwera
+                try:
+                    from data.utils.cache_manager import get_cached_data, is_cache_valid, store_cached_data
+                    cache_key = f"server_time_{self.use_testnet}"
+                    
+                    if is_cache_valid(cache_key, ttl=300):  # Ważny przez 5 minut
+                        server_time_data, found = get_cached_data(cache_key)
+                        if found:
+                            self.logger.info(f"Używam cache'owanego czasu serwera: {server_time_data}")
+                            self._connection_test_result = True
+                            self._connection_test_time = current_time
+                            self._connection_initialized = True
+                            return True
+                except Exception as cache_error:
+                    self.logger.warning(f"Błąd podczas dostępu do cache: {cache_error}")
+                
+                # Unikaj zbyt częstego odpytywania API - czekaj na minimum 5 sekund między zapytaniami
+                # Zastosuj rate limiting nawet przy inicjalizacji
+                self._apply_rate_limit()
+                    
+                # Testowe pobieranie czasu serwera w celu weryfikacji połączenia
+                try:
+                    # Sprawdzamy dostępne metody dla czasu serwera
+                    if hasattr(self.client, 'get_server_time'):
+                        server_time = self.client.get_server_time()
+                    elif hasattr(self.client, 'server_time'):
+                        server_time = self.client.server_time()
+                    elif hasattr(self.client, 'time'):
+                        server_time = self.client.time()
+                    else:
+                        # Jeśli żadna metoda nie jest dostępna, symulujemy czas
+                        server_time = {"timeNow": int(time.time() * 1000)}
+                        self.logger.warning("Brak metody do pobierania czasu serwera, używam czasu lokalnego")
+
+                    self.logger.info(f"Połączenie z ByBit potwierdzone. Czas serwera: {server_time}")
+                    
+                    # Zapisz wynik testu i czas serwera w cache
+                    try:
+                        from data.utils.cache_manager import store_cached_data
+                        cache_key = f"server_time_{self.use_testnet}"
+                        store_cached_data(cache_key, server_time)
+                    except Exception as cache_error:
+                        self.logger.warning(f"Błąd podczas zapisu do cache: {cache_error}")
+                    
+                    self._connection_test_result = True
+                except Exception as st_error:
+                    self.logger.warning(f"Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: {st_error}")
+                    
+                    # Obsługa błędów związanych z przekroczeniem limitów
+                    error_str = str(st_error).lower()
+                    if "rate limit" in error_str or "429" in error_str or "403" in error_str:
+                        self.rate_limit_exceeded = True
+                        self.last_rate_limit_reset = time.time()
+                        self.logger.warning("Wykryto przekroczenie limitów API podczas inicjalizacji. Zwiększam parametry opóźnień.")
+                        
+                        # Zapisz informację o przekroczeniu limitów w cache
+                        try:
+                            from data.utils.cache_manager import store_cached_data
+                            store_cached_data("api_rate_limited", True)
+                        except Exception as cache_error:
+                            self.logger.warning(f"Błąd podczas zapisu do cache: {cache_error}")
+                    
+                    self._connection_test_result = False
+                
+                self._connection_test_time = current_time
+                self._connection_initialized = True
+                
+                self.logger.info(f"Zainicjalizowano klienta ByBit API. Wersja: {self.api_version}, Testnet: {self.use_testnet}")
+                return True
+            except Exception as e:
+                self.logger.error(f"Błąd inicjalizacji klienta PyBit: {e}")
+                self._connection_test_result = False
+                self._connection_test_time = current_time
+                return False
+        except ImportError:
+            self.logger.error("Nie można zaimportować modułu pybit. Sprawdź czy jest zainstalowany.")
+            self.client = None
+            self._connection_test_result = False
+            self._connection_test_time = current_time
+            return False
+        except Exception as e:
+            self.logger.error(f"Błąd podczas inicjalizacji klienta ByBit: {e}")
+            self.client = None
+            self._connection_test_result = False
+            self._connection_test_time = current_time
+            return False
 
     def get_server_time(self) -> Dict[str, Any]:
         """
@@ -137,13 +251,93 @@ class BybitConnector:
             Dict[str, Any]: Czas serwera.
         """
         try:
+            # Sprawdź cache najpierw
+            from data.utils.cache_manager import get_cached_data, is_cache_valid
+            cache_key = f"server_time_{self.use_testnet}"
+            
+            if is_cache_valid(cache_key, ttl=60):  # Cache ważny przez minutę
+                cached_data, found = get_cached_data(cache_key)
+                if found:
+                    self.logger.debug(f"Używam cache'owanego czasu serwera: {cached_data}")
+                    return {
+                        "success": True,
+                        "time_ms": cached_data.get("timeNow", int(time.time() * 1000)),
+                        "time": datetime.fromtimestamp(cached_data.get("timeNow", time.time() * 1000) / 1000).strftime('%Y-%m-%d %H:%M:%S'),
+                        "source": "cache"
+                    }
+                
+            # Jeśli nie ma w cache lub cache nieważny
             self._apply_rate_limit()
-            # Symulacja czasu serwera
+            
+            # Jeśli przekroczono limity, zwróć lokalny czas
+            if self.rate_limit_exceeded:
+                current_time = int(time.time() * 1000)
+                self.logger.info(f"Używam lokalnego czasu zamiast odpytywania API (przekroczono limity)")
+                return {
+                    "success": True,
+                    "time_ms": current_time,
+                    "time": datetime.fromtimestamp(current_time / 1000).strftime('%Y-%m-%d %H:%M:%S'),
+                    "source": "local_rate_limited"
+                }
+            
+            # Inicjalizacja klienta, jeśli jeszcze nie istnieje
+            if not self._connection_initialized or self.client is None:
+                if not self._initialize_client():
+                    # Jeśli inicjalizacja się nie powiedzie, zwróć lokalny czas
+                    current_time = int(time.time() * 1000)
+                    return {
+                        "success": True,
+                        "time_ms": current_time,
+                        "time": datetime.fromtimestamp(current_time / 1000).strftime('%Y-%m-%d %H:%M:%S'),
+                        "source": "local_init_failed"
+                    }
+            
+            # Jeśli mamy klienta, spróbuj pobrać prawdziwy czas serwera (ale tylko jeśli nie przekroczono limitów)
+            if self.client and not self.rate_limit_exceeded:
+                try:
+                    if hasattr(self.client, 'get_server_time'):
+                        server_time = self.client.get_server_time()
+                    elif hasattr(self.client, 'server_time'):
+                        server_time = self.client.server_time()
+                    elif hasattr(self.client, 'time'):
+                        server_time = self.client.time()
+                    else:
+                        raise AttributeError("Brak metody do pobierania czasu serwera")
+                        
+                    # Zapisz wynik w cache
+                    try:
+                        from data.utils.cache_manager import store_cached_data
+                        store_cached_data(cache_key, server_time)
+                    except Exception as cache_error:
+                        self.logger.warning(f"Błąd podczas zapisu do cache: {cache_error}")
+                        
+                    # Ekstrakcja czasu z różnych formatów API
+                    if "timeNow" in server_time:
+                        time_ms = int(server_time["timeNow"])
+                    elif "time_now" in server_time:
+                        time_ms = int(float(server_time["time_now"]) * 1000)
+                    elif "time" in server_time:
+                        time_ms = int(server_time["time"])
+                    else:
+                        time_ms = int(time.time() * 1000)
+                        
+                    return {
+                        "success": True,
+                        "time_ms": time_ms,
+                        "time": datetime.fromtimestamp(time_ms / 1000).strftime('%Y-%m-%d %H:%M:%S'),
+                        "source": "api"
+                    }
+                except Exception as e:
+                    self.logger.warning(f"Nie udało się pobrać czasu serwera: {e}. Używam czasu lokalnego.")
+                    # W przypadku błędu zwracamy lokalny czas
+            
+            # Jako fallback zawsze zwracamy lokalny czas
             current_time = int(time.time() * 1000)
             return {
                 "success": True,
                 "time_ms": current_time,
-                "time": datetime.fromtimestamp(current_time / 1000).strftime('%Y-%m-%d %H:%M:%S')
+                "time": datetime.fromtimestamp(current_time / 1000).strftime('%Y-%m-%d %H:%M:%S'),
+                "source": "local_fallback"
             }
         except Exception as e:
             self.logger.error(f"Błąd podczas pobierania czasu serwera: {e}")
@@ -732,16 +926,18 @@ class BybitConnector:
         # Sprawdzenie czy używamy produkcyjnego API
         is_prod = not self.use_testnet
 
-        # Dodatkowy log dla produkcyjnego API
-        if is_prod:
+        # Dodatkowy log dla produkcyjnego API (tylko jeśli nie wyświetlono wcześniej)
+        if is_prod and not hasattr(self, '_production_warning_shown'):
             self.logger.warning("!!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit. Operacje handlowe będą mieć realne skutki finansowe!")
             self.logger.warning("Upewnij się, że Twoje klucze API mają właściwe ograniczenia i są odpowiednio zabezpieczone.")
             print("\n========== PRODUKCYJNE API BYBIT ==========")
             print("!!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit")
             print("Operacje handlowe będą mieć realne skutki finansowe!")
             print("===========================================\n")
-        else:
+            self._production_warning_shown = True
+        elif not is_prod and not hasattr(self, '_testnet_info_shown'):
             self.logger.info("Używasz testnet API (środowisko testowe).")
+            self._testnet_info_shown = True
 
         return is_prod
 

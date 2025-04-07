@@ -80,15 +80,15 @@ def initialize_system():
                 logging.warning("Moduł BybitConnector nie został zaimportowany. Pomijam inicjalizację klienta ByBit.")
                 bybit_client = None
                 return True
-                
+
             api_key = os.getenv("BYBIT_API_KEY")
             api_secret = os.getenv("BYBIT_API_SECRET")
             use_testnet = os.getenv("BYBIT_USE_TESTNET", "true").lower() == "true"  # Domyślnie używamy testnet
-            
+
             if not api_key or not api_secret:
                 logging.warning("Brak kluczy API ByBit w zmiennych środowiskowych. Sprawdź zakładkę Secrets.")
                 return False
-            
+
             # Więcej szczegółów o konfiguracji API dla celów debugowania
             masked_key = f"{api_key[:4]}{'*' * (len(api_key) - 4)}" if api_key else "Brak klucza"
             masked_secret = f"{api_secret[:4]}{'*' * (len(api_secret) - 4)}" if api_secret else "Brak sekretu"
@@ -107,7 +107,8 @@ def initialize_system():
             bybit_client = BybitConnector(
                 api_key=api_key,
                 api_secret=api_secret,
-                use_testnet=use_testnet  # Korzystamy z konfiguracji
+                use_testnet=use_testnet,
+                lazy_connect=True  # Używamy lazy initialization by uniknąć sprawdzania API na starcie
             )
             server_time = bybit_client.get_server_time()
             logger.info(f"Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {server_time}")
@@ -556,13 +557,13 @@ def test_bybit_connection():
     try:
         # Test połączenia poprzez pobranie czasu serwera
         server_time = bybit_client.get_server_time()
-        
+
         # Test połączenia przez próbę pobrania salda (wymaga autentykacji)
         balance_test = bybit_client.get_account_balance()
-        
+
         # Sprawdzenie, czy używamy testnet czy produkcyjnego API
         is_testnet = bybit_client.use_testnet
-        
+
         connection_status = {
             "success": True,
             "api_initialized": True,
@@ -573,7 +574,7 @@ def test_bybit_connection():
             "balance_data": "Dostępne" if balance_test.get("success", False) else "Błąd autoryzacji",
             "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }
-        
+
         logger.info(f"Test połączenia z ByBit API: {connection_status}")
         return jsonify(connection_status)
     except Exception as e:
