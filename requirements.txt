@@ -27,3 +27,4 @@ black>=21.12b0
 
 # Dodatkowe zależności
 websocket-client>=1.2.1
+psutil

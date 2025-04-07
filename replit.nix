@@ -1,6 +1,15 @@
 
 { pkgs }: {
   deps = [
+    pkgs.qhull
+    pkgs.pkg-config
+    pkgs.gtk3
+    pkgs.gobject-introspection
+    pkgs.ghostscript
+    pkgs.freetype
+    pkgs.ffmpeg-full
+    pkgs.cairo
+    pkgs.glibcLocales
     pkgs.python310
     pkgs.python310Packages.pip
     pkgs.python310Packages.flask
