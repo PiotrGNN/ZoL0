@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template
 
 # Inicjalizacja aplikacji Flask
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 
 # Utworzenie struktury katalogów
 os.makedirs("logs", exist_ok=True)
@@ -36,86 +36,98 @@ load_dotenv()
 @app.route('/')
 def index():
     """Główny endpoint aplikacji."""
-    return jsonify({
-        "status": "online",
-        "service": "Trading Bot System",
-        "version": "1.0.0"
-    })
+    from flask import redirect
+    # Redirect do dashboardu
+    return redirect('/dashboard')
+    
+    # Alternatywnie, można zwrócić JSON
+    # return jsonify({
+    #     "status": "online",
+    #     "service": "Trading Bot System",
+    #     "version": "1.0.0"
+    # })
 
 @app.route('/dashboard')
 def dashboard():
     """Strona z dashboardem systemu."""
     from datetime import datetime
     
-    # Dane przykładowe - w rzeczywistości byłyby pobierane z systemu
-    system_mode = "Symulacja"
-    active_strategies = 3
-    risk_level = "Niski"
-    
-    # Przykładowe komponenty systemu
-    components = [
-        {
-            "name": "Detektor Anomalii",
-            "status": "Aktywny",
-            "status_class": "online",
-            "last_update": datetime.now().strftime("%H:%M:%S")
-        },
-        {
-            "name": "Przetwarzanie Danych",
-            "status": "Aktywny",
-            "status_class": "online",
-            "last_update": datetime.now().strftime("%H:%M:%S")
-        },
-        {
-            "name": "Silnik Tradingowy",
-            "status": "Oczekiwanie",
-            "status_class": "warning",
-            "last_update": datetime.now().strftime("%H:%M:%S")
-        }
-    ]
-    
-    # Przykładowe anomalie
-    anomalies = [
-        {
-            "date": "2025-04-07 10:15:00",
-            "pair": "BTC/USDT",
-            "level": "Średni",
-            "description": "Nagły wzrost wolumenu"
-        },
-        {
-            "date": "2025-04-07 10:22:30",
-            "pair": "ETH/USDT",
-            "level": "Niski",
-            "description": "Nietypowa zmiana ceny"
-        }
-    ]
-    
-    # Przykładowe działania systemu
-    system_actions = [
-        {
-            "time": "10:25:10",
-            "type": "Analiza",
-            "description": "Zakończono analizę par walutowych"
-        },
-        {
-            "time": "10:20:05",
-            "type": "System",
-            "description": "Uruchomiono detektor anomalii"
-        },
-        {
-            "time": "10:15:00",
-            "type": "Dane",
-            "description": "Zaktualizowano historyczne dane rynkowe"
-        }
-    ]
-    
-    return render_template('dashboard.html', 
-                          system_mode=system_mode,
-                          active_strategies=active_strategies,
-                          risk_level=risk_level,
-                          components=components,
-                          anomalies=anomalies,
-                          system_actions=system_actions)
+    try:
+        # Dane przykładowe - w rzeczywistości byłyby pobierane z systemu
+        system_mode = "Symulacja"
+        active_strategies = 3
+        risk_level = "Niski"
+        
+        # Przykładowe komponenty systemu
+        components = [
+            {
+                "name": "Detektor Anomalii",
+                "status": "Aktywny",
+                "status_class": "online",
+                "last_update": datetime.now().strftime("%H:%M:%S")
+            },
+            {
+                "name": "Przetwarzanie Danych",
+                "status": "Aktywny",
+                "status_class": "online",
+                "last_update": datetime.now().strftime("%H:%M:%S")
+            },
+            {
+                "name": "Silnik Tradingowy",
+                "status": "Oczekiwanie",
+                "status_class": "warning",
+                "last_update": datetime.now().strftime("%H:%M:%S")
+            }
+        ]
+        
+        # Przykładowe anomalie
+        anomalies = [
+            {
+                "date": "2025-04-07 10:15:00",
+                "pair": "BTC/USDT",
+                "level": "Średni",
+                "description": "Nagły wzrost wolumenu"
+            },
+            {
+                "date": "2025-04-07 10:22:30",
+                "pair": "ETH/USDT",
+                "level": "Niski",
+                "description": "Nietypowa zmiana ceny"
+            }
+        ]
+        
+        # Przykładowe działania systemu
+        system_actions = [
+            {
+                "time": "10:25:10",
+                "type": "Analiza",
+                "description": "Zakończono analizę par walutowych"
+            },
+            {
+                "time": "10:20:05",
+                "type": "System",
+                "description": "Uruchomiono detektor anomalii"
+            },
+            {
+                "time": "10:15:00",
+                "type": "Dane",
+                "description": "Zaktualizowano historyczne dane rynkowe"
+            }
+        ]
+        
+        logging.info("Renderowanie dashboardu z danymi: %s komponenty, %s anomalie", 
+                    len(components), len(anomalies))
+        
+        return render_template('dashboard.html', 
+                              system_mode=system_mode,
+                              active_strategies=active_strategies,
+                              risk_level=risk_level,
+                              components=components,
+                              anomalies=anomalies,
+                              system_actions=system_actions)
+    except Exception as e:
+        logging.error("Błąd podczas renderowania dashboardu: %s", str(e))
+        return f"Błąd w dashboardzie: {str(e)}", 500
 
 @app.route('/health')
 def health_check():

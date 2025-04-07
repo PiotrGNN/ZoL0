@@ -1,2 +1,2 @@
-
-# Pusty plik __init__.py tworzy pakiet Python
+# Plik __init__.py dla katalogu templates
+# Ten plik jest potrzebny do traktowania katalogu jako pakiet Pythona
