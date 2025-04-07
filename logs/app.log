@@ -25389,3 +25389,135 @@ Original error was: No module named 'numpy.core._multiarray_umath'
 2025-04-07 19:08:17,931 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:17] "GET /api/trading-stats HTTP/1.1" 200 -
 2025-04-07 19:08:17,933 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:17] "GET /api/recent-trades HTTP/1.1" 200 -
 2025-04-07 19:08:17,935 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:17] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:08:27,854 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:27] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:08:27,858 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:27] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:08:27,861 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:27] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:08:27,862 [INFO] Pobieranie danych z testnet
+2025-04-07 19:08:27,864 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:27] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:08:27,865 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:27] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:08:27,867 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:27] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:08:27,987 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:27] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 19:08:28,224 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 19:08:29,026 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:08:29,640 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:08:32,182 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:08:32,198 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:08:32,198 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:08:32,199 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:08:32,199 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:08:32,199 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:08:32,199 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:08:32,199 [INFO] Inicjalizacja klienta ByBit z kluczem: 9VJo*** testnet=True
+2025-04-07 19:08:32,206 [WARNING] This HTTP class is maintained for compatibility purposes. You should prefer importing market-specific classes, like so: from pybit.inverse_perpetual import HTTP; from pybit.spot import HTTP
+2025-04-07 19:08:32,206 [INFO] Zainicjalizowano klienta ByBit API v2. Testnet: True
+2025-04-07 19:08:32,206 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:08:32,206 [INFO] Zainicjalizowano klienta ByBit API. Wersja: v2, Testnet: True
+2025-04-07 19:08:32,207 [INFO] BybitConnector zainicjalizowany. Testnet: True
+2025-04-07 19:08:32,207 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744052912207, 'time': '2025-04-07 19:08:32'}
+2025-04-07 19:08:32,207 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:08:32,207 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:08:32,228 [WARNING]  * Debugger is active!
+2025-04-07 19:08:32,232 [INFO]  * Debugger PIN: 592-227-165
+2025-04-07 19:08:33,705 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:08:33,707 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:08:33,708 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 19:08:33,710 [INFO] Pobieranie danych z testnet
+2025-04-07 19:08:33,710 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:33] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:08:33,768 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:08:33,775 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:08:33,843 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:08:33,844 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 19:08:37,838 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:37] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:08:37,840 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:37] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:08:37,844 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:37] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:08:37,848 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:37] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:08:37,856 [INFO] Pobieranie danych z testnet
+2025-04-07 19:08:37,858 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:37] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:08:37,851 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:37] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:08:39,166 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:08:39,167 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:08:39,270 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:08:39,382 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:08:39,392 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:08:39,510 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:08:40,202 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:08:42,245 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:08:42,256 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:08:42,256 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:08:42,256 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:08:42,256 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:08:42,257 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:08:42,257 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:08:42,257 [INFO] Inicjalizacja klienta ByBit z kluczem: 9VJo*** testnet=True
+2025-04-07 19:08:42,261 [WARNING] This HTTP class is maintained for compatibility purposes. You should prefer importing market-specific classes, like so: from pybit.inverse_perpetual import HTTP; from pybit.spot import HTTP
+2025-04-07 19:08:42,261 [INFO] Zainicjalizowano klienta ByBit API v2. Testnet: True
+2025-04-07 19:08:42,261 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:08:42,262 [INFO] Zainicjalizowano klienta ByBit API. Wersja: v2, Testnet: True
+2025-04-07 19:08:42,262 [INFO] BybitConnector zainicjalizowany. Testnet: True
+2025-04-07 19:08:42,262 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744052922262, 'time': '2025-04-07 19:08:42'}
+2025-04-07 19:08:42,262 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:08:42,262 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:08:42,274 [WARNING]  * Debugger is active!
+2025-04-07 19:08:42,276 [INFO]  * Debugger PIN: 146-126-091
+2025-04-07 19:08:43,122 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:08:43,292 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:08:43,294 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:08:43,295 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:08:43,296 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:08:43,460 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:43] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 19:08:43,922 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:08:46,063 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:08:46,074 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:08:46,074 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:08:46,074 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:08:46,074 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:08:46,075 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:08:46,075 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:08:46,075 [INFO] Inicjalizacja klienta ByBit z kluczem: 9VJo*** testnet=True
+2025-04-07 19:08:46,079 [WARNING] This HTTP class is maintained for compatibility purposes. You should prefer importing market-specific classes, like so: from pybit.inverse_perpetual import HTTP; from pybit.spot import HTTP
+2025-04-07 19:08:46,079 [INFO] Zainicjalizowano klienta ByBit API v2. Testnet: True
+2025-04-07 19:08:46,079 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:08:46,080 [INFO] Zainicjalizowano klienta ByBit API. Wersja: v2, Testnet: True
+2025-04-07 19:08:46,080 [INFO] BybitConnector zainicjalizowany. Testnet: True
+2025-04-07 19:08:46,080 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744052926080, 'time': '2025-04-07 19:08:46'}
+2025-04-07 19:08:46,080 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:08:46,080 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:08:46,092 [WARNING]  * Debugger is active!
+2025-04-07 19:08:46,094 [INFO]  * Debugger PIN: 129-638-643
+2025-04-07 19:08:47,835 [INFO] Pobieranie danych z testnet
+2025-04-07 19:08:47,839 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:47] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:08:47,839 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:47] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:08:47,843 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:47] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:08:47,845 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:47] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:08:47,847 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:47] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:08:47,848 [INFO] 172.31.128.72 - - [07/Apr/2025 19:08:47] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:08:48,754 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:08:48,755 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:08:48,890 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:08:48,891 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:08:49,034 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:08:49,040 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:08:49,648 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:08:52,671 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:08:52,687 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:08:52,687 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:08:52,688 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:08:52,688 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:08:52,688 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:08:52,688 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:08:52,688 [INFO] Inicjalizacja klienta ByBit z kluczem: 9VJo*** testnet=True
+2025-04-07 19:08:52,694 [WARNING] This HTTP class is maintained for compatibility purposes. You should prefer importing market-specific classes, like so: from pybit.inverse_perpetual import HTTP; from pybit.spot import HTTP
+2025-04-07 19:08:52,694 [INFO] Zainicjalizowano klienta ByBit API v2. Testnet: True
+2025-04-07 19:08:52,694 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: 'HTTP' object has no attribute 'get_server_time'
+2025-04-07 19:08:52,694 [INFO] Zainicjalizowano klienta ByBit API. Wersja: v2, Testnet: True
+2025-04-07 19:08:52,694 [INFO] BybitConnector zainicjalizowany. Testnet: True
+2025-04-07 19:08:52,695 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744052932695, 'time': '2025-04-07 19:08:52'}
+2025-04-07 19:08:52,695 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:08:52,695 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:08:52,710 [WARNING]  * Debugger is active!
+2025-04-07 19:08:52,713 [INFO]  * Debugger PIN: 140-286-874
+2025-04-07 19:08:54,287 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:08:54,289 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:08:54,290 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:08:54,291 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:08:54,884 [INFO]  * Restarting with watchdog (inotify)
