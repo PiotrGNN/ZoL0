@@ -66,7 +66,7 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python main.py"
+args = "bash -c \"python run_server.py\""
 
 [[workflows.workflow]]
 name = "Init Project"
@@ -76,3 +76,12 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python init_project.py"
+
+[[workflows.workflow]]
+name = "Test API Connection"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python test_api_connection.py"

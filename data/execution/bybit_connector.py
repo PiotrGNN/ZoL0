@@ -481,8 +481,39 @@ class BybitConnector:
         # Import managera cache
         from data.utils.cache_manager import get_cached_data, store_cached_data, is_cache_valid, get_api_status
 
+        # Rozszerzone logowanie dla diagnostyki
+        self.logger.info("=" * 50)
+        self.logger.info("DIAGNOSTYKA API BYBIT - get_account_balance")
+        self.logger.info(f"API Key: {self.api_key[:4]}{'*' * (len(self.api_key) - 4) if self.api_key else 'Brak'}")
+        self.logger.info(f"API Secret: {self.api_secret[:4]}{'*' * (len(self.api_secret) - 4) if self.api_secret else 'Brak'}")
+        self.logger.info(f"Testnet: {self.use_testnet}")
+        self.logger.info(f"Base URL: {self.base_url}")
+        self.logger.info(f"API Version: {self.api_version}")
+        self.logger.info(f"Rate limit exceeded: {self.rate_limit_exceeded}")
+        
+        # Sprawdź załadowanie zmiennych środowiskowych
+        import os
+        env_vars = {
+            "BYBIT_API_KEY": os.environ.get("BYBIT_API_KEY", "Brak"),
+            "BYBIT_API_SECRET": os.environ.get("BYBIT_API_SECRET", "Brak"),
+            "BYBIT_USE_TESTNET": os.environ.get("BYBIT_USE_TESTNET", "Brak"),
+            "API_MIN_INTERVAL": os.environ.get("API_MIN_INTERVAL", "Brak"),
+            "API_MAX_CALLS_PER_MINUTE": os.environ.get("API_MAX_CALLS_PER_MINUTE", "Brak"),
+        }
+        
+        masked_env = {}
+        for key, value in env_vars.items():
+            if value != "Brak" and ("API_KEY" in key or "SECRET" in key):
+                masked_value = value[:4] + "*" * (len(value) - 4) if len(value) > 4 else "****"
+                masked_env[key] = masked_value
+            else:
+                masked_env[key] = value
+                
+        self.logger.info(f"Zmienne środowiskowe: {masked_env}")
+        self.logger.info("=" * 50)
+
         # Klucz cache
-        cache_key = f"account_balance_{self.api_key[:8]}_{self.use_testnet}"
+        cache_key = f"account_balance_{self.api_key[:8] if self.api_key else 'none'}_{self.use_testnet}"
 
         # Sprawdź status API - jeśli przekroczono limity, użyj dłuższego TTL
         api_status = get_api_status()

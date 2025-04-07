@@ -1,49 +1,28 @@
 // Dashboard Configuration
-const CONFIG = {
-    dashboardRefresh: 30000,   // Odświeżanie dashboardu co 30s
-    componentStatusRefresh: 30000, // Odświeżanie statusu komponentów co 30s
-    chartRefresh: 60000,    // Odświeżanie wykresu co 60s
-    tradesRefresh: 60000,   // Odświeżanie listy transakcji co 60s
-    notificationsRefresh: 30000, // Odświeżanie powiadomień co 30s
-    statsRefresh: 30000     // Odświeżanie statystyk co 30s
+window.CONFIG = {
+    REFRESH_INTERVAL: 30000,  // 30 sekund - zwiększone dla zmniejszenia obciążenia API
+    RETRY_INTERVAL: 60000,    // 1 minuta po błędzie
+    MAX_ERRORS: 3             // Maksymalna liczba błędów przed dłuższym odstępem
 };
 
-// Liczniki błędów dla poszczególnych elementów
-let errorCounts = {
+// Liczniki błędów dla różnych endpointów
+window.errorCounts = {
     dashboard: 0,
-    chart: 0,
+    portfolio: 0,
     trades: 0,
+    chart: 0,
     notifications: 0,
-    components: 0,
-    stats: 0
+    components: 0
 };
 
-// Opóźnienia odświeżania w razie błędów
-let refreshRates = {
-    normal: {
-        dashboardRefresh: 30000,
-        componentStatusRefresh: 30000,
-        chartRefresh: 60000,
-        tradesRefresh: 60000,
-        notificationsRefresh: 30000,
-        statsRefresh: 30000
-    },
-    reduced: {
-        dashboardRefresh: 60000,
-        componentStatusRefresh: 60000,
-        chartRefresh: 120000,
-        tradesRefresh: 120000,
-        notificationsRefresh: 60000,
-        statsRefresh: 60000
-    },
-    minimal: {
-        dashboardRefresh: 300000,
-        componentStatusRefresh: 300000,
-        chartRefresh: 600000,
-        tradesRefresh: 600000,
-        notificationsRefresh: 300000,
-        statsRefresh: 300000
-    }
+// Interwały odświeżania dla poszczególnych komponentów (ms)
+window.refreshRates = {
+    dashboard: 30000,   // co 30s
+    portfolio: 60000,   // co 1 min
+    trades: 60000,      // co 1 min
+    chart: 300000,      // co 5 min
+    notifications: 60000, // co 1 min
+    components: 30000   // co 30s
 };
 
 // Document Ready Function
@@ -64,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateNotifications();
 
     // Set up refresh intervals
-    setInterval(updateDashboardData, CONFIG.dashboardRefresh);
+    setInterval(updateDashboardData, CONFIG.REFRESH_INTERVAL);
     setInterval(updateChartData, CONFIG.chartRefresh);
     setInterval(updateRecentTrades, CONFIG.tradesRefresh);
     setInterval(updateAlerts, CONFIG.notificationsRefresh);
@@ -216,6 +195,7 @@ function updatePortfolioChart(chartData) {
 function updateTradingStats() {
     fetch('/api/trading-stats')
         .then(response => {
+            // Sprawdź kod HTTP odpowiedzi
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
@@ -227,11 +207,66 @@ function updateTradingStats() {
             updateElementText('win-rate-value', data.win_rate);
             updateElementText('drawdown-value', data.max_drawdown);
 
-            // Reset error counter on success
-            errorCounts.stats = 0;
+            // Wyświetl komunikat o sukcesie w konsoli
+            console.log("Statystyki tradingowe zaktualizowane poprawnie:", data);
+
+            // Dodaj informacje do panelu diagnostycznego, jeśli istnieje
+            if (document.getElementById('debug-panel')) {
+                const debugInfo = document.createElement('div');
+                debugInfo.className = 'debug-success';
+                debugInfo.innerHTML = `<small>${new Date().toLocaleTimeString()}: Stats OK</small>`;
+                document.getElementById('debug-panel').prepend(debugInfo);
+
+                // Ogranicz liczbę wpisów
+                const entries = document.getElementById('debug-panel').children;
+                if (entries.length > 20) {
+                    document.getElementById('debug-panel').removeChild(entries[entries.length - 1]);
+                }
+            }
         })
         .catch(error => {
-            handleApiError('stats', error);
+            // Szczegółowe logowanie błędu
+            console.error("Błąd podczas aktualizacji statystyk tradingowych:", error);
+
+            // Dodaj panel debugowania, jeśli nie istnieje
+            if (!document.getElementById('debug-panel')) {
+                const panel = document.createElement('div');
+                panel.id = 'debug-panel';
+                panel.className = 'debug-panel';
+                panel.innerHTML = '<h4>Diagnostyka API</h4>';
+                document.querySelector('.content-area').appendChild(panel);
+
+                // Dodaj style CSS
+                const style = document.createElement('style');
+                style.textContent = `
+                    .debug-panel {
+                        position: fixed;
+                        bottom: 10px;
+                        right: 10px;
+                        max-width: 400px;
+                        max-height: 300px;
+                        overflow-y: auto;
+                        background: rgba(0,0,0,0.8);
+                        color: #eee;
+                        border-radius: 5px;
+                        padding: 10px;
+                        font-size: 12px;
+                        z-index: 1000;
+                    }
+                    .debug-error { color: #ff6b6b; margin-bottom: 5px; }
+                    .debug-success { color: #51cf66; margin-bottom: 5px; }
+                `;
+                document.head.appendChild(style);
+            }
+
+            // Dodaj informacje o błędzie do panelu
+            const debugInfo = document.createElement('div');
+            debugInfo.className = 'debug-error';
+            debugInfo.innerHTML = `<small>${new Date().toLocaleTimeString()}: ${error.message}</small>`;
+            document.getElementById('debug-panel').prepend(debugInfo);
+
+            // Inkrementuj licznik błędów
+            window.errorCounts.dashboard++;
         });
 }
 

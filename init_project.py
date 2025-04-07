@@ -9,11 +9,60 @@ import sys
 import importlib.util
 import subprocess
 import time
+import json
 
 def check_package(package_name):
     """Sprawdza, czy pakiet jest zainstalowany."""
     spec = importlib.util.find_spec(package_name.replace('-', '_'))
     return spec is not None
+
+def check_env_vars():
+    """Sprawdza zmienne środowiskowe i wyświetla ich status."""
+    print("\n=== DIAGNOSTYKA ZMIENNYCH ŚRODOWISKOWYCH ===")
+    
+    # Sprawdź czy .env istnieje
+    env_exists = os.path.exists('.env')
+    print(f".env file exists: {env_exists}")
+    
+    # Spróbuj załadować dotenv
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+        print("python-dotenv załadowany poprawnie")
+    except ImportError:
+        print("BŁĄD: Nie można zaimportować dotenv. Instaluję...")
+        subprocess.run([sys.executable, "-m", "pip", "install", "python-dotenv"])
+        try:
+            from dotenv import load_dotenv
+            load_dotenv()
+            print("python-dotenv zainstalowany i załadowany")
+        except ImportError:
+            print("BŁĄD: Instalacja dotenv nie powiodła się")
+    
+    # Kluczowe zmienne środowiskowe do sprawdzenia
+    key_vars = [
+        "BYBIT_API_KEY", 
+        "BYBIT_API_SECRET", 
+        "BYBIT_USE_TESTNET",
+        "API_MIN_INTERVAL",
+        "API_MAX_CALLS_PER_MINUTE",
+        "FLASK_SECRET_KEY"
+    ]
+    
+    # Sprawdź zmienne
+    for var in key_vars:
+        value = os.environ.get(var)
+        if value:
+            # Zamaskuj wrażliwe dane
+            if "API_KEY" in var or "SECRET" in var:
+                masked = value[:4] + "*" * (len(value) - 4) if len(value) > 4 else "****"
+                print(f"{var}: {masked}")
+            else:
+                print(f"{var}: {value}")
+        else:
+            print(f"{var}: BRAK")
+    
+    print("=== KONIEC DIAGNOSTYKI ===\n")
 
 def create_directories():
     """Tworzy wymagane katalogi."""
