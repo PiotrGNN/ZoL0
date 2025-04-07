@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 Skrypt pomocniczy do uruchamiania serwera Flask.
 Rozwiązuje problemy z zajętym portem 5000.

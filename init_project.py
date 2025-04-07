@@ -1,5 +1,5 @@
 
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 Skrypt inicjalizacyjny dla projektu Replit Trading Bot.
 Ustawia środowisko i sprawdza, czy wszystkie zależności są poprawnie zainstalowane.

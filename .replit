@@ -1,5 +1,5 @@
 
-run = "python3 main.py"
+run = "python main.py"
 entrypoint = "main.py"
 modules = ["python-3.10:v18-20230807-322e88b"]
 
@@ -33,7 +33,7 @@ pattern = "**/*.py"
 start = "pylsp"
 
 [deployment]
-run = ["python3", "main.py"]
+run = ["python", "main.py"]
 deploymentTarget = "cloudrun"
 
 [server]
@@ -57,7 +57,7 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python3 run_server.py"
+args = "python run_server.py"
 
 [[workflows.workflow]]
 name = "Run"
@@ -66,7 +66,7 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python3 main.py"
+args = "python main.py"
 
 [[workflows.workflow]]
 name = "Init Project"
@@ -75,4 +75,4 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python3 init_project.py"
+args = "python init_project.py"
