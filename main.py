@@ -1,9 +1,22 @@
 import logging
 import os
+import sys
 from datetime import datetime, timedelta
 
-from dotenv import load_dotenv
-from flask import Flask, jsonify, render_template, request
+# Dodanie katalogu głównego do ścieżki Pythona
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+try:
+    from dotenv import load_dotenv
+except ImportError:
+    os.system("pip install python-dotenv")
+    from dotenv import load_dotenv
+
+try:
+    from flask import Flask, jsonify, render_template, request
+except ImportError:
+    os.system("pip install flask")
+    from flask import Flask, jsonify, render_template, request
 
 # Konfiguracja logowania
 os.makedirs("logs", exist_ok=True)

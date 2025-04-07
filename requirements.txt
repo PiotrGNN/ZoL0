@@ -1,34 +1,13 @@
-# Podstawowe
-requests==2.31.0
-pandas==2.0.3
-numpy==1.24.3
-Flask==2.3.3
-python-dotenv==1.0.0
-websocket-client==1.6.4
-
-# Analiza danych i AI
-matplotlib==3.7.2
-
-# Giełda i trading
-ccxt==4.0.90
-colorama==0.4.6
-pybit==5.0.0
-
-# Bazy danych
-
-# Narzędzia deweloperskie
-pytest==7.3.1
-flake8==3.9.2
-
-# Optymalizacja
-
-# Wdrożenie
-
-# API i obsługa danych (additional packages)
-seaborn==0.12.2
-scikit-learn==1.3.0
-
-# Inne narzędzia
-tqdm==4.66.1
-pyyaml==6.0.1
-psutil
+flask==2.0.1
+python-dotenv==0.19.0
+requests==2.26.0
+numpy==1.21.2
+pandas==1.3.3
+matplotlib==3.4.3
+seaborn==0.11.2
+scikit-learn==0.24.2
+pybit==2.4.1
+ccxt==2.0.50
+colorama==0.4.4
+pyyaml==6.0
+tqdm==4.62.3

@@ -276,3 +276,97 @@ def module_exists(module_name: str) -> bool:
         return importlib.util.find_spec(module_name) is not None
     except (ImportError, AttributeError):
         return False
+"""
+import_manager.py
+----------------
+Moduł do zarządzania importami.
+"""
+
+import importlib
+import logging
+import os
+import sys
+from typing import List, Set
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s"
+)
+logger = logging.getLogger(__name__)
+
+# Zbiór modułów wykluczonych z automatycznego importu
+excluded_modules: Set[str] = set()
+
+def exclude_modules_from_auto_import(modules: List[str]) -> None:
+    """
+    Wyklucza moduły z automatycznego importu.
+    
+    Parameters:
+        modules (List[str]): Lista modułów do wykluczenia.
+    """
+    global excluded_modules
+    for module in modules:
+        excluded_modules.add(module)
+    logger.info(f"Wykluczono moduły z automatycznego importu: {modules}")
+
+def is_module_excluded(module_name: str) -> bool:
+    """
+    Sprawdza, czy moduł jest wykluczony z automatycznego importu.
+    
+    Parameters:
+        module_name (str): Nazwa modułu.
+        
+    Returns:
+        bool: True jeśli moduł jest wykluczony, False w przeciwnym razie.
+    """
+    for excluded in excluded_modules:
+        if module_name.startswith(excluded) or module_name == excluded:
+            return True
+    return False
+
+def import_module_safely(module_name: str) -> None:
+    """
+    Bezpiecznie importuje moduł, obsługując wyjątki.
+    
+    Parameters:
+        module_name (str): Nazwa modułu do importu.
+    """
+    if is_module_excluded(module_name):
+        logger.debug(f"Pominięto import modułu '{module_name}' (wykluczony)")
+        return
+    
+    try:
+        importlib.import_module(module_name)
+        logger.debug(f"Zaimportowano moduł '{module_name}'")
+    except ImportError as e:
+        logger.warning(f"Nie można zaimportować modułu '{module_name}': {e}")
+    except Exception as e:
+        logger.error(f"Błąd podczas importu modułu '{module_name}': {e}")
+
+def auto_import_modules(package_name: str) -> None:
+    """
+    Automatycznie importuje wszystkie moduły z pakietu.
+    
+    Parameters:
+        package_name (str): Nazwa pakietu.
+    """
+    try:
+        package = importlib.import_module(package_name)
+        package_path = os.path.dirname(package.__file__)
+        
+        for item in os.listdir(package_path):
+            if item.startswith("__") or not item.endswith(".py"):
+                continue
+            
+            module_name = f"{package_name}.{item[:-3]}"
+            if not is_module_excluded(module_name):
+                import_module_safely(module_name)
+        
+        logger.info(f"Automatycznie zaimportowano moduły z pakietu '{package_name}'")
+    except Exception as e:
+        logger.error(f"Błąd podczas automatycznego importu modułów z pakietu '{package_name}': {e}")
+
+if __name__ == "__main__":
+    # Przykład użycia
+    exclude_modules_from_auto_import(["tests"])
+    auto_import_modules("data.utils")

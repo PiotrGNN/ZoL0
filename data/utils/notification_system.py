@@ -786,3 +786,127 @@ class NotificationSystem:
         if level:
             return sum(1 for n in self.notifications if not n["read"] and n["level"] == level)
         return sum(1 for n in self.notifications if not n["read"])
+"""
+notification_system.py
+---------------------
+Moduł do obsługi powiadomień systemowych.
+"""
+
+import logging
+from typing import List, Dict, Any, Optional
+
+# Konfiguracja logowania
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s"
+)
+logger = logging.getLogger(__name__)
+
+class NotificationChannel:
+    """Klasa reprezentująca kanał powiadomień."""
+    
+    def __init__(self, name: str, enabled: bool = True):
+        """
+        Inicjalizacja kanału powiadomień.
+        
+        Parameters:
+            name (str): Nazwa kanału.
+            enabled (bool): Czy kanał jest włączony.
+        """
+        self.name = name
+        self.enabled = enabled
+        logger.info(f"Zainicjalizowano kanał powiadomień '{name}' (enabled: {enabled})")
+    
+    def send(self, message: str, level: str = "info") -> bool:
+        """
+        Wysyła powiadomienie przez kanał.
+        
+        Parameters:
+            message (str): Treść powiadomienia.
+            level (str): Poziom powiadomienia.
+            
+        Returns:
+            bool: True jeśli wysłano, False w przeciwnym razie.
+        """
+        if not self.enabled:
+            logger.warning(f"Kanał '{self.name}' jest wyłączony, nie wysłano powiadomienia")
+            return False
+        
+        logger.info(f"[{self.name}] Wysłano powiadomienie [{level}]: {message}")
+        return True
+
+class NotificationSystem:
+    """System powiadomień aplikacji."""
+    
+    def __init__(self):
+        """Inicjalizacja systemu powiadomień."""
+        self.channels = {
+            "console": NotificationChannel("Console"),
+            "log": NotificationChannel("Log")
+        }
+        logger.info("Zainicjalizowano system powiadomień")
+    
+    def add_channel(self, name: str, enabled: bool = True) -> NotificationChannel:
+        """
+        Dodaje nowy kanał powiadomień.
+        
+        Parameters:
+            name (str): Nazwa kanału.
+            enabled (bool): Czy kanał jest włączony.
+            
+        Returns:
+            NotificationChannel: Dodany kanał.
+        """
+        channel = NotificationChannel(name, enabled)
+        self.channels[name] = channel
+        logger.info(f"Dodano kanał powiadomień '{name}'")
+        return channel
+    
+    def remove_channel(self, name: str) -> bool:
+        """
+        Usuwa kanał powiadomień.
+        
+        Parameters:
+            name (str): Nazwa kanału.
+            
+        Returns:
+            bool: True jeśli usunięto, False w przeciwnym razie.
+        """
+        if name in self.channels:
+            del self.channels[name]
+            logger.info(f"Usunięto kanał powiadomień '{name}'")
+            return True
+        return False
+    
+    def send(self, message: str, level: str = "info", channels: List[str] = None) -> Dict[str, bool]:
+        """
+        Wysyła powiadomienie przez określone kanały.
+        
+        Parameters:
+            message (str): Treść powiadomienia.
+            level (str): Poziom powiadomienia.
+            channels (List[str]): Lista kanałów do użycia.
+            
+        Returns:
+            Dict[str, bool]: Wyniki wysyłania dla poszczególnych kanałów.
+        """
+        if channels is None:
+            channels = list(self.channels.keys())
+        
+        results = {}
+        for channel_name in channels:
+            if channel_name in self.channels:
+                results[channel_name] = self.channels[channel_name].send(message, level)
+            else:
+                logger.warning(f"Kanał '{channel_name}' nie istnieje")
+                results[channel_name] = False
+        
+        return results
+
+if __name__ == "__main__":
+    # Przykład użycia
+    notification_system = NotificationSystem()
+    notification_system.add_channel("email", enabled=False)
+    
+    results = notification_system.send("Test powiadomienia", level="info")
+    print(f"Wyniki wysyłania: {results}")
