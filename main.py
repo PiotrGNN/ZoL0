@@ -1,6 +1,7 @@
 import logging
 import os
 import sys
+import json
 from datetime import datetime, timedelta
 
 # Dodanie katalogu głównego do ścieżki Pythona
@@ -86,14 +87,14 @@ def initialize_system():
             server_time = bybit_client.get_server_time()
             logger.info(f"Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {server_time}")
         except Exception as e:
-            logger.error(f"Błąd inicjalizacji klienta ByBit: {e}")
+            logger.error(f"Błąd inicjalizacji klienta ByBit: {e}", exc_info=True) #Dodatkowe informacje o błędzie
             bybit_client = None
 
 
         logging.info("System zainicjalizowany poprawnie")
         return True
     except Exception as e:
-        logging.error(f"Błąd podczas inicjalizacji systemu: {e}")
+        logging.error(f"Błąd podczas inicjalizacji systemu: {e}", exc_info=True) #Dodatkowe informacje o błędzie
         return False
 
 # Trasy aplikacji
@@ -166,7 +167,7 @@ def dashboard():
             portfolio = bybit_client.get_account_balance()
             logging.info(f"Pobrano portfolio: {portfolio}")
         except Exception as e:
-            logging.error(f"Błąd podczas pobierania portfolio: {e}")
+            logging.error(f"Błąd podczas pobierania portfolio: {e}", exc_info=True) #Dodatkowe informacje o błędzie
             portfolio = {
                 "balances": {
                     "BTC": {"equity": 0.005, "available_balance": 0.005, "wallet_balance": 0.005},
@@ -217,7 +218,7 @@ def get_dashboard_data():
             'last_updated': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         })
     except Exception as e:
-        logging.error(f"Błąd podczas pobierania danych dashboardu: {e}")
+        logging.error(f"Błąd podczas pobierania danych dashboardu: {e}", exc_info=True) #Dodatkowe informacje o błędzie
         return jsonify({
             'success': False,
             'error': str(e)
@@ -255,7 +256,7 @@ def get_chart_data():
             }
         })
     except Exception as e:
-        logging.error(f"Błąd podczas generowania danych wykresu: {e}")
+        logging.error(f"Błąd podczas generowania danych wykresu: {e}", exc_info=True) #Dodatkowe informacje o błędzie
         return jsonify({
             'success': False,
             'error': str(e)
@@ -292,7 +293,7 @@ def get_notifications():
             'notifications': notifications
         })
     except Exception as e:
-        logging.error(f"Błąd podczas pobierania powiadomień: {e}")
+        logging.error(f"Błąd podczas pobierania powiadomień: {e}", exc_info=True) #Dodatkowe informacje o błędzie
         return jsonify({
             'success': False,
             'error': str(e)
@@ -325,7 +326,7 @@ def get_recent_trades():
         ]
         return jsonify({'trades': trades})
     except Exception as e:
-        logging.error(f"Błąd podczas pobierania ostatnich transakcji: {e}")
+        logging.error(f"Błąd podczas pobierania ostatnich transakcji: {e}", exc_info=True) #Dodatkowe informacje o błędzie
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/alerts')
@@ -349,7 +350,7 @@ def get_alerts():
         ]
         return jsonify({'alerts': alerts})
     except Exception as e:
-        logging.error(f"Błąd podczas pobierania alertów: {e}")
+        logging.error(f"Błąd podczas pobierania alertów: {e}", exc_info=True) #Dodatkowe informacje o błędzie
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/trading-stats')
@@ -364,7 +365,7 @@ def get_trading_stats():
         }
         return jsonify(stats)
     except Exception as e:
-        logging.error(f"Błąd podczas pobierania statystyk tradingowych: {e}")
+        logging.error(f"Błąd podczas pobierania statystyk tradingowych: {e}", exc_info=True) #Dodatkowe informacje o błędzie
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/component-status')
@@ -391,7 +392,7 @@ def get_component_status():
         ]
         return jsonify({'components': components})
     except Exception as e:
-        logging.error(f"Błąd podczas pobierania statusu komponentów: {e}")
+        logging.error(f"Błąd podczas pobierania statusu komponentów: {e}", exc_info=True) #Dodatkowe informacje o błędzie
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/ai-models-status')
@@ -423,7 +424,7 @@ def get_ai_models_status():
         ]
         return jsonify({'models': models})
     except Exception as e:
-        logging.error(f"Błąd podczas pobierania statusu modeli AI: {e}")
+        logging.error(f"Błąd podczas pobierania statusu modeli AI: {e}", exc_info=True) #Dodatkowe informacje o błędzie
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/system/status')
@@ -448,7 +449,7 @@ def start_trading():
         # Tu byłaby logika uruchamiania systemu tradingowego
         return jsonify({'success': True, 'message': 'Trading automatyczny uruchomiony'})
     except Exception as e:
-        logging.error(f"Błąd podczas uruchamiania tradingu: {e}")
+        logging.error(f"Błąd podczas uruchamiania tradingu: {e}", exc_info=True) #Dodatkowe informacje o błędzie
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/api/trading/stop', methods=['POST'])
@@ -457,7 +458,7 @@ def stop_trading():
         # Tu byłaby logika zatrzymywania systemu tradingowego
         return jsonify({'success': True, 'message': 'Trading automatyczny zatrzymany'})
     except Exception as e:
-        logging.error(f"Błąd podczas zatrzymywania tradingu: {e}")
+        logging.error(f"Błąd podczas zatrzymywania tradingu: {e}", exc_info=True) #Dodatkowe informacje o błędzie
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/api/system/reset', methods=['POST'])
@@ -466,7 +467,7 @@ def reset_system():
         # Tu byłaby logika resetowania systemu
         return jsonify({'success': True, 'message': 'System zresetowany'})
     except Exception as e:
-        logging.error(f"Błąd podczas resetowania systemu: {e}")
+        logging.error(f"Błąd podczas resetowania systemu: {e}", exc_info=True) #Dodatkowe informacje o błędzie
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route("/api/bybit/server-time", methods=["GET"])
@@ -479,7 +480,7 @@ def get_bybit_server_time():
         server_time = bybit_client.get_server_time()
         return jsonify(server_time)
     except Exception as e:
-        logger.error(f"Błąd podczas pobierania czasu serwera ByBit: {e}")
+        logger.error(f"Błąd podczas pobierania czasu serwera ByBit: {e}", exc_info=True) #Dodatkowe informacje o błędzie
         return jsonify({"error": str(e)}), 500
 
 @app.route("/api/bybit/market-data/<symbol>", methods=["GET"])
@@ -500,7 +501,7 @@ def get_bybit_market_data(symbol):
             "orderBook": order_book
         })
     except Exception as e:
-        logger.error(f"Błąd podczas pobierania danych rynkowych z ByBit: {e}")
+        logger.error(f"Błąd podczas pobierania danych rynkowych z ByBit: {e}", exc_info=True) #Dodatkowe informacje o błędzie
         return jsonify({"error": str(e)}), 500
 
 @app.route("/api/bybit/account-balance", methods=["GET"])
@@ -513,7 +514,7 @@ def get_bybit_account_balance():
         balance = bybit_client.get_account_balance()
         return jsonify(balance)
     except Exception as e:
-        logger.error(f"Błąd podczas pobierania stanu konta ByBit: {e}")
+        logger.error(f"Błąd podczas pobierania stanu konta ByBit: {e}", exc_info=True) #Dodatkowe informacje o błędzie
         return jsonify({"error": str(e)}), 500
 
 

@@ -9,6 +9,7 @@ import logging
 import os
 import random
 import time
+import traceback
 from datetime import datetime
 from typing import Dict, List, Any, Optional
 import requests
@@ -174,6 +175,7 @@ class BybitConnector:
         try:
             if self.client is None:
                 logging.error("Klient API nie został zainicjalizowany.")
+                self.logger.error(f"Próba pobrania salda konta bez zainicjalizowanego klienta API. API key: {self.api_key[:5]}..., Testnet: {self.use_testnet}")
                 return {
                     "balances": {
                         "BTC": {"equity": 0.005, "available_balance": 0.005, "wallet_balance": 0.005},
@@ -187,6 +189,7 @@ class BybitConnector:
             # Testowa implementacja (symulacja)
             if self.use_testnet:
                 # Symulowane dane do celów testowych
+                self.logger.info("Pobieranie danych z testnet")
                 return {
                     "balances": {
                         "BTC": {"equity": 0.015, "available_balance": 0.015, "wallet_balance": 0.015},
@@ -198,23 +201,43 @@ class BybitConnector:
             else:
                 # Prawdziwa implementacja lub symulacja jeśli połączenie nie działa
                 try:
-                    wallet = self.client.get_wallet_balance()
+                    self.logger.info(f"Próba pobrania danych z prawdziwego API Bybit. API key: {self.api_key[:5]}..., Testnet: {self.use_testnet}")
+                    wallet = self.client.get_wallet_balance(accountType="UNIFIED")
+                    
+                    self.logger.info(f"Odpowiedź API Bybit: {str(wallet)[:200]}...")
+                    
                     result = {
                         "balances": {},
                         "success": True,
                         "source": "API"
                     }
 
-                    if wallet and "result" in wallet:
+                    if wallet and "result" in wallet and "list" in wallet["result"]:
+                        # Nowsza struktura API ByBit
+                        for coin_data in wallet["result"]["list"]:
+                            coin = coin_data.get("coin")
+                            if coin:
+                                result["balances"][coin] = {
+                                    "equity": float(coin_data.get("equity", 0)),
+                                    "available_balance": float(coin_data.get("availableBalance", 0)),
+                                    "wallet_balance": float(coin_data.get("walletBalance", 0))
+                                }
+                    elif wallet and "result" in wallet:
+                        # Starsza struktura API ByBit
                         for coin in wallet["result"]:
                             result["balances"][coin] = {
-                                "equity": float(wallet["result"][coin]["equity"]),
-                                "available_balance": float(wallet["result"][coin]["available_balance"]),
-                                "wallet_balance": float(wallet["result"][coin]["wallet_balance"])
+                                "equity": float(wallet["result"][coin].get("equity", 0)),
+                                "available_balance": float(wallet["result"][coin].get("available_balance", 0)),
+                                "wallet_balance": float(wallet["result"][coin].get("wallet_balance", 0))
                             }
+                    
+                    if not result["balances"]:
+                        self.logger.warning(f"API zwróciło pustą listę sald. Pełna odpowiedź: {wallet}")
+                        result["warning"] = "API zwróciło pustą listę sald"
+                    
                     return result
                 except Exception as e:
-                    logging.warning(f"Błąd podczas pobierania danych z prawdziwego API: {e}. Zwracam dane symulowane.")
+                    self.logger.error(f"Błąd podczas pobierania danych z prawdziwego API: {e}. Traceback: {traceback.format_exc()}")
                     # Dane symulowane w przypadku błędu
                     return {
                         "balances": {
@@ -222,12 +245,13 @@ class BybitConnector:
                             "USDT": {"equity": 1500, "available_balance": 1450, "wallet_balance": 1500},
                             "ETH": {"equity": 0.5, "available_balance": 0.5, "wallet_balance": 0.5}
                         },
-                        "success": True,
+                        "success": False,
+                        "error": str(e),
                         "source": "simulation",
                         "note": "Dane symulowane - błąd API"
                     }
         except Exception as e:
-            logging.error(f"Błąd podczas pobierania salda konta: {e}")
+            self.logger.error(f"Krytyczny błąd podczas pobierania salda konta: {e}. Traceback: {traceback.format_exc()}")
             # Dane symulowane w przypadku błędu
             return {
                 "balances": {
