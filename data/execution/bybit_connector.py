@@ -277,9 +277,9 @@ class BybitConnector:
                         }
                     else:
                         # Prawdziwa implementacja lub symulacja jeśli połączenie nie działa
-                # Przygotowanie zasłoniętego klucza do logów
-                masked_key = f"{self.api_key[:4]}{'*' * (len(self.api_key) - 4)}" if self.api_key else "Brak klucza"
-                self.logger.info(f"Próba pobrania danych z {'PRODUKCYJNEGO' if not self.use_testnet else 'TESTOWEGO'} API Bybit. Klucz: {masked_key}")
+                        # Przygotowanie zasłoniętego klucza do logów
+                        masked_key = f"{self.api_key[:4]}{'*' * (len(self.api_key) - 4)}" if self.api_key else "Brak klucza"
+                        self.logger.info(f"Próba pobrania danych z {'PRODUKCYJNEGO' if not self.use_testnet else 'TESTOWEGO'} API Bybit. Klucz: {masked_key}")
                 self.logger.info(f"Status API: {'Produkcyjne' if not self.use_testnet else 'Testnet'}")
 
                 try:

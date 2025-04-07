@@ -89,3 +89,24 @@ Główne biblioteki (z oryginalnego projektu, może wymagać aktualizacji):
 - Scikit-learn - modele ML do analizy i predykcji
 - Matplotlib/Chart.js - wizualizacja danych
 - ByBit API client library (dodatkowa biblioteka do integracji z ByBit)
+
+## 🔧 Rozwiązywanie problemów
+
+### Problemy z zależnościami
+W przypadku konfliktów zależności, możesz użyć:
+```
+pip install -r requirements.txt --no-dependencies
+```
+Następnie doinstalować brakujące pakiety ręcznie.
+
+### Błędy importu
+Jeśli napotkasz błędy związane z importem modułów, uruchom:
+```
+python fix_imports.py
+```
+
+### Testy
+Aby naprawić i uruchomić testy:
+```
+python fix_tests.py
+```
