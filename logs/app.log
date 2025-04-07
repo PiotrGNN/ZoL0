@@ -3427,3 +3427,64 @@ Original error was: No module named 'numpy.core._multiarray_umath'
 2025-04-07 16:01:23,040 [INFO] System zainicjalizowany poprawnie
 2025-04-07 16:01:23,058 [WARNING]  * Debugger is active!
 2025-04-07 16:01:23,185 [INFO]  * Debugger PIN: 128-889-060
+2025-04-07 16:25:29,754 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 16:25:29,798 [INFO] Moduły wykluczone z automatycznego importu: {'tests'}
+2025-04-07 16:25:29,798 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 16:25:29,798 [INFO] Inicjalizacja systemu powiadomień
+2025-04-07 16:25:29,798 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 16:25:29,798 [INFO] Inicjalizacja analizatora sentymentu
+2025-04-07 16:25:29,798 [INFO] Inicjalizacja detektora anomalii
+2025-04-07 16:25:29,798 [INFO] Initialized ByBit connector. Testnet: True
+2025-04-07 16:25:29,910 [ERROR] Błąd podczas pobierania czasu serwera ByBit: Expecting value: line 1 column 1 (char 0)
+2025-04-07 16:25:29,910 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': False, 'error': 'Expecting value: line 1 column 1 (char 0)', 'time': 1744043129, 'timeISO': '2025-04-07T16:25:29.910316', 'note': 'Symulowane dane z powodu błędu'}
+2025-04-07 16:25:29,910 [INFO] System zainicjalizowany poprawnie
+2025-04-07 16:25:29,910 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 16:25:29,982 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.72:5000
+2025-04-07 16:25:29,982 [INFO] [33mPress CTRL+C to quit[0m
+2025-04-07 16:25:30,087 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 16:25:33,343 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 16:25:33,370 [INFO] Moduły wykluczone z automatycznego importu: {'tests'}
+2025-04-07 16:25:33,371 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 16:25:33,371 [INFO] Inicjalizacja systemu powiadomień
+2025-04-07 16:25:33,371 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 16:25:33,372 [INFO] Inicjalizacja analizatora sentymentu
+2025-04-07 16:25:33,373 [INFO] Inicjalizacja detektora anomalii
+2025-04-07 16:25:33,374 [INFO] Initialized ByBit connector. Testnet: True
+2025-04-07 16:25:33,463 [ERROR] Błąd podczas pobierania czasu serwera ByBit: Expecting value: line 1 column 1 (char 0)
+2025-04-07 16:25:33,463 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': False, 'error': 'Expecting value: line 1 column 1 (char 0)', 'time': 1744043133, 'timeISO': '2025-04-07T16:25:33.463892', 'note': 'Symulowane dane z powodu błędu'}
+2025-04-07 16:25:33,464 [INFO] System zainicjalizowany poprawnie
+2025-04-07 16:25:33,464 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 16:25:33,495 [WARNING]  * Debugger is active!
+2025-04-07 16:25:33,632 [INFO]  * Debugger PIN: 513-639-974
+2025-04-07 16:25:49,880 [INFO]  * Detected change in '/home/runner/workspace/data/utils/error_handling.py', reloading
+2025-04-07 16:25:49,881 [INFO]  * Detected change in '/home/runner/workspace/data/utils/notification_system.py', reloading
+2025-04-07 16:25:49,881 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 16:25:49,881 [INFO]  * Detected change in '/home/runner/workspace/data/logging/error_logger.py', reloading
+2025-04-07 16:25:49,881 [INFO]  * Detected change in '/home/runner/workspace/fix_tests.py', reloading
+2025-04-07 16:25:49,882 [INFO]  * Detected change in '/home/runner/workspace/auto_fix_tests.py', reloading
+2025-04-07 16:25:49,883 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 16:25:49,883 [INFO]  * Detected change in '/home/runner/workspace/ai_models/sentiment_ai.py', reloading
+2025-04-07 16:25:49,884 [INFO]  * Detected change in '/home/runner/workspace/data/logging/trade_logger.py', reloading
+2025-04-07 16:25:49,887 [INFO]  * Detected change in '/home/runner/workspace/fix_imports.py', reloading
+2025-04-07 16:25:49,950 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 16:25:49,996 [INFO]  * Detected change in '/home/runner/workspace/config/config_loader.py', reloading
+2025-04-07 16:25:50,038 [INFO]  * Detected change in '/home/runner/workspace/config/settings.py', reloading
+2025-04-07 16:25:50,085 [INFO]  * Detected change in '/home/runner/workspace/data/utils/error_handling.py', reloading
+2025-04-07 16:25:51,435 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 16:25:54,243 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 16:25:54,257 [INFO] Moduły wykluczone z automatycznego importu: {'tests'}
+2025-04-07 16:25:54,257 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 16:25:54,258 [INFO] Inicjalizacja systemu powiadomień
+2025-04-07 16:25:54,258 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 16:25:54,258 [INFO] Inicjalizacja analizatora sentymentu
+2025-04-07 16:25:54,258 [INFO] Inicjalizacja detektora anomalii
+2025-04-07 16:25:54,258 [INFO] Initialized ByBit connector. Testnet: True
+2025-04-07 16:25:54,345 [ERROR] Błąd podczas pobierania czasu serwera ByBit: Expecting value: line 1 column 1 (char 0)
+2025-04-07 16:25:54,346 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': False, 'error': 'Expecting value: line 1 column 1 (char 0)', 'time': 1744043154, 'timeISO': '2025-04-07T16:25:54.345896', 'note': 'Symulowane dane z powodu błędu'}
+2025-04-07 16:25:54,347 [INFO] System zainicjalizowany poprawnie
+2025-04-07 16:25:54,347 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 16:25:54,365 [WARNING]  * Debugger is active!
+2025-04-07 16:25:54,368 [INFO]  * Debugger PIN: 363-430-604
