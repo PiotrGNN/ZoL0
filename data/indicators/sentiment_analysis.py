@@ -39,6 +39,33 @@ class SentimentAnalyzer:
         self.history = []
         self.last_update = datetime.now()
         self.update_interval = 3600  # Domyślnie co godzinę
+        
+    def get_current_sentiment(self):
+        """
+        Zwraca aktualny sentyment rynkowy w formacie tekstowym.
+        
+        Returns:
+            str: Tekstowy opis aktualnego sentymentu rynku
+        """
+        # Pobieramy ostatnią analizę lub generujemy nową
+        if not self.history:
+            analysis = self._generate_simulated_data("1d")
+        else:
+            analysis = self.history[-1]
+            
+        # Określamy sentyment na podstawie wyniku
+        score = analysis.get("overall_score", 0) if isinstance(analysis, dict) else 0
+        
+        if score > 0.5:
+            return "Zdecydowanie pozytywny"
+        elif score > 0.2:
+            return "Pozytywny"
+        elif score > -0.2:
+            return "Neutralny"
+        elif score > -0.5:
+            return "Negatywny"
+        else:
+            return "Zdecydowanie negatywny"
 
         # Inicjalizacja NLTK VADER jeśli jest dostępny
         self.nltk_analyzer = None
