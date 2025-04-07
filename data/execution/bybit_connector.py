@@ -265,16 +265,16 @@ class BybitConnector:
                 try:
                     # Testowa implementacja (symulacja)
                     if self.use_testnet:
-                # Symulowane dane do celów testowych
-                self.logger.info("Pobieranie danych z testnet")
-                return {
-                    "balances": {
-                        "BTC": {"equity": 0.015, "available_balance": 0.015, "wallet_balance": 0.015},
-                        "USDT": {"equity": 1200, "available_balance": 1150, "wallet_balance": 1200}
-                    },
-                    "success": True,
-                    "note": "Dane testowe - tryb testnet"
-                }
+                    # Symulowane dane do celów testowych
+                    self.logger.info("Pobieranie danych z testnet")
+                    return {
+                        "balances": {
+                            "BTC": {"equity": 0.015, "available_balance": 0.015, "wallet_balance": 0.015},
+                            "USDT": {"equity": 1200, "available_balance": 1150, "wallet_balance": 1200}
+                        },
+                        "success": True,
+                        "note": "Dane testowe - tryb testnet"
+                    }
             else:
                 # Prawdziwa implementacja lub symulacja jeśli połączenie nie działa
                 # Przygotowanie zasłoniętego klucza do logów
