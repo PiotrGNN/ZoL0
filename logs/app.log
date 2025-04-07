@@ -32302,3 +32302,1426 @@ Request → GET https://api.bybit.com/spot/v1/time: {}.
 Request → GET https://api.bybit.com/spot/v1/time: {}.
 2025-04-07 19:55:35,193 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
 2025-04-07 19:55:35,194 [INFO] 172.31.128.24 - - [07/Apr/2025 19:55:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:55:41,663 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:55:42,650 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:55:44,475 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:55:44,486 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:55:44,486 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:55:44,486 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:55:44,486 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:55:44,486 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:55:44,487 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:55:44,487 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:55:44,487 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:55:44,519 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 19:55:44,663 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:55:44).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 19:55:44,663 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 19:55:44,664 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:55:44,664 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744055744664, 'time': '2025-04-07 19:55:44'}
+2025-04-07 19:55:44,664 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:55:44,664 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:55:44,676 [WARNING]  * Debugger is active!
+2025-04-07 19:55:44,678 [INFO]  * Debugger PIN: 114-512-156
+2025-04-07 19:56:33,673 [INFO] 172.31.128.24 - - [07/Apr/2025 19:56:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:56:33,674 [INFO] 172.31.128.24 - - [07/Apr/2025 19:56:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:56:33,675 [INFO] 172.31.128.24 - - [07/Apr/2025 19:56:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:56:33,676 [INFO] 172.31.128.24 - - [07/Apr/2025 19:56:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 19:56:33,678 [INFO] 172.31.128.24 - - [07/Apr/2025 19:56:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:56:33,679 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:56:33,682 [INFO] Status API: Produkcyjne
+2025-04-07 19:56:33,808 [INFO] 172.31.128.24 - - [07/Apr/2025 19:56:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:56:33,812 [INFO] 172.31.128.24 - - [07/Apr/2025 19:56:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 19:56:35,197 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:56:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 19:56:35,198 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 19:56:35,199 [INFO] 172.31.128.24 - - [07/Apr/2025 19:56:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:56:36,981 [INFO]  * Detected change in '/home/runner/workspace/data/execution/.bybit_connector.py.823486188~', reloading
+2025-04-07 19:56:36,994 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:56:37,088 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:56:37,092 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:56:37,477 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:56:37,480 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:56:37,497 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:56:38,432 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:56:40,890 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:56:40,905 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:56:40,905 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:56:40,905 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:56:40,905 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:56:40,906 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:56:40,906 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:56:40,906 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:56:40,906 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:56:40,946 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 19:56:41,056 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:56:41).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 19:56:41,056 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 19:56:41,056 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:56:41,057 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744055801057, 'time': '2025-04-07 19:56:41'}
+2025-04-07 19:56:41,057 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:56:41,057 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:56:41,073 [WARNING]  * Debugger is active!
+2025-04-07 19:56:41,077 [INFO]  * Debugger PIN: 129-979-417
+2025-04-07 19:56:45,971 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 19:56:45,975 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 19:56:45,976 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:56:45,977 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 19:56:45,978 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:56:45,978 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 19:56:45,979 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:56:45,979 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:56:45,980 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:56:45,980 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 19:56:45,980 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:56:45,983 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:56:45,984 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:56:45,984 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:56:45,987 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:56:45,988 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:56:45,989 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:56:45,990 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:56:45,995 [INFO]  * Detected change in '/home/runner/workspace/data/execution/__init__.py', reloading
+2025-04-07 19:56:45,995 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 19:56:45,996 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:56:46,126 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 19:56:46,175 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 19:56:47,475 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:56:50,971 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:56:50,982 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:56:50,983 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:56:50,983 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:56:50,983 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:56:50,983 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:56:50,983 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:56:50,983 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:56:50,984 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:56:51,014 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 19:56:51,161 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:56:51).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 19:56:51,161 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 19:56:51,162 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:56:51,162 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744055811162, 'time': '2025-04-07 19:56:51'}
+2025-04-07 19:56:51,162 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:56:51,162 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:56:51,175 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.24:5000
+2025-04-07 19:56:51,175 [INFO] [33mPress CTRL+C to quit[0m
+2025-04-07 19:56:51,185 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:56:53,068 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:56:53,079 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:56:53,079 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:56:53,080 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:56:53,080 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:56:53,080 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:56:53,080 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:56:53,080 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:56:53,081 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:56:53,114 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 19:56:53,174 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:56:53).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 19:56:53,174 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 19:56:53,174 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:56:53,174 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744055813174, 'time': '2025-04-07 19:56:53'}
+2025-04-07 19:56:53,174 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:56:53,174 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:56:53,186 [WARNING]  * Debugger is active!
+2025-04-07 19:56:53,189 [INFO]  * Debugger PIN: 143-534-269
+2025-04-07 19:56:54,677 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:56:54,682 [INFO] Status API: Produkcyjne
+2025-04-07 19:56:56,199 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:56:56).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 19:56:56,201 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 19:56:56,202 [INFO] Pobrano portfolio: {'balances': {'BTC': {'equity': 0.025, 'available_balance': 0.02, 'wallet_balance': 0.025}, 'USDT': {'equity': 1500, 'available_balance': 1450, 'wallet_balance': 1500}, 'ETH': {'equity': 0.5, 'available_balance': 0.5, 'wallet_balance': 0.5}}, 'success': True, 'warning': 'Przekroczono limit zapytań API. Dane symulowane.', 'source': 'simulation_rate_limited', 'note': 'Przekroczono limit zapytań API. Odczekaj chwilę przed ponowną próbą.'}
+2025-04-07 19:56:56,239 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/encodings/unicode_escape.py', reloading
+2025-04-07 19:56:56,240 [INFO] 172.31.128.24 - - [07/Apr/2025 19:56:56] "GET / HTTP/1.1" 200 -
+2025-04-07 19:56:56,548 [INFO] 172.31.128.24 - - [07/Apr/2025 19:56:56] "[36mGET /static/js/dashboard.js HTTP/1.1[0m" 304 -
+2025-04-07 19:56:56,583 [INFO] 172.31.128.24 - - [07/Apr/2025 19:56:56] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-04-07 19:56:57,199 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 19:56:59,077 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:56:59,091 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:56:59,091 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 19:56:59,092 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:56:59,092 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 19:56:59,092 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 19:56:59,092 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 19:56:59,092 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 19:56:59,092 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 19:56:59,131 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 19:56:59,190 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:56:59).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 19:56:59,190 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 19:56:59,191 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 19:56:59,191 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744055819191, 'time': '2025-04-07 19:56:59'}
+2025-04-07 19:56:59,191 [INFO] System zainicjalizowany poprawnie
+2025-04-07 19:56:59,191 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 19:56:59,206 [WARNING]  * Debugger is active!
+2025-04-07 19:56:59,209 [INFO]  * Debugger PIN: 698-926-548
+2025-04-07 19:57:33,664 [INFO] 172.31.128.24 - - [07/Apr/2025 19:57:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:57:33,666 [INFO] 172.31.128.24 - - [07/Apr/2025 19:57:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 19:57:33,668 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:57:33,670 [INFO] Status API: Produkcyjne
+2025-04-07 19:57:33,672 [INFO] 172.31.128.24 - - [07/Apr/2025 19:57:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:57:33,673 [INFO] 172.31.128.24 - - [07/Apr/2025 19:57:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:57:33,676 [INFO] 172.31.128.24 - - [07/Apr/2025 19:57:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:57:33,800 [INFO] 172.31.128.24 - - [07/Apr/2025 19:57:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 19:57:33,806 [INFO] 172.31.128.24 - - [07/Apr/2025 19:57:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:57:35,186 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:57:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 19:57:35,187 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 19:57:35,188 [INFO] 172.31.128.24 - - [07/Apr/2025 19:57:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:58:33,659 [INFO] 172.31.128.24 - - [07/Apr/2025 19:58:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 19:58:33,660 [INFO] 172.31.128.24 - - [07/Apr/2025 19:58:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:58:33,662 [INFO] 172.31.128.24 - - [07/Apr/2025 19:58:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:58:33,663 [INFO] 172.31.128.24 - - [07/Apr/2025 19:58:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:58:33,665 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:58:33,665 [INFO] Status API: Produkcyjne
+2025-04-07 19:58:33,725 [INFO] 172.31.128.24 - - [07/Apr/2025 19:58:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:58:33,787 [INFO] 172.31.128.24 - - [07/Apr/2025 19:58:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:58:33,795 [INFO] 172.31.128.24 - - [07/Apr/2025 19:58:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 19:58:35,180 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:58:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 19:58:35,181 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 19:58:35,182 [INFO] 172.31.128.24 - - [07/Apr/2025 19:58:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 19:59:33,662 [INFO] 172.31.128.24 - - [07/Apr/2025 19:59:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 19:59:33,665 [INFO] 172.31.128.24 - - [07/Apr/2025 19:59:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 19:59:33,666 [INFO] 172.31.128.24 - - [07/Apr/2025 19:59:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 19:59:33,668 [INFO] 172.31.128.24 - - [07/Apr/2025 19:59:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 19:59:33,671 [INFO] 172.31.128.24 - - [07/Apr/2025 19:59:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 19:59:33,673 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 19:59:33,673 [INFO] Status API: Produkcyjne
+2025-04-07 19:59:33,796 [INFO] 172.31.128.24 - - [07/Apr/2025 19:59:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 19:59:33,797 [INFO] 172.31.128.24 - - [07/Apr/2025 19:59:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 19:59:35,188 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 19:59:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 19:59:35,189 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 19:59:35,190 [INFO] 172.31.128.24 - - [07/Apr/2025 19:59:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:00:33,663 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:00:33,663 [INFO] Status API: Produkcyjne
+2025-04-07 20:00:33,667 [INFO] 172.31.128.24 - - [07/Apr/2025 20:00:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:00:33,692 [INFO] 172.31.128.24 - - [07/Apr/2025 20:00:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:00:33,724 [INFO] 172.31.128.24 - - [07/Apr/2025 20:00:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:00:33,728 [INFO] 172.31.128.24 - - [07/Apr/2025 20:00:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:00:33,741 [INFO] 172.31.128.24 - - [07/Apr/2025 20:00:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:00:33,826 [INFO] 172.31.128.24 - - [07/Apr/2025 20:00:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:00:33,858 [INFO] 172.31.128.24 - - [07/Apr/2025 20:00:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:00:35,178 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:00:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:00:35,179 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:00:35,180 [INFO] 172.31.128.24 - - [07/Apr/2025 20:00:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:01:33,658 [INFO] 172.31.128.24 - - [07/Apr/2025 20:01:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:01:33,660 [INFO] 172.31.128.24 - - [07/Apr/2025 20:01:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:01:33,664 [INFO] 172.31.128.24 - - [07/Apr/2025 20:01:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:01:33,666 [INFO] 172.31.128.24 - - [07/Apr/2025 20:01:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:01:33,670 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:01:33,671 [INFO] Status API: Produkcyjne
+2025-04-07 20:01:33,728 [INFO] 172.31.128.24 - - [07/Apr/2025 20:01:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:01:33,793 [INFO] 172.31.128.24 - - [07/Apr/2025 20:01:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:01:33,796 [INFO] 172.31.128.24 - - [07/Apr/2025 20:01:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:01:35,189 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:01:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:01:35,190 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:01:35,191 [INFO] 172.31.128.24 - - [07/Apr/2025 20:01:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:02:33,665 [INFO] 172.31.128.24 - - [07/Apr/2025 20:02:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:02:33,668 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:02:33,672 [INFO] Status API: Produkcyjne
+2025-04-07 20:02:33,689 [INFO] 172.31.128.24 - - [07/Apr/2025 20:02:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:02:33,694 [INFO] 172.31.128.24 - - [07/Apr/2025 20:02:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:02:33,696 [INFO] 172.31.128.24 - - [07/Apr/2025 20:02:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:02:33,725 [INFO] 172.31.128.24 - - [07/Apr/2025 20:02:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:02:33,796 [INFO] 172.31.128.24 - - [07/Apr/2025 20:02:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:02:33,820 [INFO] 172.31.128.24 - - [07/Apr/2025 20:02:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:02:35,186 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:02:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:02:35,187 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:02:35,188 [INFO] 172.31.128.24 - - [07/Apr/2025 20:02:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:03:33,664 [INFO] 172.31.128.24 - - [07/Apr/2025 20:03:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:03:33,666 [INFO] 172.31.128.24 - - [07/Apr/2025 20:03:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:03:33,668 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:03:33,671 [INFO] 172.31.128.24 - - [07/Apr/2025 20:03:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:03:33,669 [INFO] Status API: Produkcyjne
+2025-04-07 20:03:33,675 [INFO] 172.31.128.24 - - [07/Apr/2025 20:03:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:03:33,678 [INFO] 172.31.128.24 - - [07/Apr/2025 20:03:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:03:33,796 [INFO] 172.31.128.24 - - [07/Apr/2025 20:03:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:03:33,800 [INFO] 172.31.128.24 - - [07/Apr/2025 20:03:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:03:35,194 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:03:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:03:35,194 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:03:35,195 [INFO] 172.31.128.24 - - [07/Apr/2025 20:03:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:04:33,661 [INFO] 172.31.128.24 - - [07/Apr/2025 20:04:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:04:33,667 [INFO] 172.31.128.24 - - [07/Apr/2025 20:04:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:04:33,670 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:04:33,673 [INFO] 172.31.128.24 - - [07/Apr/2025 20:04:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:04:33,676 [INFO] 172.31.128.24 - - [07/Apr/2025 20:04:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:04:33,680 [INFO] Status API: Produkcyjne
+2025-04-07 20:04:33,725 [INFO] 172.31.128.24 - - [07/Apr/2025 20:04:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:04:33,793 [INFO] 172.31.128.24 - - [07/Apr/2025 20:04:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:04:33,813 [INFO] 172.31.128.24 - - [07/Apr/2025 20:04:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:04:35,195 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:04:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:04:35,202 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:04:35,205 [INFO] 172.31.128.24 - - [07/Apr/2025 20:04:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:05:33,668 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:05:33,672 [INFO] 172.31.128.24 - - [07/Apr/2025 20:05:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:05:33,669 [INFO] Status API: Produkcyjne
+2025-04-07 20:05:33,680 [INFO] 172.31.128.24 - - [07/Apr/2025 20:05:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:05:33,675 [INFO] 172.31.128.24 - - [07/Apr/2025 20:05:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:05:33,678 [INFO] 172.31.128.24 - - [07/Apr/2025 20:05:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:05:33,674 [INFO] 172.31.128.24 - - [07/Apr/2025 20:05:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:05:33,813 [INFO] 172.31.128.24 - - [07/Apr/2025 20:05:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:05:33,900 [INFO] 172.31.128.24 - - [07/Apr/2025 20:05:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:05:35,194 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:05:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:05:35,197 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:05:35,201 [INFO] 172.31.128.24 - - [07/Apr/2025 20:05:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:06:33,658 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:06:33,659 [INFO] Status API: Produkcyjne
+2025-04-07 20:06:33,665 [INFO] 172.31.128.24 - - [07/Apr/2025 20:06:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:06:33,668 [INFO] 172.31.128.24 - - [07/Apr/2025 20:06:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:06:33,710 [INFO] 172.31.128.24 - - [07/Apr/2025 20:06:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:06:33,712 [INFO] 172.31.128.24 - - [07/Apr/2025 20:06:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:06:33,721 [INFO] 172.31.128.24 - - [07/Apr/2025 20:06:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:06:33,800 [INFO] 172.31.128.24 - - [07/Apr/2025 20:06:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:06:33,868 [INFO] 172.31.128.24 - - [07/Apr/2025 20:06:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:06:35,174 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:06:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:06:35,176 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:06:35,178 [INFO] 172.31.128.24 - - [07/Apr/2025 20:06:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:07:34,051 [INFO] 172.31.128.24 - - [07/Apr/2025 20:07:34] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:07:34,058 [INFO] 172.31.128.24 - - [07/Apr/2025 20:07:34] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:07:34,159 [INFO] 172.31.128.24 - - [07/Apr/2025 20:07:34] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:07:34,161 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:07:34,162 [INFO] Status API: Produkcyjne
+2025-04-07 20:07:34,176 [INFO] 172.31.128.24 - - [07/Apr/2025 20:07:34] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:07:34,182 [INFO] 172.31.128.24 - - [07/Apr/2025 20:07:34] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:07:34,184 [INFO] 172.31.128.24 - - [07/Apr/2025 20:07:34] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:07:34,292 [INFO] 172.31.128.24 - - [07/Apr/2025 20:07:34] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:07:35,677 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:07:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:07:35,678 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:07:35,679 [INFO] 172.31.128.24 - - [07/Apr/2025 20:07:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:08:33,655 [INFO] 172.31.128.24 - - [07/Apr/2025 20:08:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:08:33,658 [INFO] 172.31.128.24 - - [07/Apr/2025 20:08:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:08:33,659 [INFO] 172.31.128.24 - - [07/Apr/2025 20:08:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:08:33,661 [INFO] 172.31.128.24 - - [07/Apr/2025 20:08:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:08:33,662 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:08:33,664 [INFO] 172.31.128.24 - - [07/Apr/2025 20:08:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:08:33,665 [INFO] Status API: Produkcyjne
+2025-04-07 20:08:33,788 [INFO] 172.31.128.24 - - [07/Apr/2025 20:08:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:08:33,792 [INFO] 172.31.128.24 - - [07/Apr/2025 20:08:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:08:35,180 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:08:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:08:35,183 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:08:35,185 [INFO] 172.31.128.24 - - [07/Apr/2025 20:08:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:09:33,651 [INFO] 172.31.128.24 - - [07/Apr/2025 20:09:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:09:33,653 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:09:33,653 [INFO] Status API: Produkcyjne
+2025-04-07 20:09:33,657 [INFO] 172.31.128.24 - - [07/Apr/2025 20:09:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:09:33,659 [INFO] 172.31.128.24 - - [07/Apr/2025 20:09:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:09:33,661 [INFO] 172.31.128.24 - - [07/Apr/2025 20:09:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:09:33,668 [INFO] 172.31.128.24 - - [07/Apr/2025 20:09:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:09:33,785 [INFO] 172.31.128.24 - - [07/Apr/2025 20:09:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:09:33,792 [INFO] 172.31.128.24 - - [07/Apr/2025 20:09:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:09:35,170 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:09:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:09:35,171 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:09:35,173 [INFO] 172.31.128.24 - - [07/Apr/2025 20:09:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:10:33,654 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:10:33,654 [INFO] Status API: Produkcyjne
+2025-04-07 20:10:33,658 [INFO] 172.31.128.24 - - [07/Apr/2025 20:10:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:10:33,661 [INFO] 172.31.128.24 - - [07/Apr/2025 20:10:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:10:33,663 [INFO] 172.31.128.24 - - [07/Apr/2025 20:10:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:10:33,665 [INFO] 172.31.128.24 - - [07/Apr/2025 20:10:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:10:33,669 [INFO] 172.31.128.24 - - [07/Apr/2025 20:10:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:10:33,796 [INFO] 172.31.128.24 - - [07/Apr/2025 20:10:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:10:33,798 [INFO] 172.31.128.24 - - [07/Apr/2025 20:10:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:10:35,172 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:10:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:10:35,173 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:10:35,175 [INFO] 172.31.128.24 - - [07/Apr/2025 20:10:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:11:33,651 [INFO] 172.31.128.24 - - [07/Apr/2025 20:11:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:11:33,656 [INFO] 172.31.128.24 - - [07/Apr/2025 20:11:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:11:33,660 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:11:33,663 [INFO] Status API: Produkcyjne
+2025-04-07 20:11:33,666 [INFO] 172.31.128.24 - - [07/Apr/2025 20:11:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:11:33,669 [INFO] 172.31.128.24 - - [07/Apr/2025 20:11:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:11:33,718 [INFO] 172.31.128.24 - - [07/Apr/2025 20:11:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:11:33,862 [INFO] 172.31.128.24 - - [07/Apr/2025 20:11:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:11:33,866 [INFO] 172.31.128.24 - - [07/Apr/2025 20:11:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:11:35,181 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:11:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:11:35,183 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:11:35,190 [INFO] 172.31.128.24 - - [07/Apr/2025 20:11:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:12:33,651 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:12:33,651 [INFO] Status API: Produkcyjne
+2025-04-07 20:12:33,656 [INFO] 172.31.128.24 - - [07/Apr/2025 20:12:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:12:33,657 [INFO] 172.31.128.24 - - [07/Apr/2025 20:12:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:12:33,660 [INFO] 172.31.128.24 - - [07/Apr/2025 20:12:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:12:33,661 [INFO] 172.31.128.24 - - [07/Apr/2025 20:12:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:12:33,711 [INFO] 172.31.128.24 - - [07/Apr/2025 20:12:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:12:33,792 [INFO] 172.31.128.24 - - [07/Apr/2025 20:12:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:12:33,804 [INFO] 172.31.128.24 - - [07/Apr/2025 20:12:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:12:35,166 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:12:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:12:35,167 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:12:35,169 [INFO] 172.31.128.24 - - [07/Apr/2025 20:12:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:13:33,650 [INFO] 172.31.128.24 - - [07/Apr/2025 20:13:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:13:33,654 [INFO] 172.31.128.24 - - [07/Apr/2025 20:13:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:13:33,657 [INFO] 172.31.128.24 - - [07/Apr/2025 20:13:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:13:33,659 [INFO] 172.31.128.24 - - [07/Apr/2025 20:13:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:13:33,701 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:13:33,702 [INFO] Status API: Produkcyjne
+2025-04-07 20:13:33,752 [INFO] 172.31.128.24 - - [07/Apr/2025 20:13:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:13:33,781 [INFO] 172.31.128.24 - - [07/Apr/2025 20:13:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:13:33,791 [INFO] 172.31.128.24 - - [07/Apr/2025 20:13:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:13:35,216 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:13:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:13:35,218 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:13:35,219 [INFO] 172.31.128.24 - - [07/Apr/2025 20:13:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:14:33,650 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:14:33,652 [INFO] 172.31.128.24 - - [07/Apr/2025 20:14:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:14:33,654 [INFO] 172.31.128.24 - - [07/Apr/2025 20:14:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:14:33,656 [INFO] 172.31.128.24 - - [07/Apr/2025 20:14:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:14:33,653 [INFO] Status API: Produkcyjne
+2025-04-07 20:14:33,658 [INFO] 172.31.128.24 - - [07/Apr/2025 20:14:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:14:33,659 [INFO] 172.31.128.24 - - [07/Apr/2025 20:14:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:14:33,784 [INFO] 172.31.128.24 - - [07/Apr/2025 20:14:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:14:33,792 [INFO] 172.31.128.24 - - [07/Apr/2025 20:14:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:14:35,174 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:14:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:14:35,175 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:14:35,176 [INFO] 172.31.128.24 - - [07/Apr/2025 20:14:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:15:33,656 [INFO] 172.31.128.24 - - [07/Apr/2025 20:15:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:15:33,658 [INFO] 172.31.128.24 - - [07/Apr/2025 20:15:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:15:33,661 [INFO] 172.31.128.24 - - [07/Apr/2025 20:15:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:15:33,663 [INFO] 172.31.128.24 - - [07/Apr/2025 20:15:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:15:33,664 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:15:33,668 [INFO] 172.31.128.24 - - [07/Apr/2025 20:15:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:15:33,669 [INFO] Status API: Produkcyjne
+2025-04-07 20:15:33,793 [INFO] 172.31.128.24 - - [07/Apr/2025 20:15:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:15:33,797 [INFO] 172.31.128.24 - - [07/Apr/2025 20:15:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:15:35,185 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:15:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:15:35,186 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:15:35,187 [INFO] 172.31.128.24 - - [07/Apr/2025 20:15:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:16:33,651 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:16:33,656 [INFO] 172.31.128.24 - - [07/Apr/2025 20:16:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:16:33,657 [INFO] Status API: Produkcyjne
+2025-04-07 20:16:33,660 [INFO] 172.31.128.24 - - [07/Apr/2025 20:16:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:16:33,664 [INFO] 172.31.128.24 - - [07/Apr/2025 20:16:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:16:33,665 [INFO] 172.31.128.24 - - [07/Apr/2025 20:16:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:16:33,666 [INFO] 172.31.128.24 - - [07/Apr/2025 20:16:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:16:33,791 [INFO] 172.31.128.24 - - [07/Apr/2025 20:16:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:16:33,846 [INFO] 172.31.128.24 - - [07/Apr/2025 20:16:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:16:35,176 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:16:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:16:35,177 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:16:35,178 [INFO] 172.31.128.24 - - [07/Apr/2025 20:16:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:17:33,659 [INFO] 172.31.128.24 - - [07/Apr/2025 20:17:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:17:33,662 [INFO] 172.31.128.24 - - [07/Apr/2025 20:17:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:17:33,660 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:17:33,665 [INFO] 172.31.128.24 - - [07/Apr/2025 20:17:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:17:33,666 [INFO] Status API: Produkcyjne
+2025-04-07 20:17:33,711 [INFO] 172.31.128.24 - - [07/Apr/2025 20:17:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:17:33,714 [INFO] 172.31.128.24 - - [07/Apr/2025 20:17:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:17:33,799 [INFO] 172.31.128.24 - - [07/Apr/2025 20:17:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:17:33,860 [INFO] 172.31.128.24 - - [07/Apr/2025 20:17:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:17:35,181 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:17:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:17:35,182 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:17:35,183 [INFO] 172.31.128.24 - - [07/Apr/2025 20:17:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:18:33,657 [INFO] 172.31.128.24 - - [07/Apr/2025 20:18:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:18:33,658 [INFO] 172.31.128.24 - - [07/Apr/2025 20:18:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:18:33,663 [INFO] 172.31.128.24 - - [07/Apr/2025 20:18:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:18:33,666 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:18:33,668 [INFO] Status API: Produkcyjne
+2025-04-07 20:18:33,674 [INFO] 172.31.128.24 - - [07/Apr/2025 20:18:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:18:33,677 [INFO] 172.31.128.24 - - [07/Apr/2025 20:18:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:18:33,792 [INFO] 172.31.128.24 - - [07/Apr/2025 20:18:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:18:33,843 [INFO] 172.31.128.24 - - [07/Apr/2025 20:18:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:18:35,184 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:18:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:18:35,186 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:18:35,187 [INFO] 172.31.128.24 - - [07/Apr/2025 20:18:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:19:33,656 [INFO] 172.31.128.24 - - [07/Apr/2025 20:19:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:19:33,662 [INFO] 172.31.128.24 - - [07/Apr/2025 20:19:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:19:33,665 [INFO] 172.31.128.24 - - [07/Apr/2025 20:19:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:19:33,671 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:19:33,673 [INFO] 172.31.128.24 - - [07/Apr/2025 20:19:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:19:33,673 [INFO] Status API: Produkcyjne
+2025-04-07 20:19:33,716 [INFO] 172.31.128.24 - - [07/Apr/2025 20:19:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:19:33,788 [INFO] 172.31.128.24 - - [07/Apr/2025 20:19:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:19:33,800 [INFO] 172.31.128.24 - - [07/Apr/2025 20:19:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:19:35,190 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:19:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:19:35,194 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:19:35,195 [INFO] 172.31.128.24 - - [07/Apr/2025 20:19:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:20:33,662 [INFO] 172.31.128.24 - - [07/Apr/2025 20:20:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:20:33,663 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:20:33,665 [INFO] 172.31.128.24 - - [07/Apr/2025 20:20:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:20:33,667 [INFO] 172.31.128.24 - - [07/Apr/2025 20:20:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:20:33,667 [INFO] Status API: Produkcyjne
+2025-04-07 20:20:33,669 [INFO] 172.31.128.24 - - [07/Apr/2025 20:20:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:20:33,672 [INFO] 172.31.128.24 - - [07/Apr/2025 20:20:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:20:33,796 [INFO] 172.31.128.24 - - [07/Apr/2025 20:20:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:20:33,797 [INFO] 172.31.128.24 - - [07/Apr/2025 20:20:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:20:35,186 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:20:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:20:35,188 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:20:35,190 [INFO] 172.31.128.24 - - [07/Apr/2025 20:20:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:21:33,654 [INFO] 172.31.128.24 - - [07/Apr/2025 20:21:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:21:33,658 [INFO] 172.31.128.24 - - [07/Apr/2025 20:21:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:21:33,663 [INFO] 172.31.128.24 - - [07/Apr/2025 20:21:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:21:33,661 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:21:33,665 [INFO] Status API: Produkcyjne
+2025-04-07 20:21:33,669 [INFO] 172.31.128.24 - - [07/Apr/2025 20:21:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:21:33,672 [INFO] 172.31.128.24 - - [07/Apr/2025 20:21:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:21:33,788 [INFO] 172.31.128.24 - - [07/Apr/2025 20:21:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:21:33,793 [INFO] 172.31.128.24 - - [07/Apr/2025 20:21:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:21:35,179 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:21:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:21:35,189 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:21:35,196 [INFO] 172.31.128.24 - - [07/Apr/2025 20:21:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:22:33,654 [INFO] 172.31.128.24 - - [07/Apr/2025 20:22:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:22:33,658 [INFO] 172.31.128.24 - - [07/Apr/2025 20:22:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:22:33,662 [INFO] 172.31.128.24 - - [07/Apr/2025 20:22:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:22:33,663 [INFO] 172.31.128.24 - - [07/Apr/2025 20:22:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:22:33,665 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:22:33,666 [INFO] Status API: Produkcyjne
+2025-04-07 20:22:33,743 [INFO] 172.31.128.24 - - [07/Apr/2025 20:22:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:22:33,788 [INFO] 172.31.128.24 - - [07/Apr/2025 20:22:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:22:33,827 [INFO] 172.31.128.24 - - [07/Apr/2025 20:22:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:22:35,184 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:22:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:22:35,185 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:22:35,187 [INFO] 172.31.128.24 - - [07/Apr/2025 20:22:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:23:33,655 [INFO] 172.31.128.24 - - [07/Apr/2025 20:23:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:23:33,657 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:23:33,658 [INFO] Status API: Produkcyjne
+2025-04-07 20:23:33,662 [INFO] 172.31.128.24 - - [07/Apr/2025 20:23:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:23:33,665 [INFO] 172.31.128.24 - - [07/Apr/2025 20:23:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:23:33,666 [INFO] 172.31.128.24 - - [07/Apr/2025 20:23:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:23:33,709 [INFO] 172.31.128.24 - - [07/Apr/2025 20:23:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:23:33,790 [INFO] 172.31.128.24 - - [07/Apr/2025 20:23:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:23:33,796 [INFO] 172.31.128.24 - - [07/Apr/2025 20:23:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:23:35,173 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:23:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:23:35,179 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:23:35,187 [INFO] 172.31.128.24 - - [07/Apr/2025 20:23:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:24:33,654 [INFO] 172.31.128.24 - - [07/Apr/2025 20:24:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:24:33,659 [INFO] 172.31.128.24 - - [07/Apr/2025 20:24:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:24:33,661 [INFO] 172.31.128.24 - - [07/Apr/2025 20:24:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:24:33,663 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:24:33,665 [INFO] 172.31.128.24 - - [07/Apr/2025 20:24:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:24:33,665 [INFO] Status API: Produkcyjne
+2025-04-07 20:24:33,720 [INFO] 172.31.128.24 - - [07/Apr/2025 20:24:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:24:33,787 [INFO] 172.31.128.24 - - [07/Apr/2025 20:24:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:24:33,795 [INFO] 172.31.128.24 - - [07/Apr/2025 20:24:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:24:35,185 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:24:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:24:35,186 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:24:35,188 [INFO] 172.31.128.24 - - [07/Apr/2025 20:24:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:25:33,651 [INFO] 172.31.128.24 - - [07/Apr/2025 20:25:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:25:33,652 [INFO] 172.31.128.24 - - [07/Apr/2025 20:25:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:25:33,655 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:25:33,656 [INFO] Status API: Produkcyjne
+2025-04-07 20:25:33,670 [INFO] 172.31.128.24 - - [07/Apr/2025 20:25:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:25:33,670 [INFO] 172.31.128.24 - - [07/Apr/2025 20:25:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:25:33,712 [INFO] 172.31.128.24 - - [07/Apr/2025 20:25:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:25:33,793 [INFO] 172.31.128.24 - - [07/Apr/2025 20:25:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:25:33,795 [INFO] 172.31.128.24 - - [07/Apr/2025 20:25:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:25:35,172 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:25:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:25:35,175 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:25:35,177 [INFO] 172.31.128.24 - - [07/Apr/2025 20:25:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:26:33,648 [INFO] 172.31.128.24 - - [07/Apr/2025 20:26:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:26:33,649 [INFO] 172.31.128.24 - - [07/Apr/2025 20:26:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:26:33,650 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:26:33,653 [INFO] 172.31.128.24 - - [07/Apr/2025 20:26:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:26:33,654 [INFO] 172.31.128.24 - - [07/Apr/2025 20:26:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:26:33,656 [INFO] 172.31.128.24 - - [07/Apr/2025 20:26:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:26:33,654 [INFO] Status API: Produkcyjne
+2025-04-07 20:26:33,784 [INFO] 172.31.128.24 - - [07/Apr/2025 20:26:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:26:33,785 [INFO] 172.31.128.24 - - [07/Apr/2025 20:26:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:26:35,173 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:26:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:26:35,174 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:26:35,176 [INFO] 172.31.128.24 - - [07/Apr/2025 20:26:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:27:33,654 [INFO] 172.31.128.24 - - [07/Apr/2025 20:27:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:27:33,656 [INFO] 172.31.128.24 - - [07/Apr/2025 20:27:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:27:33,658 [INFO] 172.31.128.24 - - [07/Apr/2025 20:27:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:27:33,660 [INFO] 172.31.128.24 - - [07/Apr/2025 20:27:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:27:33,665 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:27:33,667 [INFO] 172.31.128.24 - - [07/Apr/2025 20:27:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:27:33,666 [INFO] Status API: Produkcyjne
+2025-04-07 20:27:33,792 [INFO] 172.31.128.24 - - [07/Apr/2025 20:27:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:27:33,860 [INFO] 172.31.128.24 - - [07/Apr/2025 20:27:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:27:35,182 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:27:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:27:35,183 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:27:35,184 [INFO] 172.31.128.24 - - [07/Apr/2025 20:27:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:28:33,648 [INFO] 172.31.128.24 - - [07/Apr/2025 20:28:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:28:33,650 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:28:33,651 [INFO] Status API: Produkcyjne
+2025-04-07 20:28:33,656 [INFO] 172.31.128.24 - - [07/Apr/2025 20:28:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:28:33,665 [INFO] 172.31.128.24 - - [07/Apr/2025 20:28:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:28:33,717 [INFO] 172.31.128.24 - - [07/Apr/2025 20:28:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:28:33,725 [INFO] 172.31.128.24 - - [07/Apr/2025 20:28:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:28:33,792 [INFO] 172.31.128.24 - - [07/Apr/2025 20:28:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:28:33,840 [INFO] 172.31.128.24 - - [07/Apr/2025 20:28:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:28:35,165 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:28:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:28:35,167 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:28:35,169 [INFO] 172.31.128.24 - - [07/Apr/2025 20:28:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:29:33,651 [INFO] 172.31.128.24 - - [07/Apr/2025 20:29:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:29:33,659 [INFO] 172.31.128.24 - - [07/Apr/2025 20:29:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:29:33,657 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:29:33,661 [INFO] 172.31.128.24 - - [07/Apr/2025 20:29:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:29:33,661 [INFO] Status API: Produkcyjne
+2025-04-07 20:29:33,664 [INFO] 172.31.128.24 - - [07/Apr/2025 20:29:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:29:33,665 [INFO] 172.31.128.24 - - [07/Apr/2025 20:29:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:29:33,782 [INFO] 172.31.128.24 - - [07/Apr/2025 20:29:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:29:33,790 [INFO] 172.31.128.24 - - [07/Apr/2025 20:29:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:29:35,176 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:29:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:29:35,177 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:29:35,178 [INFO] 172.31.128.24 - - [07/Apr/2025 20:29:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:30:33,650 [INFO] 172.31.128.24 - - [07/Apr/2025 20:30:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:30:33,651 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:30:33,653 [INFO] 172.31.128.24 - - [07/Apr/2025 20:30:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:30:33,655 [INFO] Status API: Produkcyjne
+2025-04-07 20:30:33,660 [INFO] 172.31.128.24 - - [07/Apr/2025 20:30:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:30:33,661 [INFO] 172.31.128.24 - - [07/Apr/2025 20:30:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:30:33,700 [INFO] 172.31.128.24 - - [07/Apr/2025 20:30:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:30:33,786 [INFO] 172.31.128.24 - - [07/Apr/2025 20:30:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:30:33,841 [INFO] 172.31.128.24 - - [07/Apr/2025 20:30:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:30:35,171 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:30:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:30:35,171 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:30:35,173 [INFO] 172.31.128.24 - - [07/Apr/2025 20:30:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:31:33,644 [INFO] 172.31.128.24 - - [07/Apr/2025 20:31:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:31:33,651 [INFO] 172.31.128.24 - - [07/Apr/2025 20:31:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:31:33,655 [INFO] 172.31.128.24 - - [07/Apr/2025 20:31:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:31:33,656 [INFO] 172.31.128.24 - - [07/Apr/2025 20:31:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:31:33,661 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:31:33,675 [INFO] 172.31.128.24 - - [07/Apr/2025 20:31:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:31:33,678 [INFO] Status API: Produkcyjne
+2025-04-07 20:31:33,779 [INFO] 172.31.128.24 - - [07/Apr/2025 20:31:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:31:33,783 [INFO] 172.31.128.24 - - [07/Apr/2025 20:31:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:31:35,194 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:31:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:31:35,195 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:31:35,195 [INFO] 172.31.128.24 - - [07/Apr/2025 20:31:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:32:33,654 [INFO] 172.31.128.24 - - [07/Apr/2025 20:32:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:32:33,656 [INFO] 172.31.128.24 - - [07/Apr/2025 20:32:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:32:33,657 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:32:33,660 [INFO] Status API: Produkcyjne
+2025-04-07 20:32:33,663 [INFO] 172.31.128.24 - - [07/Apr/2025 20:32:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:32:33,667 [INFO] 172.31.128.24 - - [07/Apr/2025 20:32:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:32:33,673 [INFO] 172.31.128.24 - - [07/Apr/2025 20:32:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:32:33,795 [INFO] 172.31.128.24 - - [07/Apr/2025 20:32:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:32:33,797 [INFO] 172.31.128.24 - - [07/Apr/2025 20:32:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:32:35,175 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:32:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:32:35,177 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:32:35,178 [INFO] 172.31.128.24 - - [07/Apr/2025 20:32:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:33:33,650 [INFO] 172.31.128.24 - - [07/Apr/2025 20:33:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:33:33,653 [INFO] 172.31.128.24 - - [07/Apr/2025 20:33:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:33:33,654 [INFO] 172.31.128.24 - - [07/Apr/2025 20:33:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:33:33,656 [INFO] 172.31.128.24 - - [07/Apr/2025 20:33:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:33:33,658 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:33:33,658 [INFO] Status API: Produkcyjne
+2025-04-07 20:33:33,712 [INFO] 172.31.128.24 - - [07/Apr/2025 20:33:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:33:33,833 [INFO] 172.31.128.24 - - [07/Apr/2025 20:33:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:33:33,861 [INFO] 172.31.128.24 - - [07/Apr/2025 20:33:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:33:35,174 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:33:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:33:35,175 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:33:35,176 [INFO] 172.31.128.24 - - [07/Apr/2025 20:33:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:34:33,655 [INFO] 172.31.128.24 - - [07/Apr/2025 20:34:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:34:33,659 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:34:33,659 [INFO] Status API: Produkcyjne
+2025-04-07 20:34:33,663 [INFO] 172.31.128.24 - - [07/Apr/2025 20:34:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:34:33,665 [INFO] 172.31.128.24 - - [07/Apr/2025 20:34:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:34:33,668 [INFO] 172.31.128.24 - - [07/Apr/2025 20:34:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:34:33,738 [INFO] 172.31.128.24 - - [07/Apr/2025 20:34:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:34:33,787 [INFO] 172.31.128.24 - - [07/Apr/2025 20:34:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:34:33,799 [INFO] 172.31.128.24 - - [07/Apr/2025 20:34:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:34:35,175 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:34:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:34:35,176 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:34:35,178 [INFO] 172.31.128.24 - - [07/Apr/2025 20:34:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:35:33,649 [INFO] 172.31.128.24 - - [07/Apr/2025 20:35:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:35:33,651 [INFO] 172.31.128.24 - - [07/Apr/2025 20:35:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:35:33,650 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:35:33,654 [INFO] 172.31.128.24 - - [07/Apr/2025 20:35:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:35:33,653 [INFO] Status API: Produkcyjne
+2025-04-07 20:35:33,656 [INFO] 172.31.128.24 - - [07/Apr/2025 20:35:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:35:33,658 [INFO] 172.31.128.24 - - [07/Apr/2025 20:35:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:35:33,790 [INFO] 172.31.128.24 - - [07/Apr/2025 20:35:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:35:33,792 [INFO] 172.31.128.24 - - [07/Apr/2025 20:35:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:35:35,170 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:35:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:35:35,171 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:35:35,173 [INFO] 172.31.128.24 - - [07/Apr/2025 20:35:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:36:33,646 [INFO] 172.31.128.24 - - [07/Apr/2025 20:36:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:36:33,646 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:36:33,649 [INFO] 172.31.128.24 - - [07/Apr/2025 20:36:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:36:33,650 [INFO] 172.31.128.24 - - [07/Apr/2025 20:36:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:36:33,649 [INFO] Status API: Produkcyjne
+2025-04-07 20:36:33,700 [INFO] 172.31.128.24 - - [07/Apr/2025 20:36:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:36:33,727 [INFO] 172.31.128.24 - - [07/Apr/2025 20:36:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:36:33,783 [INFO] 172.31.128.24 - - [07/Apr/2025 20:36:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:36:33,784 [INFO] 172.31.128.24 - - [07/Apr/2025 20:36:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:36:35,167 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:36:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:36:35,169 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:36:35,170 [INFO] 172.31.128.24 - - [07/Apr/2025 20:36:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:37:34,093 [INFO] 172.31.128.24 - - [07/Apr/2025 20:37:34] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:37:34,203 [INFO] 172.31.128.24 - - [07/Apr/2025 20:37:34] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:37:34,206 [INFO] 172.31.128.24 - - [07/Apr/2025 20:37:34] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:37:34,227 [INFO] 172.31.128.24 - - [07/Apr/2025 20:37:34] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:37:34,240 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:37:34,241 [INFO] Status API: Produkcyjne
+2025-04-07 20:37:34,281 [INFO] 172.31.128.24 - - [07/Apr/2025 20:37:34] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:37:34,291 [INFO] 172.31.128.24 - - [07/Apr/2025 20:37:34] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:37:34,341 [INFO] 172.31.128.24 - - [07/Apr/2025 20:37:34] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:37:35,755 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:37:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:37:35,758 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:37:35,759 [INFO] 172.31.128.24 - - [07/Apr/2025 20:37:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:38:33,644 [INFO] 172.31.128.24 - - [07/Apr/2025 20:38:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:38:33,645 [INFO] 172.31.128.24 - - [07/Apr/2025 20:38:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:38:33,647 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:38:33,650 [INFO] 172.31.128.24 - - [07/Apr/2025 20:38:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:38:33,649 [INFO] Status API: Produkcyjne
+2025-04-07 20:38:33,651 [INFO] 172.31.128.24 - - [07/Apr/2025 20:38:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:38:33,655 [INFO] 172.31.128.24 - - [07/Apr/2025 20:38:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:38:33,775 [INFO] 172.31.128.24 - - [07/Apr/2025 20:38:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:38:33,778 [INFO] 172.31.128.24 - - [07/Apr/2025 20:38:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:38:35,166 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:38:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:38:35,167 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:38:35,168 [INFO] 172.31.128.24 - - [07/Apr/2025 20:38:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:39:33,649 [INFO] 172.31.128.24 - - [07/Apr/2025 20:39:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:39:33,652 [INFO] 172.31.128.24 - - [07/Apr/2025 20:39:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:39:33,654 [INFO] 172.31.128.24 - - [07/Apr/2025 20:39:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:39:33,656 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:39:33,658 [INFO] 172.31.128.24 - - [07/Apr/2025 20:39:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:39:33,658 [INFO] Status API: Produkcyjne
+2025-04-07 20:39:33,660 [INFO] 172.31.128.24 - - [07/Apr/2025 20:39:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:39:33,786 [INFO] 172.31.128.24 - - [07/Apr/2025 20:39:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:39:33,788 [INFO] 172.31.128.24 - - [07/Apr/2025 20:39:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:39:35,173 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:39:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:39:35,174 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:39:35,176 [INFO] 172.31.128.24 - - [07/Apr/2025 20:39:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:40:33,649 [INFO] 172.31.128.24 - - [07/Apr/2025 20:40:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:40:33,650 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:40:33,652 [INFO] 172.31.128.24 - - [07/Apr/2025 20:40:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:40:33,654 [INFO] 172.31.128.24 - - [07/Apr/2025 20:40:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:40:33,654 [INFO] Status API: Produkcyjne
+2025-04-07 20:40:33,663 [INFO] 172.31.128.24 - - [07/Apr/2025 20:40:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:40:33,707 [INFO] 172.31.128.24 - - [07/Apr/2025 20:40:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:40:33,786 [INFO] 172.31.128.24 - - [07/Apr/2025 20:40:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:40:33,787 [INFO] 172.31.128.24 - - [07/Apr/2025 20:40:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:40:35,172 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:40:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:40:35,173 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:40:35,175 [INFO] 172.31.128.24 - - [07/Apr/2025 20:40:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:41:33,649 [INFO] 172.31.128.24 - - [07/Apr/2025 20:41:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:41:33,653 [INFO] 172.31.128.24 - - [07/Apr/2025 20:41:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:41:33,651 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:41:33,654 [INFO] 172.31.128.24 - - [07/Apr/2025 20:41:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:41:33,656 [INFO] 172.31.128.24 - - [07/Apr/2025 20:41:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:41:33,657 [INFO] Status API: Produkcyjne
+2025-04-07 20:41:33,658 [INFO] 172.31.128.24 - - [07/Apr/2025 20:41:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:41:33,782 [INFO] 172.31.128.24 - - [07/Apr/2025 20:41:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:41:33,783 [INFO] 172.31.128.24 - - [07/Apr/2025 20:41:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:41:35,173 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:41:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:41:35,174 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:41:35,176 [INFO] 172.31.128.24 - - [07/Apr/2025 20:41:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:42:33,645 [INFO] 172.31.128.24 - - [07/Apr/2025 20:42:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:42:33,647 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:42:33,648 [INFO] 172.31.128.24 - - [07/Apr/2025 20:42:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:42:33,650 [INFO] 172.31.128.24 - - [07/Apr/2025 20:42:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:42:33,651 [INFO] 172.31.128.24 - - [07/Apr/2025 20:42:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:42:33,651 [INFO] Status API: Produkcyjne
+2025-04-07 20:42:33,703 [INFO] 172.31.128.24 - - [07/Apr/2025 20:42:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:42:33,778 [INFO] 172.31.128.24 - - [07/Apr/2025 20:42:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:42:33,782 [INFO] 172.31.128.24 - - [07/Apr/2025 20:42:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:42:35,170 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:42:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:42:35,170 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:42:35,172 [INFO] 172.31.128.24 - - [07/Apr/2025 20:42:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:43:33,654 [INFO] 172.31.128.24 - - [07/Apr/2025 20:43:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:43:33,656 [INFO] 172.31.128.24 - - [07/Apr/2025 20:43:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:43:33,704 [INFO] 172.31.128.24 - - [07/Apr/2025 20:43:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:43:33,714 [INFO] 172.31.128.24 - - [07/Apr/2025 20:43:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:43:33,717 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:43:33,718 [INFO] Status API: Produkcyjne
+2025-04-07 20:43:33,725 [INFO] 172.31.128.24 - - [07/Apr/2025 20:43:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:43:33,787 [INFO] 172.31.128.24 - - [07/Apr/2025 20:43:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:43:33,799 [INFO] 172.31.128.24 - - [07/Apr/2025 20:43:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:43:35,232 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:43:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:43:35,233 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:43:35,234 [INFO] 172.31.128.24 - - [07/Apr/2025 20:43:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:44:33,641 [INFO] 172.31.128.24 - - [07/Apr/2025 20:44:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:44:33,643 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:44:33,645 [INFO] 172.31.128.24 - - [07/Apr/2025 20:44:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:44:33,648 [INFO] 172.31.128.24 - - [07/Apr/2025 20:44:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:44:33,650 [INFO] 172.31.128.24 - - [07/Apr/2025 20:44:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:44:33,651 [INFO] 172.31.128.24 - - [07/Apr/2025 20:44:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:44:33,650 [INFO] Status API: Produkcyjne
+2025-04-07 20:44:33,778 [INFO] 172.31.128.24 - - [07/Apr/2025 20:44:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:44:33,785 [INFO] 172.31.128.24 - - [07/Apr/2025 20:44:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:44:35,167 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:44:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:44:35,168 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:44:35,169 [INFO] 172.31.128.24 - - [07/Apr/2025 20:44:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:45:33,649 [INFO] 172.31.128.24 - - [07/Apr/2025 20:45:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:45:33,653 [INFO] 172.31.128.24 - - [07/Apr/2025 20:45:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:45:33,654 [INFO] 172.31.128.24 - - [07/Apr/2025 20:45:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:45:33,662 [INFO] 172.31.128.24 - - [07/Apr/2025 20:45:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:45:33,664 [INFO] 172.31.128.24 - - [07/Apr/2025 20:45:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:45:33,666 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:45:33,667 [INFO] Status API: Produkcyjne
+2025-04-07 20:45:33,790 [INFO] 172.31.128.24 - - [07/Apr/2025 20:45:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:45:33,825 [INFO] 172.31.128.24 - - [07/Apr/2025 20:45:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:45:35,182 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:45:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:45:35,183 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:45:35,186 [INFO] 172.31.128.24 - - [07/Apr/2025 20:45:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:46:33,644 [INFO] 172.31.128.24 - - [07/Apr/2025 20:46:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:46:33,645 [INFO] 172.31.128.24 - - [07/Apr/2025 20:46:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:46:33,649 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:46:33,651 [INFO] 172.31.128.24 - - [07/Apr/2025 20:46:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:46:33,656 [INFO] 172.31.128.24 - - [07/Apr/2025 20:46:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:46:33,653 [INFO] Status API: Produkcyjne
+2025-04-07 20:46:33,659 [INFO] 172.31.128.24 - - [07/Apr/2025 20:46:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:46:33,778 [INFO] 172.31.128.24 - - [07/Apr/2025 20:46:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:46:33,790 [INFO] 172.31.128.24 - - [07/Apr/2025 20:46:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:46:35,173 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:46:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:46:35,175 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:46:35,175 [INFO] 172.31.128.24 - - [07/Apr/2025 20:46:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:47:33,642 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:47:33,642 [INFO] Status API: Produkcyjne
+2025-04-07 20:47:33,645 [INFO] 172.31.128.24 - - [07/Apr/2025 20:47:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:47:33,647 [INFO] 172.31.128.24 - - [07/Apr/2025 20:47:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:47:33,649 [INFO] 172.31.128.24 - - [07/Apr/2025 20:47:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:47:33,650 [INFO] 172.31.128.24 - - [07/Apr/2025 20:47:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:47:33,652 [INFO] 172.31.128.24 - - [07/Apr/2025 20:47:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:47:33,789 [INFO] 172.31.128.24 - - [07/Apr/2025 20:47:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:47:33,792 [INFO] 172.31.128.24 - - [07/Apr/2025 20:47:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:47:35,157 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:47:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:47:35,158 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:47:35,159 [INFO] 172.31.128.24 - - [07/Apr/2025 20:47:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:48:33,641 [INFO] 172.31.128.24 - - [07/Apr/2025 20:48:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:48:33,646 [INFO] 172.31.128.24 - - [07/Apr/2025 20:48:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:48:33,647 [INFO] 172.31.128.24 - - [07/Apr/2025 20:48:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:48:33,653 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:48:33,656 [INFO] 172.31.128.24 - - [07/Apr/2025 20:48:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:48:33,655 [INFO] Status API: Produkcyjne
+2025-04-07 20:48:33,706 [INFO] 172.31.128.24 - - [07/Apr/2025 20:48:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:48:33,839 [INFO] 172.31.128.24 - - [07/Apr/2025 20:48:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:48:33,842 [INFO] 172.31.128.24 - - [07/Apr/2025 20:48:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:48:35,171 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:48:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:48:35,172 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:48:35,173 [INFO] 172.31.128.24 - - [07/Apr/2025 20:48:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:49:33,641 [INFO] 172.31.128.24 - - [07/Apr/2025 20:49:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:49:33,644 [INFO] 172.31.128.24 - - [07/Apr/2025 20:49:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:49:33,643 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:49:33,646 [INFO] Status API: Produkcyjne
+2025-04-07 20:49:33,645 [INFO] 172.31.128.24 - - [07/Apr/2025 20:49:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:49:33,705 [INFO] 172.31.128.24 - - [07/Apr/2025 20:49:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:49:33,715 [INFO] 172.31.128.24 - - [07/Apr/2025 20:49:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:49:33,782 [INFO] 172.31.128.24 - - [07/Apr/2025 20:49:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:49:33,783 [INFO] 172.31.128.24 - - [07/Apr/2025 20:49:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:49:35,161 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:49:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:49:35,161 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:49:35,162 [INFO] 172.31.128.24 - - [07/Apr/2025 20:49:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:50:33,642 [INFO] 172.31.128.24 - - [07/Apr/2025 20:50:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:50:33,643 [INFO] 172.31.128.24 - - [07/Apr/2025 20:50:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:50:33,646 [INFO] 172.31.128.24 - - [07/Apr/2025 20:50:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:50:33,653 [INFO] 172.31.128.24 - - [07/Apr/2025 20:50:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:50:33,652 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:50:33,654 [INFO] 172.31.128.24 - - [07/Apr/2025 20:50:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:50:33,656 [INFO] Status API: Produkcyjne
+2025-04-07 20:50:33,779 [INFO] 172.31.128.24 - - [07/Apr/2025 20:50:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:50:33,780 [INFO] 172.31.128.24 - - [07/Apr/2025 20:50:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:50:35,173 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:50:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:50:35,175 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:50:35,176 [INFO] 172.31.128.24 - - [07/Apr/2025 20:50:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:51:33,641 [INFO] 172.31.128.24 - - [07/Apr/2025 20:51:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:51:33,643 [INFO] 172.31.128.24 - - [07/Apr/2025 20:51:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:51:33,647 [INFO] 172.31.128.24 - - [07/Apr/2025 20:51:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:51:33,645 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:51:33,648 [INFO] 172.31.128.24 - - [07/Apr/2025 20:51:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:51:33,649 [INFO] Status API: Produkcyjne
+2025-04-07 20:51:33,689 [INFO] 172.31.128.24 - - [07/Apr/2025 20:51:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:51:33,774 [INFO] 172.31.128.24 - - [07/Apr/2025 20:51:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:51:33,777 [INFO] 172.31.128.24 - - [07/Apr/2025 20:51:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:51:35,165 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:51:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:51:35,170 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:51:35,174 [INFO] 172.31.128.24 - - [07/Apr/2025 20:51:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:52:33,645 [INFO] 172.31.128.24 - - [07/Apr/2025 20:52:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:52:33,647 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:52:33,651 [INFO] 172.31.128.24 - - [07/Apr/2025 20:52:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:52:33,647 [INFO] Status API: Produkcyjne
+2025-04-07 20:52:33,653 [INFO] 172.31.128.24 - - [07/Apr/2025 20:52:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:52:33,659 [INFO] 172.31.128.24 - - [07/Apr/2025 20:52:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:52:33,664 [INFO] 172.31.128.24 - - [07/Apr/2025 20:52:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:52:33,781 [INFO] 172.31.128.24 - - [07/Apr/2025 20:52:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:52:33,790 [INFO] 172.31.128.24 - - [07/Apr/2025 20:52:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:52:35,177 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:52:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:52:35,180 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:52:35,181 [INFO] 172.31.128.24 - - [07/Apr/2025 20:52:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:53:33,642 [INFO] 172.31.128.24 - - [07/Apr/2025 20:53:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:53:33,643 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:53:33,647 [INFO] 172.31.128.24 - - [07/Apr/2025 20:53:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:53:33,660 [INFO] 172.31.128.24 - - [07/Apr/2025 20:53:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:53:33,658 [INFO] Status API: Produkcyjne
+2025-04-07 20:53:33,666 [INFO] 172.31.128.24 - - [07/Apr/2025 20:53:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:53:33,668 [INFO] 172.31.128.24 - - [07/Apr/2025 20:53:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:53:33,789 [INFO] 172.31.128.24 - - [07/Apr/2025 20:53:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:53:33,798 [INFO] 172.31.128.24 - - [07/Apr/2025 20:53:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:53:35,179 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:53:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:53:35,180 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:53:35,181 [INFO] 172.31.128.24 - - [07/Apr/2025 20:53:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:54:33,644 [INFO] 172.31.128.24 - - [07/Apr/2025 20:54:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:54:33,646 [INFO] 172.31.128.24 - - [07/Apr/2025 20:54:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:54:33,647 [INFO] 172.31.128.24 - - [07/Apr/2025 20:54:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:54:33,695 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:54:33,696 [INFO] Status API: Produkcyjne
+2025-04-07 20:54:33,701 [INFO] 172.31.128.24 - - [07/Apr/2025 20:54:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:54:33,711 [INFO] 172.31.128.24 - - [07/Apr/2025 20:54:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:54:33,837 [INFO] 172.31.128.24 - - [07/Apr/2025 20:54:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:54:33,848 [INFO] 172.31.128.24 - - [07/Apr/2025 20:54:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:54:35,210 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:54:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:54:35,211 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:54:35,212 [INFO] 172.31.128.24 - - [07/Apr/2025 20:54:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:55:33,640 [INFO] 172.31.128.24 - - [07/Apr/2025 20:55:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:55:33,643 [INFO] 172.31.128.24 - - [07/Apr/2025 20:55:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:55:33,642 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:55:33,645 [INFO] 172.31.128.24 - - [07/Apr/2025 20:55:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:55:33,644 [INFO] Status API: Produkcyjne
+2025-04-07 20:55:33,647 [INFO] 172.31.128.24 - - [07/Apr/2025 20:55:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:55:33,649 [INFO] 172.31.128.24 - - [07/Apr/2025 20:55:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:55:33,770 [INFO] 172.31.128.24 - - [07/Apr/2025 20:55:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:55:33,773 [INFO] 172.31.128.24 - - [07/Apr/2025 20:55:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:55:35,164 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:55:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:55:35,165 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:55:35,166 [INFO] 172.31.128.24 - - [07/Apr/2025 20:55:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:56:33,643 [INFO] 172.31.128.24 - - [07/Apr/2025 20:56:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:56:33,645 [INFO] 172.31.128.24 - - [07/Apr/2025 20:56:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:56:33,648 [INFO] 172.31.128.24 - - [07/Apr/2025 20:56:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:56:33,649 [INFO] 172.31.128.24 - - [07/Apr/2025 20:56:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:56:33,650 [INFO] 172.31.128.24 - - [07/Apr/2025 20:56:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:56:33,651 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:56:33,652 [INFO] Status API: Produkcyjne
+2025-04-07 20:56:33,781 [INFO] 172.31.128.24 - - [07/Apr/2025 20:56:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:56:33,834 [INFO] 172.31.128.24 - - [07/Apr/2025 20:56:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:56:35,168 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:56:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:56:35,169 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:56:35,171 [INFO] 172.31.128.24 - - [07/Apr/2025 20:56:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:57:33,642 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:57:33,643 [INFO] Status API: Produkcyjne
+2025-04-07 20:57:33,645 [INFO] 172.31.128.24 - - [07/Apr/2025 20:57:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:57:33,647 [INFO] 172.31.128.24 - - [07/Apr/2025 20:57:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:57:33,650 [INFO] 172.31.128.24 - - [07/Apr/2025 20:57:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:57:33,652 [INFO] 172.31.128.24 - - [07/Apr/2025 20:57:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:57:33,654 [INFO] 172.31.128.24 - - [07/Apr/2025 20:57:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:57:33,782 [INFO] 172.31.128.24 - - [07/Apr/2025 20:57:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:57:33,784 [INFO] 172.31.128.24 - - [07/Apr/2025 20:57:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:57:35,158 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:57:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:57:35,159 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:57:35,160 [INFO] 172.31.128.24 - - [07/Apr/2025 20:57:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:58:33,652 [INFO] 172.31.128.24 - - [07/Apr/2025 20:58:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:58:33,653 [INFO] 172.31.128.24 - - [07/Apr/2025 20:58:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:58:33,655 [INFO] 172.31.128.24 - - [07/Apr/2025 20:58:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:58:33,656 [INFO] 172.31.128.24 - - [07/Apr/2025 20:58:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:58:33,657 [INFO] 172.31.128.24 - - [07/Apr/2025 20:58:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:58:33,658 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:58:33,662 [INFO] Status API: Produkcyjne
+2025-04-07 20:58:33,790 [INFO] 172.31.128.24 - - [07/Apr/2025 20:58:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:58:33,795 [INFO] 172.31.128.24 - - [07/Apr/2025 20:58:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:58:35,177 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:58:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:58:35,177 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:58:35,178 [INFO] 172.31.128.24 - - [07/Apr/2025 20:58:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 20:59:33,633 [INFO] 172.31.128.24 - - [07/Apr/2025 20:59:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 20:59:33,636 [INFO] 172.31.128.24 - - [07/Apr/2025 20:59:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 20:59:33,638 [INFO] 172.31.128.24 - - [07/Apr/2025 20:59:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 20:59:33,641 [INFO] 172.31.128.24 - - [07/Apr/2025 20:59:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 20:59:33,644 [INFO] 172.31.128.24 - - [07/Apr/2025 20:59:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 20:59:33,643 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 20:59:33,645 [INFO] Status API: Produkcyjne
+2025-04-07 20:59:33,765 [INFO] 172.31.128.24 - - [07/Apr/2025 20:59:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 20:59:33,833 [INFO] 172.31.128.24 - - [07/Apr/2025 20:59:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 20:59:35,160 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 20:59:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 20:59:35,160 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 20:59:35,162 [INFO] 172.31.128.24 - - [07/Apr/2025 20:59:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:00:33,632 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 21:00:33,633 [INFO] Status API: Produkcyjne
+2025-04-07 21:00:33,641 [INFO] 172.31.128.24 - - [07/Apr/2025 21:00:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:00:33,696 [INFO] 172.31.128.24 - - [07/Apr/2025 21:00:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:00:33,697 [INFO] 172.31.128.24 - - [07/Apr/2025 21:00:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:00:33,700 [INFO] 172.31.128.24 - - [07/Apr/2025 21:00:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:00:33,733 [INFO] 172.31.128.24 - - [07/Apr/2025 21:00:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:00:33,775 [INFO] 172.31.128.24 - - [07/Apr/2025 21:00:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:00:33,826 [INFO] 172.31.128.24 - - [07/Apr/2025 21:00:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:00:35,148 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:00:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:00:35,149 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 21:00:35,150 [INFO] 172.31.128.24 - - [07/Apr/2025 21:00:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:01:33,637 [INFO] 172.31.128.24 - - [07/Apr/2025 21:01:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:01:33,640 [INFO] 172.31.128.24 - - [07/Apr/2025 21:01:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:01:33,642 [INFO] 172.31.128.24 - - [07/Apr/2025 21:01:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:01:33,644 [INFO] 172.31.128.24 - - [07/Apr/2025 21:01:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:01:33,648 [INFO] 172.31.128.24 - - [07/Apr/2025 21:01:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:01:33,646 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 21:01:33,649 [INFO] Status API: Produkcyjne
+2025-04-07 21:01:33,773 [INFO] 172.31.128.24 - - [07/Apr/2025 21:01:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:01:33,779 [INFO] 172.31.128.24 - - [07/Apr/2025 21:01:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:01:35,164 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:01:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:01:35,170 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 21:01:35,177 [INFO] 172.31.128.24 - - [07/Apr/2025 21:01:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:02:33,638 [INFO] 172.31.128.24 - - [07/Apr/2025 21:02:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:02:33,639 [INFO] 172.31.128.24 - - [07/Apr/2025 21:02:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:02:33,642 [INFO] 172.31.128.24 - - [07/Apr/2025 21:02:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:02:33,643 [INFO] 172.31.128.24 - - [07/Apr/2025 21:02:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:02:33,645 [INFO] 172.31.128.24 - - [07/Apr/2025 21:02:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:02:33,699 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 21:02:33,700 [INFO] Status API: Produkcyjne
+2025-04-07 21:02:33,770 [INFO] 172.31.128.24 - - [07/Apr/2025 21:02:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:02:33,771 [INFO] 172.31.128.24 - - [07/Apr/2025 21:02:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:02:35,214 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:02:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:02:35,214 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 21:02:35,216 [INFO] 172.31.128.24 - - [07/Apr/2025 21:02:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:03:33,638 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 21:03:33,640 [INFO] Status API: Produkcyjne
+2025-04-07 21:03:33,643 [INFO] 172.31.128.24 - - [07/Apr/2025 21:03:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:03:33,649 [INFO] 172.31.128.24 - - [07/Apr/2025 21:03:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:03:33,656 [INFO] 172.31.128.24 - - [07/Apr/2025 21:03:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:03:33,657 [INFO] 172.31.128.24 - - [07/Apr/2025 21:03:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:03:33,659 [INFO] 172.31.128.24 - - [07/Apr/2025 21:03:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:03:33,778 [INFO] 172.31.128.24 - - [07/Apr/2025 21:03:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:03:33,779 [INFO] 172.31.128.24 - - [07/Apr/2025 21:03:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:03:35,154 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:03:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:03:35,155 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 21:03:35,155 [INFO] 172.31.128.24 - - [07/Apr/2025 21:03:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:04:33,634 [INFO] 172.31.128.24 - - [07/Apr/2025 21:04:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:04:33,636 [INFO] 172.31.128.24 - - [07/Apr/2025 21:04:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:04:33,637 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 21:04:33,639 [INFO] 172.31.128.24 - - [07/Apr/2025 21:04:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:04:33,642 [INFO] 172.31.128.24 - - [07/Apr/2025 21:04:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:04:33,640 [INFO] Status API: Produkcyjne
+2025-04-07 21:04:33,645 [INFO] 172.31.128.24 - - [07/Apr/2025 21:04:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:04:33,778 [INFO] 172.31.128.24 - - [07/Apr/2025 21:04:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:04:33,780 [INFO] 172.31.128.24 - - [07/Apr/2025 21:04:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:04:35,160 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:04:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:04:35,161 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 21:04:35,162 [INFO] 172.31.128.24 - - [07/Apr/2025 21:04:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:05:33,642 [INFO] 172.31.128.24 - - [07/Apr/2025 21:05:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:05:33,644 [INFO] 172.31.128.24 - - [07/Apr/2025 21:05:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:05:33,645 [INFO] 172.31.128.24 - - [07/Apr/2025 21:05:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:05:33,650 [INFO] 172.31.128.24 - - [07/Apr/2025 21:05:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:05:33,659 [INFO] 172.31.128.24 - - [07/Apr/2025 21:05:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:05:33,699 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 21:05:33,700 [INFO] Status API: Produkcyjne
+2025-04-07 21:05:33,822 [INFO] 172.31.128.24 - - [07/Apr/2025 21:05:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:05:33,847 [INFO] 172.31.128.24 - - [07/Apr/2025 21:05:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:05:35,216 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:05:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:05:35,217 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 21:05:35,219 [INFO] 172.31.128.24 - - [07/Apr/2025 21:05:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:06:33,638 [INFO] 172.31.128.24 - - [07/Apr/2025 21:06:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:06:33,641 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 21:06:33,643 [INFO] 172.31.128.24 - - [07/Apr/2025 21:06:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:06:33,644 [INFO] 172.31.128.24 - - [07/Apr/2025 21:06:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:06:33,643 [INFO] Status API: Produkcyjne
+2025-04-07 21:06:33,701 [INFO] 172.31.128.24 - - [07/Apr/2025 21:06:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:06:33,705 [INFO] 172.31.128.24 - - [07/Apr/2025 21:06:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:06:33,770 [INFO] 172.31.128.24 - - [07/Apr/2025 21:06:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:06:33,773 [INFO] 172.31.128.24 - - [07/Apr/2025 21:06:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:06:35,159 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:06:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:06:35,159 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 21:06:35,160 [INFO] 172.31.128.24 - - [07/Apr/2025 21:06:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:07:34,022 [INFO] 172.31.128.24 - - [07/Apr/2025 21:07:34] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:07:34,024 [INFO] 172.31.128.24 - - [07/Apr/2025 21:07:34] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:07:34,069 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 21:07:34,069 [INFO] Status API: Produkcyjne
+2025-04-07 21:07:34,072 [INFO] 172.31.128.24 - - [07/Apr/2025 21:07:34] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:07:34,074 [INFO] 172.31.128.24 - - [07/Apr/2025 21:07:34] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:07:34,080 [INFO] 172.31.128.24 - - [07/Apr/2025 21:07:34] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:07:34,162 [INFO] 172.31.128.24 - - [07/Apr/2025 21:07:34] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:07:34,163 [INFO] 172.31.128.24 - - [07/Apr/2025 21:07:34] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:07:35,584 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:07:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:07:35,585 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 21:07:35,586 [INFO] 172.31.128.24 - - [07/Apr/2025 21:07:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:08:33,632 [INFO] 172.31.128.24 - - [07/Apr/2025 21:08:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:08:33,633 [INFO] 172.31.128.24 - - [07/Apr/2025 21:08:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:08:33,635 [INFO] 172.31.128.24 - - [07/Apr/2025 21:08:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:08:33,637 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 21:08:33,640 [INFO] 172.31.128.24 - - [07/Apr/2025 21:08:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:08:33,641 [INFO] 172.31.128.24 - - [07/Apr/2025 21:08:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:08:33,642 [INFO] Status API: Produkcyjne
+2025-04-07 21:08:33,770 [INFO] 172.31.128.24 - - [07/Apr/2025 21:08:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:08:33,773 [INFO] 172.31.128.24 - - [07/Apr/2025 21:08:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:08:35,158 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:08:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:08:35,159 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 21:08:35,160 [INFO] 172.31.128.24 - - [07/Apr/2025 21:08:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:09:33,632 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 21:09:33,632 [INFO] Status API: Produkcyjne
+2025-04-07 21:09:33,638 [INFO] 172.31.128.24 - - [07/Apr/2025 21:09:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:09:33,640 [INFO] 172.31.128.24 - - [07/Apr/2025 21:09:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:09:33,641 [INFO] 172.31.128.24 - - [07/Apr/2025 21:09:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:09:33,643 [INFO] 172.31.128.24 - - [07/Apr/2025 21:09:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:09:33,646 [INFO] 172.31.128.24 - - [07/Apr/2025 21:09:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:09:33,773 [INFO] 172.31.128.24 - - [07/Apr/2025 21:09:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:09:33,778 [INFO] 172.31.128.24 - - [07/Apr/2025 21:09:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:09:35,149 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:09:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:09:35,150 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 21:09:35,151 [INFO] 172.31.128.24 - - [07/Apr/2025 21:09:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:10:33,632 [INFO] 172.31.128.24 - - [07/Apr/2025 21:10:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:10:33,637 [INFO] 172.31.128.24 - - [07/Apr/2025 21:10:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:10:33,639 [INFO] 172.31.128.24 - - [07/Apr/2025 21:10:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:10:33,642 [INFO] 172.31.128.24 - - [07/Apr/2025 21:10:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:10:33,647 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 21:10:33,650 [INFO] Status API: Produkcyjne
+2025-04-07 21:10:33,653 [INFO] 172.31.128.24 - - [07/Apr/2025 21:10:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:10:33,761 [INFO] 172.31.128.24 - - [07/Apr/2025 21:10:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:10:33,770 [INFO] 172.31.128.24 - - [07/Apr/2025 21:10:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:10:35,164 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:10:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:10:35,164 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 21:10:35,166 [INFO] 172.31.128.24 - - [07/Apr/2025 21:10:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:11:33,636 [INFO] 172.31.128.24 - - [07/Apr/2025 21:11:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:11:33,638 [INFO] 172.31.128.24 - - [07/Apr/2025 21:11:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:11:33,640 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 21:11:33,643 [INFO] Status API: Produkcyjne
+2025-04-07 21:11:33,646 [INFO] 172.31.128.24 - - [07/Apr/2025 21:11:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:11:33,648 [INFO] 172.31.128.24 - - [07/Apr/2025 21:11:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:11:33,697 [INFO] 172.31.128.24 - - [07/Apr/2025 21:11:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:11:33,765 [INFO] 172.31.128.24 - - [07/Apr/2025 21:11:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:11:33,773 [INFO] 172.31.128.24 - - [07/Apr/2025 21:11:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:11:35,157 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:11:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:11:35,159 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 21:11:35,161 [INFO] 172.31.128.24 - - [07/Apr/2025 21:11:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:12:33,637 [INFO] 172.31.128.24 - - [07/Apr/2025 21:12:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:12:33,638 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 21:12:33,640 [INFO] 172.31.128.24 - - [07/Apr/2025 21:12:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:12:33,644 [INFO] 172.31.128.24 - - [07/Apr/2025 21:12:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:12:33,641 [INFO] Status API: Produkcyjne
+2025-04-07 21:12:33,645 [INFO] 172.31.128.24 - - [07/Apr/2025 21:12:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:12:33,685 [INFO] 172.31.128.24 - - [07/Apr/2025 21:12:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:12:33,773 [INFO] 172.31.128.24 - - [07/Apr/2025 21:12:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:12:33,775 [INFO] 172.31.128.24 - - [07/Apr/2025 21:12:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:12:35,160 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:12:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:12:35,162 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 21:12:35,164 [INFO] 172.31.128.24 - - [07/Apr/2025 21:12:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:13:33,637 [INFO] 172.31.128.24 - - [07/Apr/2025 21:13:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:13:33,638 [INFO] 172.31.128.24 - - [07/Apr/2025 21:13:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:13:33,691 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 21:13:33,692 [INFO] Status API: Produkcyjne
+2025-04-07 21:13:33,695 [INFO] 172.31.128.24 - - [07/Apr/2025 21:13:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:13:33,705 [INFO] 172.31.128.24 - - [07/Apr/2025 21:13:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:13:33,707 [INFO] 172.31.128.24 - - [07/Apr/2025 21:13:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:13:33,771 [INFO] 172.31.128.24 - - [07/Apr/2025 21:13:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:13:33,773 [INFO] 172.31.128.24 - - [07/Apr/2025 21:13:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:13:35,207 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:13:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:13:35,208 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 21:13:35,209 [INFO] 172.31.128.24 - - [07/Apr/2025 21:13:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:14:33,632 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 21:14:33,635 [INFO] 172.31.128.24 - - [07/Apr/2025 21:14:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:14:33,634 [INFO] Status API: Produkcyjne
+2025-04-07 21:14:33,637 [INFO] 172.31.128.24 - - [07/Apr/2025 21:14:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:14:33,640 [INFO] 172.31.128.24 - - [07/Apr/2025 21:14:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:14:33,642 [INFO] 172.31.128.24 - - [07/Apr/2025 21:14:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:14:33,643 [INFO] 172.31.128.24 - - [07/Apr/2025 21:14:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:14:33,765 [INFO] 172.31.128.24 - - [07/Apr/2025 21:14:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:14:33,772 [INFO] 172.31.128.24 - - [07/Apr/2025 21:14:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:14:35,150 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:14:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:14:35,151 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 21:14:35,152 [INFO] 172.31.128.24 - - [07/Apr/2025 21:14:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:15:33,636 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 21:15:33,638 [INFO] 172.31.128.24 - - [07/Apr/2025 21:15:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:15:33,636 [INFO] Status API: Produkcyjne
+2025-04-07 21:15:33,641 [INFO] 172.31.128.24 - - [07/Apr/2025 21:15:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:15:33,643 [INFO] 172.31.128.24 - - [07/Apr/2025 21:15:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:15:33,645 [INFO] 172.31.128.24 - - [07/Apr/2025 21:15:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:15:33,646 [INFO] 172.31.128.24 - - [07/Apr/2025 21:15:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:15:33,773 [INFO] 172.31.128.24 - - [07/Apr/2025 21:15:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:15:33,774 [INFO] 172.31.128.24 - - [07/Apr/2025 21:15:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:15:35,153 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:15:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:15:35,154 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 21:15:35,154 [INFO] 172.31.128.24 - - [07/Apr/2025 21:15:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:16:33,630 [INFO] 172.31.128.24 - - [07/Apr/2025 21:16:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:16:33,631 [INFO] 172.31.128.24 - - [07/Apr/2025 21:16:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:16:33,630 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 21:16:33,635 [INFO] 172.31.128.24 - - [07/Apr/2025 21:16:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:16:33,633 [INFO] Status API: Produkcyjne
+2025-04-07 21:16:33,637 [INFO] 172.31.128.24 - - [07/Apr/2025 21:16:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:16:33,639 [INFO] 172.31.128.24 - - [07/Apr/2025 21:16:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:16:33,764 [INFO] 172.31.128.24 - - [07/Apr/2025 21:16:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:16:33,769 [INFO] 172.31.128.24 - - [07/Apr/2025 21:16:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:16:35,151 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:16:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:16:35,152 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 21:16:35,153 [INFO] 172.31.128.24 - - [07/Apr/2025 21:16:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:17:33,642 [INFO] 172.31.128.24 - - [07/Apr/2025 21:17:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:17:33,644 [INFO] 172.31.128.24 - - [07/Apr/2025 21:17:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:17:33,647 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 21:17:33,647 [INFO] Status API: Produkcyjne
+2025-04-07 21:17:33,650 [INFO] 172.31.128.24 - - [07/Apr/2025 21:17:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:17:33,652 [INFO] 172.31.128.24 - - [07/Apr/2025 21:17:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:17:33,687 [INFO] 172.31.128.24 - - [07/Apr/2025 21:17:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:17:33,773 [INFO] 172.31.128.24 - - [07/Apr/2025 21:17:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:17:33,777 [INFO] 172.31.128.24 - - [07/Apr/2025 21:17:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:17:35,161 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:17:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:17:35,162 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 21:17:35,164 [INFO] 172.31.128.24 - - [07/Apr/2025 21:17:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:18:33,627 [INFO] 172.31.128.24 - - [07/Apr/2025 21:18:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:18:33,631 [INFO] 172.31.128.24 - - [07/Apr/2025 21:18:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:18:33,634 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 21:18:33,636 [INFO] Status API: Produkcyjne
+2025-04-07 21:18:33,638 [INFO] 172.31.128.24 - - [07/Apr/2025 21:18:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:18:33,642 [INFO] 172.31.128.24 - - [07/Apr/2025 21:18:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:18:33,688 [INFO] 172.31.128.24 - - [07/Apr/2025 21:18:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:18:33,811 [INFO] 172.31.128.24 - - [07/Apr/2025 21:18:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:18:33,832 [INFO] 172.31.128.24 - - [07/Apr/2025 21:18:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:18:35,159 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:18:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:18:35,160 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 21:18:35,163 [INFO] 172.31.128.24 - - [07/Apr/2025 21:18:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:19:33,626 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 21:19:33,626 [INFO] Status API: Produkcyjne
+2025-04-07 21:19:33,630 [INFO] 172.31.128.24 - - [07/Apr/2025 21:19:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:19:33,632 [INFO] 172.31.128.24 - - [07/Apr/2025 21:19:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:19:33,636 [INFO] 172.31.128.24 - - [07/Apr/2025 21:19:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:19:33,637 [INFO] 172.31.128.24 - - [07/Apr/2025 21:19:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:19:33,681 [INFO] 172.31.128.24 - - [07/Apr/2025 21:19:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:19:33,764 [INFO] 172.31.128.24 - - [07/Apr/2025 21:19:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:19:33,766 [INFO] 172.31.128.24 - - [07/Apr/2025 21:19:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:19:35,141 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:19:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:19:35,141 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 21:19:35,142 [INFO] 172.31.128.24 - - [07/Apr/2025 21:19:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:19:42,603 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 21:19:42,604 [INFO] Status API: Produkcyjne
+2025-04-07 21:19:44,119 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:19:44).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:19:44,121 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 21:19:44,121 [INFO] Pobrano portfolio: {'balances': {'BTC': {'equity': 0.025, 'available_balance': 0.02, 'wallet_balance': 0.025}, 'USDT': {'equity': 1500, 'available_balance': 1450, 'wallet_balance': 1500}, 'ETH': {'equity': 0.5, 'available_balance': 0.5, 'wallet_balance': 0.5}}, 'success': True, 'warning': 'Przekroczono limit zapytań API. Dane symulowane.', 'source': 'simulation_rate_limited', 'note': 'Przekroczono limit zapytań API. Odczekaj chwilę przed ponowną próbą.'}
+2025-04-07 21:19:44,151 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/encodings/unicode_escape.py', reloading
+2025-04-07 21:19:44,187 [INFO] 172.31.128.24 - - [07/Apr/2025 21:19:44] "GET / HTTP/1.1" 200 -
+2025-04-07 21:19:44,483 [INFO] 172.31.128.24 - - [07/Apr/2025 21:19:44] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-04-07 21:19:45,759 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:19:51,460 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:19:51,498 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:19:51,498 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:19:51,499 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:19:51,508 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:19:51,508 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:19:51,509 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:19:51,510 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 21:19:51,510 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 21:19:51,591 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 21:19:51,760 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:19:51).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:19:51,760 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 21:19:51,761 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 21:19:51,761 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744060791761, 'time': '2025-04-07 21:19:51'}
+2025-04-07 21:19:51,761 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:19:51,761 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 21:19:51,781 [WARNING]  * Debugger is active!
+2025-04-07 21:19:51,792 [INFO]  * Debugger PIN: 123-285-841
+2025-04-07 21:20:01,330 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/__init__.py', reloading
+2025-04-07 21:20:01,360 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/__main__.py', reloading
+2025-04-07 21:20:01,361 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_internal/__init__.py', reloading
+2025-04-07 21:20:01,361 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_internal/utils/__init__.py', reloading
+2025-04-07 21:20:01,603 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_internal/utils/_log.py', reloading
+2025-04-07 21:20:01,624 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_internal/cli/__init__.py', reloading
+2025-04-07 21:20:01,625 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_internal/cli/main.py', reloading
+2025-04-07 21:20:01,633 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_internal/cli/autocompletion.py', reloading
+2025-04-07 21:20:01,635 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_internal/cli/main_parser.py', reloading
+2025-04-07 21:20:01,666 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_internal/build_env.py', reloading
+2025-04-07 21:20:01,667 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/__init__.py', reloading
+2025-04-07 21:20:01,686 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/certifi/__init__.py', reloading
+2025-04-07 21:20:01,687 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/certifi/core.py', reloading
+2025-04-07 21:20:01,687 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/packaging/__init__.py', reloading
+2025-04-07 21:20:01,687 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/packaging/__about__.py', reloading
+2025-04-07 21:20:01,687 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/packaging/requirements.py', reloading
+2025-04-07 21:20:01,688 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/pyparsing/__init__.py', reloading
+2025-04-07 21:20:01,688 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/pyparsing/util.py', reloading
+2025-04-07 21:20:01,688 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/pyparsing/exceptions.py', reloading
+2025-04-07 21:20:01,688 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/pyparsing/unicode.py', reloading
+2025-04-07 21:20:01,689 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/pyparsing/actions.py', reloading
+2025-04-07 21:20:01,689 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/pyparsing/core.py', reloading
+2025-04-07 21:20:01,689 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/pyparsing/results.py', reloading
+2025-04-07 21:20:01,689 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/pyparsing/core.py', reloading
+2025-04-07 21:20:01,690 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/pyparsing/helpers.py', reloading
+2025-04-07 21:20:01,690 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/pyparsing/testing.py', reloading
+2025-04-07 21:20:01,690 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/pyparsing/common.py', reloading
+2025-04-07 21:20:01,690 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/packaging/markers.py', reloading
+2025-04-07 21:20:01,691 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/packaging/specifiers.py', reloading
+2025-04-07 21:20:01,691 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/packaging/utils.py', reloading
+2025-04-07 21:20:01,691 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/packaging/tags.py', reloading
+2025-04-07 21:20:01,691 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/packaging/_manylinux.py', reloading
+2025-04-07 21:20:01,692 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/packaging/_musllinux.py', reloading
+2025-04-07 21:20:01,692 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/packaging/version.py', reloading
+2025-04-07 21:20:01,693 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/packaging/_structures.py', reloading
+2025-04-07 21:20:01,694 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/packaging/markers.py', reloading
+2025-04-07 21:20:01,694 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_internal/cli/spinners.py', reloading
+2025-04-07 21:20:01,695 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_internal/utils/compat.py', reloading
+2025-04-07 21:20:01,695 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_internal/utils/logging.py', reloading
+2025-04-07 21:20:01,695 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/rich/__init__.py', reloading
+2025-04-07 21:20:01,696 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/rich/_extension.py', reloading
+2025-04-07 21:20:01,696 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/rich/console.py', reloading
+2025-04-07 21:20:01,697 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/rich/_null_file.py', reloading
+2025-04-07 21:20:01,697 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/rich/errors.py', reloading
+2025-04-07 21:20:01,698 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/rich/themes.py', reloading
+2025-04-07 21:20:01,698 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/rich/default_styles.py', reloading
+2025-04-07 21:20:01,699 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/rich/style.py', reloading
+2025-04-07 21:20:01,699 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/rich/color.py', reloading
+2025-04-07 21:20:01,701 [INFO]  * Detected change in '/nix/store/izqbpf8fkd2741sqwdca4a9kfy3ss2dx-python3.10-pip-24.0/lib/python3.10/site-packages/pip/_vendor/rich/_palettes.py', reloading
+2025-04-07 21:20:02,064 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 21:20:02,071 [INFO] Status API: Produkcyjne
+2025-04-07 21:20:02,073 [INFO] 172.31.128.24 - - [07/Apr/2025 21:20:02] "[36mGET /static/js/dashboard.js HTTP/1.1[0m" 304 -
+2025-04-07 21:20:02,647 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:20:04,860 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:20:04,878 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:20:04,878 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:20:04,879 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:20:04,879 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:20:04,879 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:20:04,879 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:20:04,879 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 21:20:04,879 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 21:20:04,927 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 21:20:05,073 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:20:05).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:20:05,073 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 21:20:05,073 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 21:20:05,074 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744060805074, 'time': '2025-04-07 21:20:05'}
+2025-04-07 21:20:05,074 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:20:05,074 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 21:20:05,089 [WARNING]  * Debugger is active!
+2025-04-07 21:20:05,091 [INFO]  * Debugger PIN: 122-383-553
+2025-04-07 21:20:06,673 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 21:20:06,674 [INFO] Status API: Produkcyjne
+2025-04-07 21:20:08,189 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:20:08).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:20:08,190 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 21:20:08,190 [INFO] Pobrano portfolio: {'balances': {'BTC': {'equity': 0.025, 'available_balance': 0.02, 'wallet_balance': 0.025}, 'USDT': {'equity': 1500, 'available_balance': 1450, 'wallet_balance': 1500}, 'ETH': {'equity': 0.5, 'available_balance': 0.5, 'wallet_balance': 0.5}}, 'success': True, 'warning': 'Przekroczono limit zapytań API. Dane symulowane.', 'source': 'simulation_rate_limited', 'note': 'Przekroczono limit zapytań API. Odczekaj chwilę przed ponowną próbą.'}
+2025-04-07 21:20:08,195 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/encodings/unicode_escape.py', reloading
+2025-04-07 21:20:08,228 [INFO] 172.31.128.24 - - [07/Apr/2025 21:20:08] "GET / HTTP/1.1" 200 -
+2025-04-07 21:20:08,384 [INFO] 172.31.128.24 - - [07/Apr/2025 21:20:08] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-04-07 21:20:08,513 [INFO] 172.31.128.24 - - [07/Apr/2025 21:20:08] "GET /static/js/dashboard.js HTTP/1.1" 200 -
+2025-04-07 21:20:09,156 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:20:11,138 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:20:11,148 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:20:11,148 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:20:11,149 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:20:11,149 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:20:11,149 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:20:11,149 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:20:11,149 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 21:20:11,149 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 21:20:11,184 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 21:20:11,246 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:20:11).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:20:11,246 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 21:20:11,246 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 21:20:11,246 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744060811246, 'time': '2025-04-07 21:20:11'}
+2025-04-07 21:20:11,246 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:20:11,247 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 21:20:11,259 [WARNING]  * Debugger is active!
+2025-04-07 21:20:11,262 [INFO]  * Debugger PIN: 163-274-594
+2025-04-07 21:20:33,632 [INFO] 172.31.128.24 - - [07/Apr/2025 21:20:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:20:33,634 [INFO] 172.31.128.24 - - [07/Apr/2025 21:20:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:20:33,635 [INFO] Próba pobrania danych z PRODUKCYJNEGO API Bybit. Klucz: a4r7**************
+2025-04-07 21:20:33,637 [INFO] 172.31.128.24 - - [07/Apr/2025 21:20:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:20:33,637 [INFO] Status API: Produkcyjne
+2025-04-07 21:20:33,639 [INFO] 172.31.128.24 - - [07/Apr/2025 21:20:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:20:33,640 [INFO] 172.31.128.24 - - [07/Apr/2025 21:20:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:20:33,759 [INFO] 172.31.128.24 - - [07/Apr/2025 21:20:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:20:33,771 [INFO] 172.31.128.24 - - [07/Apr/2025 21:20:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:20:35,155 [ERROR] Test połączenia z API nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:20:35).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:20:35,156 [WARNING] Przekroczono limit zapytań API. Używam symulowanych danych tymczasowo.
+2025-04-07 21:20:35,157 [INFO] 172.31.128.24 - - [07/Apr/2025 21:20:35] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:20:52,899 [INFO]  * Detected change in '/home/runner/workspace/.pythonlibs/bin/pwiz.py', reloading
+2025-04-07 21:20:52,902 [INFO]  * Detected change in '/home/runner/workspace/.pythonlibs/bin/pwiz.py', reloading
+2025-04-07 21:20:53,746 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:20:56,111 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:20:56,123 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:20:56,123 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:20:56,123 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:20:56,123 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:20:56,124 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:20:56,124 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:20:56,124 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 21:20:56,124 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 21:20:56,160 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 21:20:56,261 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:20:56).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:20:56,261 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 21:20:56,261 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 21:20:56,261 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744060856261, 'time': '2025-04-07 21:20:56'}
+2025-04-07 21:20:56,262 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:20:56,262 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 21:20:56,276 [WARNING]  * Debugger is active!
+2025-04-07 21:20:56,280 [INFO]  * Debugger PIN: 191-635-489
+2025-04-07 21:21:00,842 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:21:01,424 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:21:03,272 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:21:03,282 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:21:03,282 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:21:03,283 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:21:03,283 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:21:03,283 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:21:03,283 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:21:03,283 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 21:21:03,283 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 21:21:03,316 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: False
+2025-04-07 21:21:03,374 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:21:03).
+Request → GET https://api.bybit.com/spot/v1/time: {}.
+2025-04-07 21:21:03,374 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: False
+2025-04-07 21:21:03,375 [INFO] BybitConnector zainicjalizowany. Testnet: False
+2025-04-07 21:21:03,375 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744060863375, 'time': '2025-04-07 21:21:03'}
+2025-04-07 21:21:03,375 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:21:03,375 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 21:21:03,388 [WARNING]  * Debugger is active!
+2025-04-07 21:21:03,390 [INFO]  * Debugger PIN: 423-019-130
