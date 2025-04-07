@@ -1,3 +1,44 @@
+
+// Dodanie mechanizmu zarządzania częstotliwością odświeżania danych
+const refreshRates = {
+    portfolio: 30000,       // co 30 sekund
+    tradingStats: 60000,    // co 1 minutę
+    recentTrades: 60000,    // co 1 minutę
+    alerts: 30000,          // co 30 sekund
+    chartData: 60000,       // co 1 minutę
+    systemStatus: 120000    // co 2 minuty
+};
+
+// Zmienne do śledzenia błędów
+let errorCounts = {
+    portfolio: 0,
+    tradingStats: 0,
+    recentTrades: 0,
+    alerts: 0,
+    chartData: 0
+};
+
+// Zwiększanie opóźnienia w przypadku powtarzających się błędów
+function handleApiError(endpoint) {
+    errorCounts[endpoint]++;
+    
+    // Eksponencjalne zwiększanie opóźnienia przy powtarzających się błędach
+    if (errorCounts[endpoint] > 3) {
+        refreshRates[endpoint] *= 1.5;
+        console.log(`Zwiększono opóźnienie dla ${endpoint} do ${refreshRates[endpoint]}ms z powodu powtarzających się błędów`);
+        
+        // Maksymalne opóźnienie to 5 minut
+        if (refreshRates[endpoint] > 300000) {
+            refreshRates[endpoint] = 300000;
+        }
+    }
+}
+
+// Resetowanie liczników błędów w przypadku udanego zapytania
+function resetErrorCount(endpoint) {
+    errorCounts[endpoint] = 0;
+}
+
 // Funkcje dla dashboardu tradingowego
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Dashboard załadowany');

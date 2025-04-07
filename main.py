@@ -73,7 +73,7 @@ def initialize_system():
         try:
             api_key = os.getenv("BYBIT_API_KEY")
             api_secret = os.getenv("BYBIT_API_SECRET")
-            use_testnet = os.getenv("BYBIT_USE_TESTNET", "false").lower() == "true"
+            use_testnet = os.getenv("BYBIT_USE_TESTNET", "true").lower() == "true"  # Domyślnie używamy testnet
             
             if not api_key or not api_secret:
                 logging.warning("Brak kluczy API ByBit w zmiennych środowiskowych. Sprawdź zakładkę Secrets.")
