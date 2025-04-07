@@ -9,6 +9,7 @@ import json
 import logging
 import os
 import time
+import random
 from typing import Dict, List, Optional, Tuple, Union
 from urllib.parse import urlencode
 
@@ -433,45 +434,7 @@ class BybitConnector:
         try:
             if self.simulation_mode:
                 # Symulowane dane tickera
-                import random
-                import time
-
-                # Ustawiamy realistyczne ceny dla różnych symboli
-                base_prices = {
-                    "BTCUSDT": 65000,
-                    "ETHUSDT": 3500,
-                    "SOLUSDT": 150,
-                    "DOGEUSDT": 0.15,
-                    "XRPUSDT": 0.60,
-                    "BNBUSDT": 600,
-                    "ADAUSDT": 0.45,
-                    "DOTUSDT": 8.20,
-                }
-
-                # Domyślna cena jeśli symbol nie jest znany
-                base_price = base_prices.get(symbol, 100)
-
-                # Dodajemy losową zmianę w granicach +/-1%
-                price = base_price + (base_price * random.uniform(-0.01, 0.01))
-
-                # Tworzymy odpowiedź w formacie Bybit API
-                return {
-                    "result": {
-                        "list": [
-                            {
-                                "symbol": symbol,
-                                "lastPrice": str(round(price, 2)),
-                                "prevPrice24h": str(round(price * (1 + random.uniform(-0.05, 0.05)), 2)),
-                                "price24hPcnt": str(round(random.uniform(-0.05, 0.05), 4)),
-                                "highPrice24h": str(round(price * (1 + random.uniform(0.01, 0.1)), 2)),
-                                "lowPrice24h": str(round(price * (1 - random.uniform(0.01, 0.1)), 2)),
-                                "volume24h": str(round(random.uniform(1000, 10000), 2)),
-                                "turnover24h": str(round(random.uniform(50000000, 500000000), 2))
-                            }
-                        ]
-                    },
-                    "time": int(time.time() * 1000)
-                }
+                return self._generate_simulated_ticker(symbol)
 
             url = f"{self.base_url}/v5/market/tickers"
             params = {"category": "spot", "symbol": symbol}
@@ -544,12 +507,110 @@ class BybitConnector:
         Returns:
             Dict: Dane salda
         """
-        return self._request(
-            "GET",
-            "/v5/account/wallet-balance",
-            params={"accountType": account_type},
-            signed=True,
-        )
+        try:
+            if self.simulation_mode:
+                # Generuj symulowane dane portfela z losowymi wartościami
+                btc_price = 50000 + random.uniform(-2000, 2000)
+                eth_price = 3000 + random.uniform(-200, 200)
+                usdt_balance = 10000 + random.uniform(-500, 500)
+                btc_balance = 0.5 + random.uniform(-0.05, 0.05)
+                eth_balance = 5.0 + random.uniform(-0.5, 0.5)
+
+                return {
+                    "result": {
+                        "list": [
+                            {
+                                "totalEquity": str(usdt_balance + btc_balance * btc_price + eth_balance * eth_price),
+                                "accountIMRate": "0.03",
+                                "totalMarginBalance": str(usdt_balance),
+                                "totalInitialMargin": "300.00",
+                                "accountType": "UNIFIED",
+                                "totalAvailableBalance": str(usdt_balance - 300),
+                                "accountMMRate": "0",
+                                "totalPerpUPL": str(random.uniform(-200, 700)),
+                                "totalWalletBalance": str(usdt_balance),
+                                "accountLTV": "0",
+                                "coin": [
+                                    {
+                                        "availableToBorrow": "0",
+                                        "bonus": "0",
+                                        "accruedInterest": "0",
+                                        "availableToWithdraw": str(usdt_balance - 300),
+                                        "totalOrderIM": "0",
+                                        "equity": str(usdt_balance),
+                                        "totalPositionMM": "0",
+                                        "usdValue": str(usdt_balance),
+                                        "totalPositionIM": "300.00",
+                                        "marginCollateral": True,
+                                        "walletBalance": str(usdt_balance),
+                                        "cumRealisedPnl": "0",
+                                        "locked": "300.00",
+                                        "coin": "USDT",
+                                        "borrowAmount": "0",
+                                        "availableBalance": str(usdt_balance - 300),
+                                        "exchangeRate": "1",
+                                        "unrealisedPnl": str(random.uniform(-200, 700))
+                                    },
+                                    {
+                                        "availableToBorrow": "0",
+                                        "bonus": "0",
+                                        "accruedInterest": "0",
+                                        "availableToWithdraw": str(btc_balance),
+                                        "totalOrderIM": "0",
+                                        "equity": str(btc_balance),
+                                        "totalPositionMM": "0",
+                                        "usdValue": str(btc_balance * btc_price),
+                                        "totalPositionIM": "0",
+                                        "marginCollateral": True,
+                                        "walletBalance": str(btc_balance),
+                                        "cumRealisedPnl": "0",
+                                        "locked": "0",
+                                        "coin": "BTC",
+                                        "borrowAmount": "0",
+                                        "availableBalance": str(btc_balance),
+                                        "exchangeRate": str(btc_price),
+                                        "unrealisedPnl": "0"
+                                    },
+                                    {
+                                        "availableToBorrow": "0",
+                                        "bonus": "0",
+                                        "accruedInterest": "0",
+                                        "availableToWithdraw": str(eth_balance),
+                                        "totalOrderIM": "0",
+                                        "equity": str(eth_balance),
+                                        "totalPositionMM": "0",
+                                        "usdValue": str(eth_balance * eth_price),
+                                        "totalPositionIM": "0",
+                                        "marginCollateral": True,
+                                        "walletBalance": str(eth_balance),
+                                        "cumRealisedPnl": "0",
+                                        "locked": "0",
+                                        "coin": "ETH",
+                                        "borrowAmount": "0",
+                                        "availableBalance": str(eth_balance),
+                                        "exchangeRate": str(eth_price),
+                                        "unrealisedPnl": "0"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "retCode": 0,
+                    "retMsg": "OK",
+                    "retExtInfo": {},
+                    "time": int(time.time() * 1000)
+                }
+            else:
+                return self._request(
+                    "GET",
+                    "/v5/account/wallet-balance",
+                    params={"accountType": account_type},
+                    signed=True,
+                )
+        except Exception as e:
+            logger.error(f"Błąd podczas pobierania salda: {e}")
+            return {"ret_code": -1, "ret_msg": f"Błąd pobierania salda: {e}"}
+
 
     def place_order(
         self,
@@ -699,6 +760,44 @@ class BybitConnector:
             self.simulation_mode = True
             logger.warning("Przełączono na tryb symulacji po błędzie połączenia")
             return True
+
+    def _generate_simulated_ticker(self, symbol):
+        """
+        Generuje symulowane dane tickera dla trybu symulacji
+        """
+        price = 50000 + random.uniform(-1000, 1000) if "BTC" in symbol else 3000 + random.uniform(-100, 100)
+        return {
+            "result": {
+                "list": [
+                    {
+                        "symbol": symbol,
+                        "lastPrice": str(price),
+                        "indexPrice": str(price + random.uniform(-10, 10)),
+                        "markPrice": str(price + random.uniform(-5, 5)),
+                        "prevPrice24h": str(price * (1 - random.uniform(-0.05, 0.05))),
+                        "price24hPcnt": str(random.uniform(-0.05, 0.05)),
+                        "highPrice24h": str(price * (1 + random.uniform(0.01, 0.1))),
+                        "lowPrice24h": str(price * (1 - random.uniform(0.01, 0.1))),
+                        "prevPrice1h": str(price * (1 - random.uniform(-0.01, 0.01))),
+                        "openInterest": str(random.randint(1000, 5000)),
+                        "openInterestValue": str(random.randint(10000000, 50000000)),
+                        "turnover24h": str(random.randint(100000000, 500000000)),
+                        "volume24h": str(random.randint(5000, 10000)),
+                        "fundingRate": str(random.uniform(-0.001, 0.001)),
+                        "nextFundingTime": str(int(time.time()) + 28800),
+                        "bid1Price": str(price - random.uniform(1, 10)),
+                        "bid1Size": str(random.randint(1, 100)),
+                        "ask1Price": str(price + random.uniform(1, 10)),
+                        "ask1Size": str(random.randint(1, 100))
+                    }
+                ],
+                "category": "linear"
+            },
+            "retCode": 0,
+            "retMsg": "OK",
+            "retExtInfo": {},
+            "time": int(time.time() * 1000)
+        }
 
 
 # Przykład użycia
