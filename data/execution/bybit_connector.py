@@ -1,131 +1,157 @@
 """
 bybit_connector.py
-------------------
-Moduł do komunikacji z API ByBit.
+-----------------
+Moduł do komunikacji z giełdą Bybit.
 """
 
+import json
 import logging
-import time
+import os
 import random
+import time
 from datetime import datetime
 from typing import Dict, List, Any, Optional
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.FileHandler("logs/bybit_connector.log", mode="a"),
-        logging.StreamHandler()
-    ]
-)
-
-logger = logging.getLogger(__name__)
+import requests
 
 class BybitConnector:
-    """Connector do API ByBit."""
+    """
+    Klasa do komunikacji z giełdą Bybit.
+    """
 
-    def __init__(self, api_key: str, api_secret: str, use_testnet: bool = True):
+    def __init__(self, api_key: str = None, api_secret: str = None, use_testnet: bool = True):
         """
-        Inicjalizacja connectora ByBit.
+        Inicjalizuje połączenie z Bybit.
 
         Parameters:
-            api_key (str): Klucz API ByBit.
-            api_secret (str): Sekret API ByBit.
-            use_testnet (bool): Czy używać testnetu.
+            api_key (str): Klucz API Bybit.
+            api_secret (str): Sekret API Bybit.
+            use_testnet (bool): Czy używać środowiska testowego.
         """
         self.api_key = api_key
         self.api_secret = api_secret
         self.use_testnet = use_testnet
         self.base_url = "https://api-testnet.bybit.com" if use_testnet else "https://api.bybit.com"
-        logger.info(f"Zainicjalizowano connector ByBit (testnet: {use_testnet})")
+
+        # Konfiguracja logowania
+        log_dir = "logs"
+        os.makedirs(log_dir, exist_ok=True)
+        log_file = os.path.join(log_dir, "bybit_connector.log")
+
+        self.logger = logging.getLogger("bybit_connector")
+        if not self.logger.handlers:
+            file_handler = logging.FileHandler(log_file)
+            formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
+            file_handler.setFormatter(formatter)
+            self.logger.addHandler(file_handler)
+            self.logger.setLevel(logging.INFO)
+
+        self.logger.info(f"BybitConnector zainicjalizowany. Testnet: {use_testnet}")
 
     def get_server_time(self) -> Dict[str, Any]:
         """
-        Pobiera czas serwera ByBit.
+        Pobiera czas serwera Bybit.
 
         Returns:
-            Dict[str, Any]: Odpowiedź z czasem serwera.
+            Dict[str, Any]: Czas serwera.
         """
-        # Symulacja odpowiedzi API
-        server_time = int(time.time() * 1000)
-        return {
-            "success": True,
-            "time": server_time,
-            "time_formatted": datetime.fromtimestamp(server_time / 1000).strftime("%Y-%m-%d %H:%M:%S")
-        }
+        try:
+            # Symulacja czasu serwera
+            current_time = int(time.time() * 1000)
+            return {
+                "success": True,
+                "time_ms": current_time,
+                "time": datetime.fromtimestamp(current_time / 1000).strftime('%Y-%m-%d %H:%M:%S')
+            }
+        except Exception as e:
+            self.logger.error(f"Błąd podczas pobierania czasu serwera: {e}")
+            return {"success": False, "error": str(e)}
 
     def get_klines(self, symbol: str, interval: str = "15", limit: int = 10) -> List[Dict[str, Any]]:
         """
-        Pobiera świece (klines) dla danego symbolu.
+        Pobiera dane świecowe (klines) dla danego symbolu.
 
         Parameters:
-            symbol (str): Symbol pary walutowej.
-            interval (str): Interwał czasowy.
-            limit (int): Limit wyników.
+            symbol (str): Symbol pary handlowej.
+            interval (str): Interwał czasowy ('1', '5', '15', '30', '60', 'D').
+            limit (int): Liczba świec do pobrania.
 
         Returns:
             List[Dict[str, Any]]: Lista świec.
         """
-        # Symulacja odpowiedzi API
-        klines = []
-        current_time = int(time.time())
-        interval_seconds = int(interval) * 60
+        try:
+            # Symulacja danych świecowych
+            current_time = int(time.time())
+            klines = []
 
-        starting_price = random.uniform(20000, 60000)
+            last_price = 50000.0 if "BTC" in symbol else 3000.0  # Przykładowe ceny dla BTC lub innych par
 
-        for i in range(limit):
-            open_price = starting_price * (1 + random.uniform(-0.01, 0.01))
-            high_price = open_price * (1 + random.uniform(0, 0.02))
-            low_price = open_price * (1 - random.uniform(0, 0.02))
-            close_price = open_price * (1 + random.uniform(-0.01, 0.01))
-            volume = random.uniform(1, 100)
+            for i in range(limit):
+                timestamp = current_time - (int(interval) * 60 * (limit - i - 1))
 
-            kline = {
-                "timestamp": current_time - (limit - i - 1) * interval_seconds,
-                "open": open_price,
-                "high": high_price,
-                "low": low_price,
-                "close": close_price,
-                "volume": volume
-            }
-            klines.append(kline)
+                # Symulujemy zmianę ceny
+                price_change = random.uniform(-0.01, 0.01)
+                last_price = last_price * (1 + price_change)
 
-            starting_price = close_price
+                open_price = last_price
+                high_price = open_price * (1 + random.uniform(0, 0.005))
+                low_price = open_price * (1 - random.uniform(0, 0.005))
+                close_price = last_price
+                volume = random.uniform(1, 100) if "BTC" in symbol else random.uniform(10, 1000)
 
-        return klines
+                kline = {
+                    "timestamp": timestamp,
+                    "datetime": datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S'),
+                    "open": round(open_price, 2),
+                    "high": round(high_price, 2),
+                    "low": round(low_price, 2),
+                    "close": round(close_price, 2),
+                    "volume": round(volume, 2)
+                }
+                klines.append(kline)
+
+            return klines
+        except Exception as e:
+            self.logger.error(f"Błąd podczas pobierania danych świecowych: {e}")
+            return []
 
     def get_order_book(self, symbol: str, limit: int = 5) -> Dict[str, Any]:
         """
-        Pobiera książkę zleceń dla danego symbolu.
+        Pobiera księgę zleceń dla danego symbolu.
 
         Parameters:
-            symbol (str): Symbol pary walutowej.
-            limit (int): Limit wyników.
+            symbol (str): Symbol pary handlowej.
+            limit (int): Liczba poziomów cen do pobrania.
 
         Returns:
-            Dict[str, Any]: Książka zleceń.
+            Dict[str, Any]: Księga zleceń.
         """
-        # Symulacja odpowiedzi API
-        base_price = random.uniform(20000, 60000)
+        try:
+            # Symulacja księgi zleceń
+            base_price = 50000.0 if "BTC" in symbol else 3000.0  # Przykładowe ceny dla BTC lub innych par
 
-        bids = []
-        asks = []
+            bids = []
+            asks = []
 
-        for i in range(limit):
-            bid_price = base_price * (1 - 0.001 * (i + 1))
-            bid_volume = random.uniform(0.1, 10)
-            bids.append([bid_price, bid_volume])
+            for i in range(limit):
+                bid_price = base_price * (1 - 0.001 * (i + 1))
+                ask_price = base_price * (1 + 0.001 * (i + 1))
 
-            ask_price = base_price * (1 + 0.001 * (i + 1))
-            ask_volume = random.uniform(0.1, 10)
-            asks.append([ask_price, ask_volume])
+                bid_amount = random.uniform(0.1, 2.0) if "BTC" in symbol else random.uniform(1.0, 20.0)
+                ask_amount = random.uniform(0.1, 2.0) if "BTC" in symbol else random.uniform(1.0, 20.0)
 
-        return {
-            "timestamp": int(time.time() * 1000),
-            "symbol": symbol,
-            "bids": bids,
-            "asks": asks
-        }
+                bids.append([round(bid_price, 2), round(bid_amount, 6)])
+                asks.append([round(ask_price, 2), round(ask_amount, 6)])
+
+            return {
+                "symbol": symbol,
+                "timestamp": int(time.time() * 1000),
+                "datetime": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                "bids": bids,
+                "asks": asks
+            }
+        except Exception as e:
+            self.logger.error(f"Błąd podczas pobierania księgi zleceń: {e}")
+            return {"symbol": symbol, "bids": [], "asks": [], "error": str(e)}
 
     def get_account_balance(self) -> Dict[str, Any]:
         """
@@ -134,124 +160,132 @@ class BybitConnector:
         Returns:
             Dict[str, Any]: Stan konta.
         """
-        # Symulacja odpowiedzi API
-        balances = {
-            "BTC": {
-                "equity": round(random.uniform(0.001, 0.1), 8),
-                "available_balance": round(random.uniform(0.001, 0.1), 8),
-                "wallet_balance": round(random.uniform(0.001, 0.1), 8)
-            },
-            "USDT": {
-                "equity": round(random.uniform(1000, 10000), 2),
-                "available_balance": round(random.uniform(1000, 10000), 2),
-                "wallet_balance": round(random.uniform(1000, 10000), 2)
-            },
-            "ETH": {
-                "equity": round(random.uniform(0.1, 10), 4),
-                "available_balance": round(random.uniform(0.1, 10), 4),
-                "wallet_balance": round(random.uniform(0.1, 10), 4)
+        try:
+            # Symulacja stanu konta
+            balances = {
+                "BTC": {
+                    "equity": round(random.uniform(0.1, 1.0), 8),
+                    "available_balance": round(random.uniform(0.1, 0.9), 8),
+                    "wallet_balance": round(random.uniform(0.1, 1.0), 8)
+                },
+                "USDT": {
+                    "equity": round(random.uniform(5000, 10000), 2),
+                    "available_balance": round(random.uniform(4000, 9000), 2),
+                    "wallet_balance": round(random.uniform(5000, 10000), 2)
+                },
+                "ETH": {
+                    "equity": round(random.uniform(1, 10), 4),
+                    "available_balance": round(random.uniform(1, 9), 4),
+                    "wallet_balance": round(random.uniform(1, 10), 4)
+                }
             }
-        }
 
-        return {
-            "success": True,
-            "balances": balances,
-            "timestamp": int(time.time() * 1000)
-        }
+            return {"balances": balances, "success": True}
+        except Exception as e:
+            self.logger.error(f"Błąd podczas pobierania stanu konta: {e}")
+            return {"balances": {}, "success": False, "error": str(e)}
 
-    def _generate_signature(self, params: Dict[str, Any]) -> str:
-        """Generuje podpis dla żądania API."""
-        param_str = urlencode(sorted(params.items()))
-        signature = hmac.new(
-            bytes(self.api_secret, "utf-8"),
-            bytes(param_str, "utf-8"),
-            hashlib.sha256
-        ).hexdigest()
-        return signature
-    
-    def _send_request(self, method: str, endpoint: str, params: Dict[str, Any] = None) -> Dict[str, Any]:
-        """Wysyła żądanie do API ByBit."""
-        url = f"{self.base_url}{endpoint}"
-        if params is None:
-            params = {}
-        params['api_key'] = self.api_key
-        params['timestamp'] = str(int(time.time() * 1000))
-        signature = self._generate_signature(params)
-        params['sign'] = signature
-        
-        logger.info(f"Wysyłanie żądania {method} do {endpoint}")
-        
-        max_retries = 3
-        retry_count = 0
-        
-        while retry_count < max_retries:
-            try:
-                if method == "GET":
-                    response = requests.get(url, params=params, timeout=10)
-                elif method == "POST":
-                    response = requests.post(url, json=params, timeout=10)
-                else:
-                    raise ValueError(f"Nieobsługiwana metoda HTTP: {method}")
-                
-                response.raise_for_status()  # Rzuca wyjątek dla błędnych statusów
-                
-                result = response.json()
-                
-                if result.get("ret_code") != 0:
-                    error_msg = result.get('ret_msg', 'Nieznany błąd API')
-                    logger.error(f"Błąd API: {error_msg}")
-                    
-                    # Sprawdź, czy błąd jest tymczasowy i można powtórzyć
-                    if "rate limit" in error_msg.lower() or "timeout" in error_msg.lower():
-                        retry_count += 1
-                        time.sleep(2 ** retry_count)  # Wykładniczy backoff
-                        continue
-                        
-                    raise Exception(f"Błąd API ByBit: {error_msg}")
-                
-                return result.get("result", {})
-            
-            except (requests.exceptions.RequestException, json.JSONDecodeError) as e:
-                logger.error(f"Błąd podczas wysyłania żądania (próba {retry_count+1}/{max_retries}): {e}")
-                retry_count += 1
-                
-                if retry_count >= max_retries:
-                    logger.error("Przekroczono maksymalną liczbę prób połączenia")
-                    raise
-                    
-                # Opóźnienie przed ponowną próbą (wykładniczy backoff)
-                time.sleep(2 ** retry_count)
-        
-        # Ten kod nie powinien być osiągalny, ale dla pewności
-        raise Exception("Nieoczekiwany błąd podczas wysyłania żądania API")
+    def place_order(self, symbol: str, side: str, price: float, quantity: float, 
+                   order_type: str = "Limit") -> Dict[str, Any]:
+        """
+        Składa zlecenie na giełdzie.
 
-    def place_order(self, symbol: str, side: str, order_type: str, qty: float, 
-                   price: Optional[float] = None, time_in_force: str = "GoodTillCancel") -> Dict[str, Any]:
-        """Składa zlecenie na giełdzie."""
-        #MOCK IMPLEMENTATION
-        return {"order_id": random.randint(1000, 9999), "symbol": symbol, "side": side, "status": "open"}
+        Parameters:
+            symbol (str): Symbol pary handlowej.
+            side (str): Strona zlecenia ('Buy' lub 'Sell').
+            price (float): Cena zlecenia.
+            quantity (float): Ilość zlecenia.
+            order_type (str): Typ zlecenia ('Limit' lub 'Market').
 
-    def get_open_orders(self, symbol: str = None) -> List[Dict[str, Any]]:
-        """Pobiera listę otwartych zleceń."""
-        #MOCK IMPLEMENTATION
-        return []
+        Returns:
+            Dict[str, Any]: Wynik złożenia zlecenia.
+        """
+        try:
+            # Sprawdzenie poprawności danych
+            if side not in ["Buy", "Sell"]:
+                return {"success": False, "error": "Nieprawidłowa strona zlecenia. Musi być 'Buy' lub 'Sell'."}
 
-    def cancel_order(self, order_id: str = None, symbol: str = None) -> Dict[str, Any]:
-        """Anuluje zlecenie."""
-        #MOCK IMPLEMENTATION
-        return {"order_id": order_id, "status": "cancelled"}
+            if order_type not in ["Limit", "Market"]:
+                return {"success": False, "error": "Nieprawidłowy typ zlecenia. Musi być 'Limit' lub 'Market'."}
 
-    def get_positions(self, symbol: str = None) -> List[Dict[str, Any]]:
-        """Pobiera informacje o otwartych pozycjach."""
-        #MOCK IMPLEMENTATION
-        return []
+            if quantity <= 0:
+                return {"success": False, "error": "Ilość musi być dodatnia."}
 
+            if order_type == "Limit" and price <= 0:
+                return {"success": False, "error": "Cena musi być dodatnia dla zleceń typu Limit."}
 
-import os
-import requests
-import hmac
-import hashlib
-from urllib.parse import urlencode
+            # Symulacja składania zlecenia
+            order_id = f"ORD-{int(time.time())}-{random.randint(1000, 9999)}"
+
+            self.logger.info(f"Złożono zlecenie: {side} {quantity} {symbol} po cenie {price if order_type == 'Limit' else 'Market'}")
+
+            return {
+                "success": True,
+                "order_id": order_id,
+                "symbol": symbol,
+                "side": side,
+                "price": price if order_type == "Limit" else None,
+                "quantity": quantity,
+                "order_type": order_type,
+                "status": "New",
+                "timestamp": int(time.time() * 1000),
+                "datetime": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            }
+        except Exception as e:
+            self.logger.error(f"Błąd podczas składania zlecenia: {e}")
+            return {"success": False, "error": str(e)}
+
+    def cancel_order(self, order_id: str) -> Dict[str, Any]:
+        """
+        Anuluje zlecenie.
+
+        Parameters:
+            order_id (str): ID zlecenia do anulowania.
+
+        Returns:
+            Dict[str, Any]: Wynik anulowania zlecenia.
+        """
+        try:
+            # Symulacja anulowania zlecenia
+            self.logger.info(f"Anulowano zlecenie: {order_id}")
+
+            return {
+                "success": True,
+                "order_id": order_id,
+                "status": "Cancelled",
+                "timestamp": int(time.time() * 1000),
+                "datetime": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            }
+        except Exception as e:
+            self.logger.error(f"Błąd podczas anulowania zlecenia: {e}")
+            return {"success": False, "error": str(e)}
+
+    def get_order_status(self, order_id: str) -> Dict[str, Any]:
+        """
+        Pobiera status zlecenia.
+
+        Parameters:
+            order_id (str): ID zlecenia.
+
+        Returns:
+            Dict[str, Any]: Status zlecenia.
+        """
+        try:
+            # Symulacja pobierania statusu zlecenia
+            statuses = ["New", "PartiallyFilled", "Filled", "Cancelled", "Rejected"]
+            status = random.choice(statuses)
+
+            return {
+                "success": True,
+                "order_id": order_id,
+                "status": status,
+                "filled_quantity": random.uniform(0, 1) if status == "PartiallyFilled" else (1.0 if status == "Filled" else 0.0),
+                "timestamp": int(time.time() * 1000),
+                "datetime": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            }
+        except Exception as e:
+            self.logger.error(f"Błąd podczas pobierania statusu zlecenia: {e}")
+            return {"success": False, "error": str(e)}
 
 if __name__ == "__main__":
     # Przykład użycia
@@ -262,7 +296,7 @@ if __name__ == "__main__":
     )
 
     server_time = connector.get_server_time()
-    print(f"Czas serwera: {server_time['time_formatted']}")
+    print(f"Czas serwera: {server_time}")
 
     klines = connector.get_klines(symbol="BTCUSDT")
     print(f"Pobrano {len(klines)} świec")
@@ -271,149 +305,14 @@ if __name__ == "__main__":
     print(f"Pobrano książkę zleceń z {len(order_book['bids'])} ofertami kupna i {len(order_book['asks'])} ofertami sprzedaży")
 
     balance = connector.get_account_balance()
-    print(f"Stan konta: BTC={balance['balances']['BTC']['equity']}, USDT={balance['balances']['USDT']['equity']}")
-"""
-bybit_connector.py
------------------
-Moduł do komunikacji z API Bybit.
-"""
+    print(f"Stan konta: {balance}")
 
-import logging
-import time
-import requests
-from datetime import datetime
+    order_result = connector.place_order(symbol="BTCUSDT", side="Buy", price=50000, quantity=0.01)
+    print(f"Wynik złożenia zlecenia: {order_result}")
 
-class BybitConnector:
-    """
-    Klasa do komunikacji z API giełdy Bybit.
-    """
-    
-    def __init__(self, api_key=None, api_secret=None, use_testnet=True):
-        self.logger = logging.getLogger(__name__)
-        self.api_key = api_key
-        self.api_secret = api_secret
-        self.use_testnet = use_testnet
-        
-        if use_testnet:
-            self.base_url = "https://api-testnet.bybit.com"
-        else:
-            self.base_url = "https://api.bybit.com"
-            
-        self.logger.info(f"Initialized ByBit connector. Testnet: {use_testnet}")
-        
-    def get_server_time(self):
-        """
-        Pobiera czas serwera Bybit.
-        
-        Returns:
-            dict: Odpowiedź z czasem serwera
-        """
-        try:
-            response = requests.get(f"{self.base_url}/v2/public/time")
-            data = response.json()
-            self.logger.info(f"Pobrano czas serwera ByBit: {data}")
-            
-            # Symulacja odpowiedzi, jeśli API nie odpowiada
-            if not data.get("time_now"):
-                return {
-                    "success": True,
-                    "time": int(time.time()),
-                    "timeISO": datetime.now().isoformat(),
-                    "note": "Symulowane dane"
-                }
-                
-            return {
-                "success": True,
-                "time": data.get("time_now"),
-                "timeISO": datetime.fromtimestamp(float(data.get("time_now"))).isoformat()
-            }
-        except Exception as e:
-            self.logger.error(f"Błąd podczas pobierania czasu serwera ByBit: {e}")
-            return {
-                "success": False,
-                "error": str(e),
-                "time": int(time.time()),
-                "timeISO": datetime.now().isoformat(),
-                "note": "Symulowane dane z powodu błędu"
-            }
-            
-    def get_account_balance(self):
-        """
-        Pobiera stan konta Bybit.
-        
-        Returns:
-            dict: Stan konta użytkownika
-        """
-        # Symulowany wynik, ponieważ prawdziwe API wymaga autentykacji
-        return {
-            "success": True,
-            "balances": {
-                "BTC": {
-                    "equity": 0.01,
-                    "available_balance": 0.01,
-                    "wallet_balance": 0.01
-                },
-                "USDT": {
-                    "equity": 1000,
-                    "available_balance": 950,
-                    "wallet_balance": 1000
-                }
-            },
-            "note": "Symulowane dane"
-        }
-        
-    def get_klines(self, symbol, interval="15", limit=10):
-        """
-        Pobiera dane świecowe dla danego symbolu.
-        
-        Args:
-            symbol (str): Symbol pary walutowej
-            interval (str, optional): Interwał czasowy. Defaults to "15".
-            limit (int, optional): Limit danych. Defaults to 10.
-            
-        Returns:
-            list: Lista danych świecowych
-        """
-        # Symulowane dane świecowe
-        klines = []
-        current_time = int(time.time())
-        
-        for i in range(limit):
-            kline = {
-                "timestamp": current_time - (i * int(interval) * 60),
-                "open": 30000 + (i * 100),
-                "high": 30100 + (i * 100),
-                "low": 29950 + (i * 100),
-                "close": 30050 + (i * 100),
-                "volume": 10 + (i * 2)
-            }
-            klines.append(kline)
-            
-        return klines
-        
-    def get_order_book(self, symbol, limit=5):
-        """
-        Pobiera księgę zleceń dla danego symbolu.
-        
-        Args:
-            symbol (str): Symbol pary walutowej
-            limit (int, optional): Limit danych. Defaults to 5.
-            
-        Returns:
-            dict: Księga zleceń
-        """
-        # Symulowane dane księgi zleceń
-        base_price = 30000
-        
-        bids = []
-        asks = []
-        
-        for i in range(limit):
-            bids.append([base_price - (i * 10), 1 - (i * 0.1)])
-            asks.append([base_price + (i * 10), 1 - (i * 0.1)])
-            
-        return {
-            "bids": bids,
-            "asks": asks,
-            "time": int(time.time())
-        }
+    order_status = connector.get_order_status(order_id = order_result.get("order_id"))
+    print(f"Status zlecenia: {order_status}")
+
+
+    cancel_result = connector.cancel_order(order_id=order_result.get("order_id"))
+    print(f"Wynik anulowania zlecenia: {cancel_result}")

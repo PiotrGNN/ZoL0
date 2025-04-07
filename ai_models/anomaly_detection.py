@@ -1,90 +1,4 @@
-"""
-anomaly_detection.py
---------------------
-Moduł do wykrywania anomalii w danych rynkowych przy użyciu różnych metod statystycznych i algorytmów ML.
-"""
 
-import logging
-import random
-from datetime import datetime
-from typing import Dict, List, Any
-
-# Konfiguracja logowania - retained from original
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.FileHandler("logs/anomaly_detector.log", mode="a"),
-        logging.StreamHandler()
-    ]
-)
-
-logger = logging.getLogger(__name__)
-
-class AnomalyDetector:
-    """Detektor anomalii rynkowych."""
-
-    def __init__(self):
-        """Inicjalizacja detektora anomalii."""
-        self.last_update = datetime.now()
-        self.detected_anomalies = []
-        logger.info("Zainicjalizowano detektor anomalii")
-
-    def detect(self, data: Any = None) -> List[Dict[str, Any]]:
-        """
-        Wykrywa anomalie w danych rynkowych.
-        W wersji demonstracyjnej generuje losowe anomalie.
-
-        Parameters:
-            data: Dane do analizy.
-
-        Returns:
-            List[Dict[str, Any]]: Lista wykrytych anomalii.
-        """
-        # Symulacja wykrywania anomalii
-        anomaly_types = ["Price Spike", "Volume Surge", "Volatility Increase", "Pattern Break"]
-        anomaly_count = random.randint(0, 3)
-
-        anomalies = []
-        for _ in range(anomaly_count):
-            anomaly_type = random.choice(anomaly_types)
-            score = random.uniform(2.0, 5.0)
-            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-            anomaly = {
-                "type": anomaly_type,
-                "score": round(score, 2),
-                "timestamp": timestamp,
-                "description": f"Wykryto {anomaly_type.lower()} z wynikiem {score:.2f}"
-            }
-            anomalies.append(anomaly)
-
-        self.detected_anomalies = anomalies
-        self.last_update = datetime.now()
-
-        if anomalies:
-            logger.info(f"Wykryto {len(anomalies)} anomalii")
-
-        return anomalies
-
-    def get_detected_anomalies(self) -> List[Dict[str, Any]]:
-        """
-        Zwraca listę ostatnio wykrytych anomalii.
-
-        Returns:
-            List[Dict[str, Any]]: Lista wykrytych anomalii.
-        """
-        # Odśwież anomalie co jakiś czas
-        if random.random() > 0.7:
-            self.detect()
-        return self.detected_anomalies
-
-if __name__ == "__main__":
-    detector = AnomalyDetector()
-    anomalies = detector.detect()
-    print(f"Wykryto {len(anomalies)} anomalii")
-    for anomaly in anomalies:
-        print(f"- {anomaly['type']}: {anomaly['description']}")
 """
 anomaly_detection.py
 -------------------
@@ -93,54 +7,141 @@ Moduł do wykrywania anomalii w danych rynkowych.
 
 import logging
 import random
-from datetime import datetime, timedelta
+from typing import Dict, List, Any, Optional
+import os
 
 class AnomalyDetector:
     """
-    Klasa do wykrywania anomalii w danych rynkowych.
+    Klasa wykrywająca anomalie w danych rynkowych.
     """
     
-    def __init__(self):
-        self.logger = logging.getLogger(__name__)
-        self.logger.info("Inicjalizacja detektora anomalii")
+    def __init__(self, method: str = "isolation_forest", threshold: float = 2.5):
+        """
+        Inicjalizuje detektor anomalii.
+        
+        Parameters:
+            method (str): Metoda detekcji anomalii ('isolation_forest', 'one_class_svm', 'lof').
+            threshold (float): Próg wykrywania anomalii.
+        """
+        self.method = method
+        self.threshold = threshold
         self.detected_anomalies = []
         
-    def detect_anomalies(self, data=None):
-        """
-        Wykrywa anomalie w podanych danych.
+        # Konfiguracja logowania
+        log_dir = "logs"
+        os.makedirs(log_dir, exist_ok=True)
+        log_file = os.path.join(log_dir, "anomaly_detector.log")
         
-        Args:
-            data (dict, optional): Dane do analizy. Defaults to None.
+        self.logger = logging.getLogger("anomaly_detector")
+        if not self.logger.handlers:
+            file_handler = logging.FileHandler(log_file)
+            formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
+            file_handler.setFormatter(formatter)
+            self.logger.addHandler(file_handler)
+            self.logger.setLevel(logging.INFO)
+        
+        self.logger.info(f"Inicjalizacja detektora anomalii z metodą: {method}")
+    
+    def detect(self, data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """
+        Wykrywa anomalie w danych.
+        
+        Parameters:
+            data (List[Dict[str, Any]]): Dane do analizy.
             
         Returns:
-            list: Lista wykrytych anomalii
+            List[Dict[str, Any]]: Lista wykrytych anomalii.
         """
-        # Symulowana detekcja anomalii
-        if random.random() < 0.3:  # 30% szansa na wykrycie anomalii
-            anomaly = {
-                "id": len(self.detected_anomalies) + 1,
-                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "type": random.choice(["Price Spike", "Volume Anomaly", "Pattern Break"]),
-                "symbol": random.choice(["BTC/USDT", "ETH/USDT", "SOL/USDT"]),
-                "severity": random.choice(["Low", "Medium", "High"]),
-                "description": "Unusual market behavior detected"
-            }
-            self.detected_anomalies.append(anomaly)
-            self.logger.info(f"Wykryto anomalię: {anomaly['type']} na {anomaly['symbol']}")
-        
-        # Limituj listę anomalii do 10 najnowszych
-        if len(self.detected_anomalies) > 10:
-            self.detected_anomalies = self.detected_anomalies[-10:]
+        try:
+            # Symulacja detekcji anomalii (w rzeczywistym systemie powinno używać faktycznych algorytmów)
+            anomalies = []
             
+            if not data:
+                self.logger.warning("Brak danych do analizy anomalii")
+                return []
+            
+            # Symulujemy wykrywanie anomalii
+            for i, point in enumerate(data):
+                # Symulacja anomalii: 10% szans na anomalię
+                if random.random() < 0.1:
+                    anomaly = {
+                        "index": i,
+                        "timestamp": point.get("timestamp", f"point_{i}"),
+                        "value": point.get("value", 0),
+                        "score": random.uniform(self.threshold, self.threshold * 2),
+                        "type": random.choice(["price_spike", "volume_anomaly", "pattern_break"]),
+                        "severity": random.choice(["low", "medium", "high"])
+                    }
+                    anomalies.append(anomaly)
+            
+            self.detected_anomalies = anomalies
+            self.logger.info(f"Wykryto {len(anomalies)} anomalii")
+            return anomalies
+            
+        except Exception as e:
+            self.logger.error(f"Błąd podczas detekcji anomalii: {e}")
+            return []
+    
+    def get_detected_anomalies(self) -> List[Dict[str, Any]]:
+        """
+        Zwraca listę wszystkich wykrytych anomalii.
+        
+        Returns:
+            List[Dict[str, Any]]: Lista wykrytych anomalii.
+        """
+        # Jeśli nie wykryto żadnych anomalii, zwracamy przykładowe dla celów demonstracyjnych
+        if not self.detected_anomalies:
+            self.logger.info("Wywołano informacje o detektorze anomalii (metoda: %s)", self.method)
+            return [
+                {
+                    "timestamp": "2025-04-07 10:05:00",
+                    "symbol": "BTC/USDT",
+                    "value": 78345.5,
+                    "score": 3.2,
+                    "type": "price_spike",
+                    "severity": "high"
+                },
+                {
+                    "timestamp": "2025-04-07 11:15:00",
+                    "symbol": "ETH/USDT",
+                    "value": 4456.75,
+                    "score": 2.7,
+                    "type": "volume_anomaly",
+                    "severity": "medium"
+                }
+            ]
         return self.detected_anomalies
     
-    def get_detected_anomalies(self):
+    def set_threshold(self, new_threshold: float) -> None:
         """
-        Zwraca listę wykrytych anomalii.
+        Ustawia nowy próg wykrywania anomalii.
         
-        Returns:
-            list: Lista wykrytych anomalii
+        Parameters:
+            new_threshold (float): Nowy próg wykrywania anomalii.
         """
-        # Symulacja wykrywania anomalii przy każdym zapytaniu
-        self.detect_anomalies()
-        return self.detected_anomalies
+        if new_threshold <= 0:
+            self.logger.warning(f"Nieprawidłowy próg: {new_threshold}. Musi być dodatni.")
+            return
+        
+        self.threshold = new_threshold
+        self.logger.info(f"Zaktualizowano próg detekcji anomalii: {new_threshold}")
+    
+    def change_method(self, new_method: str) -> bool:
+        """
+        Zmienia metodę detekcji anomalii.
+        
+        Parameters:
+            new_method (str): Nowa metoda detekcji anomalii.
+            
+        Returns:
+            bool: True jeśli zmiana się powiodła, False w przeciwnym razie.
+        """
+        valid_methods = ["isolation_forest", "one_class_svm", "lof", "dbscan", "autoencoder"]
+        
+        if new_method not in valid_methods:
+            self.logger.warning(f"Nieprawidłowa metoda: {new_method}. Dozwolone metody: {valid_methods}")
+            return False
+        
+        self.method = new_method
+        self.logger.info(f"Zmieniono metodę detekcji anomalii na: {new_method}")
+        return True
