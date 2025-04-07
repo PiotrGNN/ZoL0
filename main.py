@@ -7,6 +7,28 @@ from datetime import datetime, timedelta
 # Dodanie katalogu głównego do ścieżki Pythona
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
+def install_required_packages():
+    """Instaluje wymagane pakiety, jeśli nie są jeszcze zainstalowane."""
+    required_packages = [
+        "python-dotenv",
+        "flask",
+        "pybit",
+        "requests",
+        "numpy",
+        "pandas",
+        "matplotlib"
+    ]
+    
+    for package in required_packages:
+        try:
+            __import__(package.replace('-', '_'))
+        except ImportError:
+            print(f"Instaluję brakujący pakiet: {package}")
+            os.system(f"pip install {package}")
+
+# Instalacja wymaganych pakietów
+install_required_packages()
+
 try:
     from dotenv import load_dotenv
 except ImportError:

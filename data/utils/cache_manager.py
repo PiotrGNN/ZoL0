@@ -498,3 +498,340 @@ if __name__ == "__main__":
     # Sprawdź status API
     status = get_api_status()
     logger.info(f"Status API: {status}")
+"""
+cache_manager.py
+---------------
+Moduł do zarządzania cachingiem danych oraz ograniczeniami API.
+Zapewnia efektywne buforowanie odpowiedzi API oraz inteligentne zarządzanie limitami zapytań.
+"""
+
+import json
+import logging
+import os
+import time
+from functools import lru_cache
+from typing import Any, Dict, Tuple, Optional
+
+# Konfiguracja logowania
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logger = logging.getLogger("cache_manager")
+
+# Katalog gdzie będą przechowywane dane cache
+CACHE_DIR = "data/cache"
+os.makedirs(CACHE_DIR, exist_ok=True)
+
+# Domyślne wartości parametrów rate limitera
+_MAX_CALLS_PER_MINUTE = 3  # Zmniejszona wartość ze względu na błędy 403
+_MIN_INTERVAL = 10.0  # Zwiększona wartość dla bezpieczniejszych zapytań
+_CACHE_TTL_MULTIPLIER = 15.0  # Mnożnik czasu ważności cache
+
+# Domyślne wartości z pliku .env lub konfiguracji
+try:
+    import os
+    from dotenv import load_dotenv
+    load_dotenv()
+    
+    # Ustawienie parametrów na podstawie zmiennych środowiskowych
+    _MAX_CALLS_PER_MINUTE = int(os.getenv("API_MAX_CALLS_PER_MINUTE", _MAX_CALLS_PER_MINUTE))
+    _MIN_INTERVAL = float(os.getenv("API_MIN_INTERVAL", _MIN_INTERVAL))
+    _CACHE_TTL_MULTIPLIER = float(os.getenv("API_CACHE_TTL_MULTIPLIER", _CACHE_TTL_MULTIPLIER))
+    
+    # Sprawdź środowisko i dostosuj parametry
+    env = os.getenv("APP_ENV", "development").lower()
+    if env == "production":
+        logger.info(f"Cache skonfigurowany dla środowiska: {env}")
+        # Bardziej konserwatywne wartości dla produkcji
+        _MAX_CALLS_PER_MINUTE = min(_MAX_CALLS_PER_MINUTE, 3)
+        _MIN_INTERVAL = max(_MIN_INTERVAL, 20.0)
+    else:
+        logger.info(f"Cache skonfigurowany dla środowiska: {env}")
+except Exception as e:
+    logger.warning(f"Błąd podczas ładowania zmiennych środowiskowych: {e}")
+
+# Stan rate limiter'a
+_rate_limit_state = {
+    "last_call_time": 0,
+    "calls_in_current_minute": 0,
+    "minute_start_time": 0,
+    "rate_limited": False,
+    "rate_limit_reset_time": 0
+}
+
+logger.info(f"Parametry rate limitera: max_calls={_MAX_CALLS_PER_MINUTE}, min_interval={_MIN_INTERVAL}s, cache_ttl_multiplier={_CACHE_TTL_MULTIPLIER}")
+
+def set_rate_limit_parameters(max_calls_per_minute=None, min_interval=None, cache_ttl_multiplier=None):
+    """Aktualizuje parametry rate limitera."""
+    global _MAX_CALLS_PER_MINUTE, _MIN_INTERVAL, _CACHE_TTL_MULTIPLIER
+    
+    if max_calls_per_minute is not None:
+        _MAX_CALLS_PER_MINUTE = max_calls_per_minute
+    
+    if min_interval is not None:
+        _MIN_INTERVAL = min_interval
+    
+    if cache_ttl_multiplier is not None:
+        _CACHE_TTL_MULTIPLIER = cache_ttl_multiplier
+    
+    logger.info(f"Ustawiono parametry rate limitera: max_calls_per_minute={_MAX_CALLS_PER_MINUTE}, min_interval={_MIN_INTERVAL}s")
+
+def get_api_status():
+    """Zwraca aktualny status API i ograniczeń."""
+    global _rate_limit_state
+    
+    current_time = time.time()
+    
+    # Resetuj licznik wywołań po upływie minuty
+    if current_time - _rate_limit_state["minute_start_time"] > 60:
+        _rate_limit_state["calls_in_current_minute"] = 0
+        _rate_limit_state["minute_start_time"] = current_time
+    
+    # Sprawdź czy reset limitu już upłynął
+    if _rate_limit_state["rate_limited"] and current_time > _rate_limit_state["rate_limit_reset_time"]:
+        _rate_limit_state["rate_limited"] = False
+        logger.info("Reset stanu przekroczenia limitów API - upłynął czas oczekiwania")
+    
+    return {
+        "rate_limited": _rate_limit_state["rate_limited"],
+        "calls_in_current_minute": _rate_limit_state["calls_in_current_minute"],
+        "time_since_last_call": current_time - _rate_limit_state["last_call_time"],
+        "remaining_calls": max(0, _MAX_CALLS_PER_MINUTE - _rate_limit_state["calls_in_current_minute"])
+    }
+
+def update_api_call_state():
+    """Aktualizuje stan wywołań API - używane przy każdym wywołaniu API."""
+    global _rate_limit_state
+    
+    current_time = time.time()
+    
+    # Resetuj licznik wywołań po upływie minuty
+    if current_time - _rate_limit_state["minute_start_time"] > 60:
+        _rate_limit_state["calls_in_current_minute"] = 0
+        _rate_limit_state["minute_start_time"] = current_time
+    
+    # Zwiększ licznik wywołań
+    _rate_limit_state["calls_in_current_minute"] += 1
+    _rate_limit_state["last_call_time"] = current_time
+    
+    # Sprawdź czy przekroczono limit
+    if _rate_limit_state["calls_in_current_minute"] >= _MAX_CALLS_PER_MINUTE:
+        if not _rate_limit_state["rate_limited"]:
+            _rate_limit_state["rate_limited"] = True
+            _rate_limit_state["rate_limit_reset_time"] = current_time + 60
+            logger.warning(f"Przekroczono limit wywołań API ({_MAX_CALLS_PER_MINUTE}/min). Ograniczanie wywołań na {60} sekund.")
+            # Zapisz informację o przekroczeniu limitu w cache
+            store_cached_data("api_rate_limited", True)
+
+def apply_rate_limit() -> float:
+    """
+    Stosuje ograniczenia częstotliwości wywołań API.
+    
+    Returns:
+        float: Czas oczekiwania (sleep) w sekundach.
+    """
+    global _rate_limit_state
+    
+    current_time = time.time()
+    time_since_last_call = current_time - _rate_limit_state["last_call_time"]
+    
+    # Jeśli jesteśmy w stanie przekroczenia limitu, stosujemy bardziej agresywne ograniczenia
+    if _rate_limit_state["rate_limited"]:
+        # Sprawdź czy reset limitu już upłynął
+        if current_time > _rate_limit_state["rate_limit_reset_time"]:
+            _rate_limit_state["rate_limited"] = False
+            logger.info("Reset stanu przekroczenia limitów API - upłynął czas oczekiwania")
+            # Zapisz informację o resecie limitu w cache
+            store_cached_data("api_rate_limited", False)
+        else:
+            # Bardziej agresywne oczekiwanie, jeśli przekroczono limit
+            sleep_time = max(_MIN_INTERVAL * 2, 15.0)
+            logger.info(f"Limit API przekroczony - oczekiwanie {sleep_time:.1f}s")
+            time.sleep(sleep_time)
+            return sleep_time
+    
+    # Standardowe ograniczenie częstotliwości
+    if time_since_last_call < _MIN_INTERVAL:
+        sleep_time = _MIN_INTERVAL - time_since_last_call
+        time.sleep(sleep_time)
+        return sleep_time
+    
+    return 0.0
+
+def _get_cache_file_path(key: str) -> str:
+    """Zwraca ścieżkę do pliku cache dla danego klucza."""
+    # Zastąp wszystkie znaki, które mogą być niedozwolone w nazwach plików
+    safe_key = key.replace('/', '_').replace('\\', '_').replace(':', '_').replace('*', '_').replace('?', '_').replace('"', '_').replace('<', '_').replace('>', '_').replace('|', '_')
+    return os.path.join(CACHE_DIR, f"{safe_key}.json")
+
+def store_cached_data(key: str, data: Any) -> bool:
+    """
+    Zapisuje dane w cache.
+    
+    Args:
+        key: Klucz identyfikujący dane.
+        data: Dane do zapisania (muszą być serializowalne do JSON).
+        
+    Returns:
+        bool: True jeśli operacja się powiodła, False w przeciwnym wypadku.
+    """
+    try:
+        cache_file = _get_cache_file_path(key)
+        cache_data = {
+            "timestamp": time.time(),
+            "data": data
+        }
+        
+        with open(cache_file, 'w') as f:
+            json.dump(cache_data, f)
+        
+        return True
+    except Exception as e:
+        logger.error(f"Błąd podczas zapisywania danych w cache: {e}")
+        return False
+
+def get_cached_data(key: str) -> Tuple[Any, bool]:
+    """
+    Pobiera dane z cache.
+    
+    Args:
+        key: Klucz identyfikujący dane.
+        
+    Returns:
+        Tuple[Any, bool]: (dane, znaleziono) - gdzie znaleziono to True jeśli dane zostały znalezione.
+    """
+    try:
+        cache_file = _get_cache_file_path(key)
+        
+        if not os.path.exists(cache_file):
+            return None, False
+        
+        with open(cache_file, 'r') as f:
+            cache_data = json.load(f)
+        
+        return cache_data["data"], True
+    except Exception as e:
+        logger.error(f"Błąd podczas odczytu danych z cache: {e}")
+        return None, False
+
+def is_cache_valid(key: str, ttl: int = 60) -> bool:
+    """
+    Sprawdza czy dane w cache są wciąż ważne.
+    
+    Args:
+        key: Klucz identyfikujący dane.
+        ttl: Czas ważności w sekundach.
+        
+    Returns:
+        bool: True jeśli cache jest ważny, False w przeciwnym wypadku.
+    """
+    try:
+        cache_file = _get_cache_file_path(key)
+        
+        if not os.path.exists(cache_file):
+            return False
+        
+        with open(cache_file, 'r') as f:
+            cache_data = json.load(f)
+        
+        # Sprawdź czy dane są wystarczająco aktualne
+        current_time = time.time()
+        cache_time = cache_data.get("timestamp", 0)
+        
+        # Jeśli stan API jest ograniczony, użyj dłuższego TTL
+        api_status = get_api_status()
+        effective_ttl = ttl
+        
+        if api_status["rate_limited"]:
+            effective_ttl = ttl * _CACHE_TTL_MULTIPLIER
+        
+        return (current_time - cache_time) < effective_ttl
+    except Exception as e:
+        logger.error(f"Błąd podczas sprawdzania ważności cache: {e}")
+        return False
+
+def clear_cache(key: str = None) -> bool:
+    """
+    Czyści cache dla danego klucza lub cały cache.
+    
+    Args:
+        key: Klucz do wyczyszczenia. Jeśli None, czyści wszystkie dane.
+        
+    Returns:
+        bool: True jeśli operacja się powiodła, False w przeciwnym wypadku.
+    """
+    try:
+        if key:
+            cache_file = _get_cache_file_path(key)
+            if os.path.exists(cache_file):
+                os.remove(cache_file)
+        else:
+            for filename in os.listdir(CACHE_DIR):
+                file_path = os.path.join(CACHE_DIR, filename)
+                if os.path.isfile(file_path) and filename.endswith('.json'):
+                    os.remove(file_path)
+        
+        return True
+    except Exception as e:
+        logger.error(f"Błąd podczas czyszczenia cache: {e}")
+        return False
+
+def get_cache_stats() -> Dict[str, Any]:
+    """
+    Zwraca statystyki dotyczące cache.
+    
+    Returns:
+        Dict[str, Any]: Statystyki cache.
+    """
+    try:
+        stats = {
+            "total_entries": 0,
+            "total_size_bytes": 0,
+            "oldest_entry": None,
+            "newest_entry": None,
+            "entries": []
+        }
+        
+        if not os.path.exists(CACHE_DIR):
+            return stats
+        
+        oldest_time = float('inf')
+        newest_time = 0
+        
+        for filename in os.listdir(CACHE_DIR):
+            if filename.endswith('.json'):
+                file_path = os.path.join(CACHE_DIR, filename)
+                
+                # Statystyki pliku
+                file_size = os.path.getsize(file_path)
+                stats["total_size_bytes"] += file_size
+                stats["total_entries"] += 1
+                
+                try:
+                    with open(file_path, 'r') as f:
+                        cache_data = json.load(f)
+                    
+                    timestamp = cache_data.get("timestamp", 0)
+                    
+                    if timestamp < oldest_time:
+                        oldest_time = timestamp
+                        stats["oldest_entry"] = filename
+                    
+                    if timestamp > newest_time:
+                        newest_time = timestamp
+                        stats["newest_entry"] = filename
+                    
+                    stats["entries"].append({
+                        "key": filename[:-5],  # Usuń rozszerzenie .json
+                        "timestamp": timestamp,
+                        "size_bytes": file_size,
+                        "age_seconds": time.time() - timestamp
+                    })
+                except:
+                    pass
+        
+        return stats
+    except Exception as e:
+        logger.error(f"Błąd podczas pobierania statystyk cache: {e}")
+        return {"error": str(e)}
+
+# Inicjalizacja komponentu
+logger.info("Cache zainicjalizowany z domyślnymi parametrami")

@@ -1,23 +1,30 @@
+
 // Dashboard.js - Główny skrypt dla dashboardu tradingowego
-// Zoptymalizowana wersja z lepszym zarządzaniem zapytaniami API
+// Wersja zoptymalizowana z lepszym zarządzaniem zapytaniami API i obsługą błędów
 
 // Konfiguracja globalna
 const CONFIG = {
     // Częstotliwość odświeżania poszczególnych elementów (ms)
     refreshRates: {
-        dashboard: 30000,     // Dashboard (podstawowe dane) - zwiększono z 15000
-        portfolio: 60000,     // Portfolio (dane konta) - zwiększono z 30000
-        charts: 120000,       // Wykresy (cięższe dane) - zwiększono z 60000
-        trades: 90000,        // Transakcje - zwiększono z 45000
-        components: 60000     // Statusy komponentów - zwiększono z 20000
+        dashboard: 60000,     // Dashboard (podstawowe dane) - co 60 sekund
+        portfolio: 120000,    // Portfolio (dane konta) - co 2 minuty
+        charts: 180000,       // Wykresy (cięższe dane) - co 3 minuty
+        trades: 150000,       // Transakcje - co 2.5 minuty
+        components: 90000     // Statusy komponentów - co 1.5 minuty
     },
     // Maksymalna liczba błędów przed wyświetleniem ostrzeżenia
     maxErrors: 3,
     // Parametry retry dla zapytań API
     retry: {
-        maxRetries: 3,
-        delayMs: 5000,
+        maxRetries: 2,
+        delayMs: 15000,
         backoffMultiplier: 2.0
+    },
+    // Minimalne czasy między zapytaniami tego samego typu (ms)
+    minTimeBetweenCalls: {
+        dashboard: 30000,  // Minimum 30s między odświeżeniami dashboardu
+        portfolio: 60000,  // Minimum 60s między zapytaniami o portfolio
+        api: 5000          // Minimum 5s między jakimikolwiek zapytaniami API
     }
 };
 
@@ -26,7 +33,11 @@ const appState = {
     errorCounts: {},    // Liczniki błędów dla różnych endpointów
     timers: {},         // Identyfikatory setTimeout dla różnych odświeżeń
     activeDashboard: true, // Czy dashboard jest aktywną zakładką
-    lastApiCall: {}     // Czas ostatniego wywołania dla każdego API
+    lastApiCall: {},     // Czas ostatniego wywołania dla każdego API
+    activeRequests: 0,   // Liczba aktywnych żądań
+    retryTimeouts: {},   // Timeouty dla ponownych prób
+    rateLimited: false,  // Czy API jest obecnie ograniczone
+    rateLimitResetTime: 0 // Czas resetowania ograniczenia
 };
 
 // Inicjalizacja po załadowaniu strony
@@ -72,57 +83,111 @@ function scheduleDataRefresh() {
     }, CONFIG.refreshRates.components);
 }
 
-// Funkcje API - z obsługą rate limiting
+// Funkcje API - z obsługą rate limiting i retry
 async function fetchWithRateLimit(url, options = {}) {
     const endpoint = url.split('?')[0]; // Podstawowy endpoint bez parametrów
+
+    // Sprawdzenie czy API jest obecnie ograniczone (rate limited)
+    if (appState.rateLimited) {
+        const now = Date.now();
+        if (now < appState.rateLimitResetTime) {
+            const waitTime = (appState.rateLimitResetTime - now) / 1000;
+            console.log(`API jest obecnie ograniczone. Spróbuj ponownie za ${waitTime.toFixed(0)} sekund.`);
+            showNotification('warning', `Limit API przekroczony. Odczekaj ${waitTime.toFixed(0)} sekund.`);
+            throw new Error(`Rate limit - odczekaj ${waitTime.toFixed(0)}s`);
+        } else {
+            // Reset stanu ograniczenia
+            appState.rateLimited = false;
+        }
+    }
 
     // Sprawdzenie czasu od ostatniego wywołania tego endpointu
     const now = Date.now();
     const lastCall = appState.lastApiCall[endpoint] || 0;
     const timeSinceLastCall = now - lastCall;
+    const lastGlobalCall = appState.lastApiCall['global'] || 0;
+    const timeSinceLastGlobalCall = now - lastGlobalCall;
 
-    // Minimalny czas między wywołaniami tego samego endpointu (3 sekundy)
-    const minTimeBetweenCalls = 3000;
+    // Określenie minimalnego czasu między wywołaniami dla danego endpointu
+    let minTimeBetweenCalls = CONFIG.minTimeBetweenCalls.api;
+    if (endpoint.includes('portfolio')) {
+        minTimeBetweenCalls = CONFIG.minTimeBetweenCalls.portfolio;
+    } else if (endpoint.includes('dashboard')) {
+        minTimeBetweenCalls = CONFIG.minTimeBetweenCalls.dashboard;
+    }
 
+    // Czekaj na minimum czasu między wywołaniami tego samego endpointu
     if (timeSinceLastCall < minTimeBetweenCalls) {
-        // Jeśli nie minęło wystarczająco dużo czasu, czekamy
         const timeToWait = minTimeBetweenCalls - timeSinceLastCall;
         await new Promise(resolve => setTimeout(resolve, timeToWait));
     }
 
+    // Minimum czasu między dowolnymi wywołaniami API
+    if (timeSinceLastGlobalCall < CONFIG.minTimeBetweenCalls.api) {
+        const timeToWait = CONFIG.minTimeBetweenCalls.api - timeSinceLastGlobalCall;
+        await new Promise(resolve => setTimeout(resolve, timeToWait));
+    }
+
+    // Zwiększ licznik aktywnych żądań
+    appState.activeRequests++;
+    
     try {
         // Aktualizacja czasu ostatniego wywołania
         appState.lastApiCall[endpoint] = Date.now();
+        appState.lastApiCall['global'] = Date.now();
 
         // Wykonanie zapytania
         const response = await fetch(url, options);
+        
+        // Sprawdź czy mamy problemy z limitami API
+        if (response.status === 403 || response.status === 429) {
+            // Ustawienie stanu ograniczenia
+            appState.rateLimited = true;
+            appState.rateLimitResetTime = Date.now() + (3 * 60 * 1000); // 3 minuty
+            console.warn(`Przekroczono limit API (${response.status}). Czekaj 3 minuty.`);
+            showNotification('error', 'Przekroczono limit zapytań API. Poczekaj 3 minuty.');
+            throw new Error(`HTTP error ${response.status} - Rate limit exceeded`);
+        }
+        
         if (!response.ok) {
             throw new Error(`HTTP error ${response.status}`);
         }
+        
         return await response.json();
     } catch (error) {
-        // Increment error counter for endpoint
+        // Zwiększ licznik błędów dla endpointu
         appState.errorCounts[endpoint] = (appState.errorCounts[endpoint] || 0) + 1;
         console.error(`Błąd podczas pobierania danych z ${endpoint}:`, error);
+        
+        // Sprawdź, czy to problem z ograniczeniem API
+        if (error.message && (error.message.includes('403') || error.message.includes('429') || error.message.includes('rate limit'))) {
+            appState.rateLimited = true;
+            appState.rateLimitResetTime = Date.now() + (3 * 60 * 1000); // 3 minuty
+            showNotification('error', 'Przekroczono limit zapytań API. Poczekaj 3 minuty.');
+        }
+        
         throw error;
+    } finally {
+        // Zmniejsz licznik aktywnych żądań
+        appState.activeRequests--;
     }
 }
 
-// Aktualizacja danych dashboardu
+// Aktualizacja danych dashboardu z obsługą retry
 async function updateDashboardData() {
     console.log("Aktualizacja danych dashboardu...");
     try {
         // Pobieranie danych dashboardu
-        const dashboardData = await fetchWithRateLimit('/api/dashboard/data');
+        const dashboardData = await fetchWithRetry('/api/dashboard/data');
 
-        // Aktualizacja każdej sekcji
-        updateTradingStats();
-        updateAlerts();
-        updateRecentTrades();
-        updateNotifications();
-        updateChartData();
-        updateComponentStatuses();
-        fetchPortfolioData();
+        // Aktualizacja każdej sekcji (ale z fallback, jeśli niektóre zapytania się nie powiodą)
+        try { updateTradingStats(); } catch (e) { console.error("Nie udało się zaktualizować statystyk trading:", e); }
+        try { updateAlerts(); } catch (e) { console.error("Nie udało się zaktualizować alertów:", e); }
+        try { updateRecentTrades(); } catch (e) { console.error("Nie udało się zaktualizować transakcji:", e); }
+        try { updateNotifications(); } catch (e) { console.error("Nie udało się zaktualizować powiadomień:", e); }
+        try { updateChartData(); } catch (e) { console.error("Nie udało się zaktualizować wykresu:", e); }
+        try { updateComponentStatuses(); } catch (e) { console.error("Nie udało się zaktualizować statusów komponentów:", e); }
+        try { fetchPortfolioData(); } catch (e) { console.error("Nie udało się pobrać danych portfolio:", e); }
 
     } catch (error) {
         handleApiError('dashboard_data');
@@ -130,10 +195,37 @@ async function updateDashboardData() {
     }
 }
 
-// Aktualizacja danych portfela
+// Funkcja do ponawiania prób z opóźnieniem wykładniczym
+async function fetchWithRetry(url, options = {}, retryCount = 0) {
+    try {
+        return await fetchWithRateLimit(url, options);
+    } catch (error) {
+        // Sprawdź czy mamy problem z rate limit
+        if (error.message && (error.message.includes('403') || error.message.includes('429') || error.message.includes('rate limit'))) {
+            // Dla problemów z rate limit, czekamy dłużej
+            if (retryCount < CONFIG.retry.maxRetries) {
+                const delayTime = CONFIG.retry.delayMs * Math.pow(CONFIG.retry.backoffMultiplier, retryCount);
+                console.log(`Limit API przekroczony, ponawiam próbę ${retryCount + 1}/${CONFIG.retry.maxRetries} za ${delayTime/1000}s`);
+                await new Promise(resolve => setTimeout(resolve, delayTime));
+                return fetchWithRetry(url, options, retryCount + 1);
+            }
+        } else if (retryCount < CONFIG.retry.maxRetries) {
+            // Dla innych błędów, standardowy retry
+            const delayTime = CONFIG.retry.delayMs * Math.pow(CONFIG.retry.backoffMultiplier, retryCount);
+            console.log(`Błąd API, ponawiam próbę ${retryCount + 1}/${CONFIG.retry.maxRetries} za ${delayTime/1000}s`);
+            await new Promise(resolve => setTimeout(resolve, delayTime));
+            return fetchWithRetry(url, options, retryCount + 1);
+        }
+        
+        // Jeśli osiągnęliśmy maksymalną liczbę prób, rzucamy wyjątek
+        throw error;
+    }
+}
+
+// Aktualizacja danych portfela z retry
 async function fetchPortfolioData() {
     try {
-        const data = await fetchWithRateLimit(`/api/portfolio?_=${Date.now()}`);
+        const data = await fetchWithRetry(`/api/portfolio?_=${Date.now()}`);
         if (data && data.balances) {
             updatePortfolioUI(data);
         }
@@ -173,10 +265,10 @@ function updatePortfolioUI(data) {
     }
 }
 
-// Aktualizacja ostatnich transakcji
+// Aktualizacja ostatnich transakcji z retry
 async function updateRecentTrades() {
     try {
-        const data = await fetchWithRateLimit('/api/recent-trades');
+        const data = await fetchWithRetry('/api/recent-trades');
         if (data && data.trades) {
             const tradesContainer = document.getElementById('recent-trades');
             if (tradesContainer) {
@@ -201,10 +293,10 @@ async function updateRecentTrades() {
     }
 }
 
-// Aktualizacja statystyk tradingowych
+// Aktualizacja statystyk tradingowych z retry
 async function updateTradingStats() {
     try {
-        const data = await fetchWithRateLimit('/api/trading-stats');
+        const data = await fetchWithRetry('/api/trading-stats');
         if (data) {
             // Aktualizacja każdego elementu statystyk
             const stats = {
@@ -227,10 +319,10 @@ async function updateTradingStats() {
     }
 }
 
-// Aktualizacja alertów
+// Aktualizacja alertów z retry
 async function updateAlerts() {
     try {
-        const data = await fetchWithRateLimit('/api/alerts');
+        const data = await fetchWithRetry('/api/alerts');
         if (data && data.alerts) {
             const alertsContainer = document.getElementById('alerts-container');
             if (alertsContainer) {
@@ -253,10 +345,10 @@ async function updateAlerts() {
     }
 }
 
-// Aktualizacja powiadomień
+// Aktualizacja powiadomień z retry
 async function updateNotifications() {
     try {
-        const data = await fetchWithRateLimit('/api/notifications');
+        const data = await fetchWithRetry('/api/notifications');
         if (data && data.notifications) {
             const notificationsContainer = document.getElementById('notifications-container');
             if (notificationsContainer) {
@@ -278,11 +370,11 @@ async function updateNotifications() {
     }
 }
 
-// Aktualizacja statusów komponentów
+// Aktualizacja statusów komponentów z retry
 async function updateComponentStatuses() {
     console.log("Aktualizacja statusów komponentów...");
     try {
-        const data = await fetchWithRateLimit('/api/component-status');
+        const data = await fetchWithRetry('/api/component-status');
         if (data && data.components) {
             // Aktualizacja każdego komponentu
             data.components.forEach(component => {
@@ -301,6 +393,17 @@ async function updateComponentStatuses() {
                     }
                 }
             });
+            
+            // Dodanie informacji o statusie API, jeśli jest dostępny
+            const apiComponent = document.getElementById('api-connector');
+            if (apiComponent && appState.rateLimited) {
+                apiComponent.classList.remove('status-online');
+                apiComponent.classList.add('status-warning');
+                const statusText = apiComponent.querySelector('.status-text');
+                if (statusText) {
+                    statusText.textContent = 'Rate Limited';
+                }
+            }
         }
     } catch (error) {
         handleApiError('components');
@@ -308,10 +411,10 @@ async function updateComponentStatuses() {
     }
 }
 
-// Aktualizacja wykresu głównego
+// Aktualizacja wykresu głównego z retry
 async function updateChartData() {
     try {
-        const data = await fetchWithRateLimit('/api/chart-data');
+        const data = await fetchWithRetry('/api/chart-data');
 
         if (data && data.success && data.data) {
             const ctx = document.getElementById('portfolio-chart');
@@ -368,14 +471,49 @@ async function updateChartData() {
 }
 
 // Funkcje związane z systemem tradingowym
-function startTrading() {
+// Z obsługą debounce i throttle dla lepszego zarządzania zapytaniami
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        const context = this;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), wait);
+    };
+}
+
+function throttle(func, limit) {
+    let inThrottle;
+    return function(...args) {
+        const context = this;
+        if (!inThrottle) {
+            func.apply(context, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
+        }
+    };
+}
+
+// Throttled funkcje obsługi przycisków
+const startTradingThrottled = throttle(function() {
+    if (appState.rateLimited) {
+        showNotification('warning', 'API jest obecnie ograniczone. Spróbuj ponownie później.');
+        return;
+    }
+    
     fetch('/api/trading/start', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        if (response.status === 403 || response.status === 429) {
+            appState.rateLimited = true;
+            appState.rateLimitResetTime = Date.now() + (3 * 60 * 1000); // 3 minuty
+            throw new Error('Przekroczono limit API');
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
             showNotification('success', 'Trading automatyczny uruchomiony');
@@ -387,18 +525,34 @@ function startTrading() {
     })
     .catch(error => {
         console.error('Błąd podczas uruchamiania tradingu:', error);
-        showNotification('error', 'Nie udało się uruchomić tradingu automatycznego');
+        if (error.message.includes('limit API')) {
+            showNotification('error', 'Przekroczono limit API. Spróbuj ponownie za kilka minut.');
+        } else {
+            showNotification('error', 'Nie udało się uruchomić tradingu automatycznego');
+        }
     });
-}
+}, 5000);
 
-function stopTrading() {
+const stopTradingThrottled = throttle(function() {
+    if (appState.rateLimited) {
+        showNotification('warning', 'API jest obecnie ograniczone. Spróbuj ponownie później.');
+        return;
+    }
+    
     fetch('/api/trading/stop', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        if (response.status === 403 || response.status === 429) {
+            appState.rateLimited = true;
+            appState.rateLimitResetTime = Date.now() + (3 * 60 * 1000); // 3 minuty
+            throw new Error('Przekroczono limit API');
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
             showNotification('success', 'Trading automatyczny zatrzymany');
@@ -410,11 +564,20 @@ function stopTrading() {
     })
     .catch(error => {
         console.error('Błąd podczas zatrzymywania tradingu:', error);
-        showNotification('error', 'Nie udało się zatrzymać tradingu automatycznego');
+        if (error.message.includes('limit API')) {
+            showNotification('error', 'Przekroczono limit API. Spróbuj ponownie za kilka minut.');
+        } else {
+            showNotification('error', 'Nie udało się zatrzymać tradingu automatycznego');
+        }
     });
-}
+}, 5000);
 
-function resetSystem() {
+const resetSystemThrottled = throttle(function() {
+    if (appState.rateLimited) {
+        showNotification('warning', 'API jest obecnie ograniczone. Spróbuj ponownie później.');
+        return;
+    }
+    
     if (confirm('Czy na pewno chcesz zresetować system? Wszystkie aktywne operacje zostaną zakończone.')) {
         fetch('/api/system/reset', {
             method: 'POST',
@@ -422,45 +585,99 @@ function resetSystem() {
                 'Content-Type': 'application/json'
             }
         })
-        .then(response => response.json())
+        .then(response => {
+            if (response.status === 403 || response.status === 429) {
+                appState.rateLimited = true;
+                appState.rateLimitResetTime = Date.now() + (3 * 60 * 1000); // 3 minuty
+                throw new Error('Przekroczono limit API');
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 showNotification('success', 'System został zresetowany');
-                // Odświeżenie wszystkich danych
-                updateDashboardData();
+                // Odświeżenie wszystkich danych z opóźnieniem aby dać czas na restart
+                setTimeout(() => {
+                    updateDashboardData();
+                }, 2000);
             } else {
                 showNotification('error', `Błąd: ${data.error}`);
             }
         })
         .catch(error => {
             console.error('Błąd podczas resetowania systemu:', error);
-            showNotification('error', 'Nie udało się zresetować systemu');
+            if (error.message.includes('limit API')) {
+                showNotification('error', 'Przekroczono limit API. Spróbuj ponownie za kilka minut.');
+            } else {
+                showNotification('error', 'Nie udało się zresetować systemu');
+            }
         });
     }
-}
+}, 5000);
 
 // Setup Event Listeners
 function setupEventListeners() {
     // Trading controls
     const startTradingBtn = document.getElementById('start-trading-btn');
     if (startTradingBtn) {
-        startTradingBtn.addEventListener('click', startTrading);
+        startTradingBtn.addEventListener('click', startTradingThrottled);
     }
 
     const stopTradingBtn = document.getElementById('stop-trading-btn');
     if (stopTradingBtn) {
-        stopTradingBtn.addEventListener('click', stopTrading);
+        stopTradingBtn.addEventListener('click', stopTradingThrottled);
     }
 
     const resetSystemBtn = document.getElementById('reset-system-btn');
     if (resetSystemBtn) {
-        resetSystemBtn.addEventListener('click', resetSystem);
+        resetSystemBtn.addEventListener('click', resetSystemThrottled);
     }
 
     // Visibility change (to pause updates when tab is not visible)
     document.addEventListener('visibilitychange', function() {
         appState.activeDashboard = !document.hidden;
+        
+        // Jeśli dashboard jest znowu widoczny, odśwież dane po krótkim czasie
+        if (appState.activeDashboard) {
+            setTimeout(() => {
+                updateDashboardData();
+            }, 1000);
+        }
     });
+
+    // Dodanie obsługi retry dla błędów fetch
+    window.addEventListener('offline', function() {
+        showNotification('error', 'Utracono połączenie z internetem');
+    });
+
+    window.addEventListener('online', function() {
+        showNotification('success', 'Połączenie z internetem przywrócone');
+        // Odśwież dane po przywróceniu połączenia
+        setTimeout(() => {
+            updateDashboardData();
+        }, 1000);
+    });
+
+    // Event listener do resetowania stanu rate limitu po kliknięciu w przycisk
+    const retryBtn = document.getElementById('retry-api-btn');
+    if (retryBtn) {
+        retryBtn.addEventListener('click', function() {
+            if (appState.rateLimited) {
+                const now = Date.now();
+                if (now < appState.rateLimitResetTime) {
+                    const waitTime = (appState.rateLimitResetTime - now) / 1000;
+                    showNotification('warning', `Wciąż trzeba poczekać ${waitTime.toFixed(0)} sekund.`);
+                } else {
+                    appState.rateLimited = false;
+                    showNotification('success', 'Reset stanu rate limit. Próbuję pobrać dane.');
+                    updateDashboardData();
+                }
+            } else {
+                showNotification('info', 'API nie jest ograniczone. Odświeżam dane.');
+                updateDashboardData();
+            }
+        });
+    }
 }
 
 // Obsługa błędów API
@@ -471,6 +688,15 @@ function handleApiError(endpoint) {
     // Jeśli przekroczono limit błędów, pokaż komunikat
     if (appState.errorCounts[endpoint] >= CONFIG.maxErrors) {
         showErrorMessage(`Zbyt wiele błędów podczas komunikacji z API (${endpoint}). Sprawdź logi.`);
+        
+        // Jeśli mamy błędy 403/429, pokaż info o rate limit
+        if (appState.rateLimited) {
+            const now = Date.now();
+            const waitTime = (appState.rateLimitResetTime - now) / 1000;
+            if (waitTime > 0) {
+                showErrorMessage(`Przekroczono limit zapytań API. Spróbuj ponownie za ${waitTime.toFixed(0)} sekund.`);
+            }
+        }
     }
 }
 
@@ -480,6 +706,32 @@ function showErrorMessage(message) {
     if (errorContainer) {
         errorContainer.innerHTML = `<div class="error-message">${message}</div>`;
         errorContainer.style.display = 'block';
+        
+        // Dodaj przycisk retry jeśli problem z rate limit
+        if (message.includes('limitu zapytań API') || message.includes('limit zapytań')) {
+            errorContainer.innerHTML += `<button id="retry-api-btn" class="retry-button">Spróbuj ponownie</button>`;
+            const retryBtn = document.getElementById('retry-api-btn');
+            if (retryBtn) {
+                retryBtn.addEventListener('click', function() {
+                    if (appState.rateLimited) {
+                        const now = Date.now();
+                        if (now < appState.rateLimitResetTime) {
+                            const waitTime = (appState.rateLimitResetTime - now) / 1000;
+                            showNotification('warning', `Wciąż trzeba poczekać ${waitTime.toFixed(0)} sekund.`);
+                        } else {
+                            appState.rateLimited = false;
+                            errorContainer.style.display = 'none';
+                            showNotification('success', 'Reset stanu rate limit. Próbuję pobrać dane.');
+                            updateDashboardData();
+                        }
+                    } else {
+                        errorContainer.style.display = 'none';
+                        showNotification('info', 'Odświeżam dane.');
+                        updateDashboardData();
+                    }
+                });
+            }
+        }
     }
 }
 
