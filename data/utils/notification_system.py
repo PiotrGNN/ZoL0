@@ -910,3 +910,111 @@ if __name__ == "__main__":
     
     results = notification_system.send("Test powiadomienia", level="info")
     print(f"Wyniki wysyłania: {results}")
+"""
+notification_system.py
+---------------------
+System powiadomień dla aplikacji tradingowej.
+"""
+
+import logging
+from datetime import datetime
+from typing import List, Dict, Any, Optional
+
+class NotificationSystem:
+    """
+    System zarządzania powiadomieniami w aplikacji.
+    """
+    
+    def __init__(self):
+        self.logger = logging.getLogger(__name__)
+        self.logger.info("Inicjalizacja systemu powiadomień")
+        self.notifications = []
+        self.channels = ["console", "log"]
+        
+    def send_notification(self, message: str, level: str = "info", title: str = "System Notification", data: Optional[Dict[str, Any]] = None):
+        """
+        Wysyła powiadomienie do wszystkich skonfigurowanych kanałów.
+        
+        Args:
+            message (str): Treść powiadomienia
+            level (str, optional): Poziom powiadomienia (info, warning, error, critical). Defaults to "info".
+            title (str, optional): Tytuł powiadomienia. Defaults to "System Notification".
+            data (Dict[str, Any], optional): Dodatkowe dane dla powiadomienia. Defaults to None.
+        """
+        notification = {
+            "id": len(self.notifications) + 1,
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "level": level,
+            "title": title,
+            "message": message,
+            "data": data or {}
+        }
+        
+        self.notifications.append(notification)
+        
+        # Logi dla powiadomienia
+        log_message = f"{title}: {message}"
+        if level == "info":
+            self.logger.info(log_message)
+        elif level == "warning":
+            self.logger.warning(log_message)
+        elif level == "error":
+            self.logger.error(log_message)
+        elif level == "critical":
+            self.logger.critical(log_message)
+        
+        # Limituj listę powiadomień do 50 najnowszych
+        if len(self.notifications) > 50:
+            self.notifications = self.notifications[-50:]
+            
+        return notification
+        
+    def get_notifications(self, limit: int = 10, level: Optional[str] = None) -> List[Dict[str, Any]]:
+        """
+        Pobiera listę powiadomień z opcjonalnym filtrowaniem.
+        
+        Args:
+            limit (int, optional): Maksymalna liczba powiadomień. Defaults to 10.
+            level (str, optional): Filtrowanie według poziomu. Defaults to None.
+            
+        Returns:
+            List[Dict[str, Any]]: Lista powiadomień
+        """
+        filtered = self.notifications
+        
+        if level:
+            filtered = [n for n in filtered if n["level"] == level]
+            
+        return filtered[-limit:]
+        
+    def add_channel(self, channel: str) -> bool:
+        """
+        Dodaje nowy kanał powiadomień.
+        
+        Args:
+            channel (str): Nazwa kanału powiadomień
+            
+        Returns:
+            bool: True jeśli kanał został dodany, False jeśli już istnieje
+        """
+        if channel not in self.channels:
+            self.channels.append(channel)
+            self.logger.info(f"Dodano nowy kanał powiadomień: {channel}")
+            return True
+        return False
+        
+    def remove_channel(self, channel: str) -> bool:
+        """
+        Usuwa kanał powiadomień.
+        
+        Args:
+            channel (str): Nazwa kanału powiadomień
+            
+        Returns:
+            bool: True jeśli kanał został usunięty, False jeśli nie istnieje
+        """
+        if channel in self.channels:
+            self.channels.remove(channel)
+            self.logger.info(f"Usunięto kanał powiadomień: {channel}")
+            return True
+        return False

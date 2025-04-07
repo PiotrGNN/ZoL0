@@ -85,3 +85,62 @@ if __name__ == "__main__":
     print(f"Wykryto {len(anomalies)} anomalii")
     for anomaly in anomalies:
         print(f"- {anomaly['type']}: {anomaly['description']}")
+"""
+anomaly_detection.py
+-------------------
+Moduł do wykrywania anomalii w danych rynkowych.
+"""
+
+import logging
+import random
+from datetime import datetime, timedelta
+
+class AnomalyDetector:
+    """
+    Klasa do wykrywania anomalii w danych rynkowych.
+    """
+    
+    def __init__(self):
+        self.logger = logging.getLogger(__name__)
+        self.logger.info("Inicjalizacja detektora anomalii")
+        self.detected_anomalies = []
+        
+    def detect_anomalies(self, data=None):
+        """
+        Wykrywa anomalie w podanych danych.
+        
+        Args:
+            data (dict, optional): Dane do analizy. Defaults to None.
+            
+        Returns:
+            list: Lista wykrytych anomalii
+        """
+        # Symulowana detekcja anomalii
+        if random.random() < 0.3:  # 30% szansa na wykrycie anomalii
+            anomaly = {
+                "id": len(self.detected_anomalies) + 1,
+                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "type": random.choice(["Price Spike", "Volume Anomaly", "Pattern Break"]),
+                "symbol": random.choice(["BTC/USDT", "ETH/USDT", "SOL/USDT"]),
+                "severity": random.choice(["Low", "Medium", "High"]),
+                "description": "Unusual market behavior detected"
+            }
+            self.detected_anomalies.append(anomaly)
+            self.logger.info(f"Wykryto anomalię: {anomaly['type']} na {anomaly['symbol']}")
+        
+        # Limituj listę anomalii do 10 najnowszych
+        if len(self.detected_anomalies) > 10:
+            self.detected_anomalies = self.detected_anomalies[-10:]
+            
+        return self.detected_anomalies
+    
+    def get_detected_anomalies(self):
+        """
+        Zwraca listę wykrytych anomalii.
+        
+        Returns:
+            list: Lista wykrytych anomalii
+        """
+        # Symulacja wykrywania anomalii przy każdym zapytaniu
+        self.detect_anomalies()
+        return self.detected_anomalies

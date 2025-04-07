@@ -272,3 +272,148 @@ if __name__ == "__main__":
 
     balance = connector.get_account_balance()
     print(f"Stan konta: BTC={balance['balances']['BTC']['equity']}, USDT={balance['balances']['USDT']['equity']}")
+"""
+bybit_connector.py
+-----------------
+Moduł do komunikacji z API Bybit.
+"""
+
+import logging
+import time
+import requests
+from datetime import datetime
+
+class BybitConnector:
+    """
+    Klasa do komunikacji z API giełdy Bybit.
+    """
+    
+    def __init__(self, api_key=None, api_secret=None, use_testnet=True):
+        self.logger = logging.getLogger(__name__)
+        self.api_key = api_key
+        self.api_secret = api_secret
+        self.use_testnet = use_testnet
+        
+        if use_testnet:
+            self.base_url = "https://api-testnet.bybit.com"
+        else:
+            self.base_url = "https://api.bybit.com"
+            
+        self.logger.info(f"Initialized ByBit connector. Testnet: {use_testnet}")
+        
+    def get_server_time(self):
+        """
+        Pobiera czas serwera Bybit.
+        
+        Returns:
+            dict: Odpowiedź z czasem serwera
+        """
+        try:
+            response = requests.get(f"{self.base_url}/v2/public/time")
+            data = response.json()
+            self.logger.info(f"Pobrano czas serwera ByBit: {data}")
+            
+            # Symulacja odpowiedzi, jeśli API nie odpowiada
+            if not data.get("time_now"):
+                return {
+                    "success": True,
+                    "time": int(time.time()),
+                    "timeISO": datetime.now().isoformat(),
+                    "note": "Symulowane dane"
+                }
+                
+            return {
+                "success": True,
+                "time": data.get("time_now"),
+                "timeISO": datetime.fromtimestamp(float(data.get("time_now"))).isoformat()
+            }
+        except Exception as e:
+            self.logger.error(f"Błąd podczas pobierania czasu serwera ByBit: {e}")
+            return {
+                "success": False,
+                "error": str(e),
+                "time": int(time.time()),
+                "timeISO": datetime.now().isoformat(),
+                "note": "Symulowane dane z powodu błędu"
+            }
+            
+    def get_account_balance(self):
+        """
+        Pobiera stan konta Bybit.
+        
+        Returns:
+            dict: Stan konta użytkownika
+        """
+        # Symulowany wynik, ponieważ prawdziwe API wymaga autentykacji
+        return {
+            "success": True,
+            "balances": {
+                "BTC": {
+                    "equity": 0.01,
+                    "available_balance": 0.01,
+                    "wallet_balance": 0.01
+                },
+                "USDT": {
+                    "equity": 1000,
+                    "available_balance": 950,
+                    "wallet_balance": 1000
+                }
+            },
+            "note": "Symulowane dane"
+        }
+        
+    def get_klines(self, symbol, interval="15", limit=10):
+        """
+        Pobiera dane świecowe dla danego symbolu.
+        
+        Args:
+            symbol (str): Symbol pary walutowej
+            interval (str, optional): Interwał czasowy. Defaults to "15".
+            limit (int, optional): Limit danych. Defaults to 10.
+            
+        Returns:
+            list: Lista danych świecowych
+        """
+        # Symulowane dane świecowe
+        klines = []
+        current_time = int(time.time())
+        
+        for i in range(limit):
+            kline = {
+                "timestamp": current_time - (i * int(interval) * 60),
+                "open": 30000 + (i * 100),
+                "high": 30100 + (i * 100),
+                "low": 29950 + (i * 100),
+                "close": 30050 + (i * 100),
+                "volume": 10 + (i * 2)
+            }
+            klines.append(kline)
+            
+        return klines
+        
+    def get_order_book(self, symbol, limit=5):
+        """
+        Pobiera księgę zleceń dla danego symbolu.
+        
+        Args:
+            symbol (str): Symbol pary walutowej
+            limit (int, optional): Limit danych. Defaults to 5.
+            
+        Returns:
+            dict: Księga zleceń
+        """
+        # Symulowane dane księgi zleceń
+        base_price = 30000
+        
+        bids = []
+        asks = []
+        
+        for i in range(limit):
+            bids.append([base_price - (i * 10), 1 - (i * 0.1)])
+            asks.append([base_price + (i * 10), 1 - (i * 0.1)])
+            
+        return {
+            "bids": bids,
+            "asks": asks,
+            "time": int(time.time())
+        }

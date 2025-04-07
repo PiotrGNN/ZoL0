@@ -65,7 +65,7 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "pip install -r requirements.txt"
+args = "mkdir -p templates static/css static/js logs"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"

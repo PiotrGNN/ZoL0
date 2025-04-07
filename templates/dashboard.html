@@ -382,3 +382,72 @@
     <script src="/static/js/dashboard.js"></script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Trading Dashboard</h1>
+    </header>
+    
+    <main>
+        <section class="portfolio">
+            <h2>Portfolio</h2>
+            {% if portfolio %}
+                {% for coin, data in portfolio.balances.items() %}
+                <div class="coin-balance">
+                    <h3>{{ coin }}</h3>
+                    <p>Equity: {{ data.equity }}</p>
+                    <p>Available: {{ data.available_balance }}</p>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>Brak danych portfolio</p>
+            {% endif %}
+        </section>
+
+        <section class="ai-models">
+            <h2>AI Models</h2>
+            {% if ai_models %}
+                {% for model in ai_models %}
+                <div class="model">
+                    <h3>{{ model.name }}</h3>
+                    <p>Type: {{ model.type }}</p>
+                    <p>Accuracy: {{ model.accuracy }}%</p>
+                    <p>Status: {{ model.status }}</p>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>Brak aktywnych modeli AI</p>
+            {% endif %}
+        </section>
+
+        <section class="strategies">
+            <h2>Strategies</h2>
+            {% if strategies %}
+                {% for strategy in strategies %}
+                <div class="strategy">
+                    <h3>{{ strategy.name }}</h3>
+                    <p>{{ strategy.description }}</p>
+                    <p>Status: {{ 'Enabled' if strategy.enabled else 'Disabled' }}</p>
+                    <p>Win Rate: {{ strategy.win_rate }}%</p>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>Brak dostępnych strategii</p>
+            {% endif %}
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Trading System</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

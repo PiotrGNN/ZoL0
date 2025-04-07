@@ -653,3 +653,24 @@ function resetSystem() {
         });
     }
 }
+// Podstawowa funkcjonalność dashboardu
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Dashboard loaded');
+    
+    // Funkcja do odświeżania danych
+    function refreshData() {
+        fetch('/api/dashboard/data')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Dashboard data:', data);
+                // Tutaj można zaktualizować elementy UI
+            })
+            .catch(error => console.error('Error fetching dashboard data:', error));
+    }
+    
+    // Odświeżaj dane co 30 sekund
+    setInterval(refreshData, 30000);
+    
+    // Początkowe pobranie danych
+    refreshData();
+});

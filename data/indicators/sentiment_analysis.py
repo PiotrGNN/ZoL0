@@ -60,3 +60,46 @@ if __name__ == "__main__":
     analyzer = SentimentAnalyzer()
     result = analyzer.analyze()
     print(f"Sentiment: {result['analysis']} (Strength: {result['strength']})")
+"""
+sentiment_analysis.py
+---------------------
+Moduł do analizy sentymentu rynku.
+"""
+
+import logging
+import random
+from datetime import datetime
+
+class SentimentAnalyzer:
+    """
+    Klasa do analizy sentymentu rynkowego na podstawie różnych źródeł danych.
+    """
+    
+    def __init__(self):
+        self.logger = logging.getLogger(__name__)
+        self.logger.info("Inicjalizacja analizatora sentymentu")
+        self.last_update = datetime.now()
+        self.current_sentiment = "Neutral"
+        
+    def analyze(self):
+        """
+        Analizuje sentyment rynku i zwraca ocenę.
+        
+        Returns:
+            dict: Słownik z wynikami analizy sentymentu
+        """
+        # Symulowany wynik analizy sentymentu
+        sentiments = ["Bullish", "Bearish", "Neutral", "Slightly Bullish", "Slightly Bearish"]
+        weights = [0.25, 0.25, 0.3, 0.1, 0.1]
+        
+        self.current_sentiment = random.choices(sentiments, weights=weights)[0]
+        self.last_update = datetime.now()
+        
+        self.logger.info(f"Nowa analiza sentymentu: {self.current_sentiment}")
+        
+        return {
+            "analysis": self.current_sentiment,
+            "confidence": round(random.uniform(0.6, 0.95), 2),
+            "last_updated": self.last_update.strftime("%Y-%m-%d %H:%M:%S"),
+            "sources": ["Social Media", "News", "Market Data"]
+        }

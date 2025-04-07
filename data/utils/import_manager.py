@@ -370,3 +370,87 @@ if __name__ == "__main__":
     # Przykład użycia
     exclude_modules_from_auto_import(["tests"])
     auto_import_modules("data.utils")
+"""
+import_manager.py
+---------------
+Moduł do zarządzania importami w projekcie.
+"""
+
+import importlib
+import logging
+import os
+import pkgutil
+import sys
+from typing import List, Dict, Any, Set
+
+# Lista modułów wykluczonych z automatycznego importowania
+excluded_modules: Set[str] = set()
+
+def exclude_modules_from_auto_import(modules: List[str]) -> None:
+    """
+    Dodaje moduły do listy wykluczonych z automatycznego importowania.
+
+    Args:
+        modules (List[str]): Lista nazw modułów do wykluczenia
+    """
+    global excluded_modules
+    for module in modules:
+        excluded_modules.add(module)
+    logging.info(f"Moduły wykluczone z automatycznego importu: {excluded_modules}")
+
+def import_submodules(package_name: str) -> Dict[str, Any]:
+    """
+    Importuje wszystkie podmoduły pakietu.
+
+    Args:
+        package_name (str): Nazwa pakietu
+
+    Returns:
+        Dict[str, Any]: Słownik zaimportowanych modułów
+    """
+    results = {}
+    
+    try:
+        package = importlib.import_module(package_name)
+        
+        for _, name, is_pkg in pkgutil.iter_modules(package.__path__, package.__name__ + '.'):
+            # Pomijamy wykluczone moduły
+            module_short_name = name.split('.')[-1]
+            if module_short_name in excluded_modules:
+                continue
+                
+            try:
+                results[name] = importlib.import_module(name)
+                if is_pkg:
+                    submodules = import_submodules(name)
+                    results.update(submodules)
+            except Exception as e:
+                logging.warning(f"Błąd podczas importowania {name}: {e}")
+                
+    except Exception as e:
+        logging.error(f"Błąd podczas importowania pakietu {package_name}: {e}")
+        
+    return results
+
+def reload_module(module_name: str) -> bool:
+    """
+    Przeładowuje wskazany moduł.
+
+    Args:
+        module_name (str): Nazwa modułu do przeładowania
+
+    Returns:
+        bool: True jeśli przeładowanie się powiodło, False w przeciwnym wypadku
+    """
+    try:
+        if module_name in sys.modules:
+            importlib.reload(sys.modules[module_name])
+            logging.info(f"Przeładowano moduł {module_name}")
+            return True
+        else:
+            importlib.import_module(module_name)
+            logging.info(f"Zaimportowano moduł {module_name}")
+            return True
+    except Exception as e:
+        logging.error(f"Błąd podczas przeładowywania modułu {module_name}: {e}")
+        return False
