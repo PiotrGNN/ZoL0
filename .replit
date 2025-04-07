@@ -1,10 +1,11 @@
 run = "python main.py"
+language = "python3"
 entrypoint = "main.py"
 hidden = [".git", ".config", "**/__pycache__", "**/.mypy_cache", "**/*.pyc"]
-modules = ["python-3.10:v18-20230807-322e88b"]
+modules = ["python-3.11"]
 
 [nix]
-channel = "stable-23_05"
+channel = "stable-22_11"
 
 [env]
 PYTHONPATH = "$PYTHONPATH:$PWD"
@@ -29,12 +30,11 @@ start = "pylsp"
 language = "python3"
 
 [deployment]
-run = ["python", "main.py"]
+run = ["sh", "-c", "python main.py"]
 deploymentTarget = "cloudrun"
 
-[[ports]]
-localPort = 5000
-externalPort = 80
+[gitHubImport]
+requiredFiles = [".replit", "replit.nix", ".gitignore"]
 
 [workflows]
 runButton = "Run"
@@ -47,3 +47,52 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python main.py"
+
+[[workflows.workflow]]
+name = "Test"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pytest data/tests/"
+
+[[workflows.workflow]]
+name = "Format Code"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "black ."
+
+[[workflows.workflow]]
+name = "Lint Code"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "flake8 ."
+
+[[workflows.workflow]]
+name = "Test with Coverage"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pytest --cov=. --cov-report=term-missing data/tests/"
+
+[[workflows.workflow]]
+name = "Install Dependencies"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pip install -r requirements.txt"
+
+[[ports]]
+localPort = 5000
+externalPort = 80

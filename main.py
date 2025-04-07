@@ -26,38 +26,17 @@ app.secret_key = os.getenv("FLASK_SECRET_KEY", os.urandom(24))
 # Inicjalizacja komponentów systemu (import wewnątrz funkcji dla uniknięcia cyklicznych importów)
 def initialize_system():
     try:
-        # Dynamiczne importy z obsługą braku komponentów
-        try:
-            from data.utils.notification_system import NotificationSystem
-            global notification_system
-            notification_system = NotificationSystem()
-            logging.info("Zainicjalizowano system powiadomień")
-        except ImportError as e:
-            logging.warning(f"Nie można zaimportować NotificationSystem: {e}")
-            global notification_system
-            notification_system = None
+        from data.utils.notification_system import NotificationSystem
+        from data.indicators.sentiment_analysis import SentimentAnalyzer
+        from ai_models.anomaly_detection import AnomalyDetector
         
-        try:
-            from data.indicators.sentiment_analysis import SentimentAnalyzer
-            global sentiment_analyzer
-            sentiment_analyzer = SentimentAnalyzer()
-            logging.info("Zainicjalizowano analizator sentymentu")
-        except ImportError as e:
-            logging.warning(f"Nie można zaimportować SentimentAnalyzer: {e}")
-            global sentiment_analyzer
-            sentiment_analyzer = None
+        global notification_system, sentiment_analyzer, anomaly_detector
         
-        try:
-            from ai_models.anomaly_detection import AnomalyDetector
-            global anomaly_detector
-            anomaly_detector = AnomalyDetector()
-            logging.info("Zainicjalizowano detektor anomalii")
-        except ImportError as e:
-            logging.warning(f"Nie można zaimportować AnomalyDetector: {e}")
-            global anomaly_detector
-            anomaly_detector = None
+        notification_system = NotificationSystem()
+        sentiment_analyzer = SentimentAnalyzer()
+        anomaly_detector = AnomalyDetector()
         
-        logging.info("System zainicjalizowany z dostępnymi komponentami")
+        logging.info("System zainicjalizowany poprawnie")
         return True
     except Exception as e:
         logging.error(f"Błąd podczas inicjalizacji systemu: {e}")
@@ -281,13 +260,7 @@ def reset_system():
 # Uruchomienie aplikacji
 if __name__ == "__main__":
     # Tworzenie katalogu logs jeśli nie istnieje
-    try:
-        os.makedirs("logs", exist_ok=True)
-        logging.info("Utworzono katalog logs")
-    except Exception as e:
-        logging.warning(f"Nie można utworzyć katalogu logs: {e}")
-        # Alternatywna ścieżka w przypadku problemów z uprawnieniami
-        os.environ["LOG_DIR"] = "/tmp"
+    os.makedirs("logs", exist_ok=True)
     
     # Inicjalizacja systemu
     initialize_system()
