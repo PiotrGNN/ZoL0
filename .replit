@@ -37,7 +37,6 @@ deploymentTarget = "cloudrun"
 requiredFiles = [".replit", "replit.nix", ".gitignore"]
 
 [workflows]
-runButton = "Run"
 
 [[workflows.workflow]]
 name = "Run"
@@ -46,52 +45,11 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
+args = "python -m pip install -r requirements.txt"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
 args = "python main.py"
-
-[[workflows.workflow]]
-name = "Test"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "pytest data/tests/"
-
-[[workflows.workflow]]
-name = "Format Code"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "black ."
-
-[[workflows.workflow]]
-name = "Lint Code"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "flake8 ."
-
-[[workflows.workflow]]
-name = "Test with Coverage"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "pytest --cov=. --cov-report=term-missing data/tests/"
-
-[[workflows.workflow]]
-name = "Install Dependencies"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "pip install -r requirements.txt"
 
 [[ports]]
 localPort = 5000

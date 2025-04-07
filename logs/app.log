@@ -790,3 +790,470 @@
 2025-04-07 11:45:03,873 [INFO] 172.31.128.12 - - [07/Apr/2025 11:45:03] "[33mGET /api/chart-data HTTP/1.1[0m" 404 -
 2025-04-07 11:45:13,822 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
 2025-04-07 11:45:14,079 [INFO]  * Restarting with stat
+2025-04-07 14:29:12,521 [WARNING] Biblioteka NLTK nie jest dostępna. Używam symulowanych danych sentymentu.
+2025-04-07 14:29:15,032 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 14:29:15,052 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 14:29:15,052 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 14:29:15,052 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 14:29:15,052 [INFO] System zainicjalizowany poprawnie
+2025-04-07 14:29:15,090 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.12:5000
+2025-04-07 14:29:15,090 [INFO] [33mPress CTRL+C to quit[0m
+2025-04-07 14:29:15,091 [INFO]  * Restarting with stat
+2025-04-07 14:29:15,967 [WARNING] Biblioteka NLTK nie jest dostępna. Używam symulowanych danych sentymentu.
+2025-04-07 14:29:16,664 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 14:29:16,667 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 14:29:16,667 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 14:29:16,667 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 14:29:16,667 [INFO] System zainicjalizowany poprawnie
+2025-04-07 14:29:16,677 [WARNING]  * Debugger is active!
+2025-04-07 14:29:16,703 [INFO]  * Debugger PIN: 108-003-175
+2025-04-07 14:29:18,265 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:18] "GET / HTTP/1.1" 200 -
+2025-04-07 14:29:18,530 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:18] "GET /static/css/styles.css HTTP/1.1" 200 -
+2025-04-07 14:29:18,869 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:18] "GET /static/js/dashboard.js HTTP/1.1" 200 -
+2025-04-07 14:29:19,412 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:19] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:29:19,412 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:29:19,413 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:19] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:29:19,414 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:19] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:29:19,473 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:19] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:29:19,488 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:19] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:29:19,543 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:19] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:29:19,544 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:19] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 14:29:19,545 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:29:19,546 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:19] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:29:24,420 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:29:24,421 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:24] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:29:24,423 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:24] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:29:24,424 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:24] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:29:24,425 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:24] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:29:24,428 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:24] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:29:24,683 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:24] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:29:29,431 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:29] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:29:29,432 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:29:29,434 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:29] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:29:29,435 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:29] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:29:29,436 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:29] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:29:29,437 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:29] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:29:29,483 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:29] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:29:29,826 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:29] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:29:34,429 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:34] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:29:34,429 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:29:34,430 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:34] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:29:34,432 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:34] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:29:34,433 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:34] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:29:34,433 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:34] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:29:34,623 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:34] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:29:39,422 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:29:39,422 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:39] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:29:39,426 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:39] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:29:39,427 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:39] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:29:39,428 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:39] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:29:39,429 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:39] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:29:39,430 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:39] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:29:44,432 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:44] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:29:44,433 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:44] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:29:44,434 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:29:44,436 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:44] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:29:44,436 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:44] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:29:44,437 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:44] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:29:49,431 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:49] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:29:49,432 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:49] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:29:49,432 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:29:49,435 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:49] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:29:49,437 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:49] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:29:49,437 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:49] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:29:49,438 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:49] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:29:54,415 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:29:54,415 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:54] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:29:54,421 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:54] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:29:54,423 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:54] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:29:54,425 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:54] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:29:54,425 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:54] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:29:59,429 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:59] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:29:59,430 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:29:59,431 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:59] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:29:59,433 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:59] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:29:59,437 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:59] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:29:59,438 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:59] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:29:59,439 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:59] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:29:59,804 [INFO] 172.31.128.12 - - [07/Apr/2025 14:29:59] "GET / HTTP/1.1" 200 -
+2025-04-07 14:30:00,068 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:00] "GET /static/css/styles.css HTTP/1.1" 200 -
+2025-04-07 14:30:00,269 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:00] "[36mGET /static/js/dashboard.js HTTP/1.1[0m" 304 -
+2025-04-07 14:30:00,406 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:30:00,407 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:00] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:30:00,410 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:00] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:30:00,451 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:00] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:30:00,544 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:00] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:30:00,544 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:00] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:00,583 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:00] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:00,679 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:00] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 14:30:00,680 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:30:00,680 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:00] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:30:04,419 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:04] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:30:04,423 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:30:04,425 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:04] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:30:04,428 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:04] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:30:04,432 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:04] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:04,435 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:04] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:30:05,800 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:05] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:30:05,801 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:05] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:30:05,804 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:05] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:30:05,821 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:30:05,823 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:05] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:05,830 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:05] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:30:05,831 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:05] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:09,426 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:09] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:30:09,429 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:09] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:30:09,429 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:30:09,430 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:09] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:30:09,431 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:09] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:30:09,434 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:09] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:09,435 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:09] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:10,806 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:10] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:30:10,807 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:30:10,810 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:10] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:30:10,810 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:10] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:30:10,812 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:10] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:30:10,813 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:10] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:10,816 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:10] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:11,795 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:11] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:14,423 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:14] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:30:14,424 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:14] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:30:14,425 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:30:14,426 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:14] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:30:14,427 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:14] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:30:14,428 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:14] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:15,791 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:15] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:15,792 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:15] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:30:15,793 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:30:15,793 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:15] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:30:15,794 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:15] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:30:15,795 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:15] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:30:16,787 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:16] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:19,424 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:30:19,424 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:19] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:30:19,427 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:19] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:19,428 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:19] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:30:19,429 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:19] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:30:19,430 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:19] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:30:19,431 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:19] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:19,559 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:19] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 14:30:20,812 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:20] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:30:20,813 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:20] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:20,816 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:20] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:30:20,835 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:30:20,835 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:20] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:30:20,839 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:20] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:20,843 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:20] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:30:24,419 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:30:24,421 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:24] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:30:24,422 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:24] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:30:24,422 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:24] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:30:24,423 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:24] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:30:24,424 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:24] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:29,426 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:30:29,427 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:29] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:30:29,428 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:29] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:30:29,432 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:29] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:30:29,433 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:29] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:30:29,434 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:29] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:29,435 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:29] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:30,796 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:30] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:33,803 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:30:33,804 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:33] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:30:33,805 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:33] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:33,806 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:33] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:30:33,809 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:33] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:30:33,813 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:33] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:30:34,423 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:30:34,424 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:34] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:30:34,424 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:34] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:30:34,425 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:34] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:30:34,426 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:34] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:34,428 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:34] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:30:39,423 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:30:39,423 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:39] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:30:39,426 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:39] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:39,428 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:39] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:30:39,429 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:39] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:30:39,430 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:39] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:30:39,431 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:39] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:40,791 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:40] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:44,430 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:30:44,430 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:44] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:30:44,434 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:44] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:30:44,435 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:44] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:30:44,436 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:44] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:30:44,438 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:44] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:49,427 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:49] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:30:49,428 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:30:49,428 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:49] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:30:49,429 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:49] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:30:49,435 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:49] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:49,440 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:49] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:49,441 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:49] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:30:54,808 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:54] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:30:54,810 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:54] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:30:54,812 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:30:54,813 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:54] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:30:54,813 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:54] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:30:54,814 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:54] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:59,795 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:59] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:30:59,796 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:30:59,796 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:59] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:30:59,798 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:59] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:30:59,799 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:59] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:59,803 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:59] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:30:59,874 [INFO] 172.31.128.12 - - [07/Apr/2025 14:30:59] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:31:00,792 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:00] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 14:31:04,793 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:31:04,794 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:04] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:31:04,794 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:04] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:31:04,795 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:04] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:31:04,797 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:04] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:31:04,798 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:04] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:31:09,805 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:09] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:31:09,805 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:31:09,806 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:09] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:31:09,807 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:09] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:31:09,808 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:09] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:31:09,809 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:09] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:31:09,810 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:09] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:31:14,797 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:31:14,798 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:14] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:31:14,801 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:14] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:31:14,802 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:14] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:31:14,805 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:14] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:31:14,807 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:14] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:31:19,790 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:31:19,790 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:19] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:31:19,793 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:19] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:31:19,794 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:19] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:31:19,798 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:19] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:31:19,800 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:19] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:31:19,801 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:19] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:31:19,930 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:19] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 14:31:24,793 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:31:24,794 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:24] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:31:24,798 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:24] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:31:24,798 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:24] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:31:24,799 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:24] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:31:24,800 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:24] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:31:29,802 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:31:29,803 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:29] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:31:29,807 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:29] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:31:29,808 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:29] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:31:29,810 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:29] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:31:29,812 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:29] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:31:29,814 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:29] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:31:33,804 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:31:33,805 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:33] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:31:33,806 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:33] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:31:33,807 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:33] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:31:33,809 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:33] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:31:33,811 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:33] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:31:33,814 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:33] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:31:34,790 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:31:34,790 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:34] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:31:34,793 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:34] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:31:34,794 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:34] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:31:34,795 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:34] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:31:34,801 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:34] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:31:39,795 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:39] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:31:39,796 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:31:39,798 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:39] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:31:39,798 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:39] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:31:39,800 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:39] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:31:39,806 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:39] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:31:39,808 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:39] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:31:44,805 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:44] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:31:44,807 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:44] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:31:44,808 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:31:44,808 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:44] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:31:44,810 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:44] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:31:44,811 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:44] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:31:49,795 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:31:49,795 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:49] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:31:49,796 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:49] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:31:49,796 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:49] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:31:49,797 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:49] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:31:49,798 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:49] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:31:49,799 [INFO] 172.31.128.12 - - [07/Apr/2025 14:31:49] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:32:00,805 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:00] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 14:32:19,806 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:19] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 14:32:33,808 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:32:33,809 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:33] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:32:33,812 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:33] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:32:33,815 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:33] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:32:33,816 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:32:33,818 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:33] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:32:33,818 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:33] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:32:33,816 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:33] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:32:33,820 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:33] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:32:33,821 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:33] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:32:33,823 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:33] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:32:33,825 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:33] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:32:33,829 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:33] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:32:33,830 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:33] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:32:48,634 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:48] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:32:48,637 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:48] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:32:48,638 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:32:48,639 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:48] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:32:48,640 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:48] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:32:48,641 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:48] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:32:48,642 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:48] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:32:49,423 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:32:49,423 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:49] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:32:49,425 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:49] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:32:49,426 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:49] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:32:49,431 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:49] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:32:49,432 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:49] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:32:49,433 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:49] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:32:54,423 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:32:54,423 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:54] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:32:54,430 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:54] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:32:54,431 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:54] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:32:54,432 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:54] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:32:54,433 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:54] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:32:59,803 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:32:59,803 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:59] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:32:59,805 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:59] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:32:59,806 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:59] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:32:59,810 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:59] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:32:59,812 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:59] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:32:59,814 [INFO] 172.31.128.12 - - [07/Apr/2025 14:32:59] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:33:00,791 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:00] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 14:33:04,423 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:04] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:33:04,424 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:33:04,425 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:04] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:33:04,426 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:04] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:33:04,426 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:04] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:33:04,427 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:04] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:09,425 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:09] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:09,426 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:09] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:09,428 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:09] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:33:09,428 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:33:09,429 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:09] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:33:09,431 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:09] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:33:09,433 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:09] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:33:09,700 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:33:09,702 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:09] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:33:09,706 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:09] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:33:09,707 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:09] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:09,708 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:09] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:09,709 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:09] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:33:09,711 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:09] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:33:10,424 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:10] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:33:10,426 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:33:10,430 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:10] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:33:10,427 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:10] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:33:10,430 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:10] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:10,431 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:10] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:10,432 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:10] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:33:14,483 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:33:14,484 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:14] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:33:14,487 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:14] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:33:14,503 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:14] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:14,505 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:14] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:33:14,516 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:14] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:33:15,791 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:33:15,791 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:15] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:33:15,795 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:15] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:33:15,796 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:15] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:33:15,796 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:15] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:15,797 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:15] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:33:19,803 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:19] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:33:19,804 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:33:19,804 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:19] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:33:19,807 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:19] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:33:19,808 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:19] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:19,809 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:19] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:33:19,810 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:19] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:19,955 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:19] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 14:33:20,842 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:20] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:33:20,843 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:20] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:20,844 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:20] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:33:20,845 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:33:20,847 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:20] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:20,848 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:20] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:33:20,848 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:20] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:33:24,424 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:33:24,424 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:24] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:33:24,428 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:24] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:24,428 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:24] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:33:24,429 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:24] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:33:24,430 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:24] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:33:25,795 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:25] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:33:25,796 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:33:25,798 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:25] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:33:25,797 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:25] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:33:25,796 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:25] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:33:25,799 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:25] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:29,419 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:33:29,420 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:29] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:33:29,425 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:29] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:33:29,427 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:29] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:33:29,429 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:29] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:29,435 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:29] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:33:29,441 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:29] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:30,818 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:30] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:33:30,820 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:30] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:33:30,835 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:30] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:30,837 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:30] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:30,837 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:33:30,842 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:30] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:33:30,842 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:30] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:33:34,436 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:34] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:34,437 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:33:34,438 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:34] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:33:34,439 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:34] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:33:34,441 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:34] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:33:34,443 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:34] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:33:35,795 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:33:35,796 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:35] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:33:35,799 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:35] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:33:35,800 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:35] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:33:35,802 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:35] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:33:35,803 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:35] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:39,437 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:39] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:33:39,439 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:33:39,440 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:39] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:33:39,442 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:39] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:33:39,449 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:39] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:39,451 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:39] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:39,454 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:39] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:33:40,804 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:40] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:33:40,805 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:40] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:33:40,810 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:40] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:40,813 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:40] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:40,814 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:33:40,816 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:40] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:33:40,818 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:40] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:33:44,427 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:44] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:33:44,428 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:44] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:33:44,429 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:44] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:33:44,430 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:33:44,432 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:44] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:33:44,434 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:44] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:45,808 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:45] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:45,813 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:45] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:33:45,815 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:45] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:33:45,817 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:33:45,818 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:45] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:33:45,818 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:45] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:33:49,419 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:33:49,419 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:49] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:33:49,423 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:49] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:33:49,424 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:49] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:33:49,425 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:49] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:49,425 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:49] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:33:49,426 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:49] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:50,793 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:50] "[33mGET /api/ai-models-status HTTP/1.1[0m" 404 -
+2025-04-07 14:33:50,793 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:50] "[33mGET /api/recent-trades HTTP/1.1[0m" 404 -
+2025-04-07 14:33:50,794 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:50] "[33mGET /api/trading-stats HTTP/1.1[0m" 404 -
+2025-04-07 14:33:50,796 [ERROR] Błąd podczas pobierania danych dashboardu: 'SentimentAnalyzer' object has no attribute 'get_current_sentiment'
+2025-04-07 14:33:50,796 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:50] "[35m[1mGET /api/dashboard/data HTTP/1.1[0m" 500 -
+2025-04-07 14:33:50,797 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:50] "[33mGET /api/alerts HTTP/1.1[0m" 404 -
+2025-04-07 14:33:50,799 [INFO] 172.31.128.12 - - [07/Apr/2025 14:33:50] "[33mGET /api/component-status HTTP/1.1[0m" 404 -
