@@ -1,113 +1,109 @@
 
-# 🚀 Trading Bot System z wykorzystaniem AI
+# 🤖 Trading Bot System
 
-Zaawansowany system tradingowy wykorzystujący modele sztucznej inteligencji do wykrywania anomalii rynkowych, predykcji trendów i automatycznego zarządzania transakcjami.
+## Opis projektu
+System tradingowy oparty na sztucznej inteligencji, zoptymalizowany do działania w środowisku Replit. System umożliwia analizę rynku, wykrywanie anomalii cenowych, generowanie sygnałów tradingowych oraz przeprowadzanie symulacji strategii inwestycyjnych.
 
-## 📋 Funkcjonalności
+## 🔑 Główne funkcje
 
-- **Detekcja anomalii rynkowych** - Wykorzystanie uczenia maszynowego do wykrywania nietypowych zachowań rynku
-- **Analiza sentymentu** - Monitorowanie mediów społecznościowych i newsów w celu oceny nastrojów rynkowych
-- **Dashboard monitorujący** - Interaktywny interfejs użytkownika do śledzenia pracy systemu
-- **Zarządzanie ryzykiem** - Automatyczne dostosowanie pozycji do warunków rynkowych
-- **Strategie tradingowe** - Implementacja różnych strategii (trend following, mean reversion, breakout)
-- **Optymalizacja hiperparametrów** - Automatyczne dostrajanie parametrów modeli
+- **Dashboard analityczny** - wizualizacja danych rynkowych, statusów komponentów i wykrytych anomalii
+- **Detekcja anomalii** - wykrywanie nietypowych zachowań rynku z wykorzystaniem algorytmów ML
+- **Analiza sentymentu** - ocena wpływu informacji rynkowych na ceny instrumentów
+- **Strategie tradingowe** - zestaw zaimplementowanych strategii (trend following, mean reversion, breakout)
+- **Zarządzanie ryzykiem** - zaawansowane mechanizmy kontroli ryzyka i optymalizacji portfela
+- **System powiadomień** - alerty o istotnych zdarzeniach rynkowych i błędach systemu
 
-## 🚀 Szybki start
+## 🧪 Tryby pracy
 
-### Uruchomienie w Replit
+System może działać w trzech trybach:
+1. **Symulacja** - symulowanie danych rynkowych i działania strategii (domyślny)
+2. **Analiza** - analiza historycznych danych bez wykonywania transakcji
+3. **Testowanie** - uruchamianie testów jednostkowych i integracyjnych
 
-1. Kliknij przycisk "Run" w środowisku Replit
-2. System zostanie automatycznie skonfigurowany i uruchomiony
-3. Dostęp do dashboardu: `https://[nazwa-repl].replit.app/dashboard`
-
-### Manualna instalacja
-
-```bash
-# Instalacja zależności
-pip install -r requirements.txt
-
-# Uruchomienie aplikacji
-python main.py
-```
-
-## 📚 Struktura projektu
+## 📋 Struktura projektu
 
 ```
-├── ai_models/              # Modele AI i uczenia maszynowego
-├── config/                 # Pliki konfiguracyjne
-├── data/                   # Logika biznesowa i komponenty 
-│   ├── indicators/         # Wskaźniki techniczne i analizy sentymentu
-│   ├── logging/            # Komponenty logowania
-│   ├── optimization/       # Optymalizatory
+├── ai_models/              # Modele AI/ML do analizy i predykcji
+├── data/                   # Moduły danych, strategie i narzędzia
+│   ├── data/               # Pobieranie i przetwarzanie danych
+│   ├── execution/          # Wykonywanie transakcji
+│   ├── indicators/         # Wskaźniki techniczne i analizy
+│   ├── logging/            # System logowania i detekcji anomalii
+│   ├── optimization/       # Optymalizacja strategii i backtesting
 │   ├── risk_management/    # Zarządzanie ryzykiem
 │   ├── strategies/         # Strategie tradingowe
+│   ├── tests/              # Testy jednostkowe i integracyjne
 │   └── utils/              # Narzędzia pomocnicze
-├── logs/                   # Logi systemowe
-├── reports/                # Generowane raporty
+├── logs/                   # Pliki logów
+├── reports/                # Raporty i analizy
 ├── saved_models/           # Zapisane modele ML
 ├── static/                 # Pliki statyczne dla interfejsu
 │   ├── css/                # Style CSS
 │   └── js/                 # Skrypty JavaScript
-├── templates/              # Szablony HTML dla dashboardu
-├── .env.example            # Przykładowe zmienne środowiskowe
-├── main.py                 # Główny plik aplikacji
-└── requirements.txt        # Zależności projektu
+├── templates/              # Szablony HTML
+├── .env.example            # Przykładowy plik konfiguracyjny
+└── main.py                 # Główny plik uruchomieniowy
 ```
 
-## 🔧 Konfiguracja
+## 🚀 Uruchomienie projektu
 
-System można skonfigurować poprzez zmienne środowiskowe lub plik `.env`:
+1. **Instalacja zależności**:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-```
-# API Keys - Replace with your actual keys
-BINANCE_API_KEY=your_binance_api_key_here
-BINANCE_API_SECRET=your_binance_api_secret_here
+2. **Konfiguracja środowiska**:
+   - Skopiuj `.env.example` do `.env` i uzupełnij zmienne środowiskowe
+   - Dostosuj ustawienia w `config/settings.py` według potrzeb
 
-# Environment settings
-APP_ENV=development  # production, development, test
+3. **Uruchomienie systemu**:
+   ```bash
+   python main.py
+   ```
 
-# Trading parameters
-RISK_LEVEL=low  # low, medium, high
-ENABLE_AUTO_TRADING=false
-```
+4. **Dostęp do dashboardu**:
+   - Po uruchomieniu, dashboard jest dostępny pod adresem: `http://localhost:5000/dashboard`
 
-## 🖥️ Dostępne endpointy
+## 🔧 Dostępne workflowy
 
-- `/` - Przekierowanie do dashboardu
-- `/dashboard` - Panel administracyjny z wizualizacją stanu systemu
-- `/api/status` - Szczegółowy status API (JSON)
-- `/health` - Endpoint do monitorowania stanu aplikacji
-- `/api/chart-data` - Dane do wykresów (JSON)
-- `/start-simulation` - Uruchomienie symulacji (API)
-- `/download-report` - Wygenerowanie i pobranie raportu
+- **Run** - uruchamia główny system
+- **Test** - wykonuje testy jednostkowe
+- **Format Code** - formatuje kod za pomocą black
+- **Lint Code** - sprawdza jakość kodu za pomocą flake8
+- **Test with Coverage** - uruchamia testy z pomiarem pokrycia kodu
+- **Install Dependencies** - instaluje wymagane zależności
 
-## 🧪 Testowanie
+## 📊 Funkcje API
 
-System zawiera testy jednostkowe i integracyjne:
+- `/api/chart-data` - zwraca dane do wykresów
+- `/api/system-status` - zwraca status systemu
+- `/api/components` - zwraca status poszczególnych komponentów
+- `/api/anomalies` - zwraca wykryte anomalie
 
-```bash
-# Uruchomienie wszystkich testów
-pytest data/tests/
+## 🔍 Diagnostyka i debugowanie
 
-# Testy z pokryciem kodu
-pytest --cov=. --cov-report=term-missing data/tests/
-```
+W przypadku problemów, sprawdź:
+- Logi w katalogu `logs/`
+- Status komponentów w dashboardzie
+- Błędy importów i zależności
 
-## 📝 Workflow Development
+## 📦 Zależności
 
-Dostępne workflow dla Replit:
+Główne biblioteki:
+- Flask - framework webowy
+- Pandas/NumPy - przetwarzanie danych
+- Scikit-learn - modele ML do analizy i predykcji
+- Matplotlib/Chart.js - wizualizacja danych
 
-1. **Run** - Uruchamia główną aplikację
-2. **Test** - Uruchamia testy
-3. **Format Code** - Formatuje kod za pomocą black
-4. **Lint Code** - Sprawdza jakość kodu przez flake8
-5. **Test with Coverage** - Uruchamia testy z raportem pokrycia
-6. **Install Dependencies** - Instaluje zależności
+## 👨‍💻 Rozwój projektu
 
-## 🔒 Bezpieczeństwo
+System jest zaprojektowany modułowo, co umożliwia łatwe dodawanie nowych:
+- Strategii tradingowych
+- Modeli AI/ML
+- Wskaźników technicznych
+- Mechanizmów zarządzania ryzykiem
 
-Zawsze używaj zmiennych środowiskowych do przechowywania poufnych danych jak klucze API. Nigdy nie przechowuj ich w kodzie. Użyj pliku `.env` lokalnie lub narzędzia "Secrets" w Replit.
+## ⚠️ Uwagi
 
-## 📄 Licencja
-
-Ten projekt jest udostępniony na licencji MIT.
+System działa domyślnie w trybie symulacji i nie wykonuje rzeczywistych transakcji.
+Aby włączyć tryb handlu rzeczywistego, należy dostosować odpowiednie parametry w pliku konfiguracyjnym.

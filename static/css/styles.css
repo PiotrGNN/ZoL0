@@ -95,38 +95,46 @@ body {
 }
 
 .status {
-  display: inline-block;
   padding: 5px 10px;
   border-radius: 4px;
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-weight: bold;
+  display: inline-block;
+  min-width: 80px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }
 
 .status-online {
-  background-color: #e8f5e9;
-  color: #2e7d32;
+  background-color: #4CAF50;
+  color: white;
 }
 
 .status-offline {
-  background-color: #ffebee;
-  color: #c62828;
+  background-color: #f44336;
+  color: white;
 }
 
 .status-warning {
-  background-color: #fff8e1;
-  color: #f57f17;
+  background-color: #FF9800;
+  color: white;
 }
 
-.status-maintenance {
-    background-color: #3498db;
+.status-error {
+  background-color: #D32F2F;
+  color: white;
+  animation: pulse 2s infinite;
 }
 
-.grid-2 {
-  grid-column: span 2;
-}
-
-.grid-3 {
-  grid-column: span 3;
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(211, 47, 47, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(211, 47, 47, 0);
+  }
 }
 
 table {
@@ -297,12 +305,31 @@ table tr:last-child td {
     grid-template-columns: 1fr;
   }
 
-  .grid-2, .grid-3 {
-    grid-column: span 1;
+  .card {
+    overflow-x: auto;
   }
 
-  .summary-stats {
-    grid-template-columns: 1fr 1fr;
+  table {
+    min-width: 500px;
+  }
+  .header h1 {
+    font-size: 1.5rem;
+  }
+
+  .header-buttons button {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .header-buttons {
+    margin-top: 10px;
   }
 }
 
@@ -324,77 +351,75 @@ table tr:last-child td {
   background: #555;
 }
 
-/* Kolory dla statusów */
+
 .status-online {
-    background-color: #27ae60;
+  background-color: #27ae60;
 }
 
 .status-warning {
-    background-color: #f39c12;
+  background-color: #f39c12;
 }
 
 .status-offline {
-    background-color: #e74c3c;
+  background-color: #e74c3c;
 }
 
 .status-maintenance {
-    background-color: #3498db;
+  background-color: #3498db;
 }
 
-/* Style dla portfolio */
 .positive {
-    color: #27ae60;
-    font-weight: bold;
+  color: #27ae60;
+  font-weight: bold;
 }
 
 .negative {
-    color: #e74c3c;
-    font-weight: bold;
+  color: #e74c3c;
+  font-weight: bold;
 }
 
 .neutral {
-    color: #7f8c8d;
+  color: #7f8c8d;
 }
 
-/* Komunikaty o błędach */
+
 .error-message {
-    background-color: #fceaea;
-    border: 1px solid #e74c3c;
-    color: #c0392b;
-    padding: 10px;
-    border-radius: 5px;
-    margin: 10px 0;
-    text-align: center;
+  background-color: #fceaea;
+  border: 1px solid #e74c3c;
+  color: #c0392b;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 10px 0;
+  text-align: center;
 }
 
-/* Style dla kart portfolio */
 .portfolio-summary {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
 }
 
 .portfolio-total {
-    font-size: 1.2rem;
-    font-weight: bold;
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
 .portfolio-performance {
-    display: flex;
-    gap: 15px;
+  display: flex;
+  gap: 15px;
 }
 
 .performance-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .performance-item .label {
-    font-size: 0.8rem;
-    color: #7f8c8d;
+  font-size: 0.8rem;
+  color: #7f8c8d;
 }
 
 .performance-item .value {
-    font-weight: bold;
+  font-weight: bold;
 }

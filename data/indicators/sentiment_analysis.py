@@ -1,4 +1,3 @@
-
 """
 sentiment_analysis.py
 --------------------
@@ -8,7 +7,7 @@ w celu określenia nastrojów rynkowych.
 
 import logging
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Dict, List, Any, Optional
 
 # Konfiguracja logowania
@@ -25,7 +24,7 @@ class SentimentAnalyzer:
     def __init__(self, use_external_api: bool = False):
         """
         Inicjalizacja analizatora sentymentu.
-        
+
         Args:
             use_external_api: Czy używać zewnętrznych API (np. Twitter/X, NewsAPI)
         """
@@ -36,19 +35,19 @@ class SentimentAnalyzer:
     def analyze_text(self, text: str) -> Dict[str, Any]:
         """
         Analizuje sentyment pojedynczego tekstu.
-        
+
         Args:
             text: Tekst do analizy
-            
+
         Returns:
             Dict zawierający wynik analizy sentymentu
         """
         # W rzeczywistej aplikacji używalibyśmy modelu NLP
         # W wersji symulacyjnej generujemy losowy wynik
-        
+
         # Losowa wartość sentymentu (od -1 do 1)
         sentiment_score = random.uniform(-1, 1)
-        
+
         # Mapowanie wyniku na kategorię
         if sentiment_score > 0.3:
             sentiment = "positive"
@@ -56,24 +55,24 @@ class SentimentAnalyzer:
             sentiment = "negative"
         else:
             sentiment = "neutral"
-            
+
         result = {
             "text": text[:50] + "..." if len(text) > 50 else text,
             "sentiment": sentiment,
             "score": sentiment_score,
             "timestamp": datetime.now().isoformat()
         }
-        
+
         logger.debug("Analiza tekstu: %s, wynik: %s", text[:30], sentiment)
         return result
 
     def get_market_sentiment(self, symbol: str) -> Dict[str, Any]:
         """
         Pobiera sentyment rynkowy dla danego symbolu.
-        
+
         Args:
             symbol: Symbol rynkowy (np. BTC/USDT)
-            
+
         Returns:
             Dict zawierający zagregowany sentyment rynkowy
         """
@@ -81,19 +80,19 @@ class SentimentAnalyzer:
         if symbol in self.cache and (datetime.now() - self.cache[symbol]["timestamp"]).seconds < 300:
             logger.debug("Używam zbuforowanego sentymentu dla %s", symbol)
             return self.cache[symbol]
-            
+
         # W rzeczywistej aplikacji pobieralibyśmy dane z różnych źródeł
         # W wersji symulacyjnej generujemy losowy wynik
         social_sentiment = random.uniform(-1, 1)
         news_sentiment = random.uniform(-1, 1)
-        
+
         # Wagi dla różnych źródeł
         social_weight = 0.4
         news_weight = 0.6
-        
+
         # Ważona suma
         combined_score = (social_sentiment * social_weight) + (news_sentiment * news_weight)
-        
+
         # Mapowanie wyniku na kategorię
         if combined_score > 0.3:
             sentiment = "positive"
@@ -101,7 +100,7 @@ class SentimentAnalyzer:
             sentiment = "negative"
         else:
             sentiment = "neutral"
-            
+
         result = {
             "symbol": symbol,
             "sentiment": sentiment,
@@ -112,10 +111,10 @@ class SentimentAnalyzer:
             },
             "timestamp": datetime.now()
         }
-        
+
         # Aktualizacja cache
         self.cache[symbol] = result
-        
+
         logger.info("Sentyment rynkowy dla %s: %s (%.2f)", symbol, sentiment, combined_score)
         return result
 
@@ -142,26 +141,26 @@ class SentimentAnalyzer:
     def get_sentiment_history(self, symbol: str, days: int = 7) -> List[Dict[str, Any]]:
         """
         Zwraca historię sentymentu dla symbolu z określonej liczby dni.
-        
+
         Args:
             symbol: Symbol rynkowy
             days: Liczba dni historii
-            
+
         Returns:
             Lista wyników sentymentu z każdego dnia
         """
         history = []
         now = datetime.now()
-        
+
         # Generowanie symulowanych danych historycznych
         for i in range(days):
             day_offset = i
-            date = datetime(now.year, now.month, now.day) - datetime.timedelta(days=day_offset)
-            
+            date = datetime(now.year, now.month, now.day) - timedelta(days=day_offset)
+
             # Losowy sentyment z trendem (bardziej pozytywny dla starszych dni)
             trend_factor = i / days  # Im starszy dzień, tym wyższy współczynnik
             score = random.uniform(-0.8, 0.8) + trend_factor * 0.3
-            
+
             # Mapowanie wyniku na kategorię
             if score > 0.3:
                 sentiment = "positive"
@@ -169,29 +168,29 @@ class SentimentAnalyzer:
                 sentiment = "negative"
             else:
                 sentiment = "neutral"
-                
+
             history.append({
                 "date": date.strftime("%Y-%m-%d"),
                 "sentiment": sentiment,
                 "score": score,
                 "volume": random.randint(100, 1000)  # Symulowana ilość wzmianek
             })
-            
+
         return history
-    
+
     def analyze_news_impact(self, symbol: str) -> Dict[str, Any]:
         """
         Analizuje wpływ najnowszych wiadomości na cenę instrumentu.
-        
+
         Args:
             symbol: Symbol rynkowy
-            
+
         Returns:
             Wynik analizy wpływu wiadomości
         """
         # Symulacja wyników
         impact_score = random.uniform(-1, 1)
-        
+
         return {
             "symbol": symbol,
             "impact_score": impact_score,

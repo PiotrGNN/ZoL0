@@ -10,6 +10,8 @@ import sys
 import time
 from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template
+from datetime import datetime, timedelta
+import random
 
 # Inicjalizacja aplikacji Flask
 app = Flask(__name__, template_folder='templates', static_folder='static')
@@ -47,7 +49,7 @@ def index():
     from flask import redirect
     # Redirect do dashboardu
     return redirect('/dashboard')
-    
+
     # Alternatywnie, można zwrócić JSON
     # return jsonify({
     #     "status": "online",
@@ -59,13 +61,13 @@ def index():
 def dashboard():
     """Strona z dashboardem systemu."""
     from datetime import datetime
-    
+
     try:
         # Dane przykładowe - w rzeczywistości byłyby pobierane z systemu
         system_mode = "Symulacja"
         active_strategies = 3
         risk_level = "Niski"
-        
+
         # Przykładowe komponenty systemu
         components = [
             {
@@ -87,7 +89,7 @@ def dashboard():
                 "last_update": datetime.now().strftime("%H:%M:%S")
             }
         ]
-        
+
         # Przykładowe anomalie
         anomalies = [
             {
@@ -103,7 +105,7 @@ def dashboard():
                 "description": "Nietypowa zmiana ceny"
             }
         ]
-        
+
         # Przykładowe działania systemu
         system_actions = [
             {
@@ -122,7 +124,7 @@ def dashboard():
                 "description": "Zaktualizowano historyczne dane rynkowe"
             }
         ]
-        
+
         # Przykładowe dane o modelach AI
         ai_models = [
             {
@@ -154,7 +156,7 @@ def dashboard():
                 "last_used": "10:20:30"
             }
         ]
-        
+
         # Przykładowe dane portfolio
         portfolio = [
             {
@@ -186,10 +188,10 @@ def dashboard():
                 "change_class": "neutral"
             }
         ]
-        
+
         logging.info("Renderowanie dashboardu z danymi: %s komponenty, %s anomalie, %s modele AI, %s aktywa", 
                     len(components), len(anomalies), len(ai_models), len(portfolio))
-        
+
         return render_template('dashboard.html', 
                               system_mode=system_mode,
                               active_strategies=active_strategies,
@@ -243,9 +245,9 @@ def portfolio_status():
 def recent_trades():
     """Endpoint zwracający ostatnie transakcje."""
     from datetime import datetime, timedelta
-    
+
     now = datetime.now()
-    
+
     # Symulowane dane transakcji
     return jsonify([
         {
@@ -321,7 +323,7 @@ def download_report():
 @app.route('/start-simulation')
 def start_simulation():
     """Endpoint do uruchamiania symulacji na żądanie."""
-    # W rzeczywistości tutaj byłoby rozpoczynanie nowej symulacji
+    # W rzeczywistym przypadku tutaj byłoby rozpoczynanie nowej symulacji
     logging.info("Uruchomiono symulację z panelu administratora")
     return jsonify({
         "status": "success",
@@ -334,26 +336,26 @@ def chart_data():
     from datetime import datetime, timedelta
     import random
     import time
-    
+
     try:
         # Krótkie opóźnienie, aby zapobiec zbyt szybkim powtarzającym się żądaniom
         time.sleep(0.1)
-        
+
         # Generowanie przykładowych danych dla wykresu (w rzeczywistej aplikacji byłyby pobierane z bazy danych)
         now = datetime.now()
         labels = [(now - timedelta(minutes=i*5)).strftime("%H:%M") for i in range(10)]
         labels.reverse()
-        
+
         # Przykładowe dane dla wykresów
         anomaly_activity = [random.randint(40, 90) for _ in range(10)]
         system_load = [random.randint(20, 95) for _ in range(10)]
-        
+
         # Losowe anomalie (rzadkie)
         detected_anomalies = [0] * 10
         for i in range(10):
             if random.random() < 0.2:  # 20% szans na anomalię
                 detected_anomalies[i] = random.randint(1, 3)
-        
+
         response_data = {
             "labels": labels,
             "datasets": [
@@ -381,10 +383,10 @@ def chart_data():
                 }
             ]
         }
-        
+
         logging.info("Wygenerowano dane wykresu: %d etykiet, %d zestawów danych", 
                     len(labels), len(response_data["datasets"]))
-        
+
         return jsonify(response_data)
     except Exception as e:
         logging.error("Błąd podczas generowania danych wykresu: %s", str(e))
@@ -402,6 +404,60 @@ def chart_data():
             ],
             "error": f"Błąd generowania danych: {str(e)}"
         }), 500
+
+@app.route('/api/chart-data')
+def get_chart_data():
+    """Endpoint API zwracający dane do wykresu."""
+    try:
+        # Generowanie czasów dla etykiet
+        current_time = datetime.now()
+        labels = [(current_time - timedelta(hours=i)).strftime("%H:%M") for i in range(9, -1, -1)]
+
+        # Generowanie danych dla różnych instrumentów
+        # Używanie seed dla zapewnienia powtarzalności w krótkim okresie
+        seed = int(time.time() / 60)  # Zmienia się co minutę
+        random.seed(seed)
+
+        btc_base = 38000
+        eth_base = 2200
+        sol_base = 100
+
+        # Generowanie danych z niewielką korelacją
+        btc_data = [btc_base + random.uniform(-1000, 1000) for _ in range(10)]
+        eth_data = [eth_base + random.uniform(-100, 100) + (btc - btc_base) * 0.05 for btc, _ in zip(btc_data, range(10))]
+        sol_data = [sol_base + random.uniform(-10, 10) + (btc - btc_base) * 0.003 for btc, _ in zip(btc_data, range(10))]
+
+        datasets = [
+            {
+                "label": "BTC/USDT",
+                "data": [round(val, 2) for val in btc_data],
+                "borderColor": "#ff6384",
+                "fill": False
+            },
+            {
+                "label": "ETH/USDT",
+                "data": [round(val, 2) for val in eth_data],
+                "borderColor": "#36a2eb",
+                "fill": False
+            },
+            {
+                "label": "SOL/USDT",
+                "data": [round(val, 2) for val in sol_data],
+                "borderColor": "#4bc0c0",
+                "fill": False
+            }
+        ]
+
+        logging.info(f"Wygenerowano dane wykresu: {len(labels)} etykiet, {len(datasets)} zestawów danych")
+
+        return jsonify({
+            "labels": labels,
+            "datasets": datasets
+        })
+    except Exception as e:
+        logging.error(f"Błąd podczas generowania danych wykresu: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
 
 def load_configuration():
     """Ładuje konfigurację systemu z plików."""

@@ -70,7 +70,7 @@ function updateDashboardData() {
     window.updateTimeout = setTimeout(() => {
         // Aktualizacja wykresu aktywności
         fetchChartData();
-        
+
         // Symulacja aktualizacji statusów komponentów
         updateComponentStatuses();
     }, 300);
@@ -150,7 +150,7 @@ function setupEventListeners() {
                 });
         });
     }
-    
+
     // Obsługa przycisku odświeżania danych
     const refreshButton = document.getElementById('refreshDataBtn');
     if (refreshButton) {
@@ -186,6 +186,38 @@ function showNotification(message, type = 'info') {
     }, 3000);
 }
 
+// Zmienne do obsługi błędów
+let chartErrorCount = 0;
+let statusErrorCount = 0;
+const MAX_ERRORS = 3;
+const RECONNECT_INTERVAL = 5000; // 5 sekund
+const NORMAL_INTERVAL = 30000; // 30 sekund
+
+// Funkcja do obsługi błędów i ponownych prób
+function handleChartError() {
+    chartErrorCount++;
+    console.log(`Błąd wykresu #${chartErrorCount}. Próba ponownego połączenia...`);
+
+    if (chartErrorCount <= MAX_ERRORS) {
+        setTimeout(fetchChartData, RECONNECT_INTERVAL);
+    } else {
+        console.log("Przekroczono maksymalną liczbę prób. Powrót do normalnego interwału.");
+        chartErrorCount = 0;
+    }
+}
+
+function handleStatusError() {
+    statusErrorCount++;
+    console.log(`Błąd statusu #${statusErrorCount}. Próba ponownego połączenia...`);
+
+    if (statusErrorCount <= MAX_ERRORS) {
+        setTimeout(updateSystemStatus, RECONNECT_INTERVAL);
+    } else {
+        console.log("Przekroczono maksymalną liczbę prób. Powrót do normalnego interwału.");
+        statusErrorCount = 0;
+    }
+}
+
 // Funkcja do pobierania danych wykresu z API
 function fetchChartData() {
     // Usuń istniejący komunikat o błędzie i przycisk retry, jeśli istnieją
@@ -193,18 +225,18 @@ function fetchChartData() {
     if (existingError) {
         existingError.remove();
     }
-    
+
     const existingRetryBtn = document.querySelector('.chart-container .retry-button');
     if (existingRetryBtn) {
         existingRetryBtn.remove();
     }
-    
+
     // Pokaż wykres (mógł być ukryty przez poprzedni błąd)
     const chartCanvas = document.getElementById('activityChart');
     if (chartCanvas) {
         chartCanvas.style.display = 'block';
     }
-    
+
     // Dodaj wskaźnik ładowania
     const chartContainer = document.querySelector('.chart-container');
     if (chartContainer) {
@@ -213,7 +245,7 @@ function fetchChartData() {
         loadingIndicator.textContent = 'Ładowanie danych...';
         chartContainer.appendChild(loadingIndicator);
     }
-    
+
     fetch('/api/chart-data')
         .then(response => {
             // Usuń wskaźnik ładowania
@@ -221,10 +253,11 @@ function fetchChartData() {
             if (loadingIndicator) {
                 loadingIndicator.remove();
             }
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
+            chartErrorCount = 0; // Resetuj licznik błędów
             return response.json();
         })
         .then(data => {
@@ -236,24 +269,24 @@ function fetchChartData() {
         })
         .catch(error => {
             console.error("Błąd podczas pobierania danych wykresu:", error);
-            
+
             // Usuń wskaźnik ładowania jeśli wciąż istnieje
             const loadingIndicator = document.querySelector('.loading-indicator');
             if (loadingIndicator) {
                 loadingIndicator.remove();
             }
-            
+
             // Wyświetl komunikat o błędzie na stronie
             if (chartCanvas) {
                 chartCanvas.style.display = 'none';
             }
-            
+
             if (chartContainer) {
                 const errorDiv = document.createElement('div');
                 errorDiv.className = 'error-message';
                 errorDiv.textContent = 'Nie udało się załadować danych wykresu. Spróbuj odświeżyć stronę.';
                 chartContainer.appendChild(errorDiv);
-                
+
                 // Dodajmy też przycisk do ręcznego odświeżenia
                 const retryButton = document.createElement('button');
                 retryButton.className = 'btn btn-primary retry-button';
@@ -261,5 +294,17 @@ function fetchChartData() {
                 retryButton.onclick = fetchChartData;
                 chartContainer.appendChild(retryButton);
             }
+            handleChartError();
         });
 }
+
+// Placeholder function -  needs implementation based on actual system status updates.
+function updateSystemStatus() {
+    console.log('Updating system status...');
+    // Add your system status update logic here.  For example, fetching from an API.
+    statusErrorCount = 0; //Reset error count on successful completion
+}
+
+// Aktualizacja danych co 30 sekund
+setInterval(fetchChartData, NORMAL_INTERVAL);
+setInterval(updateSystemStatus, NORMAL_INTERVAL);
