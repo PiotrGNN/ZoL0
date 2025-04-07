@@ -245,12 +245,93 @@
         </div>
 
         <div class="card">
+            <h2>Wykres Aktywności Systemu</h2>
+            <div id="chart-container" style="width: 100%; height: 300px;">
+                <canvas id="activityChart"></canvas>
+            </div>
+        </div>
+
+        <div class="card">
             <div class="actions">
-                <button class="btn" onclick="window.location.href='/api/status'">Odśwież Status API</button>
+                <button class="btn" onclick="window.location.reload()">Odśwież Dashboard</button>
+                <button class="btn" onclick="window.location.href='/api/status'">Sprawdź Status API</button>
                 <button class="btn" onclick="window.location.href='/download-report'">Pobierz Raport</button>
                 <button class="btn" onclick="window.location.href='/start-simulation'">Uruchom Symulację</button>
             </div>
         </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            // Inicjalizacja wykresu
+            const ctx = document.getElementById('activityChart').getContext('2d');
+            let activityChart;
+            
+            // Funkcja do inicjalizacji wykresu
+            function initChart(data) {
+                activityChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: [
+                            {
+                                label: data.datasets[0].label,
+                                data: data.datasets[0].data,
+                                borderColor: data.datasets[0].borderColor,
+                                tension: 0.1,
+                                fill: false
+                            },
+                            {
+                                label: data.datasets[1].label,
+                                data: data.datasets[1].data,
+                                borderColor: data.datasets[1].borderColor,
+                                tension: 0.1,
+                                fill: false
+                            },
+                            {
+                                label: data.datasets[2].label,
+                                data: data.datasets[2].data,
+                                borderColor: data.datasets[2].borderColor,
+                                pointRadius: 6,
+                                pointHoverRadius: 8,
+                                showLine: false
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Funkcja do aktualizacji danych wykresu
+            function updateChart() {
+                fetch('/api/chart-data')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!activityChart) {
+                            initChart(data);
+                        } else {
+                            activityChart.data.labels = data.labels;
+                            for (let i = 0; i < data.datasets.length; i++) {
+                                activityChart.data.datasets[i].data = data.datasets[i].data;
+                            }
+                            activityChart.update();
+                        }
+                    })
+                    .catch(error => console.error('Błąd podczas pobierania danych wykresu:', error));
+            }
+            
+            // Inicjalne pobranie danych
+            updateChart();
+            
+            // Odświeżaj dane co 30 sekund
+            setInterval(updateChart, 30000);
+        </script>
     </div>
 </body>
 </html>

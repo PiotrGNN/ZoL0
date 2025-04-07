@@ -198,6 +198,48 @@ def start_simulation():
         "message": "Symulacja została uruchomiona"
     })
 
+@app.route('/api/chart-data')
+def chart_data():
+    """Endpoint zwracający dane do wykresu aktywności."""
+    from datetime import datetime, timedelta
+    import random
+    
+    # Generowanie przykładowych danych dla wykresu (w rzeczywistej aplikacji byłyby pobierane z bazy danych)
+    now = datetime.now()
+    labels = [(now - timedelta(minutes=i*5)).strftime("%H:%M") for i in range(10)]
+    labels.reverse()
+    
+    # Przykładowe dane dla wykresów
+    anomaly_activity = [random.randint(40, 90) for _ in range(10)]
+    system_load = [random.randint(20, 95) for _ in range(10)]
+    
+    # Losowe anomalie (rzadkie)
+    detected_anomalies = [0] * 10
+    for i in range(10):
+        if random.random() < 0.2:  # 20% szans na anomalię
+            detected_anomalies[i] = random.randint(1, 3)
+    
+    return jsonify({
+        "labels": labels,
+        "datasets": [
+            {
+                "label": "Aktywność Detektora Anomalii",
+                "data": anomaly_activity,
+                "borderColor": "rgb(46, 204, 113)"
+            },
+            {
+                "label": "Obciążenie Systemu",
+                "data": system_load,
+                "borderColor": "rgb(52, 152, 219)"
+            },
+            {
+                "label": "Wykryte Anomalie",
+                "data": detected_anomalies,
+                "borderColor": "rgb(231, 76, 60)"
+            }
+        ]
+    })
+
 def load_configuration():
     """Ładuje konfigurację systemu z plików."""
     try:
