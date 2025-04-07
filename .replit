@@ -48,6 +48,7 @@ localPort = 5000
 externalPort = 80
 
 [workflows]
+runButton = "Run"
 
 [[workflows.workflow]]
 name = "Run Server"
@@ -57,3 +58,12 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python3 run_server.py"
+
+[[workflows.workflow]]
+name = "Run"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python3 main.py"
