@@ -273,6 +273,9 @@ def get_portfolio():
         api_secret = os.getenv("BYBIT_API_SECRET", "")
         use_testnet = os.getenv("TEST_MODE", "true").lower() in ["true", "1", "t"]
         
+        # Logujemy informacje o konfiguracji (bez wrażliwych danych)
+        logging.info(f"Próba połączenia z Bybit - API Key: {'skonfigurowany' if api_key else 'brak'}, Secret: {'skonfigurowany' if api_secret else 'brak'}, Testnet: {use_testnet}")
+        
         # Sprawdzamy czy mamy klucze API
         simulation_mode = not (api_key and api_secret)
         
@@ -284,11 +287,28 @@ def get_portfolio():
             simulation_mode=simulation_mode
         )
         
+        # Testujemy połączenie przed pobraniem danych
+        connection_ok = bybit.test_connectivity()
+        if not connection_ok:
+            logging.error("Test połączenia z Bybit nie powiódł się")
+            return jsonify({
+                "success": False,
+                "error": "Nie można nawiązać połączenia z Bybit API",
+                "data": {
+                    "total_value": 0,
+                    "assets": [],
+                    "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    "mode": "błąd połączenia"
+                }
+            })
+        
         # Pobieramy saldo portfela
         wallet_data = bybit.get_wallet_balance()
+        logging.info(f"Odpowiedź API (wallet): {wallet_data.get('ret_code')} - {wallet_data.get('ret_msg')}")
         
         if simulation_mode or "result" not in wallet_data or not wallet_data["result"].get("list"):
             # Jeśli brak danych lub jesteśmy w trybie symulacji, zwracamy symulowane dane
+            logging.warning(f"Używanie symulowanych danych. Powód: {'Tryb symulacji' if simulation_mode else 'Brak danych z API'}")
             return jsonify({
                 "success": True,
                 "data": {
@@ -324,8 +344,11 @@ def get_portfolio():
             if amount <= 0:
                 continue
             
-            # Dla kryptowalut innych niż stablecoiny, pobieramy cenę
+            # Obliczamy wartość w USD
             value_usd = amount
+            price = 1.0  # Domyślna cena dla stablecoinów
+            
+            # Dla kryptowalut innych niż stablecoiny, pobieramy cenę
             if coin_name not in ["USDT", "USDC", "BUSD", "DAI"]:
                 try:
                     # Pobieramy cenę monety
@@ -335,16 +358,30 @@ def get_portfolio():
                     if "result" in ticker_data and "list" in ticker_data["result"] and ticker_data["result"]["list"]:
                         price = float(ticker_data["result"]["list"][0].get("lastPrice", 0))
                         value_usd = amount * price
+                        logging.info(f"Pobrano cenę {coin_name}: {price} USD")
+                    else:
+                        logging.warning(f"Brak danych cenowych dla {coin_name}, używam wartości domyślnej")
                 except Exception as e:
                     logging.error(f"Błąd podczas pobierania ceny {coin_name}: {e}")
+            
+            # Pobieramy pozycję z dodatkowych informacji jeśli to możliwe
+            pnl_24h = 0
+            try:
+                if "unrealisedPnl" in coin:
+                    unrealised_pnl = float(coin.get("unrealisedPnl", 0))
+                    if value_usd > 0:
+                        pnl_24h = (unrealised_pnl / value_usd) * 100
+            except Exception as e:
+                logging.error(f"Błąd podczas obliczania PnL dla {coin_name}: {e}")
             
             # Dodajemy do listy aktywów
             assets.append({
                 "symbol": coin_name,
                 "amount": amount,
                 "value_usd": value_usd,
+                "price": price,
                 "allocation": 0,  # tymczasowo, zostanie zaktualizowane poniżej
-                "pnl_24h": 0  # dane PnL nie są dostępne bezpośrednio z API
+                "pnl_24h": pnl_24h
             })
             
             total_allocation += value_usd
@@ -357,15 +394,22 @@ def get_portfolio():
         # Sortujemy aktywa według wartości (malejąco)
         assets.sort(key=lambda x: x["value_usd"], reverse=True)
         
+        # Obliczamy całkowity PnL jeśli dostępne są dane historyczne
+        pnl_total = sum(asset["pnl_24h"] * asset["value_usd"] / 100 for asset in assets)
+        pnl_percentage = (pnl_total / total_value * 100) if total_value > 0 else 0
+        
+        logging.info(f"Pobrano dane portfela: {len(assets)} aktyw(a/ów), wartość całkowita: {total_value} USD")
+        
         return jsonify({
             "success": True,
             "data": {
                 "total_value": total_value,
                 "assets": assets,
-                "pnl_total": 0,  # dane PnL nie są dostępne bezpośrednio z API
-                "pnl_percentage": 0,
+                "pnl_total": pnl_total,
+                "pnl_percentage": pnl_percentage,
                 "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "mode": "dane rzeczywiste"
+                "mode": "dane rzeczywiste",
+                "api_connection": "aktywne" if connection_ok else "problem z połączeniem"
             }
         })
     except Exception as e:

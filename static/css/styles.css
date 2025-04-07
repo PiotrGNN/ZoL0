@@ -392,6 +392,41 @@ body {
 }
 
 .pnl.negative {
+    color: #e74c3c;
+}
+
+.portfolio-info {
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: #888;
+}
+
+.mode-real {
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.mode-sim {
+    color: #f39c12;
+    font-style: italic;
+}
+
+.update-time {
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 5px;
+}
+
+#api-connection-status.status-online {
+    color: #4caf50;
+}
+
+#api-connection-status.status-offline {
+    color: #e74c3c;
+}af50;
+}
+
+.pnl.negative {
     color: #f44336;
 }
 
