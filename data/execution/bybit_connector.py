@@ -46,6 +46,7 @@ class BybitConnector:
                 self.last_api_call = 0
                 self.min_time_between_calls = 0.5  # 500ms minimalny odstęp między zapytaniami
                 self.rate_limit_backoff = 5.0  # 5 sekund oczekiwania po przekroczeniu limitu
+                self.remaining_rate_limit = 1000 # Initial rate limit
 
                 # Używanie odpowiednich klas rynkowych, zgodnie z ostrzeżeniem z biblioteki
                 try:
@@ -295,8 +296,16 @@ class BybitConnector:
                         # Test połączenia z API z obsługą limitów zapytań
                         try:
                             # Wydłużone opóźnienie między zapytaniami dla testu połączenia
-                            time.sleep(3.0)  # Dodatkowe 3 sekundy czekania przed testem połączenia
+                            time.sleep(5.0)  # Zwiększone opóźnienie, aby uniknąć błędów rate limit
                             self._apply_rate_limit()
+
+                            # W przypadku przekroczenia limitu zapytań, używamy czasu lokalnego
+                            # zamiast próbować wielokrotnie odpytywać API
+                            if self.remaining_rate_limit < 10:
+                                local_time = int(time.time() * 1000)
+                                self.logger.info(f"Używam lokalnego czasu ({local_time}) zamiast odpytywania API (oszczędzanie limitów)")
+                                return {'success': True, 'time_ms': local_time, 'time': time.strftime('%Y-%m-%d %H:%M:%S')}
+
                             # Sprawdzanie dostępu do API - w różnych wersjach pybit metoda jest inna
                             if hasattr(self.client, 'get_server_time'):
                                 time_response = self.client.get_server_time()

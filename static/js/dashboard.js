@@ -1,5 +1,5 @@
 
-// Dodanie mechanizmu zarządzania częstotliwością odświeżania danych
+// Zmienne globalne dla dashboardu
 const refreshRates = {
     portfolio: 30000,       // co 30 sekund
     tradingStats: 60000,    // co 1 minutę
@@ -10,12 +10,14 @@ const refreshRates = {
 };
 
 // Zmienne do śledzenia błędów
-let errorCounts = {
+const errorCounts = {
     portfolio: 0,
     tradingStats: 0,
     recentTrades: 0,
     alerts: 0,
-    chartData: 0
+    chartData: 0,
+    systemStatus: 0,
+    aiModels: 0
 };
 
 // Zwiększanie opóźnienia w przypadku powtarzających się błędów
@@ -36,7 +38,9 @@ function handleApiError(endpoint) {
 
 // Resetowanie liczników błędów w przypadku udanego zapytania
 function resetErrorCount(endpoint) {
-    errorCounts[endpoint] = 0;
+    if (errorCounts[endpoint]) {
+        errorCounts[endpoint] = 0;
+    }
 }
 
 // Funkcje dla dashboardu tradingowego
@@ -56,26 +60,16 @@ document.addEventListener('DOMContentLoaded', function() {
     setInterval(fetchNotifications, 60000); // Co minutę
 });
 
-// Kontynuujemy używanie istniejącej zmiennej errorCounts zdefiniowanej na początku pliku
-
 // Główne funkcje dashboardu
 function updateDashboardData() {
     console.log('Aktualizacja danych dashboardu...');
-    updatePortfolioData(); // Zmienione na nową funkcję
+    updatePortfolioData(); 
     updateCharts();
     updateTradingStats();
     updateRecentTrades();
     updateAIModelsStatus(); 
     updateAlerts(); 
 }
-
-// Licznik błędów dla śledzenia problemów z API
-let apiErrorCount = 0;
-const MAX_ERROR_COUNT = 5;
-
-// Zmienne do zliczania błędów
-let portfolioErrorCount = 0;
-const MAX_PORTFOLIO_ERRORS = 3; // Maksymalna liczba błędów przed wyświetleniem komunikatu
 
 // Funkcja do aktualizacji danych portfela
 function updatePortfolioData() {
@@ -89,11 +83,13 @@ function updatePortfolioData() {
         })
         .then(data => {
             // Resetowanie licznika błędów po udanym pobraniu danych
-            portfolioErrorCount = 0;
+            resetErrorCount('portfolio');
 
             // Sprawdzamy, czy dane są poprawne
             if (data && data.balances) {
                 const portfolioContainer = document.getElementById('portfolio-container');
+                if (!portfolioContainer) return;
+                
                 portfolioContainer.innerHTML = ''; // Czyszczenie kontenera
 
                 // Iterowanie po walutach i wyświetlanie danych
@@ -144,18 +140,18 @@ function updatePortfolioData() {
             } else {
                 // Jeśli dane nie zawierają portfela
                 const portfolioContainer = document.getElementById('portfolio-container');
-                portfolioContainer.innerHTML = '<div class="error-message">Brak danych portfela lub problem z połączeniem z ByBit.</div>';
+                if (portfolioContainer) {
+                    portfolioContainer.innerHTML = '<div class="error-message">Brak danych portfela lub problem z połączeniem z ByBit.</div>';
+                }
             }
         })
         .catch(error => {
-            portfolioErrorCount++;
+            handleApiError('portfolio');
             console.log("Błąd podczas pobierania danych portfela:", error);
 
-            // Wyświetlamy komunikat tylko jeśli przekroczono liczbę błędów
-            if (portfolioErrorCount >= MAX_PORTFOLIO_ERRORS) {
-                const portfolioContainer = document.getElementById('portfolio-container');
-
-                // Dodajemy przycisk retry
+            // Wyświetlamy komunikat o błędzie
+            const portfolioContainer = document.getElementById('portfolio-container');
+            if (portfolioContainer) {
                 portfolioContainer.innerHTML = `
                     <div class="error-message">
                         <p>Brak danych portfela lub problem z połączeniem z ByBit.</p>
@@ -165,10 +161,13 @@ function updatePortfolioData() {
                 `;
 
                 // Dodajemy obsługę przycisku
-                document.getElementById('retry-portfolio').addEventListener('click', function() {
-                    portfolioErrorCount = 0;
-                    updatePortfolioData();
-                });
+                const retryButton = document.getElementById('retry-portfolio');
+                if (retryButton) {
+                    retryButton.addEventListener('click', function() {
+                        resetErrorCount('portfolio');
+                        updatePortfolioData();
+                    });
+                }
             }
         });
 }
@@ -182,20 +181,20 @@ function updateCharts() {
             return response.json();
         })
         .then(data => {
+            resetErrorCount('chartData');
             if (data.success) {
-                const ctx = document.getElementById('portfolio-chart');
+                const ctx = document.getElementById('portfolio-chart') || document.getElementById('main-chart');
                 if (ctx) {
                     renderChart(ctx, data.data);
                 }
-                errorCounts.chart = 0;
             } else {
                 throw new Error(data.error || 'Błąd pobierania danych wykresu');
             }
         })
         .catch(error => {
-            errorCounts.chart++;
+            handleApiError('chartData');
             console.error('Błąd podczas aktualizacji wykresu:', error);
-            if (errorCounts.chart > 3) {
+            if (errorCounts.chartData > 3) {
                 showErrorMessage('Nie udało się załadować wykresu. Spróbuj odświeżyć stronę.');
             }
         });
@@ -226,7 +225,7 @@ function renderChart(canvas, data) {
 }
 
 function initializeChart() {
-    const ctx = document.getElementById('portfolio-chart');
+    const ctx = document.getElementById('portfolio-chart') || document.getElementById('main-chart');
     if (ctx) {
         // Tworzymy tymczasowy wykres do czasu załadowania danych
         renderChart(ctx, {
@@ -251,17 +250,17 @@ function updateComponentStatuses() {
             return response.json();
         })
         .then(data => {
+            resetErrorCount('systemStatus');
             if (data.success) {
                 updateStatusIndicators(data.components);
-                errorCounts.status = 0;
             } else {
                 throw new Error(data.error || 'Błąd pobierania statusu systemu');
             }
         })
         .catch(error => {
-            errorCounts.status++;
+            handleApiError('systemStatus');
             console.error('Błąd podczas aktualizacji statusów komponentów:', error);
-            if (errorCounts.status > 3) {
+            if (errorCounts.systemStatus > 3) {
                 showErrorMessage('Nie udało się zaktualizować statusu systemu.');
             }
         });
@@ -301,29 +300,35 @@ function updateTradingStats() {
             return response.json();
         })
         .then(data => {
+            resetErrorCount('tradingStats');
             if (data.error) {
                 throw new Error(data.error);
             }
 
-            // Aktualizuj statystyki
-            document.getElementById('profit-value').textContent = data.profit || 'N/A';
-            document.getElementById('trades-count').textContent = data.trades_count || 'N/A';
-            document.getElementById('win-rate').textContent = data.win_rate || 'N/A';
-            document.getElementById('max-drawdown').textContent = data.max_drawdown || 'N/A';
-
-            errorCounts.tradingStats = 0;
+            // Aktualizuj statystyki - bezpieczne aktualizowanie elementów DOM
+            safeUpdateElement('profit-value', data.profit || 'N/A');
+            safeUpdateElement('trades-count', data.trades_count || 'N/A');
+            safeUpdateElement('win-rate', data.win_rate || 'N/A');
+            safeUpdateElement('max-drawdown', data.max_drawdown || 'N/A');
+            
+            // Alternatywne ID (z szablonu HTML)
+            safeUpdateElement('profit-value', data.profit || 'N/A');
+            safeUpdateElement('trades-value', data.trades_count || 'N/A');
+            safeUpdateElement('win-rate-value', data.win_rate || 'N/A');
+            safeUpdateElement('drawdown-value', data.max_drawdown || 'N/A');
         })
         .catch(error => {
-            errorCounts.tradingStats++;
+            handleApiError('tradingStats');
             console.error('Błąd podczas aktualizacji statystyk tradingowych:', error);
-            if (errorCounts.tradingStats > 3) {
-                // Ustaw wartości domyślne
-                document.getElementById('profit-value').textContent = 'N/A';
-                document.getElementById('trades-count').textContent = 'N/A';
-                document.getElementById('win-rate').textContent = 'N/A';
-                document.getElementById('max-drawdown').textContent = 'N/A';
-            }
         });
+}
+
+// Bezpieczna aktualizacja elementu DOM - sprawdza czy element istnieje
+function safeUpdateElement(elementId, value) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.textContent = value;
+    }
 }
 
 function updateRecentTrades() {
@@ -335,7 +340,11 @@ function updateRecentTrades() {
             return response.json();
         })
         .then(data => {
-            const tradesContainer = document.getElementById('recent-trades-container');
+            resetErrorCount('recentTrades');
+            
+            // Sprawdzamy oba możliwe identyfikatory kontenerów
+            const tradesContainer = document.getElementById('recent-trades-container') || document.getElementById('recent-trades-list');
+            
             if (tradesContainer) {
                 if (data.trades && data.trades.length > 0) {
                     let tradesHTML = '<table class="table"><thead><tr><th>Symbol</th><th>Typ</th><th>Czas</th><th>Zysk</th></tr></thead><tbody>';
@@ -358,8 +367,9 @@ function updateRecentTrades() {
             }
         })
         .catch(error => {
+            handleApiError('recentTrades');
             console.error('Błąd podczas pobierania ostatnich transakcji:', error);
-            const tradesContainer = document.getElementById('recent-trades-container');
+            const tradesContainer = document.getElementById('recent-trades-container') || document.getElementById('recent-trades-list');
             if (tradesContainer) {
                 tradesContainer.innerHTML = '<p class="text-center">Nie udało się pobrać ostatnich transakcji</p>';
             }
@@ -375,8 +385,10 @@ function fetchNotifications() {
             return response.json();
         })
         .then(data => {
+            resetErrorCount('notifications');
+            
             if (data.success && data.notifications) {
-                const notificationsContainer = document.getElementById('notifications-container');
+                const notificationsContainer = document.getElementById('notifications-container') || document.getElementById('notifications-list');
                 if (notificationsContainer) {
                     if (data.notifications.length > 0) {
                         let notificationsHTML = '';
@@ -401,10 +413,10 @@ function fetchNotifications() {
             }
         })
         .catch(error => {
+            handleApiError('notifications');
             console.error('Błąd podczas pobierania powiadomień:', error);
         });
 }
-
 
 function setupEventListeners() {
     // Obsługa przycisków
@@ -541,6 +553,8 @@ function updateAIModelsStatus() {
             return response.json();
         })
         .then(data => {
+            resetErrorCount('aiModels');
+            
             const aiModelsContainer = document.getElementById('ai-models-container');
             if (!aiModelsContainer) return;
 
@@ -562,15 +576,27 @@ function updateAIModelsStatus() {
                 });
 
                 aiModelsContainer.innerHTML = modelsHTML;
-                document.getElementById('ai-models-section').style.display = 'block';
+                
+                // Pokazujemy sekcję jeśli istnieje
+                const aiModelsSection = document.getElementById('ai-models-section');
+                if (aiModelsSection) {
+                    aiModelsSection.style.display = 'block';
+                }
             } else {
                 // Brak modeli lub API nie zwraca poprawnych danych
-                document.getElementById('ai-models-section').style.display = 'none';
+                const aiModelsSection = document.getElementById('ai-models-section');
+                if (aiModelsSection) {
+                    aiModelsSection.style.display = 'none';
+                }
             }
         })
         .catch(error => {
+            handleApiError('aiModels');
             console.error('Błąd podczas pobierania statusów modeli AI:', error);
-            document.getElementById('ai-models-section').style.display = 'none';
+            const aiModelsSection = document.getElementById('ai-models-section');
+            if (aiModelsSection) {
+                aiModelsSection.style.display = 'none';
+            }
         });
 }
 
@@ -584,6 +610,8 @@ function updateAlerts() {
             return response.json();
         })
         .then(data => {
+            resetErrorCount('alerts');
+            
             const alertsContainer = document.getElementById('alerts-list');
             if (!alertsContainer) return;
 
@@ -624,29 +652,13 @@ function updateAlerts() {
             }
         })
         .catch(error => {
+            handleApiError('alerts');
             console.error('Błąd podczas pobierania alertów:', error);
             const alertsContainer = document.getElementById('alerts-list');
             if (alertsContainer) {
                 alertsContainer.innerHTML = '<div class="no-data">Brak alertów</div>';
             }
         });
-}
-
-function updateComponentStatus(componentId, status) {
-    const component = document.getElementById(componentId);
-    if (component) {
-        // Usuń poprzednie klasy statusu
-        component.classList.remove('status-online', 'status-warning', 'status-offline', 'status-maintenance');
-
-        // Dodaj nową klasę statusu
-        component.classList.add(`status-${status}`);
-
-        // Aktualizuj tekst statusu
-        const statusElement = component.querySelector('.status-text');
-        if (statusElement) {
-            statusElement.textContent = status.charAt(0).toUpperCase() + status.slice(1);
-        }
-    }
 }
 
 function getAccuracyClass(accuracy) {

@@ -360,6 +360,16 @@ table tr:last-child td {
   .dashboard-grid {
     grid-template-columns: 1fr;
   }
+  
+  .card {
+    margin-bottom: 15px;
+  }
+  
+  .header {
+    flex-direction: column;
+  }
+}fr;
+  }
 
   .card {
     overflow-x: auto;
