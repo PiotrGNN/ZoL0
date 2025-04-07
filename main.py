@@ -7,8 +7,8 @@ from datetime import datetime, timedelta
 # Dodanie katalogu głównego do ścieżki Pythona
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-def install_required_packages():
-    """Instaluje wymagane pakiety, jeśli nie są jeszcze zainstalowane."""
+def check_required_packages():
+    """Sprawdza wymagane pakiety i wyświetla informację o brakujących."""
     required_packages = [
         "python-dotenv",
         "flask",
@@ -19,15 +19,19 @@ def install_required_packages():
         "matplotlib"
     ]
     
+    missing_packages = []
     for package in required_packages:
         try:
             __import__(package.replace('-', '_'))
         except ImportError:
-            print(f"Instaluję brakujący pakiet: {package}")
-            os.system(f"pip install {package}")
-
-# Instalacja wymaganych pakietów
-install_required_packages()
+            missing_packages.append(package)
+    
+    if missing_packages:
+        print(f"UWAGA: Brakujące pakiety: {', '.join(missing_packages)}")
+        print("W środowisku Replit, pakiety powinny być zdefiniowane w replit.nix")
+        
+# Sprawdzenie wymaganych pakietów
+check_required_packages()
 
 try:
     from dotenv import load_dotenv
