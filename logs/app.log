@@ -33950,3 +33950,486 @@ Request → GET https://api-testnet.bybit.com/spot/v1/time: {}.
 2025-04-07 21:23:59,554 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
 2025-04-07 21:23:59,573 [WARNING]  * Debugger is active!
 2025-04-07 21:23:59,576 [INFO]  * Debugger PIN: 685-348-761
+2025-04-07 21:24:10,238 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:24:10,986 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:24:12,882 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:24:12,894 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:24:12,894 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:24:12,894 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:24:12,895 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:24:12,895 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:24:12,895 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:24:12,895 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 21:24:12,895 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 21:24:12,927 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: True
+2025-04-07 21:24:13,071 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:24:13).
+Request → GET https://api-testnet.bybit.com/spot/v1/time: {}.
+2025-04-07 21:24:13,071 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: True
+2025-04-07 21:24:13,072 [INFO] BybitConnector zainicjalizowany. Testnet: True
+2025-04-07 21:24:13,072 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744061053072, 'time': '2025-04-07 21:24:13'}
+2025-04-07 21:24:13,072 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:24:13,072 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 21:24:13,084 [WARNING]  * Debugger is active!
+2025-04-07 21:24:13,087 [INFO]  * Debugger PIN: 479-068-404
+2025-04-07 21:24:26,544 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:26] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:24:26,547 [INFO] Pobieranie danych z testnet
+2025-04-07 21:24:26,548 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:26] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:24:26,550 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:26] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:24:26,599 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:26] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:24:26,602 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:26] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:24:26,604 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:26] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:24:26,676 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:26] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:24:26,680 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:26] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:24:32,617 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:32] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:24:32,618 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:32] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:24:32,620 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:32] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:24:32,622 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:32] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:24:32,624 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:32] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:24:32,625 [INFO] Pobieranie danych z testnet
+2025-04-07 21:24:32,629 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:32] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:24:37,625 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:37] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:24:42,616 [INFO] Pobieranie danych z testnet
+2025-04-07 21:24:42,617 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:42] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:24:42,620 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:42] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:24:42,621 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:42] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:24:42,623 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:42] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:24:42,625 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:42] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:24:42,708 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:42] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:24:52,628 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:52] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:24:52,630 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:52] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:24:52,632 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:52] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:24:52,633 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:52] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:24:52,635 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:52] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:24:52,636 [INFO] Pobieranie danych z testnet
+2025-04-07 21:24:52,638 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:52] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:24:52,759 [INFO] 172.31.128.24 - - [07/Apr/2025 21:24:52] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:25:02,615 [INFO] Pobieranie danych z testnet
+2025-04-07 21:25:02,618 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:02] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:25:02,619 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:02] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:25:02,620 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:02] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:25:02,621 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:02] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:25:02,623 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:02] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:25:02,624 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:02] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:25:07,323 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:07] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:25:12,336 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:12] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:25:12,338 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:12] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:25:12,340 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:12] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:25:12,340 [INFO] Pobieranie danych z testnet
+2025-04-07 21:25:12,357 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:12] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:25:12,360 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:12] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:25:12,369 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:12] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:25:13,955 [INFO]  * Detected change in '/home/runner/workspace/data/execution/.bybit_connector.py.1435262524~', reloading
+2025-04-07 21:25:13,977 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:25:15,591 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:25:19,499 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:25:19,515 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:25:19,515 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:25:19,516 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:25:19,516 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:25:19,516 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:25:19,517 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:25:19,517 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 21:25:19,517 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 21:25:19,570 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: True
+2025-04-07 21:25:19,679 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:25:19).
+Request → GET https://api-testnet.bybit.com/spot/v1/time: {}.
+2025-04-07 21:25:19,679 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: True
+2025-04-07 21:25:19,680 [INFO] BybitConnector zainicjalizowany. Testnet: True
+2025-04-07 21:25:19,680 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744061119680, 'time': '2025-04-07 21:25:19'}
+2025-04-07 21:25:19,680 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:25:19,680 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 21:25:19,707 [WARNING]  * Debugger is active!
+2025-04-07 21:25:19,722 [INFO]  * Debugger PIN: 145-430-781
+2025-04-07 21:25:22,632 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:22] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:25:22,636 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:22] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:25:22,641 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:22] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:25:22,644 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:22] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:25:22,647 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:22] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:25:22,651 [INFO] Pobieranie danych z testnet
+2025-04-07 21:25:22,652 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:22] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:25:22,764 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:22] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:25:22,773 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:22] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:25:22,863 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 21:25:22,866 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 21:25:22,868 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 21:25:22,871 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 21:25:22,872 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:25:22,875 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 21:25:22,877 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:25:22,878 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 21:25:22,881 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:25:22,883 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:25:22,885 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 21:25:22,888 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:25:22,890 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:25:22,909 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:25:22,913 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:25:22,915 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:25:22,917 [INFO]  * Detected change in '/home/runner/workspace/data/execution/__init__.py', reloading
+2025-04-07 21:25:22,919 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 21:25:22,920 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:25:22,921 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:25:22,927 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:25:22,930 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:25:22,931 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:25:22,933 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 21:25:22,939 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:25:23,003 [INFO]  * Detected change in '/home/runner/workspace/main.py', reloading
+2025-04-07 21:25:23,035 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:25:23,043 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:25:24,066 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:25:28,830 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:25:28,855 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:25:28,855 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:25:28,855 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:25:28,855 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:25:28,855 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:25:28,856 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:25:28,856 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 21:25:28,856 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 21:25:28,905 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: True
+2025-04-07 21:25:28,977 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:25:28).
+Request → GET https://api-testnet.bybit.com/spot/v1/time: {}.
+2025-04-07 21:25:28,977 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: True
+2025-04-07 21:25:28,978 [INFO] BybitConnector zainicjalizowany. Testnet: True
+2025-04-07 21:25:28,978 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744061128978, 'time': '2025-04-07 21:25:28'}
+2025-04-07 21:25:28,978 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:25:28,978 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 21:25:28,997 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.24:5000
+2025-04-07 21:25:28,997 [INFO] [33mPress CTRL+C to quit[0m
+2025-04-07 21:25:29,013 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:25:31,859 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:25:31,871 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:25:31,871 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:25:31,872 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:25:31,872 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:25:31,872 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:25:31,872 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:25:31,872 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 21:25:31,872 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 21:25:31,910 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: True
+2025-04-07 21:25:31,976 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:25:31).
+Request → GET https://api-testnet.bybit.com/spot/v1/time: {}.
+2025-04-07 21:25:31,976 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: True
+2025-04-07 21:25:31,977 [INFO] BybitConnector zainicjalizowany. Testnet: True
+2025-04-07 21:25:31,977 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744061131977, 'time': '2025-04-07 21:25:31'}
+2025-04-07 21:25:31,977 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:25:31,977 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 21:25:31,992 [WARNING]  * Debugger is active!
+2025-04-07 21:25:32,002 [INFO]  * Debugger PIN: 391-788-562
+2025-04-07 21:25:34,074 [INFO] Pobieranie danych z testnet
+2025-04-07 21:25:34,080 [INFO] Pobrano portfolio: {'balances': {'BTC': {'equity': 0.015, 'available_balance': 0.015, 'wallet_balance': 0.015}, 'USDT': {'equity': 1200, 'available_balance': 1150, 'wallet_balance': 1200}}, 'success': True, 'note': 'Dane testowe - tryb testnet'}
+2025-04-07 21:25:34,105 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/encodings/unicode_escape.py', reloading
+2025-04-07 21:25:34,125 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:34] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:25:34,154 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:34] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:25:34,158 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:34] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:25:34,174 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:34] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:25:34,184 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:34] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:25:34,214 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:34] "GET / HTTP/1.1" 200 -
+2025-04-07 21:25:34,381 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:34] "GET /static/css/styles.css HTTP/1.1" 200 -
+2025-04-07 21:25:34,502 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:34] "GET /static/js/dashboard.js HTTP/1.1" 200 -
+2025-04-07 21:25:34,574 [INFO] Pobieranie danych z testnet
+2025-04-07 21:25:34,575 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:34] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:25:35,184 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:35] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:25:35,186 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:35] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:25:35,191 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:35] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:25:35,260 [INFO] Pobieranie danych z testnet
+2025-04-07 21:25:35,261 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:35] "GET /api/portfolio?_=1744061135676 HTTP/1.1" 200 -
+2025-04-07 21:25:35,320 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:35] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:25:35,322 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:35] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:25:35,325 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:35] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:25:35,392 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:35] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:25:35,711 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:25:37,624 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:25:37,635 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:25:37,636 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:25:37,636 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:25:37,636 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:25:37,636 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:25:37,637 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:25:37,637 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 21:25:37,637 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 21:25:37,669 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: True
+2025-04-07 21:25:37,733 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:25:37).
+Request → GET https://api-testnet.bybit.com/spot/v1/time: {}.
+2025-04-07 21:25:37,733 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: True
+2025-04-07 21:25:37,733 [INFO] BybitConnector zainicjalizowany. Testnet: True
+2025-04-07 21:25:37,734 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744061137733, 'time': '2025-04-07 21:25:37'}
+2025-04-07 21:25:37,734 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:25:37,734 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 21:25:37,748 [WARNING]  * Debugger is active!
+2025-04-07 21:25:37,750 [INFO]  * Debugger PIN: 105-865-757
+2025-04-07 21:25:39,058 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:39] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:25:42,621 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:42] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:25:42,623 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:42] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:25:42,622 [INFO] Pobieranie danych z testnet
+2025-04-07 21:25:42,625 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:42] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:25:42,626 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:42] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:25:42,627 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:42] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:25:42,629 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:42] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:25:45,242 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:45] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:25:45,244 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:45] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:25:45,260 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:45] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:25:45,262 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:45] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:25:45,264 [INFO] Pobieranie danych z testnet
+2025-04-07 21:25:45,265 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:45] "GET /api/portfolio?_=1744061145688 HTTP/1.1" 200 -
+2025-04-07 21:25:45,269 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:45] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:25:49,900 [INFO] Pobieranie danych z testnet
+2025-04-07 21:25:49,901 [INFO] Pobrano portfolio: {'balances': {'BTC': {'equity': 0.015, 'available_balance': 0.015, 'wallet_balance': 0.015}, 'USDT': {'equity': 1200, 'available_balance': 1150, 'wallet_balance': 1200}}, 'success': True, 'note': 'Dane testowe - tryb testnet'}
+2025-04-07 21:25:49,907 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/encodings/unicode_escape.py', reloading
+2025-04-07 21:25:49,944 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:49] "GET /?risk_level=medium&max_position_size=10&enable_auto_trading=on HTTP/1.1" 200 -
+2025-04-07 21:25:50,106 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:50] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-04-07 21:25:50,232 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:50] "[36mGET /static/js/dashboard.js HTTP/1.1[0m" 304 -
+2025-04-07 21:25:50,715 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:25:52,742 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:25:52,753 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:25:52,753 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:25:52,754 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:25:52,754 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:25:52,754 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:25:52,754 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:25:52,754 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 21:25:52,754 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 21:25:52,786 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: True
+2025-04-07 21:25:52,872 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:25:52).
+Request → GET https://api-testnet.bybit.com/spot/v1/time: {}.
+2025-04-07 21:25:52,872 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: True
+2025-04-07 21:25:52,872 [INFO] BybitConnector zainicjalizowany. Testnet: True
+2025-04-07 21:25:52,873 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744061152873, 'time': '2025-04-07 21:25:52'}
+2025-04-07 21:25:52,873 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:25:52,873 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 21:25:52,885 [WARNING]  * Debugger is active!
+2025-04-07 21:25:52,887 [INFO]  * Debugger PIN: 882-498-148
+2025-04-07 21:25:54,205 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:54] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:25:54,198 [INFO] Pobieranie danych z testnet
+2025-04-07 21:25:54,208 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:54] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:25:54,208 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:54] "GET /api/portfolio?_=1744061151437 HTTP/1.1" 200 -
+2025-04-07 21:25:54,209 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:54] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:25:54,211 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:54] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:25:54,213 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:54] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:25:54,215 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:54] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:25:54,218 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:54] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:25:54,220 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:54] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:25:54,221 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:54] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:25:54,223 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:54] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:25:54,344 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:54] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:25:54,349 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:54] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:25:54,355 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:54] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:25:54,699 [INFO] Pobieranie danych z testnet
+2025-04-07 21:25:54,699 [INFO] Pobieranie danych z testnet
+2025-04-07 21:25:54,700 [INFO] Pobrano portfolio: {'balances': {'BTC': {'equity': 0.015, 'available_balance': 0.015, 'wallet_balance': 0.015}, 'USDT': {'equity': 1200, 'available_balance': 1150, 'wallet_balance': 1200}}, 'success': True, 'note': 'Dane testowe - tryb testnet'}
+2025-04-07 21:25:54,701 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:54] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:25:54,722 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/encodings/unicode_escape.py', reloading
+2025-04-07 21:25:54,738 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:54] "GET /?risk_level=medium&max_position_size=10&enable_auto_trading=on HTTP/1.1" 200 -
+2025-04-07 21:25:54,889 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:54] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-04-07 21:25:55,016 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:55] "[36mGET /static/js/dashboard.js HTTP/1.1[0m" 304 -
+2025-04-07 21:25:55,020 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:55] "GET /static/css/styles.css HTTP/1.1" 200 -
+2025-04-07 21:25:55,707 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:25:57,962 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:25:57,973 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:25:57,973 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:25:57,974 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:25:57,974 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:25:57,974 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:25:57,974 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:25:57,975 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 21:25:57,975 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 21:25:58,014 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: True
+2025-04-07 21:25:58,088 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:25:58).
+Request → GET https://api-testnet.bybit.com/spot/v1/time: {}.
+2025-04-07 21:25:58,088 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: True
+2025-04-07 21:25:58,089 [INFO] BybitConnector zainicjalizowany. Testnet: True
+2025-04-07 21:25:58,089 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744061158089, 'time': '2025-04-07 21:25:58'}
+2025-04-07 21:25:58,089 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:25:58,089 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 21:25:58,108 [WARNING]  * Debugger is active!
+2025-04-07 21:25:58,110 [INFO]  * Debugger PIN: 122-715-549
+2025-04-07 21:25:59,947 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:59] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:25:59,949 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:59] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:25:59,952 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:59] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:25:59,950 [INFO] Pobieranie danych z testnet
+2025-04-07 21:25:59,956 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:59] "GET /api/portfolio?_=1744061156197 HTTP/1.1" 200 -
+2025-04-07 21:25:59,955 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:59] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:25:59,959 [INFO] 172.31.128.24 - - [07/Apr/2025 21:25:59] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:26:00,084 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:00] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:26:00,086 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:00] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:26:02,612 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:02] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:26:02,614 [INFO] Pobieranie danych z testnet
+2025-04-07 21:26:02,617 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:02] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:26:02,618 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:02] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:26:02,622 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:02] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:26:02,624 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:02] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:26:02,627 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:02] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:26:05,712 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:05] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:26:05,713 [INFO] Pobieranie danych z testnet
+2025-04-07 21:26:05,715 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:05] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:26:05,717 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:05] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:26:05,718 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:05] "GET /api/portfolio?_=1744061166208 HTTP/1.1" 200 -
+2025-04-07 21:26:05,721 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:05] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:26:05,722 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:05] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:26:07,627 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:07] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:26:10,712 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:10] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:26:11,820 [INFO] Pobieranie danych z testnet
+2025-04-07 21:26:11,821 [INFO] Pobrano portfolio: {'balances': {'BTC': {'equity': 0.015, 'available_balance': 0.015, 'wallet_balance': 0.015}, 'USDT': {'equity': 1200, 'available_balance': 1150, 'wallet_balance': 1200}}, 'success': True, 'note': 'Dane testowe - tryb testnet'}
+2025-04-07 21:26:11,827 [INFO]  * Detected change in '/nix/store/qlb1pg370bb647nj4dhc81y2jszvciz7-python3-3.10.16/lib/python3.10/encodings/unicode_escape.py', reloading
+2025-04-07 21:26:11,855 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:11] "GET /?risk_level=medium&max_position_size=10&enable_auto_trading=on HTTP/1.1" 200 -
+2025-04-07 21:26:12,010 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:12] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-04-07 21:26:12,139 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:12] "[36mGET /static/js/dashboard.js HTTP/1.1[0m" 304 -
+2025-04-07 21:26:12,696 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:26:15,426 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:26:15,440 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:26:15,440 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:26:15,441 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:26:15,441 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:26:15,441 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:26:15,441 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:26:15,441 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 21:26:15,441 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 21:26:15,498 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: True
+2025-04-07 21:26:15,570 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:26:15).
+Request → GET https://api-testnet.bybit.com/spot/v1/time: {}.
+2025-04-07 21:26:15,571 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: True
+2025-04-07 21:26:15,571 [INFO] BybitConnector zainicjalizowany. Testnet: True
+2025-04-07 21:26:15,571 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744061175571, 'time': '2025-04-07 21:26:15'}
+2025-04-07 21:26:15,572 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:26:15,572 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 21:26:15,594 [WARNING]  * Debugger is active!
+2025-04-07 21:26:15,600 [INFO]  * Debugger PIN: 384-445-875
+2025-04-07 21:26:17,617 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:17] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:26:17,621 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:17] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:26:17,623 [INFO] Pobieranie danych z testnet
+2025-04-07 21:26:17,635 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:17] "GET /api/portfolio?_=1744061173314 HTTP/1.1" 200 -
+2025-04-07 21:26:17,636 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:17] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:26:17,639 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:17] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:26:17,646 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:17] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:26:17,765 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:17] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:26:17,768 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:17] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:26:22,829 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:22] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:26:22,833 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:22] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:26:22,835 [INFO] Pobieranie danych z testnet
+2025-04-07 21:26:22,836 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:22] "GET /api/portfolio?_=1744061183324 HTTP/1.1" 200 -
+2025-04-07 21:26:22,854 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:22] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:26:22,861 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:22] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:26:22,863 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:22] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:26:27,844 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:27] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:26:32,831 [INFO] Pobieranie danych z testnet
+2025-04-07 21:26:32,835 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:32] "GET /api/portfolio?_=1744061193326 HTTP/1.1" 200 -
+2025-04-07 21:26:32,840 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:32] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:26:32,845 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:32] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:26:32,847 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:32] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:26:32,848 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:32] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:26:32,850 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:32] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:26:33,617 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:33] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:26:33,621 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:33] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:26:33,637 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:33] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:26:33,644 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:33] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:26:33,645 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:33] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:26:33,636 [INFO] Pobieranie danych z testnet
+2025-04-07 21:26:33,648 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:33] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-07 21:26:33,756 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:33] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:26:33,767 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:33] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:26:42,839 [INFO] Pobieranie danych z testnet
+2025-04-07 21:26:42,841 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:42] "GET /api/portfolio?_=1744061203323 HTTP/1.1" 200 -
+2025-04-07 21:26:42,845 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:42] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:26:42,847 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:42] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:26:42,851 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:42] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:26:42,853 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:42] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:26:42,855 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:42] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:26:42,976 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:42] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:26:51,984 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:51] "POST /api/trading/start HTTP/1.1" 200 -
+2025-04-07 21:26:53,455 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:53] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:26:53,464 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:53] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:26:53,471 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:53] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:26:53,467 [INFO] Pobieranie danych z testnet
+2025-04-07 21:26:53,480 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:53] "GET /api/portfolio?_=1744061213938 HTTP/1.1" 200 -
+2025-04-07 21:26:53,487 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:53] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:26:53,497 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:53] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:26:53,592 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:53] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:26:57,828 [INFO] 172.31.128.24 - - [07/Apr/2025 21:26:57] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:27:02,828 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:02] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:27:02,829 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:02] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:27:02,831 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:02] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:27:02,832 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:02] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:27:02,835 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:02] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:27:02,834 [INFO] Pobieranie danych z testnet
+2025-04-07 21:27:02,838 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:02] "GET /api/portfolio?_=1744061223321 HTTP/1.1" 200 -
+2025-04-07 21:27:12,838 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:12] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:27:12,841 [INFO] Pobieranie danych z testnet
+2025-04-07 21:27:12,841 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:12] "GET /api/portfolio?_=1744061233323 HTTP/1.1" 200 -
+2025-04-07 21:27:12,845 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:12] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:27:12,846 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:12] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:27:12,848 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:12] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:27:12,849 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:12] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:27:12,967 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:12] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:27:12,972 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:12] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:27:22,840 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:22] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:27:22,845 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:22] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:27:22,843 [INFO] Pobieranie danych z testnet
+2025-04-07 21:27:22,846 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:22] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:27:22,848 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:22] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:27:22,850 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:22] "GET /api/portfolio?_=1744061243334 HTTP/1.1" 200 -
+2025-04-07 21:27:22,852 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:22] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:27:22,900 [INFO]  * Detected change in '/home/runner/workspace/.pythonlibs/bin/pwiz.py', reloading
+2025-04-07 21:27:22,905 [INFO]  * Detected change in '/home/runner/workspace/.pythonlibs/bin/pwiz.py', reloading
+2025-04-07 21:27:23,549 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:27:26,166 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:27:26,179 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:27:26,179 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:27:26,180 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:27:26,180 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:27:26,180 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:27:26,180 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:27:26,180 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 21:27:26,181 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 21:27:26,239 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: True
+2025-04-07 21:27:26,396 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:27:26).
+Request → GET https://api-testnet.bybit.com/spot/v1/time: {}.
+2025-04-07 21:27:26,396 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: True
+2025-04-07 21:27:26,397 [INFO] BybitConnector zainicjalizowany. Testnet: True
+2025-04-07 21:27:26,397 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744061246397, 'time': '2025-04-07 21:27:26'}
+2025-04-07 21:27:26,397 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:27:26,397 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 21:27:26,410 [WARNING]  * Debugger is active!
+2025-04-07 21:27:26,414 [INFO]  * Debugger PIN: 141-291-603
+2025-04-07 21:27:28,231 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:28] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:27:31,113 [INFO]  * Detected change in '/home/runner/workspace/data/execution/bybit_connector.py', reloading
+2025-04-07 21:27:31,113 [INFO]  * Detected change in '/home/runner/workspace/data/optimization/strategy_optimizer.py', reloading
+2025-04-07 21:27:31,779 [INFO]  * Restarting with watchdog (inotify)
+2025-04-07 21:27:33,726 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:27:33,741 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:27:33,741 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-07 21:27:33,742 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:27:33,742 [INFO] Zainicjalizowano system powiadomień z 2 kanałami.
+2025-04-07 21:27:33,742 [INFO] Inicjalizacja analizatora sentymentu z 4 źródłami.
+2025-04-07 21:27:33,742 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-07 21:27:33,742 [INFO] Inicjalizacja klienta ByBit - Klucz: a4r7**************, Testnet: True
+2025-04-07 21:27:33,742 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-07 21:27:33,778 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: True
+2025-04-07 21:27:33,992 [WARNING] Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: You have breached the ip rate limit. (ErrCode: 403) (ErrTime: 21:27:33).
+Request → GET https://api-testnet.bybit.com/spot/v1/time: {}.
+2025-04-07 21:27:33,992 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: True
+2025-04-07 21:27:33,992 [INFO] BybitConnector zainicjalizowany. Testnet: True
+2025-04-07 21:27:33,993 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744061253993, 'time': '2025-04-07 21:27:33'}
+2025-04-07 21:27:33,993 [INFO] System zainicjalizowany poprawnie
+2025-04-07 21:27:33,993 [INFO] Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie 5000
+2025-04-07 21:27:34,006 [WARNING]  * Debugger is active!
+2025-04-07 21:27:34,009 [INFO]  * Debugger PIN: 902-722-923
+2025-04-07 21:27:35,628 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:35] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:27:35,626 [INFO] Pobieranie danych z testnet
+2025-04-07 21:27:35,633 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:35] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:27:35,639 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:35] "GET /api/portfolio?_=1744061253323 HTTP/1.1" 200 -
+2025-04-07 21:27:35,644 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:35] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:27:35,648 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:35] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:27:35,652 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:35] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:27:35,665 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:35] "GET /api/recent-trades HTTP/1.1" 200 -
+2025-04-07 21:27:35,669 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:35] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-07 21:27:35,674 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:35] "GET /api/system/status HTTP/1.1" 200 -
+2025-04-07 21:27:35,681 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:35] "GET /api/trading-stats HTTP/1.1" 200 -
+2025-04-07 21:27:35,684 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:35] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-07 21:27:35,803 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:35] "GET /api/alerts HTTP/1.1" 200 -
+2025-04-07 21:27:35,808 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:35] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-07 21:27:36,127 [INFO] Pobieranie danych z testnet
+2025-04-07 21:27:36,129 [INFO] 172.31.128.24 - - [07/Apr/2025 21:27:36] "GET /api/portfolio HTTP/1.1" 200 -
