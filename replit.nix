@@ -25,6 +25,7 @@
     pkgs.python310Packages.pytz
     pkgs.python310Packages.scikit-learn
     pkgs.python310Packages.pytest
+    pkgs.python310Packages.pybit
   ];
   env = {
     PYTHONHOME = "${pkgs.python310}";

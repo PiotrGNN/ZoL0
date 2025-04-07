@@ -94,6 +94,16 @@ class BybitConnector:
         Parameters:
             force (bool): Czy wymusić reinicjalizację, nawet jeśli klient już istnieje.
         """
+        # Dodatkowe logowanie do debugowania
+        self.logger.info("=" * 50)
+        self.logger.info("INICJALIZACJA KLIENTA BYBIT API")
+        self.logger.info(f"API Key: {self.api_key[:4]}{'*' * (len(self.api_key) - 4) if self.api_key else 'Brak'}")
+        self.logger.info(f"API Secret: {self.api_secret[:4]}{'*' * (len(self.api_secret) - 4) if self.api_secret else 'Brak'}")
+        self.logger.info(f"Testnet: {self.use_testnet}")
+        self.logger.info(f"Base URL: {self.base_url}")
+        self.logger.info(f"Lazy Connect: {not force}")
+        self.logger.info("=" * 50)
+        
         # Jeśli klient istnieje i nie wymuszamy, to pomijamy
         if self.client is not None and not force and self._connection_initialized:
             return True

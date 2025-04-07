@@ -78,3 +78,12 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python test_api_connection.py"
+
+[[workflows.workflow]]
+name = "Test Bybit Connection"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python test_bybit_connection.py"

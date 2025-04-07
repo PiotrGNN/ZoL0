@@ -53,6 +53,26 @@ if __name__ == "__main__":
     sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
     # Uruchomienie aplikacji
-    port = int(os.environ.get("PORT", 0))  # Port 0 oznacza, że system znajdzie wolny port
-    logging.info(f"Uruchamianie aplikacji Flask - system wybierze wolny port")
+    port = int(os.environ.get("PORT", 8080))  # Używamy portu 8080 jako domyślnego
+    
+    # Sprawdzamy, czy port jest zajęty i próbujemy kilka alternatyw
+    import socket
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    port_available = False
+    
+    for test_port in [8080, 3000, 8000, 5001, 0]:  # 0 oznacza automatyczny wybór
+        try:
+            s.bind(('0.0.0.0', test_port))
+            port_available = True
+            port = test_port
+            break
+        except socket.error:
+            logging.warning(f"Port {test_port} zajęty, próbujemy inny...")
+    s.close()
+    
+    if not port_available and port != 0:
+        logging.warning("Wszystkie testowane porty zajęte, używam automatycznego wyboru systemu")
+        port = 0
+    
+    logging.info(f"Uruchamianie aplikacji Flask na porcie {port if port != 0 else 'automatycznie wybranym'}")
     app.run(host='0.0.0.0', port=port, debug=True)

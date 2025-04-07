@@ -58,7 +58,28 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Ładowanie zmiennych środowiskowych
-load_dotenv()
+load_dotenv(override=True)  # override=True wymusza ponowne załadowanie zmiennych
+
+# Sprawdzenie czy zmienne zostały załadowane
+api_key = os.getenv("BYBIT_API_KEY")
+api_secret = os.getenv("BYBIT_API_SECRET")
+if api_key and api_secret:
+    logging.info(f"Zmienne środowiskowe API załadowane poprawnie: {api_key[:5]}***")
+else:
+    logging.warning("Nie znaleziono kluczy API w zmiennych środowiskowych")
+    # Próba alternatywnego podejścia do załadowania zmiennych
+    dotenv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env')
+    if os.path.exists(dotenv_path):
+        load_dotenv(dotenv_path=dotenv_path, override=True)
+        logging.info(f"Załadowano zmienne ze ścieżki: {dotenv_path}")
+        
+        # Sprawdź czy zmienne zostały załadowane po alternatywnym podejściu
+        api_key = os.getenv("BYBIT_API_KEY")
+        api_secret = os.getenv("BYBIT_API_SECRET")
+        if api_key and api_secret:
+            logging.info("Pomyślnie załadowano zmienne po alternatywnym podejściu")
+        else:
+            logging.warning("Nadal nie znaleziono kluczy API po alternatywnym podejściu")
 
 # Import klienta ByBit
 try:
