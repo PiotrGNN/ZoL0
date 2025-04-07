@@ -265,9 +265,9 @@ class BybitConnector:
                 try:
                     # Testowa implementacja (symulacja)
                     if self.use_testnet:
-                # Symulowane dane do celów testowych
-                self.logger.info("Pobieranie danych z testnet")
-                return {
+                        # Symulowane dane do celów testowych
+                        self.logger.info("Pobieranie danych z testnet")
+                        return {
                     "balances": {
                         "BTC": {"equity": 0.015, "available_balance": 0.015, "wallet_balance": 0.015},
                         "USDT": {"equity": 1200, "available_balance": 1150, "wallet_balance": 1200}
@@ -276,9 +276,9 @@ class BybitConnector:
                     "note": "Dane testowe - tryb testnet"
                 }
             else:
-                # Prawdziwa implementacja lub symulacja jeśli połączenie nie działa
-                # Przygotowanie zasłoniętego klucza do logów
-                masked_key = f"{self.api_key[:4]}{'*' * (len(self.api_key) - 4)}" if self.api_key else "Brak klucza"
+                        # Prawdziwa implementacja lub symulacja jeśli połączenie nie działa
+                        # Przygotowanie zasłoniętego klucza do logów
+                        masked_key = f"{self.api_key[:4]}{'*' * (len(self.api_key) - 4)}" if self.api_key else "Brak klucza"
                 self.logger.info(f"Próba pobrania danych z {'PRODUKCYJNEGO' if not self.use_testnet else 'TESTOWEGO'} API Bybit. Klucz: {masked_key}")
                 self.logger.info(f"Status API: {'Produkcyjne' if not self.use_testnet else 'Testnet'}")
 
@@ -446,8 +446,21 @@ class BybitConnector:
                 # Jeśli dotarliśmy tutaj, to znaczy, że zapytanie się powiodło
                     break
                 
-        except Exception as e:
-            self.logger.error(f"Krytyczny błąd podczas pobierania salda konta: {e}. Traceback: {traceback.format_exc()}")
+                except Exception as e:
+                    error_str = str(e)
+                    # Sprawdzenie, czy błąd dotyczy przekroczenia limitu zapytań
+                    if "rate limit" in error_str.lower() or "429" in error_str or "403" in error_str:
+                        retry_count += 1
+                        if retry_count < max_retries:
+                            self.logger.warning(f"Przekroczono limit zapytań API. Ponawiam próbę {retry_count}/{max_retries} za {retry_delay} sekund...")
+                            # Zwiększamy opóźnienie wykładniczo, aby uniknąć ponownego przekroczenia limitu
+                            time.sleep(retry_delay)
+                            retry_delay *= 2  # Podwajamy czas oczekiwania przy każdej próbie
+                            continue
+                        else:
+                            self.logger.warning(f"Wykorzystano wszystkie próby ponawiania. Zwracam dane symulowane.")
+                    
+                    self.logger.error(f"Krytyczny błąd podczas pobierania salda konta: {e}. Traceback: {traceback.format_exc()}")
             # Dane symulowane w przypadku błędu
             return {
                 "balances": {

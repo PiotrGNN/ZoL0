@@ -6,6 +6,7 @@ flask-cors==4.0.0
 werkzeug==2.3.7
 pybit==2.4.1
 requests==2.31.0
+ccxt==4.1.13
 
 # Biblioteki do analizy danych
 pandas==2.0.3
@@ -18,21 +19,13 @@ matplotlib==3.7.2
 seaborn==0.12.2
 plotly==5.15.0
 
-# Biblioteki analityczne
-ta-lib==0.4.26
-yfinance==0.2.27
-
-# Biblioteki AI/ML
-tensorflow==2.13.0
-xgboost==1.7.6
-pytorch==2.0.1
-transformers==4.30.2
-
 # Narzędzia
 pytest==7.4.0
 flake8==6.1.0
 black==23.7.0
-jupyter==1.0.0
+colorama==0.4.6
+tqdm==4.66.1
+pyyaml==6.0.1
 psutil
 pybit
 scikit-learn
