@@ -48,6 +48,30 @@
             </div>
 
             <div class="card">
+            <h2><i class="fas fa-wallet"></i> Portfolio</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Aktywo</th>
+                        <th>Ilość</th>
+                        <th>Wartość</th>
+                        <th>Zmiana 24h</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for asset in portfolio %}
+                    <tr>
+                        <td>{{ asset.symbol }}</td>
+                        <td>{{ asset.amount }}</td>
+                        <td>{{ asset.value }} USDT</td>
+                        <td class="{{ asset.change_class }}">{{ asset.change }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+            <div class="card">
                 <h2><i class="fas fa-cogs"></i> Status Komponentów</h2>
                 <table>
                     <thead>

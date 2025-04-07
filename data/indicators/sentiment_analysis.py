@@ -1,15 +1,15 @@
+
 """
 sentiment_analysis.py
----------------------
-Moduł integrujący dane z mediów społecznościowych, newsów i forów w celu analizy sentymentu.
-Wykorzystuje techniki NLP, takie jak modele Transformer (np. BERT, DistilBERT), do klasyfikacji treści finansowych.
+--------------------
+Moduł do analizy sentymentu z różnych źródeł (media społecznościowe, newsy, raporty)
+w celu określenia nastrojów rynkowych.
 """
 
 import logging
-import time
-from datetime import datetime
-from typing import Dict, List, Optional, Tuple, Union
 import random
+from datetime import datetime
+from typing import Dict, List, Any, Optional
 
 # Konfiguracja logowania
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -17,188 +17,111 @@ logger = logging.getLogger(__name__)
 
 class SentimentAnalyzer:
     """
-    Klasa do analizy sentymentu tekstu związanego z rynkami finansowymi.
-    W wersji symulacyjnej generuje losowe wyniki sentymentu.
+    Analizator sentymentu dla danych rynkowych i wiadomości.
+    W wersji produkcyjnej korzystałby z API (np. Twitter/X, NewsAPI) 
+    i modeli NLP do analizy tekstów.
     """
 
-    def __init__(self, use_real_model: bool = False):
+    def __init__(self, use_external_api: bool = False):
         """
-        Inicjalizuje analizator sentymentu.
-
+        Inicjalizacja analizatora sentymentu.
+        
         Args:
-            use_real_model: Czy używać rzeczywistego modelu NLP (True) czy symulacji (False)
+            use_external_api: Czy używać zewnętrznych API (np. Twitter/X, NewsAPI)
         """
-        self.use_real_model = use_real_model
-        self.last_update = datetime.now()
-        self.cache = {}
-        self.sentiment_history = []
+        self.use_external_api = use_external_api
+        self.cache = {}  # Prosty cache ostatnich wyników
+        logger.info("Inicjalizacja SentimentAnalyzer, external_api=%s", use_external_api)
 
-        logger.info("Inicjalizacja SentimentAnalyzer (tryb %s)", 
-                  "rzeczywisty" if use_real_model else "symulacyjny")
-
-        if use_real_model:
-            try:
-                # Próba załadowania rzeczywistego modelu (uwaga: może wymagać transformers)
-                self._load_model()
-            except ImportError:
-                logger.warning("Nie można załadować modelu NLP. Przełączenie na tryb symulacji.")
-                self.use_real_model = False
-
-    def _load_model(self):
-        """Ładuje model NLP do analizy sentymentu. W przypadku niepowodzenia przechodzi w tryb symulacji."""
-        try:
-            from transformers import pipeline
-            logger.info("Ładowanie modelu NLP...")
-            self.model = pipeline("sentiment-analysis", model="distilbert-base-uncased-finetuned-sst-2-english")
-            logger.info("Model NLP załadowany pomyślnie")
-        except (ImportError, Exception) as e:
-            logger.error("Błąd podczas ładowania modelu NLP: %s", str(e))
-            self.use_real_model = False
-            raise ImportError("Nie można załadować modelu NLP. Zainstaluj transformers.")
-
-    def analyze_text(self, text: str) -> Dict[str, Union[str, float]]:
+    def analyze_text(self, text: str) -> Dict[str, Any]:
         """
-        Analizuje tekst i zwraca sentyment.
-
+        Analizuje sentyment pojedynczego tekstu.
+        
         Args:
             text: Tekst do analizy
-
+            
         Returns:
-            Dict zawierający sentyment ('positive', 'neutral', 'negative') i score
+            Dict zawierający wynik analizy sentymentu
         """
-        if text in self.cache:
-            return self.cache[text]
-
-        if self.use_real_model:
-            try:
-                result = self.model(text)[0]
-                sentiment = result['label'].lower()
-                score = result['score']
-            except Exception as e:
-                logger.error("Błąd analizy tekstu: %s", str(e))
-                return self._generate_mock_sentiment()
+        # W rzeczywistej aplikacji używalibyśmy modelu NLP
+        # W wersji symulacyjnej generujemy losowy wynik
+        
+        # Losowa wartość sentymentu (od -1 do 1)
+        sentiment_score = random.uniform(-1, 1)
+        
+        # Mapowanie wyniku na kategorię
+        if sentiment_score > 0.3:
+            sentiment = "positive"
+        elif sentiment_score < -0.3:
+            sentiment = "negative"
         else:
-            # Tryb symulacji - generujemy losowe wyniki
-            return self._generate_mock_sentiment()
-
-    def _generate_mock_sentiment(self) -> Dict[str, Union[str, float]]:
-        """Generuje symulowane wyniki sentymentu dla trybu testowego."""
-        sentiments = ["positive", "neutral", "negative"]
-        sentiment = random.choices(
-            sentiments, 
-            weights=[0.40, 0.35, 0.25],  # Bias towards positive/neutral
-            k=1
-        )[0]
-
-        # Generuj realistyczny score
-        if sentiment == "positive":
-            score = random.uniform(0.6, 0.95)
-        elif sentiment == "neutral":
-            score = random.uniform(0.4, 0.6)
-        else:  # negative
-            score = random.uniform(0.55, 0.9)  # Score dla negative to pewność negatywnego sentymentu
-
-        return {
+            sentiment = "neutral"
+            
+        result = {
+            "text": text[:50] + "..." if len(text) > 50 else text,
             "sentiment": sentiment,
-            "score": score,
+            "score": sentiment_score,
             "timestamp": datetime.now().isoformat()
         }
+        
+        logger.debug("Analiza tekstu: %s, wynik: %s", text[:30], sentiment)
+        return result
 
-    def analyze_batch(self, texts: List[str]) -> List[Dict[str, Union[str, float]]]:
+    def get_market_sentiment(self, symbol: str) -> Dict[str, Any]:
         """
-        Analizuje partię tekstów i zwraca ich sentyment.
-
+        Pobiera sentyment rynkowy dla danego symbolu.
+        
         Args:
-            texts: Lista tekstów do analizy
-
+            symbol: Symbol rynkowy (np. BTC/USDT)
+            
         Returns:
-            Lista słowników z wynikami analizy sentymentu
+            Dict zawierający zagregowany sentyment rynkowy
         """
-        results = []
-        for text in texts:
-            results.append(self.analyze_text(text))
-        return results
-
-    def get_market_sentiment(self, symbol: str = "BTC/USDT") -> Dict[str, Union[str, float]]:
-        """
-        Zwraca aktualny sentyment rynkowy dla danego symbolu.
-        W wersji symulacyjnej generuje wyniki z lekkim biasem dla trendu.
-
-        Args:
-            symbol: Symbol rynkowy (np. "BTC/USDT")
-
-        Returns:
-            Dict z informacjami o sentymencie rynkowym
-        """
-        # Symulacja trendu - co jakiś czas zmieniamy bias
-        current_time = int(time.time())
-        trend_period = 3600  # 1 godzina
-        trend_phase = (current_time % (trend_period * 3)) // trend_period
-
-        # Trzy fazy: pozytywna, neutralna, negatywna
-        if trend_phase == 0:
-            weights = [0.6, 0.3, 0.1]  # pozytywny bias
-        elif trend_phase == 1:
-            weights = [0.3, 0.5, 0.2]  # neutralny bias
+        # Sprawdź cache
+        if symbol in self.cache and (datetime.now() - self.cache[symbol]["timestamp"]).seconds < 300:
+            logger.debug("Używam zbuforowanego sentymentu dla %s", symbol)
+            return self.cache[symbol]
+            
+        # W rzeczywistej aplikacji pobieralibyśmy dane z różnych źródeł
+        # W wersji symulacyjnej generujemy losowy wynik
+        social_sentiment = random.uniform(-1, 1)
+        news_sentiment = random.uniform(-1, 1)
+        
+        # Wagi dla różnych źródeł
+        social_weight = 0.4
+        news_weight = 0.6
+        
+        # Ważona suma
+        combined_score = (social_sentiment * social_weight) + (news_sentiment * news_weight)
+        
+        # Mapowanie wyniku na kategorię
+        if combined_score > 0.3:
+            sentiment = "positive"
+        elif combined_score < -0.3:
+            sentiment = "negative"
         else:
-            weights = [0.1, 0.3, 0.6]  # negatywny bias
-
-        sentiments = ["positive", "neutral", "negative"]
-        sentiment = random.choices(sentiments, weights=weights, k=1)[0]
-
-        # Generuj realistyczny score
-        if sentiment == "positive":
-            score = random.uniform(0.65, 0.9)
-        elif sentiment == "neutral":
-            score = random.uniform(0.45, 0.65)
-        else:  # negative
-            score = random.uniform(0.7, 0.95)
-
-        # Symulacja wolumenu postów
-        volume = random.randint(10, 1000)
-
+            sentiment = "neutral"
+            
         result = {
             "symbol": symbol,
             "sentiment": sentiment,
-            "score": score,
-            "volume": volume,
-            "timestamp": datetime.now().isoformat(),
-            "source": random.choice(["twitter", "reddit", "news", "forums"])
+            "score": combined_score,
+            "sources": {
+                "social": social_sentiment,
+                "news": news_sentiment
+            },
+            "timestamp": datetime.now()
         }
-
-        # Dodaj do historii
-        self.sentiment_history.append(result)
-        if len(self.sentiment_history) > 100:
-            self.sentiment_history.pop(0)
-
+        
+        # Aktualizacja cache
+        self.cache[symbol] = result
+        
+        logger.info("Sentyment rynkowy dla %s: %s (%.2f)", symbol, sentiment, combined_score)
         return result
 
-    def get_sentiment_summary(self) -> Dict[str, any]:
+    def detect_sentiment_shifts(self) -> List[Dict[str, Any]]:
         """
-        Zwraca podsumowanie sentymentu z różnych źródeł.
-
-        Returns:
-            Dict z podsumowaniem sentymentu
-        """
-        sources = ["twitter", "reddit", "news", "forums"]
-        summary = {
-            "overall": random.choice(["positive", "neutral", "negative"]),
-            "sources": {}
-        }
-
-        for source in sources:
-            summary["sources"][source] = {
-                "sentiment": random.choice(["positive", "neutral", "negative"]),
-                "score": round(random.uniform(0.3, 0.9), 2),
-                "volume": random.randint(50, 5000)
-            }
-
-        summary["last_update"] = datetime.now().isoformat()
-        return summary
-
-    def detect_sentiment_shifts(self) -> List[Dict[str, any]]:
-        """
-        Wykrywa nagłe zmiany sentymentu, które mogą wskazywać na istotne wydarzenia.
+        Wykrywa istotne zmiany sentymentu, które mogą wskazywać na istotne wydarzenia.
 
         Returns:
             Lista wykrytych zmian sentymentu
@@ -216,6 +139,67 @@ class SentimentAnalyzer:
             })
         return alerts
 
+    def get_sentiment_history(self, symbol: str, days: int = 7) -> List[Dict[str, Any]]:
+        """
+        Zwraca historię sentymentu dla symbolu z określonej liczby dni.
+        
+        Args:
+            symbol: Symbol rynkowy
+            days: Liczba dni historii
+            
+        Returns:
+            Lista wyników sentymentu z każdego dnia
+        """
+        history = []
+        now = datetime.now()
+        
+        # Generowanie symulowanych danych historycznych
+        for i in range(days):
+            day_offset = i
+            date = datetime(now.year, now.month, now.day) - datetime.timedelta(days=day_offset)
+            
+            # Losowy sentyment z trendem (bardziej pozytywny dla starszych dni)
+            trend_factor = i / days  # Im starszy dzień, tym wyższy współczynnik
+            score = random.uniform(-0.8, 0.8) + trend_factor * 0.3
+            
+            # Mapowanie wyniku na kategorię
+            if score > 0.3:
+                sentiment = "positive"
+            elif score < -0.3:
+                sentiment = "negative"
+            else:
+                sentiment = "neutral"
+                
+            history.append({
+                "date": date.strftime("%Y-%m-%d"),
+                "sentiment": sentiment,
+                "score": score,
+                "volume": random.randint(100, 1000)  # Symulowana ilość wzmianek
+            })
+            
+        return history
+    
+    def analyze_news_impact(self, symbol: str) -> Dict[str, Any]:
+        """
+        Analizuje wpływ najnowszych wiadomości na cenę instrumentu.
+        
+        Args:
+            symbol: Symbol rynkowy
+            
+        Returns:
+            Wynik analizy wpływu wiadomości
+        """
+        # Symulacja wyników
+        impact_score = random.uniform(-1, 1)
+        
+        return {
+            "symbol": symbol,
+            "impact_score": impact_score,
+            "news_count": random.randint(5, 30),
+            "top_keywords": ["regulation", "adoption", "technology", "market"],
+            "timestamp": datetime.now().isoformat()
+        }
+
 # Przykładowe użycie modułu
 if __name__ == "__main__":
     analyzer = SentimentAnalyzer()
@@ -231,4 +215,4 @@ if __name__ == "__main__":
     # Wykrywanie zmian sentymentu
     shifts = analyzer.detect_sentiment_shifts()
     if shifts:
-        print(f"Wykryto {len(shifts)} zmian sentymentu!")
+        print(f"Wykryto {len(shifts)} istotnych zmian sentymentu!")

@@ -147,8 +147,40 @@ def dashboard():
             }
         ]
         
-        logging.info("Renderowanie dashboardu z danymi: %s komponenty, %s anomalie, %s modele AI", 
-                    len(components), len(anomalies), len(ai_models))
+        # Przykładowe dane portfolio
+        portfolio = [
+            {
+                "symbol": "BTC",
+                "amount": "0.05",
+                "value": "2,450",
+                "change": "+5.2%",
+                "change_class": "positive"
+            },
+            {
+                "symbol": "ETH",
+                "amount": "0.5",
+                "value": "980",
+                "change": "+3.8%",
+                "change_class": "positive"
+            },
+            {
+                "symbol": "SOL",
+                "amount": "10",
+                "value": "850",
+                "change": "-2.1%",
+                "change_class": "negative"
+            },
+            {
+                "symbol": "USDT",
+                "amount": "500",
+                "value": "500",
+                "change": "0.0%",
+                "change_class": "neutral"
+            }
+        ]
+        
+        logging.info("Renderowanie dashboardu z danymi: %s komponenty, %s anomalie, %s modele AI, %s aktywa", 
+                    len(components), len(anomalies), len(ai_models), len(portfolio))
         
         return render_template('dashboard.html', 
                               system_mode=system_mode,
@@ -157,7 +189,8 @@ def dashboard():
                               components=components,
                               anomalies=anomalies,
                               system_actions=system_actions,
-                              ai_models=ai_models)
+                              ai_models=ai_models,
+                              portfolio=portfolio)
     except Exception as e:
         logging.error("Błąd podczas renderowania dashboardu: %s", str(e))
         return f"Błąd w dashboardzie: {str(e)}", 500
@@ -177,6 +210,95 @@ def system_status():
             "data_processor": "active",
             "trading_engine": "standby"
         }
+    })
+
+@app.route('/api/portfolio')
+def portfolio_status():
+    """Endpoint zwracający stan portfolio."""
+    # Symulowane dane portfolio
+    return jsonify({
+        "total_value": 4780.0,
+        "assets": [
+            {"symbol": "BTC", "amount": 0.05, "value": 2450, "change_24h": 5.2},
+            {"symbol": "ETH", "amount": 0.5, "value": 980, "change_24h": 3.8},
+            {"symbol": "SOL", "amount": 10, "value": 850, "change_24h": -2.1},
+            {"symbol": "USDT", "amount": 500, "value": 500, "change_24h": 0.0}
+        ],
+        "performance": {
+            "daily": 2.8,
+            "weekly": 5.6,
+            "monthly": 12.4
+        }
+    })
+
+@app.route('/api/trades')
+def recent_trades():
+    """Endpoint zwracający ostatnie transakcje."""
+    from datetime import datetime, timedelta
+    
+    now = datetime.now()
+    
+    # Symulowane dane transakcji
+    return jsonify([
+        {
+            "id": "t123456",
+            "symbol": "BTC/USDT",
+            "side": "buy",
+            "amount": 0.01,
+            "price": 49500.0,
+            "value": 495.0,
+            "timestamp": (now - timedelta(hours=2)).isoformat(),
+            "strategy": "trend_following"
+        },
+        {
+            "id": "t123457",
+            "symbol": "ETH/USDT",
+            "side": "sell",
+            "amount": 0.2,
+            "price": 1950.0,
+            "value": 390.0,
+            "timestamp": (now - timedelta(hours=5)).isoformat(),
+            "strategy": "mean_reversion"
+        }
+    ])
+
+@app.route('/api/strategies')
+def available_strategies():
+    """Endpoint zwracający dostępne strategie."""
+    return jsonify({
+        "active_strategy": "trend_following",
+        "available_strategies": [
+            {
+                "id": "trend_following",
+                "name": "Trend Following",
+                "description": "Strategia podążająca za trendem",
+                "performance": {
+                    "daily": 1.2,
+                    "weekly": 3.8,
+                    "monthly": 8.5
+                }
+            },
+            {
+                "id": "mean_reversion",
+                "name": "Mean Reversion",
+                "description": "Strategia powrotu do średniej",
+                "performance": {
+                    "daily": 0.8,
+                    "weekly": 2.5,
+                    "monthly": 6.2
+                }
+            },
+            {
+                "id": "breakout",
+                "name": "Breakout",
+                "description": "Strategia wybicia",
+                "performance": {
+                    "daily": 1.5,
+                    "weekly": 4.2,
+                    "monthly": 10.1
+                }
+            }
+        ]
     })
 
 @app.route('/download-report')

@@ -1,4 +1,3 @@
-
 /**
  * Dashboard interaktywny dla Trading Bota
  * Skrypt odpowiedzialny za wykresy, aktualizacje danych i interakcje.
@@ -9,10 +8,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Inicjalizacja wykresów
     initializeCharts();
-    
+
     // Ustawienie interwału do pobierania danych
     setInterval(updateDashboardData, 30000); // Co 30 sekund
-    
+
     // Obsługa zdarzeń
     setupEventListeners();
 });
@@ -23,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeCharts() {
     // Wykres aktywności systemu
     initializeActivityChart();
-    
+
     // Jeśli są inne wykresy, tutaj można dodać ich inicjalizację
 }
 
@@ -32,48 +31,9 @@ function initializeCharts() {
  */
 function initializeActivityChart() {
     const ctx = document.getElementById('activityChart').getContext('2d');
-    
+
     // Pobierz dane do wykresu
-    fetch('/api/chart-data')
-        .then(response => response.json())
-        .then(data => {
-            window.activityChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: data.labels,
-                    datasets: data.datasets
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.05)'
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false
-                        }
-                    }
-                }
-            });
-        })
-        .catch(error => {
-            console.error('Błąd podczas pobierania danych wykresu:', error);
-        });
+    fetchChartData(); // Use the new function to fetch and handle errors
 }
 
 /**
@@ -81,30 +41,25 @@ function initializeActivityChart() {
  */
 function updateDashboardData() {
     console.log('Aktualizacja danych dashboardu...');
-    
+
     // Aktualizacja wykresu aktywności
-    updateActivityChart();
-    
+    fetchChartData(); // Use the new function to fetch and handle errors
+
     // Symulacja aktualizacji statusów komponentów
     updateComponentStatuses();
 }
 
+
+
 /**
  * Aktualizuje wykres aktywności
  */
-function updateActivityChart() {
-    fetch('/api/chart-data')
-        .then(response => response.json())
-        .then(data => {
-            if (window.activityChart) {
-                window.activityChart.data.labels = data.labels;
-                window.activityChart.data.datasets = data.datasets;
-                window.activityChart.update();
-            }
-        })
-        .catch(error => {
-            console.error('Błąd podczas aktualizacji danych wykresu:', error);
-        });
+function updateActivityChart(data) { // Added data parameter
+    if (window.activityChart) {
+        window.activityChart.data.labels = data.labels;
+        window.activityChart.data.datasets = data.datasets;
+        window.activityChart.update();
+    }
 }
 
 /**
@@ -139,7 +94,7 @@ function setupEventListeners() {
                 });
         });
     }
-    
+
     // Obsługa przycisku generowania raportu
     const reportButton = document.getElementById('downloadReportBtn');
     if (reportButton) {
@@ -165,13 +120,13 @@ function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
     notification.textContent = message;
-    
+
     const container = document.createElement('div');
     container.className = 'notification-container';
     container.appendChild(notification);
-    
+
     document.body.appendChild(container);
-    
+
     // Usuń powiadomienie po 3 sekundach
     setTimeout(() => {
         container.style.opacity = '0';
@@ -179,4 +134,27 @@ function showNotification(message, type = 'info') {
             document.body.removeChild(container);
         }, 300);
     }, 3000);
+}
+
+// Funkcja do pobierania danych wykresu z API
+function fetchChartData() {
+    fetch('/api/chart-data')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            updateActivityChart(data);
+        })
+        .catch(error => {
+            console.error("Błąd podczas pobierania danych wykresu:", error);
+            // Wyświetl komunikat o błędzie na stronie
+            document.getElementById('activityChart').style.display = 'none';
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = 'Nie udało się załadować danych wykresu. Spróbuj odświeżyć stronę.';
+            document.querySelector('.chart-container').appendChild(errorDiv);
+        });
 }
