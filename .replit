@@ -46,10 +46,6 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "pip install --no-cache-dir -r requirements.txt"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
 args = "python main.py"
 
 [[ports]]

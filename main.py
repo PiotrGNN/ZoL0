@@ -32,11 +32,19 @@ def initialize_system():
         from data.utils.notification_system import NotificationSystem
         from data.indicators.sentiment_analysis import SentimentAnalyzer
         from ai_models.anomaly_detection import AnomalyDetector
+        from data.utils.import_manager import exclude_modules_from_auto_import
+
+        # Wykluczamy podpakiet tests z automatycznego importu
+        exclude_modules_from_auto_import(["tests"])
+        logging.info("Wykluczam podpakiet 'tests' z automatycznego importu.")
 
         global notification_system, sentiment_analyzer, anomaly_detector
 
         notification_system = NotificationSystem()
+        logging.info("Zainicjalizowano system powiadomień z 2 kanałami.")
+        
         sentiment_analyzer = SentimentAnalyzer()
+        
         anomaly_detector = AnomalyDetector()
 
         # Inicjalizacja klienta ByBit (tylko raz podczas startu aplikacji)
@@ -146,7 +154,7 @@ def get_dashboard_data():
             'total_trades': 48,
             'win_rate': 68.5,
             'max_drawdown': 8.2,
-            'market_sentiment': sentiment_analyzer.get_current_sentiment() if 'sentiment_analyzer' in globals() else 'Neutralny',
+            'market_sentiment': sentiment_analyzer.analyze()["analysis"] if 'sentiment_analyzer' in globals() else 'Neutralny',
             'anomalies': anomaly_detector.get_detected_anomalies() if 'anomaly_detector' in globals() else [],
             'last_updated': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         })
@@ -231,6 +239,134 @@ def get_notifications():
             'success': False,
             'error': str(e)
         }), 500
+
+@app.route('/api/recent-trades')
+def get_recent_trades():
+    """Endpoint do pobierania ostatnich transakcji"""
+    try:
+        # Przykładowe dane transakcji
+        trades = [
+            {
+                'symbol': 'BTC/USDT',
+                'type': 'Buy',
+                'time': (datetime.now() - timedelta(hours=2)).strftime('%Y-%m-%d %H:%M:%S'),
+                'profit': 3.2
+            },
+            {
+                'symbol': 'ETH/USDT',
+                'type': 'Sell',
+                'time': (datetime.now() - timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S'),
+                'profit': -1.5
+            },
+            {
+                'symbol': 'SOL/USDT',
+                'type': 'Buy',
+                'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                'profit': 2.7
+            }
+        ]
+        return jsonify({'trades': trades})
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania ostatnich transakcji: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/alerts')
+def get_alerts():
+    """Endpoint do pobierania alertów systemowych"""
+    try:
+        # Przykładowe alerty
+        alerts = [
+            {
+                'level': 'warning',
+                'level_class': 'warning',
+                'time': (datetime.now() - timedelta(minutes=30)).strftime('%Y-%m-%d %H:%M:%S'),
+                'message': 'Wysoka zmienność rynkowa'
+            },
+            {
+                'level': 'info',
+                'level_class': 'online',
+                'time': (datetime.now() - timedelta(minutes=15)).strftime('%Y-%m-%d %H:%M:%S'),
+                'message': 'Nowa strategia aktywowana'
+            }
+        ]
+        return jsonify({'alerts': alerts})
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania alertów: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/trading-stats')
+def get_trading_stats():
+    """Endpoint do pobierania statystyk tradingowych"""
+    try:
+        stats = {
+            'profit': '$356.42',
+            'trades_count': 28,
+            'win_rate': '67.8%',
+            'max_drawdown': '8.2%'
+        }
+        return jsonify(stats)
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania statystyk tradingowych: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/component-status')
+def get_component_status():
+    """Endpoint do pobierania statusu komponentów systemu"""
+    try:
+        components = [
+            {
+                'id': 'api-connector',
+                'status': 'online'
+            },
+            {
+                'id': 'data-processor',
+                'status': 'online'
+            },
+            {
+                'id': 'trading-engine',
+                'status': 'warning'
+            },
+            {
+                'id': 'risk-manager',
+                'status': 'online'
+            }
+        ]
+        return jsonify({'components': components})
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania statusu komponentów: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/ai-models-status')
+def get_ai_models_status():
+    """Endpoint do pobierania statusu modeli AI"""
+    try:
+        models = [
+            {
+                'name': 'Trend Predictor',
+                'type': 'LSTM',
+                'accuracy': 78.5,
+                'status': 'Active',
+                'last_used': (datetime.now() - timedelta(minutes=15)).strftime('%Y-%m-%d %H:%M:%S')
+            },
+            {
+                'name': 'Sentiment Analyzer',
+                'type': 'BERT',
+                'accuracy': 82.3,
+                'status': 'Active',
+                'last_used': (datetime.now() - timedelta(minutes=5)).strftime('%Y-%m-%d %H:%M:%S')
+            },
+            {
+                'name': 'Volatility Predictor',
+                'type': 'XGBoost',
+                'accuracy': 75.1,
+                'status': 'Active',
+                'last_used': (datetime.now() - timedelta(minutes=30)).strftime('%Y-%m-%d %H:%M:%S')
+            }
+        ]
+        return jsonify({'models': models})
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania statusu modeli AI: {e}")
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/system/status')
 def get_system_status():

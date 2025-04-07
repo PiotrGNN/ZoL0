@@ -115,3 +115,164 @@ if __name__ == "__main__":
     except Exception as e:
         logging.error("Błąd w module import_manager.py: %s", e)
         raise
+"""
+import_manager.py
+---------------
+Moduł zarządzający importami i kontrolujący zależności w systemie.
+"""
+
+import logging
+import sys
+import importlib
+import inspect
+import os
+from typing import List, Dict, Any, Callable, Optional
+
+logger = logging.getLogger(__name__)
+
+# Lista modułów, które są wykluczone z automatycznego importu
+EXCLUDED_MODULES = []
+
+def exclude_modules_from_auto_import(modules: List[str]) -> None:
+    """
+    Dodaje moduły do listy wykluczonych z automatycznego importu.
+    
+    Args:
+        modules (list): Lista nazw modułów do wykluczenia.
+    """
+    global EXCLUDED_MODULES
+    EXCLUDED_MODULES.extend(modules)
+    logger.debug(f"Dodano moduły do wykluczenia z auto-importu: {modules}")
+
+def is_module_excluded(module_name: str) -> bool:
+    """
+    Sprawdza, czy moduł jest wykluczony z automatycznego importu.
+    
+    Args:
+        module_name (str): Nazwa modułu do sprawdzenia.
+        
+    Returns:
+        bool: True jeśli moduł jest wykluczony, False w przeciwnym razie.
+    """
+    return any(module_name.startswith(excluded) for excluded in EXCLUDED_MODULES)
+
+def import_submodules(package_name: str) -> Dict[str, Any]:
+    """
+    Importuje wszystkie podmoduły pakietu rekursywnie.
+    
+    Args:
+        package_name (str): Nazwa pakietu, z którego importujemy podmoduły.
+        
+    Returns:
+        dict: Słownik zaimportowanych modułów.
+    """
+    package = importlib.import_module(package_name)
+    results = {}
+    
+    # Sprawdzamy, czy pakiet ma atrybut __path__ (jest pakietem)
+    if hasattr(package, '__path__'):
+        # Uzyskanie pełnej ścieżki do pakietu
+        package_path = package.__path__[0]
+        
+        # Iteracja po plikach w katalogu pakietu
+        for loader, module_name, is_pkg in importlib.util.find_loader(package_name).get_loader_module_details():
+            # Pomijamy __pycache__ i wykluczane moduły
+            if module_name.startswith('__') or is_module_excluded(f"{package_name}.{module_name}"):
+                continue
+            
+            # Budujemy pełną nazwę modułu
+            full_name = f"{package_name}.{module_name}"
+            
+            try:
+                # Importujemy moduł
+                module = importlib.import_module(full_name)
+                results[full_name] = module
+                
+                # Jeśli to pakiet, rekurencyjnie importujemy jego podmoduły
+                if is_pkg:
+                    submodules = import_submodules(full_name)
+                    results.update(submodules)
+            except Exception as e:
+                logger.warning(f"Błąd podczas importowania modułu {full_name}: {str(e)}")
+    
+    return results
+
+def find_implementations(base_class, package_name: str = "data") -> Dict[str, Any]:
+    """
+    Znajduje wszystkie implementacje określonej klasy bazowej w pakiecie.
+    
+    Args:
+        base_class: Klasa bazowa, której implementacji szukamy.
+        package_name (str): Nazwa pakietu, w którym szukamy.
+        
+    Returns:
+        dict: Słownik znalezionych implementacji.
+    """
+    implementations = {}
+    modules = import_submodules(package_name)
+    
+    for module_name, module in modules.items():
+        # Sprawdzamy każdą klasę w module
+        for name, obj in inspect.getmembers(module, inspect.isclass):
+            # Sprawdzamy, czy to subklasa naszej klasy bazowej i czy to nie jest sama klasa bazowa
+            if issubclass(obj, base_class) and obj != base_class:
+                implementations[name] = obj
+    
+    return implementations
+
+def lazy_import(module_name: str) -> Callable:
+    """
+    Realizuje leniwe importowanie modułów.
+    
+    Args:
+        module_name (str): Nazwa modułu do zaimportowania.
+        
+    Returns:
+        callable: Funkcja importująca moduł na żądanie.
+    """
+    class LazyModule:
+        def __init__(self, module_name):
+            self.module_name = module_name
+            self._module = None
+            
+        def __getattr__(self, name):
+            if self._module is None:
+                self._module = importlib.import_module(self.module_name)
+            return getattr(self._module, name)
+    
+    return LazyModule(module_name)
+
+def safe_import(module_name: str, error_handler: Optional[Callable] = None) -> Any:
+    """
+    Bezpiecznie importuje moduł z obsługą błędów.
+    
+    Args:
+        module_name (str): Nazwa modułu do zaimportowania.
+        error_handler (callable, optional): Funkcja obsługi błędów.
+        
+    Returns:
+        Module or None: Zaimportowany moduł lub None w przypadku błędu.
+    """
+    try:
+        return importlib.import_module(module_name)
+    except ImportError as e:
+        if error_handler:
+            return error_handler(e, module_name)
+        else:
+            logger.error(f"Błąd importowania modułu {module_name}: {str(e)}")
+            return None
+
+def module_exists(module_name: str) -> bool:
+    """
+    Sprawdza, czy moduł istnieje bez jego importowania.
+    
+    Args:
+        module_name (str): Nazwa modułu do sprawdzenia.
+        
+    Returns:
+        bool: True jeśli moduł istnieje, False w przeciwnym razie.
+    """
+    try:
+        return importlib.util.find_spec(module_name) is not None
+    except (ImportError, AttributeError):
+        return False

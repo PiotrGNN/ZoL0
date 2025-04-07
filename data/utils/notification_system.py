@@ -440,3 +440,349 @@ if __name__ == "__main__":
         level="info",
         title="Status systemu",
     )
+"""
+notification_system.py
+---------------------
+System powiadomień dla aplikacji tradingowej.
+"""
+
+import logging
+import json
+import os
+import time
+from datetime import datetime, timedelta
+from typing import List, Dict, Any, Optional, Union
+
+# Konfiguracja logowania
+logging.basicConfig(
+    level=logging.INFO, 
+    format="%(asctime)s [%(levelname)s] %(message)s"
+)
+logger = logging.getLogger(__name__)
+
+class NotificationSystem:
+    """
+    Klasa zarządzająca systemem powiadomień.
+    Obsługuje różne kanały powiadomień (e-mail, SMS, push, wewnątrzaplikacyjne).
+    """
+    
+    def __init__(self, config_path: Optional[str] = None):
+        """
+        Inicjalizacja systemu powiadomień.
+        
+        Args:
+            config_path (str, optional): Ścieżka do pliku konfiguracyjnego.
+        """
+        self.config_path = config_path
+        self.config = self._load_config()
+        self.notifications = []
+        self.notification_channels = ["app", "email"] if not self.config else self.config.get("channels", ["app"])
+        
+        # Domyślne ustawienia
+        self.default_settings = {
+            "emergency_contact": "admin@tradingbot.com",
+            "notification_levels": ["info", "warning", "critical", "success", "error"],
+            "channels": {
+                "email": {
+                    "enabled": False,
+                    "server": "smtp.example.com",
+                    "port": 587,
+                    "username": "",
+                    "password": "",
+                    "sender": "noreply@tradingbot.com"
+                },
+                "sms": {
+                    "enabled": False,
+                    "provider": "twilio",
+                    "api_key": "",
+                    "api_secret": "",
+                    "sender_number": ""
+                },
+                "app": {
+                    "enabled": True,
+                    "max_notifications": 100,
+                    "auto_clear_after_days": 7
+                }
+            }
+        }
+        
+        # Jeśli config jest pusty, używamy domyślnych ustawień
+        if not self.config:
+            self.config = self.default_settings
+        
+        logger.info(f"Zainicjalizowano system powiadomień z {len(self.notification_channels)} kanałami.")
+    
+    def _load_config(self) -> Dict[str, Any]:
+        """
+        Wczytuje konfigurację z pliku.
+        
+        Returns:
+            dict: Konfiguracja systemu powiadomień.
+        """
+        if not self.config_path or not os.path.exists(self.config_path):
+            return {}
+        
+        try:
+            with open(self.config_path, 'r') as f:
+                return json.load(f)
+        except Exception as e:
+            logger.error(f"Błąd podczas wczytywania konfiguracji: {str(e)}")
+            return {}
+    
+    def _save_config(self) -> bool:
+        """
+        Zapisuje konfigurację do pliku.
+        
+        Returns:
+            bool: True jeśli zapis się powiódł, False w przeciwnym razie.
+        """
+        if not self.config_path:
+            return False
+        
+        try:
+            with open(self.config_path, 'w') as f:
+                json.dump(self.config, f, indent=4)
+            return True
+        except Exception as e:
+            logger.error(f"Błąd podczas zapisywania konfiguracji: {str(e)}")
+            return False
+    
+    def add_notification(
+        self, 
+        message: str, 
+        level: str = "info", 
+        title: Optional[str] = None, 
+        details: Optional[Dict[str, Any]] = None,
+        channels: Optional[List[str]] = None
+    ) -> Dict[str, Any]:
+        """
+        Dodaje nowe powiadomienie.
+        
+        Args:
+            message (str): Treść powiadomienia.
+            level (str): Poziom powiadomienia (info, warning, critical, success, error).
+            title (str, optional): Tytuł powiadomienia.
+            details (dict, optional): Dodatkowe szczegóły.
+            channels (list, optional): Lista kanałów, przez które ma zostać wysłane powiadomienie.
+            
+        Returns:
+            dict: Utworzone powiadomienie.
+        """
+        if not message:
+            logger.warning("Próba dodania pustego powiadomienia.")
+            return {}
+        
+        notification_id = int(time.time() * 1000)  # Unikalny ID bazujący na czasie
+        
+        notification = {
+            "id": notification_id,
+            "timestamp": datetime.now().isoformat(),
+            "level": level,
+            "title": title or self._generate_title(level),
+            "message": message,
+            "read": False,
+            "details": details or {}
+        }
+        
+        # Dodanie powiadomienia do listy
+        self.notifications.append(notification)
+        
+        # Ograniczenie liczby przechowywanych powiadomień
+        max_notifications = self.config.get("channels", {}).get("app", {}).get("max_notifications", 100)
+        if len(self.notifications) > max_notifications:
+            self.notifications = self.notifications[-max_notifications:]
+        
+        # Wysłanie powiadomienia przez odpowiednie kanały
+        self._send_to_channels(notification, channels or self.notification_channels)
+        
+        return notification
+    
+    def _generate_title(self, level: str) -> str:
+        """
+        Generuje domyślny tytuł dla powiadomienia na podstawie poziomu.
+        
+        Args:
+            level (str): Poziom powiadomienia.
+            
+        Returns:
+            str: Wygenerowany tytuł.
+        """
+        titles = {
+            "info": "Informacja",
+            "warning": "Ostrzeżenie",
+            "critical": "Alert Krytyczny",
+            "success": "Sukces",
+            "error": "Błąd"
+        }
+        return titles.get(level, "Powiadomienie")
+    
+    def _send_to_channels(self, notification: Dict[str, Any], channels: List[str]) -> None:
+        """
+        Wysyła powiadomienie przez określone kanały.
+        
+        Args:
+            notification (dict): Powiadomienie do wysłania.
+            channels (list): Lista kanałów do wykorzystania.
+        """
+        for channel in channels:
+            if channel == "email" and self.config.get("channels", {}).get("email", {}).get("enabled", False):
+                self._send_email(notification)
+            elif channel == "sms" and self.config.get("channels", {}).get("sms", {}).get("enabled", False):
+                self._send_sms(notification)
+            elif channel == "app":
+                # Powiadomienie wewnątrzaplikacyjne - nie wymaga dodatkowych działań,
+                # już zostało dodane do self.notifications
+                pass
+    
+    def _send_email(self, notification: Dict[str, Any]) -> bool:
+        """
+        Wysyła powiadomienie e-mailem.
+        
+        Args:
+            notification (dict): Powiadomienie do wysłania.
+            
+        Returns:
+            bool: True jeśli wysyłka się powiodła, False w przeciwnym razie.
+        """
+        # W rzeczywistej implementacji tutaj byłaby integracja z serwerem SMTP
+        logger.info(f"Symulacja wysyłki e-mail: {notification['title']} - {notification['message']}")
+        return True
+    
+    def _send_sms(self, notification: Dict[str, Any]) -> bool:
+        """
+        Wysyła powiadomienie SMS-em.
+        
+        Args:
+            notification (dict): Powiadomienie do wysłania.
+            
+        Returns:
+            bool: True jeśli wysyłka się powiodła, False w przeciwnym razie.
+        """
+        # W rzeczywistej implementacji tutaj byłaby integracja z serwisem SMS
+        logger.info(f"Symulacja wysyłki SMS: {notification['message']}")
+        return True
+    
+    def get_notifications(
+        self, 
+        limit: int = 20, 
+        offset: int = 0, 
+        level: Optional[str] = None,
+        unread_only: bool = False
+    ) -> List[Dict[str, Any]]:
+        """
+        Pobiera listę powiadomień z możliwością filtrowania.
+        
+        Args:
+            limit (int): Maksymalna liczba zwracanych powiadomień.
+            offset (int): Przesunięcie (do paginacji).
+            level (str, optional): Filtrowanie po poziomie powiadomienia.
+            unread_only (bool): Czy zwracać tylko nieprzeczytane powiadomienia.
+            
+        Returns:
+            list: Lista powiadomień.
+        """
+        filtered = self.notifications
+        
+        # Filtrowanie po poziomie
+        if level:
+            filtered = [n for n in filtered if n["level"] == level]
+        
+        # Filtrowanie nieprzeczytanych
+        if unread_only:
+            filtered = [n for n in filtered if not n["read"]]
+        
+        # Sortowanie od najnowszych
+        filtered = sorted(filtered, key=lambda x: x["timestamp"], reverse=True)
+        
+        # Paginacja
+        return filtered[offset:offset + limit]
+    
+    def mark_as_read(self, notification_id: Union[int, List[int]]) -> int:
+        """
+        Oznacza powiadomienie lub powiadomienia jako przeczytane.
+        
+        Args:
+            notification_id: ID powiadomienia lub lista ID.
+            
+        Returns:
+            int: Liczba powiadomień oznaczonych jako przeczytane.
+        """
+        if isinstance(notification_id, list):
+            ids = notification_id
+        else:
+            ids = [notification_id]
+        
+        count = 0
+        for n in self.notifications:
+            if n["id"] in ids and not n["read"]:
+                n["read"] = True
+                count += 1
+        
+        return count
+    
+    def mark_all_as_read(self) -> int:
+        """
+        Oznacza wszystkie powiadomienia jako przeczytane.
+        
+        Returns:
+            int: Liczba powiadomień oznaczonych jako przeczytane.
+        """
+        count = 0
+        for n in self.notifications:
+            if not n["read"]:
+                n["read"] = True
+                count += 1
+        
+        return count
+    
+    def delete_notification(self, notification_id: Union[int, List[int]]) -> int:
+        """
+        Usuwa powiadomienie lub powiadomienia.
+        
+        Args:
+            notification_id: ID powiadomienia lub lista ID.
+            
+        Returns:
+            int: Liczba usuniętych powiadomień.
+        """
+        if isinstance(notification_id, list):
+            ids = notification_id
+        else:
+            ids = [notification_id]
+        
+        initial_count = len(self.notifications)
+        self.notifications = [n for n in self.notifications if n["id"] not in ids]
+        
+        return initial_count - len(self.notifications)
+    
+    def clear_old_notifications(self, days: int = 7) -> int:
+        """
+        Usuwa stare powiadomienia.
+        
+        Args:
+            days (int): Usuwanie powiadomień starszych niż określona liczba dni.
+            
+        Returns:
+            int: Liczba usuniętych powiadomień.
+        """
+        cutoff_date = datetime.now() - timedelta(days=days)
+        cutoff_str = cutoff_date.isoformat()
+        
+        initial_count = len(self.notifications)
+        self.notifications = [n for n in self.notifications if n["timestamp"] > cutoff_str]
+        
+        return initial_count - len(self.notifications)
+    
+    def get_unread_count(self, level: Optional[str] = None) -> int:
+        """
+        Zwraca liczbę nieprzeczytanych powiadomień.
+        
+        Args:
+            level (str, optional): Filtrowanie po poziomie powiadomienia.
+            
+        Returns:
+            int: Liczba nieprzeczytanych powiadomień.
+        """
+        if level:
+            return sum(1 for n in self.notifications if not n["read"] and n["level"] == level)
+        return sum(1 for n in self.notifications if not n["read"])
