@@ -1,4 +1,3 @@
-
 import logging
 import os
 from datetime import datetime, timedelta
@@ -15,9 +14,13 @@ logging.basicConfig(
         logging.StreamHandler()
     ]
 )
+logger = logging.getLogger(__name__)
 
 # Ładowanie zmiennych środowiskowych
 load_dotenv()
+
+# Import klienta ByBit
+from data.execution.bybit_connector import BybitConnector
 
 # Inicjalizacja aplikacji Flask
 app = Flask(__name__)
@@ -29,13 +32,27 @@ def initialize_system():
         from data.utils.notification_system import NotificationSystem
         from data.indicators.sentiment_analysis import SentimentAnalyzer
         from ai_models.anomaly_detection import AnomalyDetector
-        
+
         global notification_system, sentiment_analyzer, anomaly_detector
-        
+
         notification_system = NotificationSystem()
         sentiment_analyzer = SentimentAnalyzer()
         anomaly_detector = AnomalyDetector()
-        
+
+        # Inicjalizacja klienta ByBit (tylko raz podczas startu aplikacji)
+        global bybit_client
+        try:
+            bybit_client = BybitConnector(
+                api_key=os.getenv("BYBIT_API_KEY"),
+                api_secret=os.getenv("BYBIT_API_SECRET"),
+                use_testnet=os.getenv("BYBIT_USE_TESTNET", "false").lower() == "true"
+            )
+            logger.info("Klient API ByBit zainicjalizowany pomyślnie")
+        except Exception as e:
+            logger.error(f"Błąd inicjalizacji klienta ByBit: {e}")
+            bybit_client = None
+
+
         logging.info("System zainicjalizowany poprawnie")
         return True
     except Exception as e:
@@ -51,7 +68,7 @@ def dashboard():
         'max_position_size': 10,
         'enable_auto_trading': False
     }
-    
+
     # Przykładowe dane AI modeli
     ai_models = [
         {
@@ -76,7 +93,7 @@ def dashboard():
             'last_used': '2025-04-07 09:45'
         }
     ]
-    
+
     # Przykładowe dane strategii
     strategies = [
         {
@@ -104,7 +121,7 @@ def dashboard():
             'profit_factor': 1.65
         }
     ]
-    
+
     return render_template(
         'dashboard.html',
         settings=default_settings,
@@ -148,7 +165,7 @@ def get_chart_data():
         days = 30
         dates = [(datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d') for i in range(days)]
         dates.reverse()
-        
+
         # Symulacja wartości portfela
         import random
         initial_value = 10000
@@ -156,7 +173,7 @@ def get_chart_data():
         for i in range(1, days):
             change = random.uniform(-200, 300)
             values.append(round(values[-1] + change, 2))
-        
+
         return jsonify({
             'success': True,
             'data': {
@@ -203,7 +220,7 @@ def get_notifications():
                 'timestamp': (datetime.now() - timedelta(minutes=5)).strftime('%Y-%m-%d %H:%M:%S')
             }
         ]
-        
+
         return jsonify({
             'success': True,
             'notifications': notifications
@@ -226,6 +243,7 @@ def get_system_status():
             'ml_prediction': 'active',
             'order_execution': 'active',
             'notification_system': 'active' if 'notification_system' in globals() else 'inactive',
+            'bybit_api':'active' if bybit_client else 'inactive'
         },
         'last_updated': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     })
@@ -257,13 +275,61 @@ def reset_system():
         logging.error(f"Błąd podczas resetowania systemu: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
 
+@app.route("/api/bybit/server-time", methods=["GET"])
+def get_bybit_server_time():
+    """Endpoint zwracający czas serwera ByBit."""
+    if not bybit_client:
+        return jsonify({"error": "Klient ByBit nie jest zainicjalizowany"}), 500
+
+    try:
+        server_time = bybit_client.get_server_time()
+        return jsonify(server_time)
+    except Exception as e:
+        logger.error(f"Błąd podczas pobierania czasu serwera ByBit: {e}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/bybit/market-data/<symbol>", methods=["GET"])
+def get_bybit_market_data(symbol):
+    """Endpoint zwracający dane rynkowe dla określonego symbolu z ByBit."""
+    if not bybit_client:
+        return jsonify({"error": "Klient ByBit nie jest zainicjalizowany"}), 500
+
+    try:
+        # Pobieranie świec (klines)
+        klines = bybit_client.get_klines(symbol=symbol, interval="15", limit=10)
+
+        # Pobieranie księgi zleceń
+        order_book = bybit_client.get_order_book(symbol=symbol, limit=5)
+
+        return jsonify({
+            "klines": klines,
+            "orderBook": order_book
+        })
+    except Exception as e:
+        logger.error(f"Błąd podczas pobierania danych rynkowych z ByBit: {e}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/bybit/account-balance", methods=["GET"])
+def get_bybit_account_balance():
+    """Endpoint zwracający stan konta ByBit."""
+    if not bybit_client:
+        return jsonify({"error": "Klient ByBit nie jest zainicjalizowany"}), 500
+
+    try:
+        balance = bybit_client.get_account_balance()
+        return jsonify(balance)
+    except Exception as e:
+        logger.error(f"Błąd podczas pobierania stanu konta ByBit: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
 # Uruchomienie aplikacji
 if __name__ == "__main__":
     # Tworzenie katalogu logs jeśli nie istnieje
     os.makedirs("logs", exist_ok=True)
-    
+
     # Inicjalizacja systemu
     initialize_system()
-    
+
     # Uruchomienie aplikacji
     app.run(host='0.0.0.0', port=5000, debug=True)
