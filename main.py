@@ -14,6 +14,14 @@ from flask import Flask, jsonify, render_template
 # Inicjalizacja aplikacji Flask
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
+# Dodanie obsługi CORS dla API
+@app.after_request
+def add_cors_headers(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    return response
+
 # Utworzenie struktury katalogów
 os.makedirs("logs", exist_ok=True)
 os.makedirs("data", exist_ok=True)
@@ -326,41 +334,66 @@ def chart_data():
     from datetime import datetime, timedelta
     import random
     
-    # Generowanie przykładowych danych dla wykresu (w rzeczywistej aplikacji byłyby pobierane z bazy danych)
-    now = datetime.now()
-    labels = [(now - timedelta(minutes=i*5)).strftime("%H:%M") for i in range(10)]
-    labels.reverse()
-    
-    # Przykładowe dane dla wykresów
-    anomaly_activity = [random.randint(40, 90) for _ in range(10)]
-    system_load = [random.randint(20, 95) for _ in range(10)]
-    
-    # Losowe anomalie (rzadkie)
-    detected_anomalies = [0] * 10
-    for i in range(10):
-        if random.random() < 0.2:  # 20% szans na anomalię
-            detected_anomalies[i] = random.randint(1, 3)
-    
-    return jsonify({
-        "labels": labels,
-        "datasets": [
-            {
-                "label": "Aktywność Detektora Anomalii",
-                "data": anomaly_activity,
-                "borderColor": "rgb(46, 204, 113)"
-            },
-            {
-                "label": "Obciążenie Systemu",
-                "data": system_load,
-                "borderColor": "rgb(52, 152, 219)"
-            },
-            {
-                "label": "Wykryte Anomalie",
-                "data": detected_anomalies,
-                "borderColor": "rgb(231, 76, 60)"
-            }
-        ]
-    })
+    try:
+        # Generowanie przykładowych danych dla wykresu (w rzeczywistej aplikacji byłyby pobierane z bazy danych)
+        now = datetime.now()
+        labels = [(now - timedelta(minutes=i*5)).strftime("%H:%M") for i in range(10)]
+        labels.reverse()
+        
+        # Przykładowe dane dla wykresów
+        anomaly_activity = [random.randint(40, 90) for _ in range(10)]
+        system_load = [random.randint(20, 95) for _ in range(10)]
+        
+        # Losowe anomalie (rzadkie)
+        detected_anomalies = [0] * 10
+        for i in range(10):
+            if random.random() < 0.2:  # 20% szans na anomalię
+                detected_anomalies[i] = random.randint(1, 3)
+        
+        response_data = {
+            "labels": labels,
+            "datasets": [
+                {
+                    "label": "Aktywność Detektora Anomalii",
+                    "data": anomaly_activity,
+                    "borderColor": "rgb(46, 204, 113)",
+                    "fill": False
+                },
+                {
+                    "label": "Obciążenie Systemu",
+                    "data": system_load,
+                    "borderColor": "rgb(52, 152, 219)",
+                    "fill": False
+                },
+                {
+                    "label": "Wykryte Anomalie",
+                    "data": detected_anomalies,
+                    "borderColor": "rgb(231, 76, 60)",
+                    "fill": False,
+                    "pointRadius": 6
+                }
+            ]
+        }
+        
+        logging.info("Wygenerowano dane wykresu: %d etykiet, %d zestawów danych", 
+                    len(labels), len(response_data["datasets"]))
+        
+        return jsonify(response_data)
+    except Exception as e:
+        logging.error("Błąd podczas generowania danych wykresu: %s", str(e))
+        # Zwracamy minimalny zestaw danych aby klient nie otrzymał błędu
+        return jsonify({
+            "labels": ["Brak danych"],
+            "datasets": [
+                {
+                    "label": "Dane niedostępne",
+                    "data": [0],
+                    "borderColor": "rgb(200, 200, 200)",
+                    "fill": False
+                }
+            ],
+            "error": "Błąd generowania danych"
+        })
 
 def load_configuration():
     """Ładuje konfigurację systemu z plików."""

@@ -32,8 +32,26 @@ function initializeCharts() {
 function initializeActivityChart() {
     const ctx = document.getElementById('activityChart').getContext('2d');
 
+    // Inicjalizacja pustego wykresu
+    window.activityChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: []
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
     // Pobierz dane do wykresu
-    fetchChartData(); // Use the new function to fetch and handle errors
+    fetchChartData();
 }
 
 /**
@@ -138,6 +156,18 @@ function showNotification(message, type = 'info') {
 
 // Funkcja do pobierania danych wykresu z API
 function fetchChartData() {
+    // Usuń istniejący komunikat o błędzie, jeśli istnieje
+    const existingError = document.querySelector('.chart-container .error-message');
+    if (existingError) {
+        existingError.remove();
+    }
+    
+    // Pokaż wykres (mógł być ukryty przez poprzedni błąd)
+    const chartCanvas = document.getElementById('activityChart');
+    if (chartCanvas) {
+        chartCanvas.style.display = 'block';
+    }
+    
     fetch('/api/chart-data')
         .then(response => {
             if (!response.ok) {
@@ -146,15 +176,36 @@ function fetchChartData() {
             return response.json();
         })
         .then(data => {
-            updateActivityChart(data);
+            if (data && data.labels && data.datasets) {
+                updateActivityChart(data);
+            } else {
+                throw new Error('Nieprawidłowy format danych');
+            }
         })
         .catch(error => {
             console.error("Błąd podczas pobierania danych wykresu:", error);
+            
             // Wyświetl komunikat o błędzie na stronie
-            document.getElementById('activityChart').style.display = 'none';
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'error-message';
-            errorDiv.textContent = 'Nie udało się załadować danych wykresu. Spróbuj odświeżyć stronę.';
-            document.querySelector('.chart-container').appendChild(errorDiv);
+            if (chartCanvas) {
+                chartCanvas.style.display = 'none';
+            }
+            
+            const chartContainer = document.querySelector('.chart-container');
+            if (chartContainer) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.textContent = 'Nie udało się załadować danych wykresu. Spróbuj odświeżyć stronę.';
+                chartContainer.appendChild(errorDiv);
+            }
+            
+            // Dodajmy też przycisk do ręcznego odświeżenia
+            const retryButton = document.createElement('button');
+            retryButton.className = 'btn btn-primary';
+            retryButton.textContent = 'Odśwież dane';
+            retryButton.onclick = fetchChartData;
+            
+            if (chartContainer) {
+                chartContainer.appendChild(retryButton);
+            }
         });
 }
