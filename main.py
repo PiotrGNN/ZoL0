@@ -35,7 +35,12 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 
 # Import klienta ByBit
-from data.execution.bybit_connector import BybitConnector
+try:
+    from data.execution.bybit_connector import BybitConnector
+    bybit_import_success = True
+except ImportError as e:
+    logging.warning(f"Nie udało się zaimportować BybitConnector: {e}")
+    bybit_import_success = False
 
 # Inicjalizacja aplikacji Flask
 app = Flask(__name__)
@@ -71,6 +76,11 @@ def initialize_system():
 
         # Inicjalizacja klienta ByBit (tylko raz podczas startu aplikacji)
         try:
+            if not bybit_import_success:
+                logging.warning("Moduł BybitConnector nie został zaimportowany. Pomijam inicjalizację klienta ByBit.")
+                bybit_client = None
+                return True
+                
             api_key = os.getenv("BYBIT_API_KEY")
             api_secret = os.getenv("BYBIT_API_SECRET")
             use_testnet = os.getenv("BYBIT_USE_TESTNET", "true").lower() == "true"  # Domyślnie używamy testnet
