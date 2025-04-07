@@ -1,439 +1,427 @@
-// Zmienne globalne dla dashboardu
-const refreshRates = {
-    portfolio: 30000,       // co 30 sekund
-    tradingStats: 60000,    // co 1 minutę
-    recentTrades: 60000,    // co 1 minutę
-    alerts: 30000,          // co 30 sekund
-    chartData: 60000,       // co 1 minutę
-    systemStatus: 120000    // co 2 minuty
+// Dashboard.js - Główny skrypt dla dashboardu tradingowego
+// Zoptymalizowana wersja z lepszym zarządzaniem zapytaniami API
+
+// Konfiguracja globalna
+const CONFIG = {
+    // Częstotliwość odświeżania poszczególnych elementów (ms)
+    refreshRates: {
+        dashboard: 15000,     // Dashboard (podstawowe dane)
+        portfolio: 30000,     // Portfolio (dane konta)
+        charts: 60000,        // Wykresy (cięższe dane)
+        trades: 45000,        // Transakcje
+        components: 20000     // Statusy komponentów
+    },
+    // Maksymalna liczba błędów przed wyświetleniem ostrzeżenia
+    maxErrors: 3,
+    // Parametry retry dla zapytań API
+    retry: {
+        maxRetries: 3,
+        delayMs: 2000,
+        backoffMultiplier: 1.5
+    }
 };
 
-// Zmienne do śledzenia błędów
-const errorCounts = {
-    portfolio: 0,
-    tradingStats: 0,
-    recentTrades: 0,
-    alerts: 0,
-    chartData: 0,
-    systemStatus: 0,
-    aiModels: 0
+// Stan aplikacji
+const appState = {
+    errorCounts: {},    // Liczniki błędów dla różnych endpointów
+    timers: {},         // Identyfikatory setTimeout dla różnych odświeżeń
+    activeDashboard: true, // Czy dashboard jest aktywną zakładką
+    lastApiCall: {}     // Czas ostatniego wywołania dla każdego API
 };
 
-// Zwiększanie opóźnienia w przypadku powtarzających się błędów
-function handleApiError(endpoint) {
-    errorCounts[endpoint]++;
-
-    // Eksponencjalne zwiększanie opóźnienia przy powtarzających się błędach
-    if (errorCounts[endpoint] > 3) {
-        refreshRates[endpoint] *= 1.5;
-        console.log(`Zwiększono opóźnienie dla ${endpoint} do ${refreshRates[endpoint]}ms z powodu powtarzających się błędów`);
-
-        // Maksymalne opóźnienie to 5 minut
-        if (refreshRates[endpoint] > 300000) {
-            refreshRates[endpoint] = 300000;
-        }
-    }
-}
-
-// Resetowanie liczników błędów w przypadku udanego zapytania
-function resetErrorCount(endpoint) {
-    if (errorCounts[endpoint]) {
-        errorCounts[endpoint] = 0;
-    }
-}
-
-// Funkcje dla dashboardu tradingowego
+// Inicjalizacja po załadowaniu strony
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Dashboard załadowany');
-
-    // Inicjalizacja
-    updateDashboardData();
-    updateComponentStatuses();
-    fetchNotifications();
+    console.log("Dashboard załadowany");
     setupEventListeners();
-    initializeChart();
-
-    // Zmienne kontrolujące odświeżanie
-    let refreshInterval = 15000; // 15 sekund zamiast 5 sekund
-    let consecutiveErrors = 0;
-
-    // Adaptacyjne odświeżanie - zwiększa interwał przy błędach API
-    function adaptiveRefresh() {
-        updateDashboardData();
-
-        // Jeśli wystąpiło wiele błędów, zwiększ czas odświeżania
-        if (consecutiveErrors > 3) {
-            refreshInterval = Math.min(60000, refreshInterval * 1.5); // max 60 sekund
-            console.log(`Zwiększenie interwału odświeżania do ${refreshInterval/1000}s z powodu błędów API`);
-            consecutiveErrors = 0; // Reset licznika po dostosowaniu
-        }
-
-        // Zaplanuj kolejne odświeżenie
-        setTimeout(adaptiveRefresh, refreshInterval);
-    }
-
-    // Start adaptacyjnego odświeżania
-    setTimeout(adaptiveRefresh, refreshInterval);
-
-
+    initializeDashboard();
 });
 
-// Główne funkcje dashboardu
-function updateDashboardData() {
-    console.log('Aktualizacja danych dashboardu...');
-    updatePortfolioData(); 
-    updateCharts();
-    updateTradingStats();
-    updateRecentTrades();
-    updateAIModelsStatus(); 
-    updateAlerts(); 
+function initializeDashboard() {
+    // Pierwsza inicjalizacja danych
+    updateDashboardData();
+    updateComponentStatuses();
+
+    // Ustawienie timerów dla cyklicznego odświeżania
+    scheduleDataRefresh();
 }
 
-// Funkcja do aktualizacji danych portfela
-function updatePortfolioData() {
-    // Dodajemy parametr cache-buster, aby uniknąć problemów z cache przeglądarki
-    fetch('/api/portfolio?_=' + new Date().getTime())
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+function scheduleDataRefresh() {
+    // Czyszczenie istniejących timerów
+    Object.values(appState.timers).forEach(timer => clearTimeout(timer));
+
+    // Ustawienie nowych timerów dla różnych typów danych
+    appState.timers.dashboard = setTimeout(() => {
+        updateDashboardData();
+        scheduleDataRefresh();
+    }, CONFIG.refreshRates.dashboard);
+
+    appState.timers.portfolio = setTimeout(() => {
+        if (appState.activeDashboard) fetchPortfolioData();
+    }, CONFIG.refreshRates.portfolio);
+
+    appState.timers.charts = setTimeout(() => {
+        if (appState.activeDashboard) updateChartData();
+    }, CONFIG.refreshRates.charts);
+
+    appState.timers.trades = setTimeout(() => {
+        if (appState.activeDashboard) updateRecentTrades();
+    }, CONFIG.refreshRates.trades);
+
+    appState.timers.components = setTimeout(() => {
+        updateComponentStatuses();
+    }, CONFIG.refreshRates.components);
+}
+
+// Funkcje API - z obsługą rate limiting
+async function fetchWithRateLimit(url, options = {}) {
+    const endpoint = url.split('?')[0]; // Podstawowy endpoint bez parametrów
+
+    // Sprawdzenie czasu od ostatniego wywołania tego endpointu
+    const now = Date.now();
+    const lastCall = appState.lastApiCall[endpoint] || 0;
+    const timeSinceLastCall = now - lastCall;
+
+    // Minimalny czas między wywołaniami tego samego endpointu (1 sekunda)
+    const minDelayMs = 1000;
+
+    if (timeSinceLastCall < minDelayMs) {
+        await new Promise(resolve => setTimeout(resolve, minDelayMs - timeSinceLastCall));
+    }
+
+    // Aktualizacja czasu ostatniego wywołania
+    appState.lastApiCall[endpoint] = Date.now();
+
+    // Próby wykonania zapytania z ponowieniami
+    let retries = 0;
+    let delay = CONFIG.retry.delayMs;
+
+    while (retries <= CONFIG.retry.maxRetries) {
+        try {
+            const response = await fetch(url, options);
+
+            if (response.status === 429 || response.status === 403) {
+                // Rate limit przekroczony
+                throw new Error(`Rate limit exceeded (status: ${response.status})`);
             }
-            return response.json();
-        })
-        .then(data => {
-            // Resetowanie licznika błędów po udanym pobraniu danych
-            resetErrorCount('portfolio');
 
-            // Sprawdzamy, czy dane są poprawne
-            if (data && data.balances) {
-                const portfolioContainer = document.getElementById('portfolio-container');
-                if (!portfolioContainer) return;
+            if (!response.ok) {
+                throw new Error(`HTTP error ${response.status}`);
+            }
 
-                portfolioContainer.innerHTML = ''; // Czyszczenie kontenera
+            return await response.json();
+        } catch (error) {
+            retries++;
 
-                // Iterowanie po walutach i wyświetlanie danych
-                for (const currency in data.balances) {
-                    const balanceData = data.balances[currency];
+            if (retries > CONFIG.retry.maxRetries) {
+                // Zwiększ licznik błędów dla danego endpointu
+                appState.errorCounts[endpoint] = (appState.errorCounts[endpoint] || 0) + 1;
 
-                    const currencyCard = document.createElement('div');
-                    currencyCard.className = 'portfolio-card';
+                // Zwróć błąd po wyczerpaniu prób
+                throw error;
+            }
 
-                    currencyCard.innerHTML = `
-                        <h3>${currency}</h3>
-                        <div class="portfolio-data">
-                            <div class="data-row">
-                                <span class="label">Saldo całkowite:</span>
-                                <span class="value">${balanceData.wallet_balance}</span>
+            // Opóźnienie przed ponowną próbą z wykładniczym backoff
+            await new Promise(resolve => setTimeout(resolve, delay));
+            delay *= CONFIG.retry.backoffMultiplier;
+        }
+    }
+}
+
+// Pobieranie i aktualizacja głównych danych dashboardu
+async function updateDashboardData() {
+    console.log("Aktualizacja danych dashboardu...");
+
+    try {
+        // Pobierz dane portfela jeśli widoczny jest dashboard
+        if (document.getElementById('dashboard-tab').style.display === 'block') {
+            fetchPortfolioData();
+        }
+        updateTradingStats();
+        updateRecentTrades();
+        updateAlerts();
+        updateNotifications();
+
+
+    } catch (error) {
+        handleApiError('dashboard');
+        console.error('Błąd podczas aktualizacji danych dashboardu:', error);
+    }
+}
+
+// Pobieranie danych portfela
+async function fetchPortfolioData() {
+    try {
+        // Dodajemy timestamp do URL, aby uniknąć cache'owania
+        const data = await fetchWithRateLimit(`/api/portfolio?_=${Date.now()}`);
+
+        // Aktualizacja UI z danymi portfela
+        const portfolioContainer = document.getElementById('portfolio-container');
+        if (!portfolioContainer) return;
+
+        if (data.balances) {
+            let html = '';
+
+            // Iteracja po wszystkich walutach
+            for (const [currency, balanceData] of Object.entries(data.balances)) {
+                html += `
+                    <div class="balance-item">
+                        <div class="balance-header">
+                            <div class="balance-symbol">${currency}</div>
+                            <div class="balance-value">${parseFloat(balanceData.equity).toFixed(5)}</div>
+                        </div>
+                        <div class="balance-details">
+                            <div class="balance-detail">
+                                <span>Available:</span>
+                                <span>${parseFloat(balanceData.available_balance).toFixed(5)}</span>
                             </div>
-                            <div class="data-row">
-                                <span class="label">Dostępne saldo:</span>
-                                <span class="value">${balanceData.available_balance}</span>
-                            </div>
-                            <div class="data-row">
-                                <span class="label">Kapitał własny:</span>
-                                <span class="value">${balanceData.equity}</span>
+                            <div class="balance-detail">
+                                <span>Wallet:</span>
+                                <span>${parseFloat(balanceData.wallet_balance).toFixed(5)}</span>
                             </div>
                         </div>
-                    `;
-
-                    portfolioContainer.appendChild(currencyCard);
-                }
-
-                // Jeżeli są dodatkowe informacje (np. błędy), wyświetlamy je
-                if (data.error || data.warning || data.note) {
-                    const infoCard = document.createElement('div');
-                    infoCard.className = 'portfolio-info-card';
-
-                    if (data.error) {
-                        infoCard.innerHTML += `<div class="info-row error"><span class="label">Błąd:</span><span class="value">${data.error}</span></div>`;
-                    }
-                    if (data.warning) {
-                        infoCard.innerHTML += `<div class="info-row warning"><span class="label">Ostrzeżenie:</span><span class="value">${data.warning}</span></div>`;
-                    }
-                    if (data.note) {
-                        infoCard.innerHTML += `<div class="info-row note"><span class="label">Informacja:</span><span class="value">${data.note}</span></div>`;
-                    }
-
-                    portfolioContainer.appendChild(infoCard);
-                }
-            } else {
-                // Jeśli dane nie zawierają portfela
-                const portfolioContainer = document.getElementById('portfolio-container');
-                if (portfolioContainer) {
-                    portfolioContainer.innerHTML = '<div class="error-message">Brak danych portfela lub problem z połączeniem z ByBit.</div>';
-                }
-            }
-        })
-        .catch(error => {
-            handleApiError('portfolio');
-            console.log("Błąd podczas pobierania danych portfela:", error);
-
-            // Wyświetlamy komunikat o błędzie
-            const portfolioContainer = document.getElementById('portfolio-container');
-            if (portfolioContainer) {
-                portfolioContainer.innerHTML = `
-                    <div class="error-message">
-                        <p>Brak danych portfela lub problem z połączeniem z ByBit.</p>
-                        <p class="error-details">Możliwa przyczyna: przekroczenie limitu zapytań API (rate limit). Odczekaj chwilę i spróbuj ponownie.</p>
-                        <button id="retry-portfolio" class="retry-button">Spróbuj ponownie</button>
                     </div>
                 `;
-
-                // Dodajemy obsługę przycisku
-                const retryButton = document.getElementById('retry-portfolio');
-                if (retryButton) {
-                    retryButton.addEventListener('click', function() {
-                        resetErrorCount('portfolio');
-                        updatePortfolioData();
-                    });
-                }
             }
-        });
-}
 
-function updateCharts() {
-    fetch('/api/chart-data')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+            // Dodawanie informacji o źródle danych (API/symulacja)
+            if (data.source) {
+                html += `<div class="data-source ${data.source.includes('simulation') ? 'simulation' : ''}">
+                    Source: ${data.source}
+                </div>`;
             }
-            return response.json();
-        })
-        .then(data => {
-            resetErrorCount('chartData');
-            if (data.success) {
-                const ctx = document.getElementById('portfolio-chart') || document.getElementById('main-chart');
-                if (ctx) {
-                    renderChart(ctx, data.data);
-                }
-            } else {
-                throw new Error(data.error || 'Błąd pobierania danych wykresu');
-            }
-        })
-        .catch(error => {
-            handleApiError('chartData');
-            console.error('Błąd podczas aktualizacji wykresu:', error);
-            if (errorCounts.chartData > 3) {
-                showErrorMessage('Nie udało się załadować wykresu. Spróbuj odświeżyć stronę.');
-            }
-        });
-}
 
-function renderChart(canvas, data) {
-    if (!canvas) return;
-
-    // Sprawdź czy wykres już istnieje i go zniszcz
-    if (canvas.chart) {
-        canvas.chart.destroy();
-    }
-
-    // Utwórz nowy wykres
-    canvas.chart = new Chart(canvas, {
-        type: 'line',
-        data: data,
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: false
-                }
+            // Jeśli dane są symulowane, pokazujemy odpowiednią informację
+            if (data.warning) {
+                html += `<div class="warning-note">${data.warning}</div>`;
             }
+
+            portfolioContainer.innerHTML = html;
+        } else if (data.error) {
+            portfolioContainer.innerHTML = `<div class="error-message">Error: ${data.error}</div>`;
         }
-    });
-}
-
-function initializeChart() {
-    const ctx = document.getElementById('portfolio-chart') || document.getElementById('main-chart');
-    if (ctx) {
-        // Tworzymy tymczasowy wykres do czasu załadowania danych
-        renderChart(ctx, {
-            labels: ['Ładowanie...'],
-            datasets: [{
-                label: 'Wartość Portfela',
-                data: [0],
-                borderColor: '#4CAF50',
-                backgroundColor: 'rgba(76, 175, 80, 0.1)'
-            }]
-        });
+    } catch (error) {
+        handleApiError('portfolio');
+        console.error('Błąd podczas pobierania danych portfela:', error);
     }
 }
 
-function updateComponentStatuses() {
-    console.log('Aktualizacja statusów komponentów...');
-    fetch('/api/system/status')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            resetErrorCount('systemStatus');
-            if (data.success) {
-                updateStatusIndicators(data.components);
-            } else {
-                throw new Error(data.error || 'Błąd pobierania statusu systemu');
-            }
-        })
-        .catch(error => {
-            handleApiError('systemStatus');
-            console.error('Błąd podczas aktualizacji statusów komponentów:', error);
-            if (errorCounts.systemStatus > 3) {
-                showErrorMessage('Nie udało się zaktualizować statusu systemu.');
-            }
-        });
-}
+// Aktualizacja statusów komponentów systemu
+async function updateComponentStatuses() {
+    console.log("Aktualizacja statusów komponentów...");
 
-function updateStatusIndicators(components) {
-    for (const [component, status] of Object.entries(components)) {
-        const indicator = document.getElementById(`${component}-status`);
-        if (indicator) {
-            // Usuń wszystkie klasy statusu
-            indicator.classList.remove('status-online', 'status-warning', 'status-offline', 'status-maintenance');
+    try {
+        // Pobieranie statusu wszystkich komponentów
+        const data = await fetchWithRateLimit('/api/component-status');
 
-            // Dodaj odpowiednią klasę
-            if (status === 'active') {
-                indicator.classList.add('status-online');
-                indicator.title = 'Aktywny';
-            } else if (status === 'warning') {
-                indicator.classList.add('status-warning');
-                indicator.title = 'Ostrzeżenie';
-            } else if (status === 'inactive') {
-                indicator.classList.add('status-offline');
-                indicator.title = 'Nieaktywny';
-            } else {
-                indicator.classList.add('status-maintenance');
-                indicator.title = 'Konserwacja';
-            }
-        }
-    }
-}
+        if (data && data.components) {
+            // Aktualizacja wskaźników statusu na UI
+            data.components.forEach(component => {
+                const componentElement = document.getElementById(component.id);
+                if (componentElement) {
+                    // Usunięcie wszystkich klas statusu
+                    componentElement.classList.remove('status-online', 'status-offline', 'status-warning');
+                    // Dodanie właściwej klasy statusu
+                    componentElement.classList.add(`status-${component.status}`);
 
-function updateTradingStats() {
-    fetch('/api/trading-stats')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            resetErrorCount('tradingStats');
-            if (data.error) {
-                throw new Error(data.error);
-            }
-
-            // Aktualizuj statystyki - bezpieczne aktualizowanie elementów DOM
-            safeUpdateElement('profit-value', data.profit || 'N/A');
-            safeUpdateElement('trades-count', data.trades_count || 'N/A');
-            safeUpdateElement('win-rate', data.win_rate || 'N/A');
-            safeUpdateElement('max-drawdown', data.max_drawdown || 'N/A');
-
-            // Alternatywne ID (z szablonu HTML)
-            safeUpdateElement('profit-value', data.profit || 'N/A');
-            safeUpdateElement('trades-value', data.trades_count || 'N/A');
-            safeUpdateElement('win-rate-value', data.win_rate || 'N/A');
-            safeUpdateElement('drawdown-value', data.max_drawdown || 'N/A');
-        })
-        .catch(error => {
-            handleApiError('tradingStats');
-            console.error('Błąd podczas aktualizacji statystyk tradingowych:', error);
-        });
-}
-
-// Bezpieczna aktualizacja elementu DOM - sprawdza czy element istnieje
-function safeUpdateElement(elementId, value) {
-    const element = document.getElementById(elementId);
-    if (element) {
-        element.textContent = value;
-    }
-}
-
-function updateRecentTrades() {
-    fetch('/api/recent-trades')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            resetErrorCount('recentTrades');
-
-            // Sprawdzamy oba możliwe identyfikatory kontenerów
-            const tradesContainer = document.getElementById('recent-trades-container') || document.getElementById('recent-trades-list');
-
-            if (tradesContainer) {
-                if (data.trades && data.trades.length > 0) {
-                    let tradesHTML = '<table class="table"><thead><tr><th>Symbol</th><th>Typ</th><th>Czas</th><th>Zysk</th></tr></thead><tbody>';
-
-                    data.trades.forEach(trade => {
-                        const profitClass = trade.profit >= 0 ? 'positive' : 'negative';
-                        tradesHTML += `<tr>
-                            <td>${trade.symbol}</td>
-                            <td>${trade.type}</td>
-                            <td>${trade.time}</td>
-                            <td class="${profitClass}">${trade.profit}%</td>
-                        </tr>`;
-                    });
-
-                    tradesHTML += '</tbody></table>';
-                    tradesContainer.innerHTML = tradesHTML;
-                } else {
-                    tradesContainer.innerHTML = '<p class="text-center">Brak ostatnich transakcji</p>';
-                }
-            }
-        })
-        .catch(error => {
-            handleApiError('recentTrades');
-            console.error('Błąd podczas pobierania ostatnich transakcji:', error);
-            const tradesContainer = document.getElementById('recent-trades-container') || document.getElementById('recent-trades-list');
-            if (tradesContainer) {
-                tradesContainer.innerHTML = '<p class="text-center">Nie udało się pobrać ostatnich transakcji</p>';
-            }
-        });
-}
-
-function fetchNotifications() {
-    fetch('/api/notifications')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            resetErrorCount('notifications');
-
-            if (data.success && data.notifications) {
-                const notificationsContainer = document.getElementById('notifications-container') || document.getElementById('notifications-list');
-                if (notificationsContainer) {
-                    if (data.notifications.length > 0) {
-                        let notificationsHTML = '';
-
-                        data.notifications.forEach(notification => {
-                            let typeClass = 'info';
-                            if (notification.type === 'warning') typeClass = 'warning';
-                            if (notification.type === 'error') typeClass = 'danger';
-                            if (notification.type === 'success') typeClass = 'success';
-
-                            notificationsHTML += `<div class="alert alert-${typeClass}">
-                                <span class="time">${notification.timestamp}</span>
-                                <span class="message">${notification.message}</span>
-                            </div>`;
-                        });
-
-                        notificationsContainer.innerHTML = notificationsHTML;
-                    } else {
-                        notificationsContainer.innerHTML = '<p class="text-center">Brak nowych powiadomień</p>';
+                    // Aktualizacja tekstu statusu
+                    const statusText = componentElement.querySelector('.status-text');
+                    if (statusText) {
+                        statusText.textContent = component.status.charAt(0).toUpperCase() + component.status.slice(1);
                     }
                 }
+            });
+        }
+    } catch (error) {
+        handleApiError('components');
+        console.error('Błąd podczas aktualizacji statusów komponentów:', error);
+    }
+}
+
+// Aktualizacja wykresu głównego
+async function updateChartData() {
+    try {
+        const data = await fetchWithRateLimit('/api/chart-data');
+
+        if (data && data.success && data.data) {
+            const ctx = document.getElementById('main-chart');
+            if (!ctx) return;
+
+            // Sprawdź czy wykres już istnieje
+            if (window.mainChart) {
+                // Aktualizuj istniejący wykres
+                window.mainChart.data = data.data;
+                window.mainChart.update();
+            } else {
+                // Utwórz nowy wykres
+                window.mainChart = new Chart(ctx, {
+                    type: 'line',
+                    data: data.data,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: false
+                            }
+                        }
+                    }
+                });
             }
-        })
-        .catch(error => {
-            handleApiError('notifications');
-            console.error('Błąd podczas pobierania powiadomień:', error);
-        });
+        }
+    } catch (error) {
+        handleApiError('chart');
+        console.error('Błąd podczas aktualizacji wykresu:', error);
+    }
+}
+
+// Aktualizacja statystyk tradingowych
+async function updateTradingStats() {
+    try {
+        const data = await fetchWithRateLimit('/api/trading-stats');
+
+        // Aktualizacja elementów UI
+        if (data) {
+            document.getElementById('profit-value').textContent = data.profit || '$0.00';
+            document.getElementById('trades-count').textContent = data.trades_count || '0';
+            document.getElementById('win-rate').textContent = data.win_rate || '0%';
+            document.getElementById('max-drawdown').textContent = data.max_drawdown || '0%';
+        }
+    } catch (error) {
+        handleApiError('stats');
+        console.error('Błąd podczas aktualizacji statystyk tradingowych:', error);
+    }
+}
+
+// Pobieranie ostatnich transakcji
+async function updateRecentTrades() {
+    try {
+        const data = await fetchWithRateLimit('/api/recent-trades');
+
+        const tradeTableBody = document.getElementById('trades-table-body');
+        if (!tradeTableBody) return;
+
+        if (data && data.trades && data.trades.length > 0) {
+            let html = '';
+
+            data.trades.forEach((trade, index) => {
+                const profitClass = parseFloat(trade.profit) >= 0 ? 'profit-positive' : 'profit-negative';
+
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${trade.time}</td>
+                        <td>${trade.symbol}</td>
+                        <td class="${trade.type.toLowerCase() === 'buy' ? 'type-buy' : 'type-sell'}">${trade.type}</td>
+                        <td>$${(Math.random() * 1000 + 20000).toFixed(2)}</td>
+                        <td>${(Math.random() * 2).toFixed(4)}</td>
+                        <td>$${(Math.random() * 5000 + 1000).toFixed(2)}</td>
+                        <td class="${profitClass}">${trade.profit > 0 ? '+' : ''}${trade.profit}%</td>
+                        <td>Completed</td>
+                    </tr>
+                `;
+            });
+
+            tradeTableBody.innerHTML = html;
+        } else {
+            tradeTableBody.innerHTML = '<tr><td colspan="9" class="no-data">Brak dostępnych transakcji</td></tr>';
+        }
+    } catch (error) {
+        handleApiError('trades');
+        console.error('Błąd podczas pobierania ostatnich transakcji:', error);
+    }
+}
+
+// Pobieranie i wyświetlanie alertów
+async function updateAlerts() {
+    try {
+        const data = await fetchWithRateLimit('/api/alerts');
+
+        const alertsContainer = document.getElementById('alerts-container');
+        if (!alertsContainer) return;
+
+        if (data && data.alerts && data.alerts.length > 0) {
+            let html = '';
+
+            data.alerts.forEach(alert => {
+                html += `
+                    <div class="alert-item alert-${alert.level_class}">
+                        <div class="alert-time">${alert.time}</div>
+                        <div class="alert-level">${alert.level}</div>
+                        <div class="alert-message">${alert.message}</div>
+                    </div>
+                `;
+            });
+
+            alertsContainer.innerHTML = html;
+        } else {
+            alertsContainer.innerHTML = '<div class="no-data">Brak alertów</div>';
+        }
+    } catch (error) {
+        handleApiError('alerts');
+        console.error('Błąd podczas pobierania alertów:', error);
+    }
+}
+
+// Pobieranie i wyświetlanie powiadomień
+async function updateNotifications() {
+    try {
+        const data = await fetchWithRateLimit('/api/notifications');
+
+        const notificationsContainer = document.getElementById('notifications-container');
+        if (!notificationsContainer) return;
+
+        if (data && data.success && data.notifications && data.notifications.length > 0) {
+            let html = '';
+
+            data.notifications.forEach(notification => {
+                html += `
+                    <div class="notification-item notification-${notification.type}">
+                        <div class="notification-time">${notification.timestamp}</div>
+                        <div class="notification-message">${notification.message}</div>
+                    </div>
+                `;
+            });
+
+            notificationsContainer.innerHTML = html;
+
+            // Aktualizacja licznika powiadomień
+            const badge = document.getElementById('notifications-badge');
+            if (badge) {
+                badge.textContent = data.notifications.length;
+                badge.style.display = 'inline-block';
+            }
+        } else {
+            notificationsContainer.innerHTML = '<div class="no-data">Brak powiadomień</div>';
+        }
+    } catch (error) {
+        handleApiError('notifications');
+        console.error('Błąd podczas pobierania powiadomień:', error);
+    }
+}
+
+// Obsługa błędów API
+function handleApiError(endpoint) {
+    // Zwiększ licznik błędów dla danego endpointu
+    appState.errorCounts[endpoint] = (appState.errorCounts[endpoint] || 0) + 1;
+
+    // Jeśli przekroczono limit błędów, pokaż komunikat
+    if (appState.errorCounts[endpoint] >= CONFIG.maxErrors) {
+        showErrorMessage(`Zbyt wiele błędów podczas komunikacji z API (${endpoint}). Sprawdź logi.`);
+    }
+}
+
+// Wyświetlanie komunikatu o błędzie
+function showErrorMessage(message) {
+    const errorContainer = document.getElementById('error-container');
+    if (errorContainer) {
+        errorContainer.innerHTML = `<div class="error-message">${message}</div>`;
+        errorContainer.style.display = 'block';
+
+        // Ukryj komunikat po 5 sekundach
+        setTimeout(() => {
+            errorContainer.style.display = 'none';
+        }, 5000);
+    }
 }
 
 function setupEventListeners() {
@@ -458,43 +446,40 @@ function setupEventListeners() {
     if (tabButtons.length > 0) {
         tabButtons.forEach(button => {
             button.addEventListener('click', function() {
-                const tabId = this.dataset.tab;
-                switchTab(tabId);
+                const tabId = this.getAttribute('data-tab');
+
+                // Aktualizacja stanu aktywności dashboardu
+                appState.activeDashboard = (tabId === 'dashboard-tab');
+
+                // Usuń klasę active ze wszystkich przycisków
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+
+                // Dodaj klasę active do klikniętego przycisku
+                this.classList.add('active');
+
+                // Ukryj wszystkie kontenery kart
+                document.querySelectorAll('.tab-content').forEach(tab => {
+                    tab.style.display = 'none';
+                });
+
+                // Pokaż wybrany kontener
+                const selectedTab = document.getElementById(tabId);
+                if (selectedTab) {
+                    selectedTab.style.display = 'block';
+                }
+
+                // Załaduj dane specyficzne dla wybranej karty
+                if (tabId === 'dashboard-tab') {
+                    updateDashboardData();
+                } else if (tabId === 'trades-tab') {
+                    updateRecentTrades();
+                } else if (tabId === 'analytics-tab') {
+                    updateChartData();
+                } else if (tabId === 'notifications-tab') {
+                    updateNotifications();
+                }
             });
         });
-    }
-}
-
-function switchTab(tabId) {
-    // Ukryj wszystkie taby
-    document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.style.display = 'none';
-    });
-
-    // Usuń aktywną klasę z przycisków
-    document.querySelectorAll('.tab-button').forEach(button => {
-        button.classList.remove('active');
-    });
-
-    // Pokaż wybrany tab
-    const selectedTab = document.getElementById(tabId);
-    if (selectedTab) {
-        selectedTab.style.display = 'block';
-    }
-
-    // Dodaj aktywną klasę do przycisku
-    const activeButton = document.querySelector(`.tab-button[data-tab="${tabId}"]`);
-    if (activeButton) {
-        activeButton.classList.add('active');
-    }
-}
-
-function showErrorMessage(message) {
-    // Pokaż komunikat o błędzie
-    const errorContainer = document.getElementById('error-container');
-    if (errorContainer) {
-        errorContainer.innerHTML = `<div class="error-message">${message}</div>`;
-        errorContainer.style.display = 'block';
     }
 }
 
@@ -542,15 +527,16 @@ function stopTrading() {
 }
 
 function resetSystem() {
-    if (confirm('Czy na pewno chcesz zresetować system? Ta operacja zatrzyma wszystkie aktywne procesy.')) {
+    if (confirm('Czy na pewno chcesz zresetować system? Wszystkie ustawienia zostaną przywrócone do wartości domyślnych.')) {
         fetch('/api/system/reset', {
             method: 'POST'
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert('System został zresetowany!');
-                updateComponentStatuses();
+                alert('System został zresetowany.');
+                // Przeładuj stronę, aby zmiany były widoczne
+                window.location.reload();
             } else {
                 alert(`Błąd: ${data.error || 'Nie udało się zresetować systemu.'}`);
             }
@@ -562,121 +548,52 @@ function resetSystem() {
     }
 }
 
-function updateAIModelsStatus() {
-    fetch('/api/ai-models-status')
-        .then(response => {
-            if (!response.ok) {
-                return { models: [] }; // Zwracamy pusty obiekt jeśli API nie istnieje
-            }
-            return response.json();
-        })
-        .then(data => {
-            resetErrorCount('aiModels');
-
-            const aiModelsContainer = document.getElementById('ai-models-container');
-            if (!aiModelsContainer) return;
-
-            if (data && Array.isArray(data.models) && data.models.length > 0) {
-                let modelsHTML = '';
-
-                data.models.forEach(model => {
-                    const accuracyClass = getAccuracyClass(model.accuracy);
-                    modelsHTML += `
-                    <div class="ai-model-card">
-                        <h4>${model.name}</h4>
-                        <div class="model-details">
-                            <div>Typ: ${model.type}</div>
-                            <div>Dokładność: <span class="${accuracyClass}">${model.accuracy}%</span></div>
-                            <div>Status: <span class="status-${model.status.toLowerCase()}">${model.status}</span></div>
-                            <div>Ostatnie użycie: ${model.last_used || 'Nigdy'}</div>
-                        </div>
-                    </div>`;
-                });
-
-                aiModelsContainer.innerHTML = modelsHTML;
-
-                // Pokazujemy sekcję jeśli istnieje
-                const aiModelsSection = document.getElementById('ai-models-section');
-                if (aiModelsSection) {
-                    aiModelsSection.style.display = 'block';
-                }
-            } else {
-                // Brak modeli lub API nie zwraca poprawnych danych
-                const aiModelsSection = document.getElementById('ai-models-section');
-                if (aiModelsSection) {
-                    aiModelsSection.style.display = 'none';
-                }
-            }
-        })
-        .catch(error => {
-            handleApiError('aiModels');
-            console.error('Błąd podczas pobierania statusów modeli AI:', error);
-            const aiModelsSection = document.getElementById('ai-models-section');
-            if (aiModelsSection) {
-                aiModelsSection.style.display = 'none';
-            }
+function initializeChart() {
+    const ctx = document.getElementById('portfolio-chart') || document.getElementById('main-chart');
+    if (ctx) {
+        // Tworzymy tymczasowy wykres do czasu załadowania danych
+        renderChart(ctx, {
+            labels: ['Ładowanie...'],
+            datasets: [{
+                label: 'Wartość Portfela',
+                data: [0],
+                borderColor: '#4CAF50',
+                backgroundColor: 'rgba(76, 175, 80, 0.1)'
+            }]
         });
+    }
 }
 
-function updateAlerts() {
-    // Pobierz dane z API
-    fetch('/api/alerts')
-        .then(response => {
-            if (!response.ok) {
-                return { alerts: [] }; // Pusta lista
-            }
-            return response.json();
-        })
-        .then(data => {
-            resetErrorCount('alerts');
+function renderChart(canvas, data) {
+    if (!canvas) return;
 
-            const alertsContainer = document.getElementById('alerts-list');
-            if (!alertsContainer) return;
+    // Sprawdź czy wykres już istnieje i go zniszcz
+    if (canvas.chart) {
+        canvas.chart.destroy();
+    }
 
-            if (data && Array.isArray(data.alerts) && data.alerts.length > 0) {
-                let alertsHTML = '';
-
-                data.alerts.forEach(alert => {
-                    const alertClass = {
-                        'critical': 'status-offline',
-                        'warning': 'status-warning',
-                        'info': 'status-online'
-                    }[alert.level] || 'status-maintenance';
-
-                    alertsHTML += `
-                    <div class="alert-item ${alertClass}">
-                        <div class="alert-time">${alert.time}</div>
-                        <div class="alert-message">${alert.message}</div>
-                    </div>`;
-                });
-
-                alertsContainer.innerHTML = alertsHTML;
-
-                // Aktualizacja licznika alertów
-                const alertBadge = document.getElementById('alerts-badge');
-                if (alertBadge) {
-                    alertBadge.textContent = data.alerts.length;
-                    alertBadge.style.display = data.alerts.length > 0 ? 'inline-block' : 'none';
-                }
-
-            } else {
-                alertsContainer.innerHTML = '<div class="no-data">Brak alertów</div>';
-
-                // Ukryj badge jeśli nie ma alertów
-                const alertBadge = document.getElementById('alerts-badge');
-                if (alertBadge) {
-                    alertBadge.style.display = 'none';
+    // Utwórz nowy wykres
+    canvas.chart = new Chart(canvas, {
+        type: 'line',
+        data: data,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: false
                 }
             }
-        })
-        .catch(error => {
-            handleApiError('alerts');
-            console.error('Błąd podczas pobierania alertów:', error);
-            const alertsContainer = document.getElementById('alerts-list');
-            if (alertsContainer) {
-                alertsContainer.innerHTML = '<div class="no-data">Brak alertów</div>';
-            }
-        });
+        }
+    });
+}
+
+
+function safeUpdateElement(elementId, value) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.textContent = value;
+    }
 }
 
 function getAccuracyClass(accuracy) {

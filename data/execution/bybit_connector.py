@@ -631,7 +631,7 @@ class BybitConnector:
 
     def _apply_rate_limit(self):
         """Applies rate limiting to API calls with adaptive backoff and integration with cache_manager."""
-        from data.utils.cache_manager import get_api_status, set_rate_limit_parameters
+        from data.utils.cache_manager import get_api_status, set_rate_limit_parameters, store_cached_data
         
         # Pobierz aktualny status API z cache_manager
         api_status = get_api_status()
@@ -639,32 +639,52 @@ class BybitConnector:
         
         # Synchronizuj parametry rate limiter'a z cache_manager
         if not hasattr(self, '_rate_limit_synced') or now - getattr(self, '_last_sync_time', 0) > 60:
+            # Bardziej konserwatywne limity dla produkcyjnego API
+            max_calls = 20 if not self.use_testnet else 30
+            min_interval = 2.0 if not self.use_testnet else 1.0
+            
             # Synchronizuj parametry tylko raz na minutę dla wydajności
             set_rate_limit_parameters(
-                max_calls_per_minute=30,  # Konserwatywny limit dla ByBit API
-                min_interval=self.min_time_between_calls
+                max_calls_per_minute=max_calls,  # Bardziej konserwatywny limit dla produkcyjnego API
+                min_interval=min_interval
             )
             self._rate_limit_synced = True
             self._last_sync_time = now
+            
+            # Zaktualizuj lokalne zmienne
+            self.min_time_between_calls = min_interval
         
-        # Jeśli przekroczono limit, stosuj dłuższe opóźnienie
+        # Jeśli przekroczono limit, stosuj znacznie dłuższe opóźnienie dla produkcyjnego API
         if self.rate_limit_exceeded or api_status["rate_limited"]:
-            # Resetuj stan po 60 sekundach od ostatniego przekroczenia limitu
-            if now - self.last_rate_limit_reset > 60.0:
+            # Resetuj stan po okresie oczekiwania
+            reset_time = 120.0 if not self.use_testnet else 60.0  # Dłuższy czas resetu dla produkcyjnego API
+            
+            if now - self.last_rate_limit_reset > reset_time:
                 self.logger.info("Resetowanie stanu limitów API po okresie oczekiwania")
                 self.rate_limit_exceeded = False
-                self.remaining_rate_limit = 50  # Zakładamy odnowienie limitu
+                self.remaining_rate_limit = 30 if not self.use_testnet else 50  # Bardziej konserwatywne dla produkcji
+                
+                # Zapisz również stan w cache_manager
+                store_cached_data("api_rate_limited", False)
             else:
                 # Bardziej agresywne oczekiwanie przy przekroczeniu limitu
-                sleep_time = min(60.0, self.rate_limit_backoff * 1.5)  # Max 60s
+                max_sleep = 120.0 if not self.use_testnet else 60.0  # Dłuższe dla produkcyjnego API
+                sleep_time = min(max_sleep, self.rate_limit_backoff * 1.5)
+                
+                # Użyj wyeksponowanego backoffu, aby uniknąć częstych problemów z limitami
+                if not self.use_testnet:
+                    sleep_time = min(max_sleep, sleep_time * 1.5)  # Dodatkowy mnożnik dla produkcyjnego API
+                
                 self.logger.info(f"Rate limit przekroczony - oczekiwanie {sleep_time:.1f}s przed próbą")
                 time.sleep(sleep_time)
+                
                 # Zwiększamy backoff przy każdym kolejnym przekroczeniu
-                self.rate_limit_backoff = min(60.0, self.rate_limit_backoff * 1.2)
+                self.rate_limit_backoff = min(max_sleep, self.rate_limit_backoff * 1.3)
         
         # Standardowe opóźnienie między wywołaniami z minimalnym buforem
         time_since_last_call = now - self.last_api_call
-        min_time = max(2.0, self.min_time_between_calls)  # Co najmniej 2 sekundy w przypadku produkcyjnego API
+        # Znacznie dłuższe minimalne opóźnienie dla produkcyjnego API
+        min_time = 3.0 if not self.use_testnet else max(1.5, self.min_time_between_calls)
         
         if time_since_last_call < min_time:
             sleep_time = min_time - time_since_last_call
@@ -673,6 +693,14 @@ class BybitConnector:
         
         # Aktualizacja czasu ostatniego wywołania
         self.last_api_call = time.time()
+        
+        # Po kilku wywołaniach, zmniejszamy trochę backoff, aby system mógł się adaptować
+        if hasattr(self, '_call_count'):
+            self._call_count += 1
+            if self._call_count > 20 and not self.rate_limit_exceeded:
+                self.rate_limit_backoff = max(10.0, self.rate_limit_backoff * 0.9)  # Stopniowe zmniejszanie
+        else:
+            self._call_count = 1
 
 
 if __name__ == "__main__":

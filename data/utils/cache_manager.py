@@ -32,20 +32,47 @@ _memory_cache = {}
 _cache_timestamps = {}
 _cache_lock = threading.RLock()
 
-# Konfiguracja cache'a
-DEFAULT_TTL = 60  # Domyślny czas życia cache'a w sekundach
-LONG_TTL = 300    # Długi czas życia dla kosztownych zapytań (5 minut)
-EMERGENCY_TTL = 1800  # Awaryjny czas życia (30 minut) w przypadku przekroczenia limitów API
+# Konfiguracja cache'a - dłuższe czasy życia dla lepszej wydajności
+DEFAULT_TTL = 120      # Domyślny czas życia cache'a w sekundach (2 minuty)
+LONG_TTL = 600         # Długi czas życia dla kosztownych zapytań (10 minut)
+EMERGENCY_TTL = 3600   # Awaryjny czas życia (60 minut) w przypadku przekroczenia limitów API
 
-# Ratelimiter globalny
+# Parametry dla różnych środowisk
+ENVIRONMENT_CONFIG = {
+    'production': {
+        'min_interval': 2.0,        # Minimalny odstęp między zapytaniami (2000ms)
+        'max_calls_per_minute': 20, # Bardziej konserwatywny limit dla produkcji
+        'cache_ttl_multiplier': 2.0 # Dłuższy czas cache'owania dla produkcji
+    },
+    'development': {
+        'min_interval': 0.5,        # Minimalny odstęp między zapytaniami (500ms)
+        'max_calls_per_minute': 40, # Wyższy limit dla środowiska deweloperskiego
+        'cache_ttl_multiplier': 1.0 # Standardowy czas cache'owania
+    }
+}
+
+# Sprawdź, czy używamy produkcyjnego API na podstawie zmiennej środowiskowej
+import os
+_is_production = os.getenv('BYBIT_USE_TESTNET', 'true').lower() != 'true'
+_env_config = ENVIRONMENT_CONFIG['production'] if _is_production else ENVIRONMENT_CONFIG['development']
+
+# Ratelimiter globalny - z konfiguracją dostosowaną do środowiska
 _rate_limiter = {
     "last_call": 0,
-    "min_interval": 0.5,  # Minimalny odstęp między zapytaniami (500ms)
+    "min_interval": _env_config['min_interval'],
     "calls_count": 0,
     "window_start": 0,
-    "max_calls_per_minute": 40,  # Maksymalna liczba zapytań na minutę
-    "lock": threading.RLock()
+    "max_calls_per_minute": _env_config['max_calls_per_minute'],
+    "lock": threading.RLock(),
+    "environment": 'production' if _is_production else 'development',
+    "cache_ttl_multiplier": _env_config['cache_ttl_multiplier']
 }
+
+# Zapisz informację o środowisku w logu
+logger.info(f"Cache skonfigurowany dla środowiska: {_rate_limiter['environment']}")
+logger.info(f"Parametry rate limitera: max_calls={_rate_limiter['max_calls_per_minute']}, " +
+           f"min_interval={_rate_limiter['min_interval']}s, " +
+           f"cache_ttl_multiplier={_rate_limiter['cache_ttl_multiplier']}")
 
 
 def get_cached_data(key: str) -> Tuple[Any, bool]:
