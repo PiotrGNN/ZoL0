@@ -1,86 +1,82 @@
-# 🚀 Trading System z wykorzystaniem AI
 
-Zaawansowany system tradingowy wykorzystujący modele sztucznej inteligencji do wykrywania anomalii rynkowych, predykcji trendów i automatycznego zarządzania transakcjami.
+# Trading Bot - System Analityczny
 
-## 📋 Wymagania systemowe
+## 🚀 Opis projektu
 
-- Python 3.8+
-- Pakiety wymienione w `requirements.txt`
+System analityczny do wykrywania anomalii i optymalizacji strategii tradingowych. Projekt jest w pełni skonfigurowany do działania w środowisku Replit.
 
-## 🚀 Szybki start
+## 📋 Funkcjonalności
 
-### Uruchomienie w Replit
+- **Wykrywanie anomalii** - identyfikacja nietypowych zachowań rynku
+- **Analiza techniczna** - wskaźniki techniczne i ich interpretacja
+- **Zarządzanie ryzykiem** - strategie zarządzania kapitałem
+- **Optymalizacja strategii** - testowanie i dostrajanie strategii tradingowych
 
-1. Kliknij przycisk "Run" w środowisku Replit
-2. System zostanie automatycznie skonfigurowany i uruchomiony
-
-### Manualna instalacja
+## 🛠️ Instalacja
 
 ```bash
+# Klonowanie repozytorium w Replit
+git clone <URL repozytorium>
+
 # Instalacja zależności
 pip install -r requirements.txt
+```
 
-# Uruchomienie aplikacji
+## 🚀 Uruchomienie
+
+Projekt można uruchomić na dwa sposoby:
+
+1. **Poprzez przycisk Run w Replit**
+2. **Ręcznie przez terminal:**
+
+```bash
 python main.py
 ```
 
-## 🏗️ Struktura projektu
+## 📁 Struktura projektu
 
 ```
-.
-├── ai_models/                # Modele AI i uczenia maszynowego
-├── config/                   # Pliki konfiguracyjne
-├── data/                     # Przetwarzanie i zarządzanie danymi
-│   ├── data/                 # Pobieranie i przetwarzanie danych
-│   ├── execution/            # Wykonywanie transakcji
-│   ├── indicators/           # Wskaźniki techniczne
-│   ├── logging/              # Logowanie zdarzeń
-│   ├── optimization/         # Optymalizacja strategii
-│   ├── risk_management/      # Zarządzanie ryzykiem
-│   ├── strategies/           # Strategie inwestycyjne
-│   ├── tests/                # Testy jednostkowe
-│   └── utils/                # Narzędzia pomocnicze
-├── logs/                     # Logi aplikacji
-├── saved_models/             # Zapisane modele ML
-├── main.py                   # Główny punkt wejścia
-└── requirements.txt          # Zależności projektu
+├── ai_models/             # Modele uczenia maszynowego
+│   ├── anomaly_detection.py  # Wykrywanie anomalii
+│   └── ...
+├── data/                  # Moduły przetwarzania danych
+│   ├── indicators/        # Wskaźniki techniczne
+│   ├── risk_management/   # Zarządzanie ryzykiem
+│   ├── strategies/        # Strategie tradingowe
+│   └── ...
+├── logs/                  # Logi aplikacji
+├── .env.example           # Przykładowy plik konfiguracyjny
+├── main.py                # Główny plik wykonawczy
+└── requirements.txt       # Zależności projektu
 ```
 
-## 🎛️ Dostępne workflowy
+## ⚙️ Konfiguracja
 
-W projekcie skonfigurowano następujące workflowy:
+1. Skopiuj plik `.env.example` do `.env`
+2. Uzupełnij wymagane klucze API i inne ustawienia:
+    - `BINANCE_API_KEY` - klucz API Binance
+    - `BINANCE_API_SECRET` - sekret API Binance
 
-1. **Run** - Uruchamia główny skrypt aplikacji
-2. **Test** - Uruchamia testy jednostkowe
-3. **Format Code** - Formatuje kod zgodnie z PEP 8 za pomocą Black
-4. **Lint Code** - Sprawdza jakość kodu za pomocą Flake8
-5. **Test with Coverage** - Uruchamia testy z raportem pokrycia
-6. **Install Dependencies** - Instaluje wymagane zależności
-
-## 🧪 Testowanie
+## 🧪 Testy
 
 ```bash
-# Uruchomienie wszystkich testów
+# Uruchomienie testów
 pytest data/tests/
 
-# Uruchomienie testów z raportem pokrycia
+# Testy z raportowaniem pokrycia
 pytest --cov=. --cov-report=term-missing data/tests/
 ```
 
-## 🔧 Narzędzia developerskie
+## 🔧 Narzędzia deweloperskie
 
-- **Linter**: Flake8 - sprawdza jakość i zgodność kodu z PEP 8
-- **Formatter**: Black - automatycznie formatuje kod zgodnie z PEP 8
-- **Testy**: Pytest - framework do testów jednostkowych
+```bash
+# Formatowanie kodu
+black .
 
-## 📊 Funkcjonalności
+# Sprawdzanie zgodności ze stylem
+flake8 .
+```
 
-1. **Wykrywanie anomalii rynkowych** - identyfikacja nietypowych wzorców cenowych
-2. **Zarządzanie ryzykiem** - dynamiczne dostosowanie wielkości pozycji i stop-lossów
-3. **Strategie inwestycyjne** - implementacja różnych strategii (trend following, mean reversion)
-4. **Optymalizacja strategii** - backtesting i optymalizacja hiperparametrów
-5. **Wykonywanie transakcji** - integracja z różnymi giełdami przez API
+## 📜 Licencja
 
-## 📝 Licencja
-
-Ten projekt jest dostępny na licencji MIT.
+Ten projekt jest udostępniany na licencji MIT.

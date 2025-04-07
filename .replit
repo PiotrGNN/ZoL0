@@ -1,15 +1,14 @@
 run = "python main.py"
 language = "python3"
+hidden = [".gitignore", ".git", "__pycache__", "*.egg-info"]
 entrypoint = "main.py"
-hidden = [".git", ".config", "**/__pycache__", "**/.mypy_cache", "**/*.pyc"]
-modules = ["python-3.11"]
+
+[env]
+PYTHONPATH="./"
+PYTHONUNBUFFERED = "1"
 
 [nix]
 channel = "stable-22_11"
-
-[env]
-PYTHONPATH = "$PYTHONPATH:$PWD"
-PATH = "$PATH:$PWD"
 
 [packager]
 language = "python3"
@@ -24,7 +23,7 @@ pattern = "**/*.py"
 syntax = "python"
 
 [languages.python3.languageServer]
-start = "pylsp"
+start = ["pylsp"]
 
 [unitTest]
 language = "python3"

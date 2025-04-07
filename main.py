@@ -1,160 +1,16 @@
-
 #!/usr/bin/env python3
 """
-Trading Bot - główny moduł systemu
-Zoptymalizowana wersja dla środowiska Replit
+Main.py - Główny plik projektu Trading Bot System Analityczny
+Zawiera funkcje inicjalizujące system i uruchamiające jego komponenty
 """
 
-import logging
 import os
 import sys
-import time
-from dotenv import load_dotenv
-
-# Utworzenie struktury katalogów
-os.makedirs("logs", exist_ok=True)
-os.makedirs("data", exist_ok=True)
-os.makedirs("reports", exist_ok=True)
-
-# Konfiguracja logowania
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.FileHandler("logs/app.log"),
-        logging.StreamHandler(sys.stdout)
-    ]
-)
-
-# Ładowanie zmiennych środowiskowych
-load_dotenv()
-
-def load_configuration():
-    """Ładuje konfigurację systemu z plików."""
-    try:
-        logging.info("Ładowanie konfiguracji systemu...")
-        # Tutaj można dodać ładowanie z config/settings.yml
-        return {"mode": "development", "risk_level": "low"}
-    except Exception as e:
-        logging.error(f"Błąd podczas ładowania konfiguracji: {e}")
-        return None
-
-def initialize_components():
-    """Inicjalizuje niezbędne komponenty systemu."""
-    try:
-        logging.info("Inicjalizacja komponentów systemu...")
-        
-        # Import modułu wykrywania anomalii
-        from ai_models.anomaly_detection import AnomalyDetectionModel
-        anomaly_detector = AnomalyDetectionModel()
-        
-        # Tutaj można dodać inicjalizację innych komponentów
-        # na razie tylko symulacja
-        components = {
-            "anomaly_detector": anomaly_detector
-        }
-        
-        # Sprawdź, czy możliwe jest zainicjalizowanie managera strategii
-        try:
-            from data.strategies.strategy_manager import StrategyManager
-            components["strategy_manager"] = StrategyManager()
-            logging.info("Zainicjalizowano StrategyManager")
-        except ImportError:
-            logging.warning("Nie można zainicjalizować StrategyManager - kontynuowanie bez tego komponentu")
-        
-        return components
-    except Exception as e:
-        logging.error(f"Błąd podczas inicjalizacji komponentów: {e}")
-        return None
-
-def start_simulation_mode():
-    """Uruchamia system w trybie symulacji."""
-    logging.info("Uruchamianie systemu w trybie symulacji...")
-    print("""
-    =================================================================
-    🚀 Trading Bot - Tryb Symulacji
-    =================================================================
-    System został uruchomiony w trybie symulacji.
-    Dane są pobierane z historycznych źródeł, żadne rzeczywiste
-    transakcje nie są wykonywane.
-
-    Aby zakończyć, naciśnij Ctrl+C
-    =================================================================
-    """)
-
-    try:
-        # Symulacja działania systemu
-        for i in range(10):
-            logging.info(f"Symulacja: krok {i+1}/10")
-            print(f"⏳ Przetwarzanie danych... {i+1}/10")
-            time.sleep(1)
-
-        print("\n✅ Symulacja zakończona pomyślnie!")
-    except KeyboardInterrupt:
-        print("\n⚠️ Symulacja przerwana przez użytkownika.")
-    except Exception as e:
-        logging.error(f"Błąd podczas symulacji: {e}")
-        print(f"\n❌ Błąd symulacji: {e}")
-
-def display_welcome_message():
-    """Wyświetla wiadomość powitalną projektu."""
-    print("""
-    =================================================================
-    🤖 Trading Bot - System Analityczny
-    =================================================================
-    Projekt gotowy do działania w środowisku Replit
-    
-    Dostępne tryby pracy:
-    - Symulacja (domyślna)
-    - Analiza
-    - Testowanie
-    
-    Więcej informacji w README.md
-    =================================================================
-    """)
-
-def main():
-    """Główna funkcja systemu."""
-    display_welcome_message()
-
-    # Ładowanie konfiguracji
-    config = load_configuration()
-    if not config:
-        logging.error("Nie udało się załadować konfiguracji. Kończenie pracy.")
-        return
-
-    # Inicjalizacja komponentów
-    components = initialize_components()
-    if not components:
-        logging.error("Nie udało się zainicjalizować komponentów. Kończenie pracy.")
-        return
-
-    # Uruchomienie trybu symulacji
-    start_simulation_mode()
-
-    logging.info("System zakończył pracę.")
-
-if __name__ == "__main__":
-    try:
-        main()
-    except Exception as e:
-        logging.critical(f"Nieoczekiwany błąd: {e}")
-        print(f"\n❌ Krytyczny błąd: {e}")
-#!/usr/bin/env python
-"""
-Trading System - Główny moduł aplikacji
----------------------------------------
-Ten skrypt stanowi główny punkt wejścia do systemu tradingowego.
-"""
-
 import logging
-import os
-import sys
 from pathlib import Path
 
-# Konfiguracja ścieżek projektu
+# Ustal ścieżkę do katalogu projektu
 PROJECT_ROOT = Path(__file__).resolve().parent
-sys.path.append(str(PROJECT_ROOT))
 
 # Konfiguracja logowania
 logging.basicConfig(
@@ -169,6 +25,46 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+def load_config():
+    """Ładuje konfigurację systemu z plików."""
+    try:
+        logger.info("Ładowanie konfiguracji systemu...")
+        # Tu można dodać faktyczne ładowanie konfiguracji
+        return {}
+    except Exception as e:
+        logger.error(f"Błąd podczas ładowania konfiguracji: {e}")
+        return None
+
+
+def initialize_components():
+    """Inicjalizuje niezbędne komponenty systemu."""
+    try:
+        logger.info("Inicjalizacja komponentów systemu...")
+
+        # Import modułu wykrywania anomalii
+        from ai_models.anomaly_detection import AnomalyDetector
+        anomaly_detector = AnomalyDetector(method="isolation_forest")
+
+        # Tutaj można dodać inicjalizację innych komponentów
+        # na razie tylko symulacja
+        components = {
+            "anomaly_detector": anomaly_detector
+        }
+
+        # Sprawdź, czy możliwe jest zainicjalizowanie managera strategii
+        try:
+            from data.strategies.strategy_manager import StrategyManager
+            components["strategy_manager"] = StrategyManager()
+            logger.info("Zainicjalizowano StrategyManager")
+        except ImportError:
+            logger.warning("Nie można zainicjalizować StrategyManager - kontynuowanie bez tego komponentu")
+
+        return components
+    except Exception as e:
+        logger.error(f"Błąd podczas inicjalizacji komponentów: {e}")
+        raise
+
+
 def setup_environment():
     """Konfiguracja środowiska aplikacji."""
     # Upewnij się, że folder logs istnieje
@@ -176,22 +72,49 @@ def setup_environment():
     logger.info("Środowisko zostało skonfigurowane")
 
 
+def display_welcome_message():
+    """Wyświetla informację powitalną w konsoli"""
+    welcome_message = """
+    =================================================================
+    🤖 Trading Bot - System Analityczny
+    =================================================================
+    Projekt gotowy do działania w środowisku Replit
+
+    Dostępne tryby pracy:
+    - Symulacja (domyślna)
+    - Analiza
+    - Testowanie
+
+    Więcej informacji w README.md
+    =================================================================
+    """
+    print(welcome_message)
+
+
 def main():
     """Główna funkcja uruchamiająca system."""
     try:
+        display_welcome_message()
+        config = load_config()
+        if not config:
+            logger.warning("Nie udało się załadować konfiguracji. Używam wartości domyślnych.")
+
+        components = initialize_components()
+        if not components:
+            logger.error("Nie udało się zainicjalizować komponentów. Kończenie pracy.")
+            return
+
         setup_environment()
         logger.info("Uruchamianie systemu tradingowego...")
-        
+
         # Przykładowe wykorzystanie modułu detekcji anomalii
-        from ai_models.anomaly_detection import AnomalyDetector
-        
-        detector = AnomalyDetector()
-        detector.info()
-        
+        detector = components.get("anomaly_detector")
+        if detector:
+            detector.info()
+
         logger.info("System tradingowy uruchomiony pomyślnie")
     except Exception as e:
-        logger.error(f"Wystąpił błąd podczas uruchamiania systemu: {e}")
-        sys.exit(1)
+        logger.error(f"Wystąpił nieoczekiwany błąd: {e}")
 
 
 if __name__ == "__main__":
