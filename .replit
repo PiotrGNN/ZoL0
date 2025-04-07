@@ -87,3 +87,7 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python test_bybit_connection.py"
+
+[[ports]]
+localPort = 5000
+externalPort = 80
