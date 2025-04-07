@@ -1,407 +1,366 @@
+
 """
 bybit_connector.py
-------------------
-Moduł łączący się z API ByBit, umożliwiający autoryzację, pobieranie danych oraz wykonywanie zleceń.
-Obsługuje zarówno testnet jak i mainnet, z zabezpieczeniami dla różnych środowisk.
+-----------------
+Klient API do łączenia się z giełdą ByBit.
 """
 
-import hashlib
-import hmac
-import json
 import logging
-import os
 import time
-from typing import Dict, Any, Optional
+from typing import Dict, List, Any, Optional
+import os
+from dotenv import load_dotenv
+import requests
+import hmac
+import hashlib
+import json
 from urllib.parse import urlencode
 
-import requests
-from dotenv import load_dotenv
-
-# Ładowanie zmiennych środowiskowych
-load_dotenv()
-
-# Konfiguracja logowania
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.FileHandler("bybit_connector.log"),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger("bybit_connector")
-
+logger = logging.getLogger(__name__)
+file_handler = logging.FileHandler('bybit_connector.log')
+logger.addHandler(file_handler)
+logger.setLevel(logging.INFO)
 
 class BybitConnector:
     """
-    Klasa BybitConnector zapewnia interfejs do łączenia się z giełdą ByBit.
-
-    Parameters:
-        use_testnet (bool): Jeśli True, używa API testnetu zamiast mainnet.
-        api_key (str): Klucz API (domyślnie z .env).
-        api_secret (str): Sekret API (domyślnie z .env).
+    Konektor do połączenia z API giełdy ByBit.
     """
-
-    def __init__(
-        self,
-        use_testnet: bool = False,
-        api_key: Optional[str] = None,
-        api_secret: Optional[str] = None
-    ):
-        self.use_testnet = use_testnet
-        self.api_key = api_key or os.getenv("BYBIT_API_KEY")
-        self.api_secret = api_secret or os.getenv("BYBIT_API_SECRET")
-
-        if not self.api_key or not self.api_secret:
-            raise ValueError("Klucz API ByBit i sekret są wymagane. Sprawdź zmienne środowiskowe.")
-
-        # Bazowe URL w zależności od środowiska
-        self.base_url = "https://api-testnet.bybit.com" if use_testnet else "https://api.bybit.com"
-
-        # Podstawowa sesja HTTP
-        self.session = requests.Session()
-        self.session.headers.update({
-            "Content-Type": "application/json",
-            "X-BAPI-API-KEY": self.api_key
-        })
-
-        logger.info(f"BybitConnector zainicjalizowany. Testnet: {use_testnet}")
-
-    def _generate_signature(self, params: Dict[str, Any], timestamp: int) -> str:
+    
+    def __init__(self, api_key: str, api_secret: str, use_testnet: bool = True):
         """
-        Generuje podpis dla zapytania API ByBit.
-
-        Parameters:
-            params (dict): Parametry zapytania.
-            timestamp (int): Znacznik czasu w milisekundach.
-
+        Inicjalizacja konektora ByBit.
+        
+        Args:
+            api_key (str): Klucz API do ByBit.
+            api_secret (str): Sekret API do ByBit.
+            use_testnet (bool, optional): Czy używać środowiska testowego ByBit. Domyślnie True.
+        """
+        self.api_key = api_key
+        self.api_secret = api_secret
+        
+        # Wybór odpowiedniego URL bazowego API w zależności od use_testnet
+        if use_testnet:
+            self.base_url = "https://api-testnet.bybit.com"
+        else:
+            self.base_url = "https://api.bybit.com"
+            
+        logger.info(f"BybitConnector zainicjalizowany. Testnet: {use_testnet}")
+    
+    def _generate_signature(self, params: Dict[str, Any]) -> str:
+        """
+        Generuje podpis dla żądania API.
+        
+        Args:
+            params (Dict[str, Any]): Parametry żądania.
+            
         Returns:
             str: Wygenerowany podpis.
         """
-        param_str = ""
-        if params:
-            if isinstance(params, dict):
-                param_str = urlencode(sorted(params.items()))
-            else:
-                param_str = params
-
-        sign_str = f"{timestamp}{self.api_key}{param_str}"
+        param_str = urlencode(sorted(params.items()))
         signature = hmac.new(
-            self.api_secret.encode("utf-8"),
-            sign_str.encode("utf-8"),
+            bytes(self.api_secret, "utf-8"),
+            bytes(param_str, "utf-8"),
             hashlib.sha256
         ).hexdigest()
         return signature
-
-    def _request(
-        self,
-        method: str,
-        endpoint: str,
-        params: Dict[str, Any] = None,
-        private: bool = False
-    ) -> Dict[str, Any]:
+    
+    def _send_request(self, method: str, endpoint: str, params: Dict[str, Any] = None) -> Dict[str, Any]:
         """
-        Wykonuje zapytanie HTTP do API ByBit.
-
-        Parameters:
-            method (str): Metoda HTTP ('GET', 'POST', etc.).
+        Wysyła żądanie do API ByBit.
+        
+        Args:
+            method (str): Metoda HTTP (GET, POST, etc.).
             endpoint (str): Endpoint API.
-            params (dict): Parametry zapytania.
-            private (bool): Jeśli True, dodaje wymagane nagłówki autoryzacyjne.
-
+            params (Dict[str, Any], optional): Parametry żądania. Domyślnie None.
+            
         Returns:
-            dict: Odpowiedź z API.
+            Dict[str, Any]: Odpowiedź API jako słownik.
         """
         url = f"{self.base_url}{endpoint}"
-        params = params or {}
-        headers = {}
-
-        if private:
-            timestamp = int(time.time() * 1000)
-            signature = self._generate_signature(params, timestamp)
-            headers.update({
-                "X-BAPI-SIGN": signature,
-                "X-BAPI-SIGN-TYPE": "2",
-                "X-BAPI-TIMESTAMP": str(timestamp),
-                "X-BAPI-API-KEY": self.api_key
-            })
-
-        MAX_RETRIES = 3
-        RETRY_DELAY = 1
-
-        for attempt in range(1, MAX_RETRIES + 1):
-            try:
-                if method.upper() == "GET":
-                    response = self.session.get(url, params=params, headers=headers, timeout=10)
-                elif method.upper() == "POST":
-                    response = self.session.post(url, json=params, headers=headers, timeout=10)
-                else:
-                    raise ValueError(f"Nieobsługiwana metoda HTTP: {method}")
-
-                response.raise_for_status()
-                data = response.json()
-
-                # Logowanie z maskowaniem wrażliwych danych
-                masked_params = {k: ("***" if k in ["api_key", "timestamp", "sign"] else v) for k, v in params.items()}
-                logger.info(f"Zapytanie {method} {endpoint} zakończone sukcesem. Parametry: {masked_params}")
-
-                if data.get("ret_code") != 0:
-                    logger.error(f"Błąd API ByBit: {data.get('ret_msg')}")
-                    raise Exception(f"ByBit API Error: {data.get('ret_msg')}")
-
-                return data
-            except requests.exceptions.RequestException as e:
-                logger.warning(f"Błąd zapytania (próba {attempt}/{MAX_RETRIES}): {e}")
-                if attempt == MAX_RETRIES:
-                    logger.error(f"Przekroczono maksymalną liczbę prób dla zapytania: {endpoint}")
-                    raise
-                time.sleep(RETRY_DELAY)
-
+        
+        # Parametry domyślne do wszystkich żądań
+        if params is None:
+            params = {}
+        
+        params['api_key'] = self.api_key
+        params['timestamp'] = str(int(time.time() * 1000))
+        
+        # Generowanie podpisu
+        signature = self._generate_signature(params)
+        params['sign'] = signature
+        
+        logger.info(f"Wysyłanie żądania {method} do {endpoint} z parametrami: {params}")
+        
+        try:
+            if method == "GET":
+                response = requests.get(url, params=params)
+            elif method == "POST":
+                response = requests.post(url, json=params)
+            else:
+                raise ValueError(f"Nieobsługiwana metoda HTTP: {method}")
+            
+            response.raise_for_status()  # Rzuca wyjątek dla błędnych statusów
+            
+            result = response.json()
+            logger.info(f"Otrzymano odpowiedź: {result}")
+            
+            if result.get("ret_code") != 0:
+                logger.error(f"Błąd API: {result.get('ret_msg')}")
+                raise Exception(f"Błąd API ByBit: {result.get('ret_msg')}")
+            
+            return result.get("result", {})
+        
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Błąd podczas wysyłania żądania: {e}")
+            raise
+    
     def get_server_time(self) -> Dict[str, Any]:
         """
         Pobiera czas serwera ByBit.
-
+        
         Returns:
-            dict: Czas serwera.
+            Dict[str, Any]: Dane czasu serwera.
         """
-        return self._request("GET", "/v5/market/time")
-
-    def get_klines(
-        self,
-        symbol: str,
-        interval: str = "1",
-        limit: int = 200,
-        start_time: Optional[int] = None,
-        end_time: Optional[int] = None
-    ) -> Dict[str, Any]:
+        endpoint = "/v2/public/time"
+        try:
+            result = self._send_request("GET", endpoint)
+            return {"server_time": result, "success": True}
+        except Exception as e:
+            logger.error(f"Błąd podczas pobierania czasu serwera: {e}")
+            return {"error": str(e), "success": False}
+    
+    def get_klines(self, symbol: str, interval: str = "15", limit: int = 200) -> List[Dict[str, Any]]:
         """
-        Pobiera dane świec (klines) dla określonej pary handlowej.
-
-        Parameters:
-            symbol (str): Symbol pary handlowej (np. "BTCUSDT").
-            interval (str): Interwał czasowy (1, 3, 5, 15, 30, 60, 120, 240, 360, 720, D, W, M).
-            limit (int): Maksymalna liczba zwracanych rekordów.
-            start_time (int, optional): Początkowy timestamp w milisekundach.
-            end_time (int, optional): Końcowy timestamp w milisekundach.
-
+        Pobiera dane OHLCV (świece) dla określonego symbolu.
+        
+        Args:
+            symbol (str): Symbol instrumentu (np. "BTCUSDT").
+            interval (str, optional): Interwał czasowy. Domyślnie "15" (15 minut).
+            limit (int, optional): Maksymalna liczba rekordów. Domyślnie 200.
+            
         Returns:
-            dict: Dane świec.
+            List[Dict[str, Any]]: Lista danych świecowych.
         """
+        endpoint = "/v2/public/kline/list"
         params = {
-            "category": "spot",
             "symbol": symbol,
             "interval": interval,
             "limit": limit
         }
-
-        if start_time:
-            params["start"] = start_time
-        if end_time:
-            params["end"] = end_time
-
-        return self._request("GET", "/v5/market/kline", params)
-
+        
+        try:
+            result = self._send_request("GET", endpoint, params)
+            return result
+        except Exception as e:
+            logger.error(f"Błąd podczas pobierania danych OHLCV: {e}")
+            return []
+    
     def get_order_book(self, symbol: str, limit: int = 25) -> Dict[str, Any]:
         """
-        Pobiera aktualny stan księgi zleceń dla określonej pary handlowej.
-
-        Parameters:
-            symbol (str): Symbol pary handlowej (np. "BTCUSDT").
-            limit (int): Głębokość księgi zleceń (1-200).
-
+        Pobiera księgę zleceń dla określonego symbolu.
+        
+        Args:
+            symbol (str): Symbol instrumentu (np. "BTCUSDT").
+            limit (int, optional): Maksymalna liczba zleceń. Domyślnie 25.
+            
         Returns:
-            dict: Dane księgi zleceń.
+            Dict[str, Any]: Dane księgi zleceń.
         """
+        endpoint = "/v2/public/orderBook/L2"
         params = {
-            "category": "spot",
             "symbol": symbol,
             "limit": limit
         }
-        return self._request("GET", "/v5/market/orderbook", params)
-
-    def get_account_balance(self, account_type: str = "SPOT") -> Dict[str, Any]:
-        """
-        Pobiera stan konta.
-
-        Parameters:
-            account_type (str): Typ konta (SPOT, CONTRACT, UNIFIED).
-
-        Returns:
-            dict: Stan konta.
-        """
-        params = {"accountType": account_type}
-        logger.info("Próba pobrania salda konta ByBit")
+        
         try:
-            result = self._request("GET", "/v5/account/wallet-balance", params, private=True)
-            logger.info(f"Odpowiedź API ByBit: {result}")
-            return result["result"]
+            result = self._send_request("GET", endpoint, params)
+            return result
         except Exception as e:
-            logger.error(f"Błąd podczas pobierania salda konta: {e}")
-            # Zwracamy pusty wynik zamiast podnosić wyjątek, aby aplikacja nadal działała
-            return {"coins": [], "message": f"Błąd połączenia: {str(e)}"}
-
-
-    def place_order(
-        self,
-        symbol: str,
-        side: str,
-        order_type: str,
-        qty: float,
-        price: Optional[float] = None,
-        time_in_force: str = "GTC",
-        reduce_only: bool = False,
-        close_on_trigger: bool = False
-    ) -> Dict[str, Any]:
+            logger.error(f"Błąd podczas pobierania księgi zleceń: {e}")
+            return {}
+    
+    def get_account_balance(self) -> Dict[str, Any]:
         """
-        Składa zlecenie na giełdzie ByBit.
-
-        Parameters:
-            symbol (str): Symbol pary handlowej (np. "BTCUSDT").
-            side (str): Kierunek zlecenia ("Buy" lub "Sell").
-            order_type (str): Typ zlecenia ("Market" lub "Limit").
-            qty (float): Ilość bazowej waluty.
-            price (float, optional): Cena dla zleceń Limit.
-            time_in_force (str): Okres ważności zlecenia (GTC, IOC, FOK).
-            reduce_only (bool): Jeśli True, zlecenie tylko zmniejsza pozycję.
-            close_on_trigger (bool): Jeśli True, zamyka pozycję po aktywacji stop loss/take profit.
-
+        Pobiera stan konta i portfela.
+        
         Returns:
-            dict: Odpowiedź API dotycząca zlecenia.
+            Dict[str, Any]: Stan konta z informacjami o dostępnych środkach.
         """
+        endpoint = "/v2/private/wallet/balance"
+        
+        try:
+            result = self._send_request("GET", endpoint)
+            
+            # Formatowanie odpowiedzi dla lepszej czytelności
+            formatted_result = {}
+            
+            for currency, data in result.items():
+                formatted_result[currency] = {
+                    "equity": data.get("equity", 0),
+                    "available_balance": data.get("available_balance", 0),
+                    "used_margin": data.get("used_margin", 0),
+                    "order_margin": data.get("order_margin", 0),
+                    "position_margin": data.get("position_margin", 0),
+                    "wallet_balance": data.get("wallet_balance", 0),
+                }
+            
+            logger.info(f"Pobrano stan konta: {formatted_result}")
+            return {"balances": formatted_result, "success": True}
+            
+        except Exception as e:
+            logger.error(f"Błąd podczas pobierania stanu konta: {e}")
+            return {"error": str(e), "success": False}
+    
+    def place_order(self, symbol: str, side: str, order_type: str, qty: float, 
+                   price: Optional[float] = None, time_in_force: str = "GoodTillCancel") -> Dict[str, Any]:
+        """
+        Składa zlecenie na giełdzie.
+        
+        Args:
+            symbol (str): Symbol instrumentu (np. "BTCUSDT").
+            side (str): Strona zlecenia ("Buy" lub "Sell").
+            order_type (str): Typ zlecenia ("Limit", "Market").
+            qty (float): Ilość do kupna/sprzedaży.
+            price (Optional[float], optional): Cena dla zleceń typu Limit. Domyślnie None.
+            time_in_force (str, optional): Czas ważności zlecenia. Domyślnie "GoodTillCancel".
+            
+        Returns:
+            Dict[str, Any]: Informacje o złożonym zleceniu.
+        """
+        endpoint = "/v2/private/order/create"
+        
         params = {
-            "category": "spot",
             "symbol": symbol,
             "side": side,
-            "orderType": order_type,
-            "qty": str(qty),
-            "timeInForce": time_in_force
+            "order_type": order_type,
+            "qty": qty,
+            "time_in_force": time_in_force
         }
-
-        if order_type.lower() == "limit" and price is not None:
-            params["price"] = str(price)
-
-        if reduce_only:
-            params["reduceOnly"] = reduce_only
-
-        if close_on_trigger:
-            params["closeOnTrigger"] = close_on_trigger
-
-        return self._request("POST", "/v5/order/create", params, private=True)
-
-    def cancel_order(self, symbol: str, order_id: str = None, order_link_id: str = None) -> Dict[str, Any]:
+        
+        # Dodaj cenę tylko dla zleceń typu Limit
+        if order_type == "Limit" and price is not None:
+            params["price"] = price
+            
+        try:
+            result = self._send_request("POST", endpoint, params)
+            logger.info(f"Złożono zlecenie: {result}")
+            return result
+        except Exception as e:
+            logger.error(f"Błąd podczas składania zlecenia: {e}")
+            return {"error": str(e), "success": False}
+    
+    def get_open_orders(self, symbol: str = None) -> List[Dict[str, Any]]:
         """
-        Anuluje zlecenie na giełdzie ByBit.
-
-        Parameters:
-            symbol (str): Symbol pary handlowej (np. "BTCUSDT").
-            order_id (str, optional): ID zlecenia.
-            order_link_id (str, optional): Niestandardowe ID zlecenia.
-
+        Pobiera listę otwartych zleceń.
+        
+        Args:
+            symbol (str, optional): Symbol instrumentu. Domyślnie None (wszystkie).
+            
         Returns:
-            dict: Odpowiedź API dotycząca anulowania zlecenia.
+            List[Dict[str, Any]]: Lista otwartych zleceń.
         """
-        params = {
-            "category": "spot",
-            "symbol": symbol
-        }
-
-        if order_id:
-            params["orderId"] = order_id
-        elif order_link_id:
-            params["orderLinkId"] = order_link_id
-        else:
-            raise ValueError("Musisz podać order_id lub order_link_id")
-
-        return self._request("POST", "/v5/order/cancel", params, private=True)
-
-    def get_open_orders(self, symbol: str = None, limit: int = 50) -> Dict[str, Any]:
-        """
-        Pobiera listę aktywnych zleceń.
-
-        Parameters:
-            symbol (str, optional): Symbol pary handlowej (np. "BTCUSDT").
-            limit (int): Maksymalna liczba zwracanych rekordów.
-
-        Returns:
-            dict: Lista aktywnych zleceń.
-        """
-        params = {
-            "category": "spot",
-            "limit": limit
-        }
-
+        endpoint = "/v2/private/order/list"
+        params = {}
+        
         if symbol:
             params["symbol"] = symbol
-
-        return self._request("GET", "/v5/order/realtime", params, private=True)
-
-    def get_order_history(
-        self,
-        symbol: str = None,
-        order_id: str = None,
-        order_link_id: str = None,
-        limit: int = 50
-    ) -> Dict[str, Any]:
+        
+        try:
+            result = self._send_request("GET", endpoint, params)
+            return result.get("data", [])
+        except Exception as e:
+            logger.error(f"Błąd podczas pobierania otwartych zleceń: {e}")
+            return []
+    
+    def cancel_order(self, order_id: str = None, symbol: str = None) -> Dict[str, Any]:
         """
-        Pobiera historię zleceń.
-
-        Parameters:
-            symbol (str, optional): Symbol pary handlowej (np. "BTCUSDT").
-            order_id (str, optional): ID zlecenia.
-            order_link_id (str, optional): Niestandardowe ID zlecenia.
-            limit (int): Maksymalna liczba zwracanych rekordów.
-
+        Anuluje zlecenie.
+        
+        Args:
+            order_id (str, optional): ID zlecenia. Domyślnie None.
+            symbol (str, optional): Symbol instrumentu. Domyślnie None.
+            
         Returns:
-            dict: Historia zleceń.
+            Dict[str, Any]: Informacja o anulowanym zleceniu.
         """
-        params = {
-            "category": "spot",
-            "limit": limit
-        }
-
+        endpoint = "/v2/private/order/cancel"
+        params = {}
+        
+        if order_id:
+            params["order_id"] = order_id
+        
         if symbol:
             params["symbol"] = symbol
-        if order_id:
-            params["orderId"] = order_id
-        if order_link_id:
-            params["orderLinkId"] = order_link_id
+            
+        if not order_id and not symbol:
+            raise ValueError("Musisz podać order_id lub symbol")
+        
+        try:
+            result = self._send_request("POST", endpoint, params)
+            logger.info(f"Anulowano zlecenie: {result}")
+            return result
+        except Exception as e:
+            logger.error(f"Błąd podczas anulowania zlecenia: {e}")
+            return {"error": str(e), "success": False}
+    
+    def get_positions(self, symbol: str = None) -> List[Dict[str, Any]]:
+        """
+        Pobiera informacje o otwartych pozycjach.
+        
+        Args:
+            symbol (str, optional): Symbol instrumentu. Domyślnie None (wszystkie).
+            
+        Returns:
+            List[Dict[str, Any]]: Lista otwartych pozycji.
+        """
+        endpoint = "/v2/private/position/list"
+        params = {}
+        
+        if symbol:
+            params["symbol"] = symbol
+        
+        try:
+            result = self._send_request("GET", endpoint, params)
+            
+            # Jeśli podano symbol, API zwraca pojedyncze dane, inaczej listę
+            if symbol and isinstance(result, dict):
+                return [result]
+            return result
+        except Exception as e:
+            logger.error(f"Błąd podczas pobierania pozycji: {e}")
+            return []
 
-        return self._request("GET", "/v5/order/history", params, private=True)
 
-
-# Przykładowe użycie
+# Testowanie klienta, jeśli uruchomiono jako skrypt
 if __name__ == "__main__":
-    try:
-        # Inicjalizacja klienta (domyślnie używa kluczy z .env)
-        bybit = BybitConnector(use_testnet=False)
-
-        # Sprawdzenie połączenia - pobranie czasu serwera
-        server_time = bybit.get_server_time()
-        logger.info(f"Czas serwera ByBit: {server_time}")
-
-        # Pobranie danych świec dla BTCUSDT
-        klines = bybit.get_klines(symbol="BTCUSDT", interval="15", limit=10)
-        logger.info(f"Ostatnie świece BTCUSDT: {klines['result']['list'][0]}")
-
-        # Pobranie księgi zleceń
-        order_book = bybit.get_order_book(symbol="BTCUSDT", limit=5)
-        logger.info(f"Księga zleceń BTCUSDT (top 5): {order_book}")
-
-        # UWAGA: Poniższe operacje wymagają środków na koncie i są zakomentowane
-        # Sprawdzenie stanu konta
-        # balance = bybit.get_account_balance()
-        # logger.info(f"Stan konta: {balance}")
-
-        # Złożenie zlecenia LIMIT
-        # order = bybit.place_order(
-        #     symbol="BTCUSDT",
-        #     side="Buy",
-        #     order_type="Limit",
-        #     qty=0.001,
-        #     price=20000.0
-        # )
-        # logger.info(f"Złożone zlecenie: {order}")
-
-    except Exception as e:
-        logger.error(f"Błąd w module bybit_connector.py: {e}")
-        raise
+    load_dotenv()
+    
+    # Pobieranie kluczy API z zmiennych środowiskowych
+    api_key = os.getenv("BYBIT_API_KEY")
+    api_secret = os.getenv("BYBIT_API_SECRET")
+    use_testnet = os.getenv("BYBIT_USE_TESTNET", "true").lower() == "true"
+    
+    if not api_key or not api_secret:
+        print("Brak kluczy API. Sprawdź plik .env")
+        exit(1)
+    
+    print(f"Inicjalizuję klienta ByBit z kluczami API:\nAPI Key: {api_key}\nUse Testnet: {use_testnet}")
+    
+    # Inicjalizacja klienta
+    client = BybitConnector(api_key=api_key, api_secret=api_secret, use_testnet=use_testnet)
+    
+    # Sprawdzanie czasu serwera
+    server_time = client.get_server_time()
+    print(f"Czas serwera: {server_time}")
+    
+    # Pobieranie stanu konta
+    balance = client.get_account_balance()
+    print(f"Stan konta: {balance}")
+    
+    # Pobieranie danych świecowych dla BTC/USDT
+    klines = client.get_klines(symbol="BTCUSDT", interval="15", limit=5)
+    print(f"Ostatnie świece BTCUSDT: {klines}")
+    
+    # Pobieranie księgi zleceń
+    order_book = client.get_order_book(symbol="BTCUSDT", limit=5)
+    print(f"Księga zleceń BTCUSDT: {order_book}")
