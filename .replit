@@ -1,14 +1,14 @@
 run = "python main.py"
-language = "python3"
-entrypoint = "main.py"
-hidden = [".config", "**/__pycache__", "**/.pyc"]
+modules = ["python-3.10:v18-20230807-322e88b"]
+hidden = [".pythonlibs"]
 
 [nix]
-channel = "stable-23_05"
+channel = "stable-22_11"
 
 [env]
-PYTHONPATH = "${REPL_HOME}"
-PYTHONUNBUFFERED = "1"
+PYTHONPATH = "/home/runner/${REPL_SLUG}/"
+FLASK_APP = "main.py"
+FLASK_ENV = "development"
 
 [packager]
 language = "python3"
@@ -22,7 +22,7 @@ guessImports = true
 language = "python3"
 
 [deployment]
-run = ["sh", "-c", "python main.py"]
+run = "python main.py"
 deploymentTarget = "cloudrun"
 
 [languages]

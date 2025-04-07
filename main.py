@@ -237,17 +237,70 @@ def train_ai_model():
 
 @app.route("/api/component-status", methods=["GET"])
 def get_component_status():
-    # Symulowany status komponentów systemu
-    return jsonify({
-        "success": True,
-        "components": [
-            {"id": "api_connection", "name": "API Connection", "status": "operational"},
-            {"id": "websocket_feed", "name": "WebSocket Feed", "status": "degraded"},
-            {"id": "ai_prediction", "name": "AI Prediction Engine", "status": "operational"},
-            {"id": "trade_execution", "name": "Trade Execution", "status": "operational"},
-            {"id": "risk_management", "name": "Risk Management", "status": "operational"}
-        ]
-    })
+    # Rzeczywisty status komponentów systemu
+    try:
+        from data.execution.bybit_connector import BybitConnector
+        import os
+        
+        # Sprawdzamy konfigurację API
+        api_key = os.getenv("BYBIT_API_KEY", "")
+        api_secret = os.getenv("BYBIT_API_SECRET", "")
+        use_testnet = os.getenv("TEST_MODE", "false").lower() in ["true", "1", "t"]
+        
+        # Maskowane klucze dla bezpieczeństwa w logach
+        api_key_status = "configured" if api_key else "missing"
+        api_secret_status = "configured" if api_secret else "missing"
+        
+        # Status połączenia API
+        api_status = "operational"
+        ws_status = "operational"
+        
+        if not (api_key and api_secret):
+            api_status = "misconfigured"
+            ws_status = "misconfigured"
+        else:
+            # Testujemy połączenie z Bybit
+            bybit = BybitConnector(
+                api_key=api_key,
+                api_secret=api_secret,
+                use_testnet=use_testnet
+            )
+            if not bybit.test_connectivity():
+                api_status = "degraded"
+                ws_status = "degraded"
+        
+        # Sprawdzamy czy istnieją modele AI
+        ai_models_exist = os.path.exists("saved_models") and len([f for f in os.listdir("saved_models") if f.endswith(".pkl")]) > 0
+        ai_status = "operational" if ai_models_exist else "degraded"
+        
+        return jsonify({
+            "success": True,
+            "api_config": {
+                "api_key": api_key_status,
+                "api_secret": api_secret_status,
+                "test_mode": use_testnet
+            },
+            "components": [
+                {"id": "api_connection", "name": "API Connection", "status": api_status},
+                {"id": "websocket_feed", "name": "WebSocket Feed", "status": ws_status},
+                {"id": "ai_prediction", "name": "AI Prediction Engine", "status": ai_status},
+                {"id": "trade_execution", "name": "Trade Execution", "status": "operational"},
+                {"id": "risk_management", "name": "Risk Management", "status": "operational"}
+            ]
+        })
+    except Exception as e:
+        logging.error(f"Błąd podczas sprawdzania statusu komponentów: {e}")
+        return jsonify({
+            "success": False,
+            "error": str(e),
+            "components": [
+                {"id": "api_connection", "name": "API Connection", "status": "unknown"},
+                {"id": "websocket_feed", "name": "WebSocket Feed", "status": "unknown"},
+                {"id": "ai_prediction", "name": "AI Prediction Engine", "status": "unknown"},
+                {"id": "trade_execution", "name": "Trade Execution", "status": "unknown"},
+                {"id": "risk_management", "name": "Risk Management", "status": "unknown"}
+            ]
+        })
 
 @app.route("/api/notifications", methods=["GET"])
 def get_notifications():
@@ -271,10 +324,16 @@ def get_portfolio():
         # Pobieramy klucze API z zmiennych środowiskowych
         api_key = os.getenv("BYBIT_API_KEY", "")
         api_secret = os.getenv("BYBIT_API_SECRET", "")
-        use_testnet = os.getenv("TEST_MODE", "true").lower() in ["true", "1", "t"]
+        use_testnet = os.getenv("TEST_MODE", "false").lower() in ["true", "1", "t"]
         
-        # Logujemy informacje o konfiguracji (bez wrażliwych danych)
-        logging.info(f"Próba połączenia z Bybit - API Key: {'skonfigurowany' if api_key else 'brak'}, Secret: {'skonfigurowany' if api_secret else 'brak'}, Testnet: {use_testnet}")
+        # Debugowanie: wyświetl wszystkie zmienne środowiskowe
+        env_vars = {key: val for key, val in os.environ.items()}
+        logging.info(f"Dostępne zmienne środowiskowe: {list(env_vars.keys())}")
+        
+        # Logujemy informacje o konfiguracji (ocenzurowane klucze dla bezpieczeństwa)
+        masked_key = api_key[:4] + "..." + api_key[-4:] if len(api_key) > 8 else "brak klucza"
+        masked_secret = api_secret[:4] + "..." + api_secret[-4:] if len(api_secret) > 8 else "brak sekretu"
+        logging.info(f"Próba połączenia z Bybit - API Key: {masked_key}, Secret: {masked_secret}, Testnet: {use_testnet}")
         
         # Sprawdzamy czy mamy klucze API
         simulation_mode = not (api_key and api_secret)
@@ -288,12 +347,21 @@ def get_portfolio():
         )
         
         # Testujemy połączenie przed pobraniem danych
+        logging.info("Testowanie połączenia z Bybit...")
         connection_ok = bybit.test_connectivity()
+        logging.info(f"Wynik testu połączenia: {connection_ok}")
+        
         if not connection_ok:
             logging.error("Test połączenia z Bybit nie powiódł się")
             return jsonify({
                 "success": False,
                 "error": "Nie można nawiązać połączenia z Bybit API",
+                "debug_info": {
+                    "api_key_present": bool(api_key),
+                    "api_secret_present": bool(api_secret),
+                    "simulation_mode": simulation_mode,
+                    "testnet_enabled": use_testnet,
+                },
                 "data": {
                     "total_value": 0,
                     "assets": [],
@@ -303,28 +371,17 @@ def get_portfolio():
             })
         
         # Pobieramy saldo portfela
+        logging.info("Pobieranie salda portfela...")
         wallet_data = bybit.get_wallet_balance()
         logging.info(f"Odpowiedź API (wallet): {wallet_data.get('ret_code')} - {wallet_data.get('ret_msg')}")
+        logging.debug(f"Pełna odpowiedź: {wallet_data}")
         
         if simulation_mode or "result" not in wallet_data or not wallet_data["result"].get("list"):
             # Jeśli brak danych lub jesteśmy w trybie symulacji, zwracamy symulowane dane
-            logging.warning(f"Używanie symulowanych danych. Powód: {'Tryb symulacji' if simulation_mode else 'Brak danych z API'}")
-            return jsonify({
-                "success": True,
-                "data": {
-                    "total_value": 15240.75,
-                    "assets": [
-                        {"symbol": "BTC", "amount": 0.24, "value_usd": 8760.50, "allocation": 57.5, "pnl_24h": 3.8},
-                        {"symbol": "ETH", "amount": 1.85, "value_usd": 3700.25, "allocation": 24.3, "pnl_24h": -1.2},
-                        {"symbol": "SOL", "amount": 18.5, "value_usd": 1680.00, "allocation": 11.0, "pnl_24h": 5.4},
-                        {"symbol": "USDT", "amount": 1100.00, "value_usd": 1100.00, "allocation": 7.2, "pnl_24h": 0.0}
-                    ],
-                    "pnl_total": 1240.75,
-                    "pnl_percentage": 8.85,
-                    "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                    "mode": "symulacja (brak kluczy API lub brak danych)"
-                }
-            })
+            reason = 'Tryb symulacji' if simulation_mode else 'Brak danych z API'
+            logging.warning(f"Używanie symulowanych danych. Powód: {reason}")
+            if "result" in wallet_data:
+                logging.debug(f"Struktura odpowiedzi: {list(wallet_data['result'].keys())}")
         
         # Przetwarzamy dane portfela
         wallet_info = wallet_data["result"]["list"][0]
@@ -425,12 +482,35 @@ def get_portfolio():
             }
         })
 
+@app.route("/api/env-check", methods=["GET"])
+def env_check():
+    """Endpoint diagnostyczny do sprawdzania zmiennych środowiskowych (tylko w trybie deweloperskim)"""
+    if app.debug:
+        env_vars = {
+            "BYBIT_API_KEY": os.getenv("BYBIT_API_KEY", "")[0:4] + "..." if os.getenv("BYBIT_API_KEY") else "brak",
+            "BYBIT_API_SECRET": os.getenv("BYBIT_API_SECRET", "")[0:4] + "..." if os.getenv("BYBIT_API_SECRET") else "brak",
+            "TEST_MODE": os.getenv("TEST_MODE", "brak"),
+            "APP_ENV": os.getenv("APP_ENV", "brak"),
+            "env_file_loaded": os.path.exists(".env"),
+            "dotenv_imported": "dotenv" in sys.modules,
+            "port": os.environ.get("PORT", "5000"),
+            "python_path": os.environ.get("PYTHONPATH", "brak")
+        }
+        return jsonify({"env_vars": env_vars})
+    else:
+        return jsonify({"error": "Ten endpoint jest dostępny tylko w trybie deweloperskim"}), 403
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
 
     # Wiadomość startowa
     logging.info(f"Uruchamianie aplikacji na porcie {port}")
     print(f"Uruchamianie aplikacji na porcie {port}")
+    
+    # Informacja o kluczach API
+    api_key = os.getenv("BYBIT_API_KEY", "")
+    api_secret = os.getenv("BYBIT_API_SECRET", "")
+    logging.info(f"Status kluczy API - API Key: {'skonfigurowany' if api_key else 'brak'}, API Secret: {'skonfigurowany' if api_secret else 'brak'}")
 
     # Uruchomienie serwera Flask
     app.run(host="0.0.0.0", port=port, debug=True)
