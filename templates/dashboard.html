@@ -165,6 +165,34 @@
                 </tbody>
             </table>
         </div>
+        
+        <div class="card">
+            <h2>Status Modeli AI</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Status</th>
+                        <th>Dokładność</th>
+                        <th>Ostatnie Użycie</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for model in ai_models %}
+                    <tr>
+                        <td>{{ model.name }}</td>
+                        <td>
+                            <span class="status status-{{ model.status_class }}">
+                                {{ model.status }}
+                            </span>
+                        </td>
+                        <td>{{ model.accuracy }}</td>
+                        <td>{{ model.last_used }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
         <div class="card">
             <h2>Wykryte Anomalie</h2>

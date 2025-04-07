@@ -115,8 +115,40 @@ def dashboard():
             }
         ]
         
-        logging.info("Renderowanie dashboardu z danymi: %s komponenty, %s anomalie", 
-                    len(components), len(anomalies))
+        # Przykładowe dane o modelach AI
+        ai_models = [
+            {
+                "name": "Detektor Anomalii (Isolation Forest)",
+                "status": "Aktywny",
+                "status_class": "online",
+                "accuracy": "94.2%",
+                "last_used": datetime.now().strftime("%H:%M:%S")
+            },
+            {
+                "name": "Prognoza Trendu (XGBoost)",
+                "status": "Aktywny",
+                "status_class": "online",
+                "accuracy": "87.5%",
+                "last_used": datetime.now().strftime("%H:%M:%S")
+            },
+            {
+                "name": "Analiza Sentymentu (BERT)",
+                "status": "Nieaktywny",
+                "status_class": "offline",
+                "accuracy": "91.3%",
+                "last_used": "10:15:00"
+            },
+            {
+                "name": "Reinforcement Learning (DQN)",
+                "status": "Trenowanie",
+                "status_class": "warning",
+                "accuracy": "82.1%",
+                "last_used": "10:20:30"
+            }
+        ]
+        
+        logging.info("Renderowanie dashboardu z danymi: %s komponenty, %s anomalie, %s modele AI", 
+                    len(components), len(anomalies), len(ai_models))
         
         return render_template('dashboard.html', 
                               system_mode=system_mode,
@@ -124,7 +156,8 @@ def dashboard():
                               risk_level=risk_level,
                               components=components,
                               anomalies=anomalies,
-                              system_actions=system_actions)
+                              system_actions=system_actions,
+                              ai_models=ai_models)
     except Exception as e:
         logging.error("Błąd podczas renderowania dashboardu: %s", str(e))
         return f"Błąd w dashboardzie: {str(e)}", 500
