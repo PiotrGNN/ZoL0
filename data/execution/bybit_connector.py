@@ -1,4 +1,3 @@
-
 """
 bybit_connector.py
 ------------------
@@ -52,20 +51,20 @@ class BybitConnector:
         self.use_testnet = use_testnet
         self.api_key = api_key or os.getenv("BYBIT_API_KEY")
         self.api_secret = api_secret or os.getenv("BYBIT_API_SECRET")
-        
+
         if not self.api_key or not self.api_secret:
             raise ValueError("Klucz API ByBit i sekret są wymagane. Sprawdź zmienne środowiskowe.")
-        
+
         # Bazowe URL w zależności od środowiska
         self.base_url = "https://api-testnet.bybit.com" if use_testnet else "https://api.bybit.com"
-        
+
         # Podstawowa sesja HTTP
         self.session = requests.Session()
         self.session.headers.update({
             "Content-Type": "application/json",
             "X-BAPI-API-KEY": self.api_key
         })
-        
+
         logger.info(f"BybitConnector zainicjalizowany. Testnet: {use_testnet}")
 
     def _generate_signature(self, params: Dict[str, Any], timestamp: int) -> str:
@@ -85,7 +84,7 @@ class BybitConnector:
                 param_str = urlencode(sorted(params.items()))
             else:
                 param_str = params
-                
+
         sign_str = f"{timestamp}{self.api_key}{param_str}"
         signature = hmac.new(
             self.api_secret.encode("utf-8"),
@@ -141,15 +140,15 @@ class BybitConnector:
 
                 response.raise_for_status()
                 data = response.json()
-                
+
                 # Logowanie z maskowaniem wrażliwych danych
                 masked_params = {k: ("***" if k in ["api_key", "timestamp", "sign"] else v) for k, v in params.items()}
                 logger.info(f"Zapytanie {method} {endpoint} zakończone sukcesem. Parametry: {masked_params}")
-                
+
                 if data.get("ret_code") != 0:
                     logger.error(f"Błąd API ByBit: {data.get('ret_msg')}")
                     raise Exception(f"ByBit API Error: {data.get('ret_msg')}")
-                
+
                 return data
             except requests.exceptions.RequestException as e:
                 logger.warning(f"Błąd zapytania (próba {attempt}/{MAX_RETRIES}): {e}")
@@ -194,12 +193,12 @@ class BybitConnector:
             "interval": interval,
             "limit": limit
         }
-        
+
         if start_time:
             params["start"] = start_time
         if end_time:
             params["end"] = end_time
-            
+
         return self._request("GET", "/v5/market/kline", params)
 
     def get_order_book(self, symbol: str, limit: int = 25) -> Dict[str, Any]:
@@ -231,7 +230,16 @@ class BybitConnector:
             dict: Stan konta.
         """
         params = {"accountType": account_type}
-        return self._request("GET", "/v5/account/wallet-balance", params, private=True)
+        logger.info("Próba pobrania salda konta ByBit")
+        try:
+            result = self._request("GET", "/v5/account/wallet-balance", params, private=True)
+            logger.info(f"Odpowiedź API ByBit: {result}")
+            return result["result"]
+        except Exception as e:
+            logger.error(f"Błąd podczas pobierania salda konta: {e}")
+            # Zwracamy pusty wynik zamiast podnosić wyjątek, aby aplikacja nadal działała
+            return {"coins": [], "message": f"Błąd połączenia: {str(e)}"}
+
 
     def place_order(
         self,
@@ -268,16 +276,16 @@ class BybitConnector:
             "qty": str(qty),
             "timeInForce": time_in_force
         }
-        
+
         if order_type.lower() == "limit" and price is not None:
             params["price"] = str(price)
-        
+
         if reduce_only:
             params["reduceOnly"] = reduce_only
-        
+
         if close_on_trigger:
             params["closeOnTrigger"] = close_on_trigger
-            
+
         return self._request("POST", "/v5/order/create", params, private=True)
 
     def cancel_order(self, symbol: str, order_id: str = None, order_link_id: str = None) -> Dict[str, Any]:
@@ -296,14 +304,14 @@ class BybitConnector:
             "category": "spot",
             "symbol": symbol
         }
-        
+
         if order_id:
             params["orderId"] = order_id
         elif order_link_id:
             params["orderLinkId"] = order_link_id
         else:
             raise ValueError("Musisz podać order_id lub order_link_id")
-            
+
         return self._request("POST", "/v5/order/cancel", params, private=True)
 
     def get_open_orders(self, symbol: str = None, limit: int = 50) -> Dict[str, Any]:
@@ -321,10 +329,10 @@ class BybitConnector:
             "category": "spot",
             "limit": limit
         }
-        
+
         if symbol:
             params["symbol"] = symbol
-            
+
         return self._request("GET", "/v5/order/realtime", params, private=True)
 
     def get_order_history(
@@ -350,14 +358,14 @@ class BybitConnector:
             "category": "spot",
             "limit": limit
         }
-        
+
         if symbol:
             params["symbol"] = symbol
         if order_id:
             params["orderId"] = order_id
         if order_link_id:
             params["orderLinkId"] = order_link_id
-            
+
         return self._request("GET", "/v5/order/history", params, private=True)
 
 
@@ -366,24 +374,24 @@ if __name__ == "__main__":
     try:
         # Inicjalizacja klienta (domyślnie używa kluczy z .env)
         bybit = BybitConnector(use_testnet=False)
-        
+
         # Sprawdzenie połączenia - pobranie czasu serwera
         server_time = bybit.get_server_time()
         logger.info(f"Czas serwera ByBit: {server_time}")
-        
+
         # Pobranie danych świec dla BTCUSDT
         klines = bybit.get_klines(symbol="BTCUSDT", interval="15", limit=10)
         logger.info(f"Ostatnie świece BTCUSDT: {klines['result']['list'][0]}")
-        
+
         # Pobranie księgi zleceń
         order_book = bybit.get_order_book(symbol="BTCUSDT", limit=5)
         logger.info(f"Księga zleceń BTCUSDT (top 5): {order_book}")
-        
+
         # UWAGA: Poniższe operacje wymagają środków na koncie i są zakomentowane
         # Sprawdzenie stanu konta
         # balance = bybit.get_account_balance()
         # logger.info(f"Stan konta: {balance}")
-        
+
         # Złożenie zlecenia LIMIT
         # order = bybit.place_order(
         #     symbol="BTCUSDT",
@@ -393,7 +401,7 @@ if __name__ == "__main__":
         #     price=20000.0
         # )
         # logger.info(f"Złożone zlecenie: {order}")
-        
+
     except Exception as e:
         logger.error(f"Błąd w module bybit_connector.py: {e}")
         raise

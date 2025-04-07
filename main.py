@@ -463,9 +463,10 @@ def get_bybit_account_balance():
 if __name__ == "__main__":
     # Tworzenie katalogu logs jeśli nie istnieje
     os.makedirs("logs", exist_ok=True)
-
+    
     # Inicjalizacja systemu
     initialize_system()
-
-    # Uruchomienie aplikacji
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    
+    # Uruchomienie aplikacji - zawsze używamy 0.0.0.0 i portu 5000 w Replit
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
