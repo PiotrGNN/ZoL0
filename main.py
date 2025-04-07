@@ -1,55 +1,30 @@
-
 import os
 import sys
 import logging
 from datetime import datetime
-from dotenv import load_dotenv
+import flask
 from flask import Flask, jsonify, render_template, request
 
-# Dodanie katalogu głównego do ścieżki systemowej
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-
 # Konfiguracja logowania
+os.makedirs("logs", exist_ok=True)
 logging.basicConfig(
     filename="logs/app.log",
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
 )
 
-# Ładowanie zmiennych środowiskowych
-load_dotenv()
-
 # Inicjalizacja Flask
 app = Flask(__name__)
-
-# Próba importu kluczowych modułów z obsługą błędów
-try:
-    from config.config_loader import ConfigLoader
-    from data.strategies.fallback_strategy import FallbackStrategy
-    
-    # Inicjalizacja konfiguracji
-    config = ConfigLoader().load_config()
-    app_env = os.getenv("APP_ENV", "development")
-    test_mode = os.getenv("TEST_MODE", "true").lower() in ["true", "1", "t"]
-    
-except Exception as e:
-    logging.error(f"Błąd podczas inicjalizacji systemu: {str(e)}")
-    config = {}
-    app_env = "development"
-    test_mode = True
-
 
 # Trasy API dla dashboardu
 @app.route("/")
 def index():
     return render_template("dashboard.html")
 
-
 @app.route("/api/dashboard/data", methods=["GET"])
 def get_dashboard_data():
     # Symulowane dane dla dashboardu
     return jsonify({"success": True, "data": {"balance": 10000.00, "open_positions": 2}})
-
 
 @app.route("/api/trading-stats", methods=["GET"])
 def get_trading_stats():
@@ -64,7 +39,6 @@ def get_trading_stats():
         }
     })
 
-
 @app.route("/api/recent-trades", methods=["GET"])
 def get_recent_trades():
     # Symulowane ostatnie transakcje
@@ -77,7 +51,6 @@ def get_recent_trades():
         ]
     })
 
-
 @app.route("/api/alerts", methods=["GET"])
 def get_alerts():
     # Symulowane alerty
@@ -88,7 +61,6 @@ def get_alerts():
             {"id": 2, "type": "WARNING", "message": "Wysoka zmienność na BTC", "time": "2025-04-07 11:30:00"}
         ]
     })
-
 
 @app.route("/api/ai-models-status", methods=["GET"])
 def get_ai_status():
@@ -101,7 +73,6 @@ def get_ai_status():
             {"name": "Sentiment Analyzer", "status": "inactive", "accuracy": 0.0, "last_update": "2025-04-07 09:30:00"}
         ]
     })
-
 
 @app.route("/api/component-status", methods=["GET"])
 def get_component_status():
@@ -117,7 +88,6 @@ def get_component_status():
         ]
     })
 
-
 @app.route("/api/notifications", methods=["GET"])
 def get_notifications():
     # Symulowane powiadomienia
@@ -129,13 +99,12 @@ def get_notifications():
         ]
     })
 
-
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    
+
     # Wiadomość startowa
-    env_name = "TESTNET" if test_mode else "PRODUKCYJNYM"
-    logging.info(f"Uruchamianie aplikacji w środowisku {app_env.upper()} na {env_name}")
-    
+    logging.info(f"Uruchamianie aplikacji na porcie {port}")
+    print(f"Uruchamianie aplikacji na porcie {port}")
+
     # Uruchomienie serwera Flask
-    app.run(host="0.0.0.0", port=port, debug=(app_env == "development"))
+    app.run(host="0.0.0.0", port=port, debug=True)

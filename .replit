@@ -1,14 +1,13 @@
-run = "python main.py"
+run = "pip install -r requirements.txt && python main.py"
+language = "python3"
 entrypoint = "main.py"
-modules = ["python-3.10:v18-20230807-322e88b"]
-
-hidden = [".config", "**/__pycache__", "**/.mypy_cache", "**/*.pyc"]
+hidden = [".config", "**/__pycache__", "**/.pyc"]
 
 [nix]
 channel = "stable-23_05"
 
 [env]
-PYTHONPATH = "${PYTHONPATH}:${REPL_HOME}"
+PYTHONPATH = "${REPL_HOME}"
 PYTHONUNBUFFERED = "1"
 
 [packager]
@@ -23,19 +22,16 @@ guessImports = true
 language = "python3"
 
 [deployment]
-run = ["python", "main.py"]
+run = ["sh", "-c", "python main.py"]
 deploymentTarget = "cloudrun"
 
 [languages]
 
-[languages.python]
+[languages.python3]
 pattern = "**/*.py"
 
-[languages.python.languageServer]
+[languages.python3.languageServer]
 start = "pylsp"
-
-[interpreter]
-command = ["python", "-m", "flask", "run", "--host=0.0.0.0", "--port=5000"]
 
 [gitHubImport]
 requiredFiles = [".replit", "replit.nix", ".config", "requirements.txt"]
@@ -58,7 +54,7 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python main.py"
+args = "pip install -r requirements.txt && python main.py"
 
 [[workflows.workflow]]
 name = "Test"
