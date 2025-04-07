@@ -499,3 +499,105 @@ body {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+/* Podstawowe style dla dashboardu */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f7fa;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1, h2, h3, h4 {
+    font-weight: 600;
+    margin-top: 0;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mt-2 {
+    margin-top: 20px;
+}
+
+.mb-2 {
+    margin-bottom: 20px;
+}
+
+.small {
+    font-size: 0.85em;
+    color: #777;
+}
+
+.badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge-success {
+    background-color: #e6f7f0;
+    color: #2ecc71;
+}
+
+.badge-warning {
+    background-color: #fef6e7;
+    color: #f39c12;
+}
+
+.badge-danger {
+    background-color: #feeded;
+    color: #e74c3c;
+}
+
+.badge-info {
+    background-color: #e9f4fc;
+    color: #3498db;
+}
+
+button, .btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: #3498db;
+    color: white;
+    border: 1px solid #2980b9;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+}
+
+.btn-secondary {
+    background-color: #ecf0f1;
+    color: #2c3e50;
+    border: 1px solid #bdc3c7;
+}
+
+.btn-secondary:hover {
+    background-color: #bdc3c7;
+}
+
+code {
+    font-family: monospace;
+    background-color: #f9f9f9;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 0.9em;
+}

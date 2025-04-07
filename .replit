@@ -1,10 +1,9 @@
-run = "python main.py"
-language = "python3"
-entrypoint = "main.py"
-hidden = [".config", "**/__pycache__", "**/.pyc"]
+run = ["python", "main.py"]
+modules = ["python-3.10:v18-20230807-322e88b"]
+hidden = [".config", "**/__pycache__", "**/.mypy_cache", "**/*.pyc"]
 
 [nix]
-channel = "stable-23_05"
+channel = "stable-22_11"
 
 [env]
 PYTHONPATH = "${REPL_HOME}"
@@ -12,18 +11,11 @@ PYTHONUNBUFFERED = "1"
 
 [packager]
 language = "python3"
+ignoredPackages = ["unit_tests"]
 
 [packager.features]
-enabledForHosting = false
 packageSearch = true
 guessImports = true
-
-[unitTest]
-language = "python3"
-
-[deployment]
-run = ["sh", "-c", "python main.py"]
-deploymentTarget = "cloudrun"
 
 [languages]
 
@@ -32,6 +24,10 @@ pattern = "**/*.py"
 
 [languages.python3.languageServer]
 start = "pylsp"
+
+[deployment]
+run = ["sh", "-c", "python main.py"]
+deploymentTarget = "cloudrun"
 
 [[ports]]
 localPort = 5000
@@ -44,6 +40,10 @@ runButton = "Run"
 name = "Run"
 author = 31819671
 mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python -m pip install --user -r requirements.txt"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"

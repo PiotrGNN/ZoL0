@@ -141,6 +141,7 @@ class BybitConnector:
         """
         if self.simulation_mode or response is None:
             # W trybie symulacji zwracamy fałszywe dane
+            logger.debug("Tryb symulacji: generowanie sztucznych danych odpowiedzi")
             return {
                 "ret_code": 0,
                 "ret_msg": "OK",
@@ -152,13 +153,37 @@ class BybitConnector:
             }
             
         try:
-            data = response.json()
+            # Loguj szczegóły odpowiedzi niezależnie od wyniku
+            logger.debug(f"Odpowiedź API: Status: {response.status_code}, Nagłówki: {response.headers}")
+            
+            # Sprawdź, czy mamy treść odpowiedzi
+            if not response.text:
+                logger.error("Pusta odpowiedź z API (brak treści)")
+                raise Exception("Empty response from API (no content)")
+                
+            # Próba parsowania JSON z lepszą obsługą błędów
+            try:
+                data = response.json()
+            except json.JSONDecodeError as e:
+                # Zapisz surową odpowiedź do pliku dla debugowania
+                error_log_file = os.path.join("logs", f"api_error_{int(time.time())}.txt")
+                os.makedirs("logs", exist_ok=True)
+                
+                with open(error_log_file, "w") as f:
+                    f.write(f"Status: {response.status_code}\n")
+                    f.write(f"Nagłówki: {dict(response.headers)}\n")
+                    f.write(f"Treść: {response.text}\n")
+                
+                logger.error(f"Nieprawidłowa odpowiedź JSON: {str(e)}. Treść zapisana do {error_log_file}")
+                logger.error(f"Pierwsze 500 znaków odpowiedzi: {response.text[:500]}")
+                raise Exception(f"Invalid JSON response: {str(e)}. Treść zapisana do {error_log_file}")
 
-            # Sprawdzamy status odpowiedzi
+            # Sprawdzamy status odpowiedzi API Bybit
             if data.get("ret_code") != 0:
                 error_code = data.get("ret_code")
                 error_msg = data.get("ret_msg", "Unknown error")
                 logger.error(f"Błąd API Bybit: {error_code} - {error_msg}")
+                logger.error(f"Pełne dane odpowiedzi: {json.dumps(data)}")
 
                 # Jeśli kod błędu wymaga ponowienia, rzucamy wyjątek do obsługi retry
                 if error_code in self.RETRY_ERROR_CODES:
@@ -167,11 +192,22 @@ class BybitConnector:
                 # Inne błędy zwracamy bezpośrednio
                 return data
 
+            # Sprawdź, czy dane zawierają oczekiwany format odpowiedzi
+            if "result" not in data:
+                logger.warning(f"Odpowiedź API nie zawiera klucza 'result': {json.dumps(data)}")
+                
             return data
 
-        except json.JSONDecodeError:
-            logger.error(f"Nieprawidłowa odpowiedź JSON: {response.text}")
-            raise Exception(f"Invalid JSON response: {response.text}")
+        except json.JSONDecodeError as json_err:
+            logger.error(f"Nieprawidłowa odpowiedź JSON: {str(json_err)}")
+            logger.error(f"Treść odpowiedzi: {response.text[:1000]}...")
+            raise Exception(f"Invalid JSON response: {str(json_err)}. Response: {response.text[:500]}...")
+        
+        except Exception as e:
+            logger.error(f"Nieoczekiwany błąd podczas przetwarzania odpowiedzi: {str(e)}")
+            if response:
+                logger.error(f"Status odpowiedzi: {response.status_code}, Treść: {response.text[:500]}...")
+            raise
 
     def _request(
         self,

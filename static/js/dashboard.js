@@ -808,3 +808,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
     console.log("Dashboard załadowany");
 });
+// Dashboard JavaScript
+console.log("Dashboard JS loaded");
+
+// Funkcja do formatowania liczb
+function formatNumber(number, decimals = 2) {
+    return Number(number).toFixed(decimals);
+}
+
+// Funkcja do formatowania daty
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleString();
+}
+
+// Funkcja pomocnicza do pokazywania notyfikacji
+function showNotification(message, type = 'info') {
+    // Implementacja w przyszłości
+    console.log(`[${type}] ${message}`);
+}
+
+// Funkcja do aktualizacji statusu połączeń
+function updateAllStatuses() {
+    // Ta funkcja może być rozszerzona w przyszłości
+    console.log("Aktualizacja wszystkich statusów...");
+}

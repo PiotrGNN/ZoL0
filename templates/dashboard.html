@@ -1,461 +1,544 @@
+
 <!DOCTYPE html>
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trading Bot - Dashboard</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>AI Trading System - Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .dashboard-header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dashboard-header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .status-indicator {
+            display: flex;
+            align-items: center;
+        }
+        .status-dot {
+            height: 12px;
+            width: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-dot.online {
+            background-color: #2ecc71;
+        }
+        .status-dot.offline {
+            background-color: #e74c3c;
+        }
+        .status-dot.loading {
+            background-color: #f39c12;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .card-header {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card-header h2 {
+            margin: 0;
+            font-size: 18px;
+            color: #2c3e50;
+        }
+        .refresh-btn {
+            background: none;
+            border: none;
+            color: #3498db;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .refresh-btn:hover {
+            text-decoration: underline;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .error-message {
+            background-color: #ffeded;
+            border-left: 4px solid #e74c3c;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #c0392b;
+            border-radius: 4px;
+        }
+        .error-details {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #7f8c8d;
+        }
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        .data-table th {
+            background-color: #f9f9f9;
+            font-weight: 600;
+        }
+        .data-table tr:hover {
+            background-color: #f5f7fa;
+        }
+        .component-status {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .component-status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .component-status.ok {
+            background-color: #ebfbf0;
+        }
+        .component-status.ok .component-status-indicator {
+            background-color: #2ecc71;
+        }
+        .component-status.warning {
+            background-color: #fef9e8;
+        }
+        .component-status.warning .component-status-indicator {
+            background-color: #f39c12;
+        }
+        .component-status.error {
+            background-color: #ffeded;
+        }
+        .component-status.error .component-status-indicator {
+            background-color: #e74c3c;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Trading Bot Dashboard</h1>
-        <p>Zaawansowana platforma zarządzania handlem z wykorzystaniem AI</p>
-    </header>
-
-    <main>
-        <section id="summary-section" class="dashboard-section">
-            <h2>Podsumowanie</h2>
-            <div class="summary-grid">
-                <div class="summary-card">
-                    <h3>Stan portfela</h3>
-                    <div class="portfolio-value">
-                        <p class="total-value">$<span id="total-portfolio-value">0.00</span></p>
-                        <p class="pnl" id="portfolio-pnl">0.00%</p>
-                    </div>
-                </div>
-                <!-- Inne karty podsumowania -->
-            </div>
-        </section>
-
-        <section id="portfolio-section" class="dashboard-section">
-            <h2>Portfel</h2>
-            <div class="portfolio-table-container">
-                <table id="portfolio-table" class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Aktywo</th>
-                            <th>Ilość</th>
-                            <th>Wartość ($)</th>
-                            <th>Alokacja (%)</th>
-                            <th>PnL 24h (%)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="portfolio-assets">
-                        <!-- Dane aktywów będą wstawione przez JS -->
-                    </tbody>
-                </table>
-            </div>
-            <div id="portfolio-chart-container">
-                <canvas id="portfolio-allocation-chart"></canvas>
-            </div>
-        </section>
-<body>
     <div class="container">
-        <header class="header">
-            <h1>Trading Bot Dashboard</h1>
-            <div class="header-buttons">
-                <button id="start-trading-btn" class="btn btn-success">Start Trading</button>
-                <button id="stop-trading-btn" class="btn btn-danger">Stop Trading</button>
-                <button id="reset-system-btn" class="btn btn-warning">Reset System</button>
+        <div class="dashboard-header">
+            <h1>AI Trading System - Dashboard</h1>
+            <div class="status-indicator">
+                <div id="connectionStatus" class="status-dot loading"></div>
+                <span id="connectionStatusText">Sprawdzanie połączenia...</span>
             </div>
-        </header>
-
-        <!-- Obszar dla komunikatów o błędach -->
-        <div id="error-container" style="display: none;"></div>
-
-        <!-- Nawigacja tabów -->
-        <div class="tab-navigation">
-            <button class="tab-button active" data-tab="dashboard-tab">Dashboard</button>
-            <button class="tab-button" data-tab="trades-tab">Transakcje</button>
-            <button class="tab-button" data-tab="analytics-tab">Analityka</button>
-            <button class="tab-button" data-tab="settings-tab">Ustawienia</button>
-            <button class="tab-button" data-tab="notifications-tab">
-                Powiadomienia
-                <span id="notifications-badge" class="alert-badge" style="display: none;">0</span>
-            </button>
         </div>
 
-        <!-- Główny dashboard -->
-        <div id="dashboard-tab" class="tab-content" style="display: block;">
-            <div class="dashboard-grid">
-                <!-- Status komponentów -->
-                <div class="card">
-                    <h2>Status Komponentów</h2>
-                    <div class="component-status">
-                        <div id="api-connector" class="status-item status-online">
-                            <div class="status-name">API Connector</div>
-                            <div class="status-text">Online</div>
-                        </div>
-                        <div id="data-processor" class="status-item status-online">
-                            <div class="status-name">Data Processor</div>
-                            <div class="status-text">Online</div>
-                        </div>
-                        <div id="trading-engine" class="status-item status-warning">
-                            <div class="status-name">Trading Engine</div>
-                            <div class="status-text">Warning</div>
-                        </div>
-                        <div id="risk-manager" class="status-item status-online">
-                            <div class="status-name">Risk Manager</div>
-                            <div class="status-text">Online</div>
-                        </div>
-                    </div>
-                </div>
+        <!-- Komunikaty o błędach -->
+        <div id="errorContainer" style="display: none;" class="error-message">
+            <div id="errorMessage">Błąd połączenia z serwerem</div>
+            <div id="errorDetails" class="error-details"></div>
+        </div>
 
-                <!-- Wykres główny -->
-                <div class="card">
-                    <h2>Performance</h2>
-                    <div class="chart-container">
-                        <canvas id="main-chart"></canvas>
-                    </div>
-                </div>
-
-                <!-- Statystyki -->
-                <div class="card">
-                    <h2>Trading Stats</h2>
-                    <div class="summary-stats">
-                        <div class="stat-card">
-                            <div class="label">Total Profit</div>
-                            <div id="profit-value" class="value">$0.00</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="label">Total Trades</div>
-                            <div id="trades-value" class="value">0</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="label">Win Rate</div>
-                            <div id="win-rate-value" class="value">0%</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="label">Max Drawdown</div>
-                            <div id="drawdown-value" class="value">0%</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Status modeli AI -->
-                <div id="ai-models-section" class="card">
-                    <h2>Modele AI</h2>
-                    <div class="card-header">
-                        <h3>Modele AI</h3>
-                        <button id="train-model-btn" class="primary-btn">Trenuj nowy model</button>
-                    </div>
-                    <div class="card-body">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Nazwa</th>
-                                    <th>Status</th>
-                                    <th>Dokładność</th>
-                                    <th>Ostatnia aktualizacja</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for model in ai_models %}
-                                <tr>
-                                    <td>{{ model.name }}</td>
-                                    <td><span class="status-badge {{ 'active' if model.status == 'Active' else 'inactive' }}">{{ model.status }}</span></td>
-                                    <td>{{ model.accuracy }}%</td>
-                                    <td>{{ model.last_used }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-
-                        <!-- Modal do trenowania modelu -->
-                        <div id="train-model-modal" class="modal">
-                            <div class="modal-content">
-                                <span class="close">&times;</span>
-                                <h3>Trenuj nowy model AI</h3>
-                                <div class="form-group">
-                                    <label for="symbol">Symbol:</label>
-                                    <select id="model-symbol">
-                                        <option value="BTCUSDT">BTC/USDT</option>
-                                        <option value="ETHUSDT">ETH/USDT</option>
-                                        <option value="SOLUSDT">SOL/USDT</option>
-                                        <option value="DOGEUSDT">DOGE/USDT</option>
-                                        <option value="BNBUSDT">BNB/USDT</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="interval">Interwał czasowy:</label>
-                                    <select id="model-interval">
-                                        <option value="1h">1 godzina</option>
-                                        <option value="4h">4 godziny</option>
-                                        <option value="1d">1 dzień</option>
-                                        <option value="15m">15 minut</option>
-                                        <option value="5m">5 minut</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="lookback">Dane z okresu (dni):</label>
-                                    <input type="number" id="model-lookback" value="30" min="1" max="60">
-                                </div>
-                                <div id="training-status" style="display: none;">
-                                    <p>Trwa trenowanie modelu... To może potrwać kilka minut.</p>
-                                    <div class="loading-spinner"></div>
-                                </div>
-                                <div class="form-actions">
-                                    <button id="start-training-btn" class="primary-btn">Rozpocznij trenowanie</button>
-                                    <button id="cancel-training-btn" class="secondary-btn">Anuluj</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Ostatnie transakcje -->
-                <div class="card">
-                    <h2>Recent Trades</h2>
-                    <div id="recent-trades-list" class="activity-log">
-                        {% if trades %}
-                            {% for trade in trades %}
-                            <div class="trade-item">
-                                <div class="trade-symbol">{{ trade.symbol }}</div>
-                                <div class="trade-type">{{ trade.type }}</div>
-                                <div class="trade-time">{{ trade.time }}</div>
-                                <div class="trade-profit {% if trade.profit >= 0 %}positive{% else %}negative{% endif %}">
-                                    {{ trade.profit|string|first if trade.profit < 0 else '+' }}{{ trade.profit }}%
-                                </div>
-                            </div>
-                            {% endfor %}
-                        {% else %}
-                            <div class="no-data">Brak transakcji</div>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <!-- Alerty -->
-                <div class="card">
-                    <h2>Alerts <span id="alerts-badge" class="alert-badge">{{ alerts|length if alerts else 0 }}</span></h2>
-                    <div id="alerts-list" class="activity-log">
-                        {% if alerts %}
-                            {% for alert in alerts %}
-                            <div class="alert-item status-{{ alert.level_class }}">
-                                <div class="alert-time">{{ alert.time }}</div>
-                                <div class="alert-message">{{ alert.message }}</div>
-                            </div>
-                            {% endfor %}
-                        {% else %}
-                            <div class="no-data">Brak alertów</div>
-                        {% endif %}
-                    </div>
+        <!-- Status komponentów -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Status komponentów</h2>
+                <button id="refreshStatus" class="refresh-btn">Odśwież</button>
+            </div>
+            <div id="componentStatus" class="card-content">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    Ładowanie statusów...
                 </div>
             </div>
         </div>
 
-        <!-- Transakcje -->
-        <div id="trades-tab" class="tab-content">
-            <div class="card full-width">
-                <h2>Historia Transakcji</h2>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Data</th>
-                                <th>Symbol</th>
-                                <th>Typ</th>
-                                <th>Cena</th>
-                                <th>Ilość</th>
-                                <th>Wartość</th>
-                                <th>Profit</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="trades-table-body">
-                            <tr>
-                                <td colspan="9" class="no-data">Ładowanie danych...</td>
-                            </tr>
-                        </tbody>
-                    </table>
+        <!-- Portfel -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Portfel</h2>
+                <button id="refreshPortfolio" class="refresh-btn">Odśwież</button>
+            </div>
+            <div id="portfolioData" class="card-content">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    Ładowanie danych portfela...
                 </div>
             </div>
         </div>
 
-        <!-- Analityka -->
-        <div id="analytics-tab" class="tab-content">
-            <div class="analytics-grid">
-                <!-- Analiza sentymentu -->
-                <div class="card">
-                    <h2>Analiza Sentymentu</h2>
-                    <div id="sentiment-container">
-                        {% if sentiment_data %}
-                            <div class="sentiment-score">
-                                <div class="sentiment-label">Ogólny sentyment:</div>
-                                <div class="sentiment-value 
-                                    {% if sentiment_data.overall_score > 0.1 %}positive
-                                    {% elif sentiment_data.overall_score < -0.1 %}negative
-                                    {% else %}neutral{% endif %}">
-                                    {{ sentiment_data.analysis }}
-                                </div>
-                            </div>
-
-                            <div class="sentiment-details">
-                                <h4>Źródła danych:</h4>
-                                <ul>
-                                    {% for source, data in sentiment_data.sources.items() %}
-                                    <li>
-                                        <strong>{{ source }}</strong>: 
-                                        <span class="{% if data.score > 0.1 %}positive{% elif data.score < -0.1 %}negative{% else %}neutral{% endif %}">
-                                            {{ data.score|round(2) }}
-                                        </span>
-                                        ({{ data.volume }} wzmianek)
-                                    </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-
-                            <div class="sentiment-footer">
-                                <div>Zakres czasowy: {{ sentiment_data.timeframe }}</div>
-                                <div>Ostatnia aktualizacja: {{ sentiment_data.timestamp }}</div>
-                            </div>
-                        {% else %}
-                            <div class="no-data">Brak danych o sentymencie rynkowym</div>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <!-- Detekcja anomalii -->
-                <div class="card">
-                    <h2>Detekcja Anomalii</h2>
-                    <div id="anomalies-container">
-                        {% if anomalies and anomalies|length > 0 %}
-                            <div class="anomalies-summary">
-                                <div class="anomaly-count">Wykryte anomalie: <strong>{{ anomalies|length }}</strong></div>
-                                <div class="anomaly-severity">
-                                    Poziom zagrożenia: 
-                                    <span class="
-                                        {% if anomalies|length > 3 %}status-offline
-                                        {% elif anomalies|length > 1 %}status-warning
-                                        {% else %}status-online{% endif %}">
-                                        {{ 'Wysoki' if anomalies|length > 3 else 'Średni' if anomalies|length > 1 else 'Niski' }}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <ul class="anomalies-list">
-                                {% for anomaly in anomalies %}
-                                <li class="anomaly-item">
-                                    <div class="anomaly-time">{{ anomaly.timestamp }}</div>
-                                    <div class="anomaly-details">
-                                        <div class="anomaly-title">{{ anomaly.type }}</div>
-                                        <div class="anomaly-description">{{ anomaly.description }}</div>
-                                        <div class="anomaly-score">Score: {{ anomaly.score|round(2) }}</div>
-                                    </div>
-                                </li>
-                                {% endfor %}
-                            </ul>
-                        {% else %}
-                            <div class="no-anomalies">
-                                <div class="status-online">Nie wykryto anomalii</div>
-                                <p>System monitoruje dane rynkowe i wykryje nietypowe zachowania.</p>
-                            </div>
-                        {% endif %}
-                    </div>
+        <!-- Dane rynkowe -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Dane rynkowe</h2>
+                <button id="refreshMarketData" class="refresh-btn">Odśwież</button>
+            </div>
+            <div id="marketData" class="card-content">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    Ładowanie danych rynkowych...
                 </div>
             </div>
         </div>
-
-        <!-- Ustawienia -->
-        <div id="settings-tab" class="tab-content">
-            <div class="settings-grid">
-                <!-- Ustawienia systemu -->
-                <div class="card">
-                    <h2>Ustawienia Systemu</h2>
-                    <form id="system-settings-form" class="settings-form">
-                        <div class="form-group">
-                            <label for="risk-level">Poziom Ryzyka:</label>
-                            <select id="risk-level" name="risk_level" class="form-control">
-                                <option value="low" {% if settings.risk_level == 'low' %}selected{% endif %}>Niski</option>
-                                <option value="medium" {% if settings.risk_level == 'medium' %}selected{% endif %}>Średni</option>
-                                <option value="high" {% if settings.risk_level == 'high' %}selected{% endif %}>Wysoki</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="max-position-size">Maksymalny rozmiar pozycji (%):</label>
-                            <input type="number" id="max-position-size" name="max_position_size" 
-                                   min="0.1" max="100" step="0.1" 
-                                   value="{{ settings.max_position_size|default(10, true) }}" 
-                                   class="form-control">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="auto-trading">Automatyczny trading:</label>
-                            <div class="toggle-switch">
-                                <input type="checkbox" id="auto-trading" name="enable_auto_trading" 
-                                       {% if settings.enable_auto_trading %}checked{% endif %}>
-                                <label for="auto-trading"></label>
-                            </div>
-                        </div>
-
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">Zapisz ustawienia</button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Strategie -->
-                <div class="card">
-                    <h2>Ustawienia Strategii</h2>
-                    <div id="strategies-container">
-                        {% if strategies %}
-                            <div class="strategies-list">
-                                {% for strategy in strategies %}
-                                <div class="strategy-item">
-                                    <div class="strategy-header">
-                                        <div class="strategy-name">{{ strategy.name }}</div>
-                                        <div class="strategy-toggle">
-                                            <input type="checkbox" id="strategy-{{ loop.index }}" 
-                                                   class="strategy-toggle-input" 
-                                                   data-strategy-id="{{ strategy.id }}"
-                                                   {% if strategy.enabled %}checked{% endif %}>
-                                            <label for="strategy-{{ loop.index }}"></label>
-                                        </div>
-                                    </div>
-                                    <div class="strategy-description">{{ strategy.description }}</div>
-                                    <div class="strategy-metrics">
-                                        <div class="strategy-metric">
-                                            <div class="metric-label">Win Rate:</div>
-                                            <div class="metric-value {% if strategy.win_rate >= 60 %}positive{% elif strategy.win_rate >= 45 %}neutral{% else %}negative{% endif %}">
-                                                {{ strategy.win_rate }}%
-                                            </div>
-                                        </div>
-                                        <div class="strategy-metric">
-                                            <div class="metric-label">Profit Factor:</div>
-                                            <div class="metric-value {% if strategy.profit_factor >= 1.5 %}positive{% elif strategy.profit_factor >= 1 %}neutral{% else %}negative{% endif %}">
-                                                {{ strategy.profit_factor }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            <div class="no-data">Brak dostępnych strategii</div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Powiadomienia -->
-        <div id="notifications-tab" class="tab-content">
-            <div class="card full-width">
-                <h2>Powiadomienia</h2>
-                <div id="notifications-list" class="notifications-container">
-                    <div class="no-data">Ładowanie powiadomień...</div>
-                </div>
-            </div>
-        </div>
-
-        <footer class="footer">
-            <div>Trading Bot System v1.0.0</div>
-            <div>© 2025 Trading Bot</div>
-        </footer>
     </div>
 
-    <script src="/static/js/dashboard.js"></script>
+    <script>
+        // Funkcja do wyświetlania szczegółów błędu
+        function showError(message, details = '') {
+            const errorContainer = document.getElementById('errorContainer');
+            const errorMessage = document.getElementById('errorMessage');
+            const errorDetails = document.getElementById('errorDetails');
+            
+            errorMessage.textContent = message;
+            errorDetails.textContent = details || '';
+            errorContainer.style.display = 'block';
+            
+            // Zaktualizuj status połączenia
+            updateConnectionStatus('offline');
+        }
+        
+        // Funkcja do ukrywania błędu
+        function hideError() {
+            document.getElementById('errorContainer').style.display = 'none';
+        }
+        
+        // Funkcja do aktualizacji statusu połączenia
+        function updateConnectionStatus(status) {
+            const statusDot = document.getElementById('connectionStatus');
+            const statusText = document.getElementById('connectionStatusText');
+            
+            statusDot.className = 'status-dot ' + status;
+            
+            if (status === 'online') {
+                statusText.textContent = 'Połączony';
+            } else if (status === 'offline') {
+                statusText.textContent = 'Rozłączony';
+            } else if (status === 'loading') {
+                statusText.textContent = 'Łączenie...';
+            }
+        }
+        
+        // Ulepszona funkcja do pobierania danych z API
+        async function fetchAPI(endpoint) {
+            try {
+                updateConnectionStatus('loading');
+                console.log(`Wysyłanie żądania do ${endpoint}...`);
+                
+                const response = await fetch(endpoint);
+                
+                // Logowanie szczegółów odpowiedzi
+                console.log(`Status odpowiedzi: ${response.status} ${response.statusText}`);
+                
+                // Sprawdzenie statusu HTTP
+                if (!response.ok) {
+                    // Pobierz treść błędu
+                    const errorText = await response.text();
+                    console.error(`Błąd HTTP ${response.status}: ${errorText}`);
+                    
+                    try {
+                        // Próba parsowania jako JSON
+                        const errorJson = JSON.parse(errorText);
+                        throw new Error(`HTTP ${response.status}: ${errorJson.message || response.statusText}`);
+                    } catch (parseError) {
+                        // Jeśli nie jest to JSON, użyj surowego tekstu
+                        throw new Error(`HTTP ${response.status}: ${errorText || response.statusText}`);
+                    }
+                }
+                
+                // Pobierz treść odpowiedzi jako tekst
+                const responseText = await response.text();
+                
+                // Sprawdź, czy odpowiedź jest pusta
+                if (!responseText) {
+                    console.error("Pusta odpowiedź z serwera");
+                    throw new Error("Serwer zwrócił pustą odpowiedź");
+                }
+                
+                // Próba parsowania JSON
+                try {
+                    const data = JSON.parse(responseText);
+                    updateConnectionStatus('online');
+                    hideError();
+                    return data;
+                } catch (jsonError) {
+                    console.error("Błąd parsowania JSON:", jsonError);
+                    console.error("Otrzymana odpowiedź:", responseText);
+                    throw new Error(`Nieprawidłowy format JSON: ${jsonError.message}. Surowa odpowiedź: ${responseText.substring(0, 100)}...`);
+                }
+                
+            } catch (error) {
+                console.error(`Błąd podczas pobierania danych z ${endpoint}:`, error);
+                showError(`Błąd pobierania danych: ${error.message}`, error.stack);
+                throw error;
+            }
+        }
+        
+        // Funkcja do renderowania statusów komponentów
+        function renderComponentStatus() {
+            const container = document.getElementById('componentStatus');
+            
+            // Pobranie statusu Bybit API
+            fetchAPI('/api/test-bybit-connection')
+                .then(data => {
+                    let html = '';
+                    
+                    // Status połączenia z Bybit
+                    const bybitStatus = data.success ? 'ok' : 'error';
+                    html += `
+                        <div class="component-status ${bybitStatus}">
+                            <div class="component-status-indicator"></div>
+                            <div>
+                                <strong>Bybit API</strong><br>
+                                <small>${data.message || 'Brak informacji'}</small>
+                                ${data.simulation ? '<br><small>(Tryb symulacji)</small>' : ''}
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Dodatkowe komponenty - możesz rozszerzyć w przyszłości
+                    html += `
+                        <div class="component-status ok">
+                            <div class="component-status-indicator"></div>
+                            <div>
+                                <strong>System logowania</strong><br>
+                                <small>Aktywny</small>
+                            </div>
+                        </div>
+                        <div class="component-status ok">
+                            <div class="component-status-indicator"></div>
+                            <div>
+                                <strong>Baza danych</strong><br>
+                                <small>Połączona</small>
+                            </div>
+                        </div>
+                    `;
+                    
+                    container.innerHTML = html;
+                })
+                .catch(error => {
+                    container.innerHTML = `
+                        <div class="component-status error">
+                            <div class="component-status-indicator"></div>
+                            <div>
+                                <strong>Bybit API</strong><br>
+                                <small>Błąd połączenia: ${error.message}</small>
+                            </div>
+                        </div>
+                    `;
+                });
+        }
+        
+        // Funkcja do renderowania danych portfela
+        function renderPortfolioData() {
+            const container = document.getElementById('portfolioData');
+            container.innerHTML = '<div class="loading"><div class="loading-spinner"></div>Ładowanie danych portfela...</div>';
+            
+            fetchAPI('/api/portfolio')
+                .then(data => {
+                    if (!data.success) {
+                        throw new Error(data.message || 'Nie udało się pobrać danych portfela');
+                    }
+                    
+                    let html = '';
+                    
+                    if (data.simulation_mode) {
+                        // Tryb symulacji
+                        html += '<p><em>Dane w trybie symulacji</em></p>';
+                        
+                        html += '<h3>Saldo</h3>';
+                        html += '<table class="data-table">';
+                        html += '<tr><th>Waluta</th><th>Ilość</th></tr>';
+                        
+                        for (const [currency, amount] of Object.entries(data.balance)) {
+                            html += `<tr><td>${currency}</td><td>${amount}</td></tr>`;
+                        }
+                        
+                        html += '</table>';
+                        
+                        html += '<h3>Pozycje</h3>';
+                        html += '<table class="data-table">';
+                        html += '<tr><th>Symbol</th><th>Ilość</th><th>Cena wejścia</th></tr>';
+                        
+                        for (const position of data.positions) {
+                            html += `<tr><td>${position.symbol}</td><td>${position.amount}</td><td>${position.entry_price}</td></tr>`;
+                        }
+                        
+                        html += '</table>';
+                    } else {
+                        // Rzeczywiste dane
+                        const portfolioData = data.data;
+                        
+                        if (portfolioData.list && portfolioData.list.length > 0) {
+                            const account = portfolioData.list[0];
+                            
+                            html += `<h3>Saldo całkowite: ${account.totalEquity || 'N/A'}</h3>`;
+                            
+                            html += '<table class="data-table">';
+                            html += '<tr><th>Waluta</th><th>Saldo</th><th>Dostępne</th></tr>';
+                            
+                            if (account.coin && Array.isArray(account.coin)) {
+                                for (const coin of account.coin) {
+                                    html += `<tr>
+                                        <td>${coin.coin}</td>
+                                        <td>${coin.walletBalance}</td>
+                                        <td>${coin.availableToWithdraw}</td>
+                                    </tr>`;
+                                }
+                            } else {
+                                html += '<tr><td colspan="3">Brak danych o walutach</td></tr>';
+                            }
+                            
+                            html += '</table>';
+                        } else {
+                            html = '<p>Brak danych portfela</p>';
+                        }
+                    }
+                    
+                    container.innerHTML = html;
+                })
+                .catch(error => {
+                    container.innerHTML = `
+                        <div class="error-message">
+                            <div>Błąd ładowania danych portfela: ${error.message}</div>
+                        </div>
+                    `;
+                });
+        }
+        
+        // Funkcja do renderowania danych rynkowych
+        function renderMarketData() {
+            const container = document.getElementById('marketData');
+            container.innerHTML = '<div class="loading"><div class="loading-spinner"></div>Ładowanie danych rynkowych...</div>';
+            
+            // Pobierz dane dla BTC/USDT
+            fetchAPI('/api/market-data/BTCUSDT')
+                .then(data => {
+                    if (!data.success) {
+                        throw new Error(data.message || 'Nie udało się pobrać danych rynkowych');
+                    }
+                    
+                    const marketData = data.data;
+                    let html = '';
+                    
+                    if (data.simulation_mode) {
+                        html += '<p><em>Dane w trybie symulacji</em></p>';
+                    }
+                    
+                    html += '<h3>Aktualne ceny</h3>';
+                    html += '<table class="data-table">';
+                    html += '<tr><th>Symbol</th><th>Cena</th><th>Zmiana 24h</th><th>Wolumen 24h</th></tr>';
+                    
+                    if (marketData.list && marketData.list.length > 0) {
+                        for (const ticker of marketData.list) {
+                            html += `<tr>
+                                <td>${ticker.symbol}</td>
+                                <td>${ticker.lastPrice}</td>
+                                <td>${ticker.change24h || 'N/A'}%</td>
+                                <td>${ticker.volume24h || 'N/A'}</td>
+                            </tr>`;
+                        }
+                    } else {
+                        html += '<tr><td colspan="4">Brak danych rynkowych</td></tr>';
+                    }
+                    
+                    html += '</table>';
+                    html += `<p class="small">Ostatnia aktualizacja: ${new Date(data.timestamp).toLocaleString()}</p>`;
+                    
+                    container.innerHTML = html;
+                })
+                .catch(error => {
+                    container.innerHTML = `
+                        <div class="error-message">
+                            <div>Błąd ładowania danych rynkowych: ${error.message}</div>
+                        </div>
+                    `;
+                });
+        }
+        
+        // Funkcja inicjalizująca dashboard
+        function initializeDashboard() {
+            // Przypisz przyciski odświeżania
+            document.getElementById('refreshStatus').addEventListener('click', renderComponentStatus);
+            document.getElementById('refreshPortfolio').addEventListener('click', renderPortfolioData);
+            document.getElementById('refreshMarketData').addEventListener('click', renderMarketData);
+            
+            // Załaduj dane początkowe
+            renderComponentStatus();
+            renderPortfolioData();
+            renderMarketData();
+            
+            console.log("Dashboard załadowany");
+        }
+        
+        // Funkcja aktualizująca dane w regularnych odstępach czasu
+        function startAutomaticUpdates() {
+            setInterval(() => {
+                console.log("Aktualizacja danych dashboardu...");
+                renderPortfolioData();
+            }, 30000); // co 30 sekund
+            
+            setInterval(() => {
+                console.log("Aktualizacja statusów komponentów...");
+                renderComponentStatus();
+            }, 60000); // co 60 sekund
+        }
+        
+        // Inicjalizacja
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeDashboard();
+            startAutomaticUpdates();
+        });
+    </script>
 </body>
 </html>

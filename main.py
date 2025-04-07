@@ -1,392 +1,232 @@
+"""
+AI Trading System - Główny moduł aplikacji
+-----------------------------------------
+System integrujący modele AI z giełdami kryptowalut.
+"""
+
+import logging
 import os
 import sys
-import logging
-import random
+import time
 from datetime import datetime
-import flask
-from flask import Flask, jsonify, render_template, request
+from dotenv import load_dotenv
+import traceback
 
-# Próba importu dotenv z obsługą błędu
-try:
-    from dotenv import load_dotenv
-    load_dotenv()  # ładujemy zmienne środowiskowe
-except ImportError:
-    logging.warning("Moduł dotenv nie jest zainstalowany. Zmienne środowiskowe mogą nie być dostępne.")
+# Konfiguracja środowiska przed importami
+load_dotenv()
 
-# Konfiguracja logowania
+# Tworzenie katalogu logów
 os.makedirs("logs", exist_ok=True)
-logging.basicConfig(
-    filename="logs/app.log",
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-)
 
-# Inicjalizacja Flask
-app = Flask(__name__)
+# Konfiguracja systemu logowania
+log_level = os.getenv("LOG_LEVEL", "INFO").upper()
+log_level_num = getattr(logging, log_level, logging.INFO)
 
-# Trasy API dla dashboardu
-@app.route("/")
-def index():
-    # Przykładowe dane dla szablonu
-    settings = {
-        "risk_level": "low",
-        "max_position_size": 10.0,
-        "enable_auto_trading": False
-    }
-    
-    # Przykładowe dane dla modeli AI
-    ai_models = [
-        {"name": "Trend Predictor", "type": "XGBoost", "accuracy": 78, "status": "Active", "last_used": "2025-04-07 10:15:22"},
-        {"name": "Volatility Model", "type": "LSTM", "accuracy": 82, "status": "Active", "last_used": "2025-04-07 09:45:10"},
-        {"name": "Sentiment Analyzer", "type": "Transformer", "accuracy": 65, "status": "Inactive", "last_used": "2025-04-06 18:30:45"}
-    ]
-    
-    # Przykładowe dane dla strategii
-    strategies = [
-        {"id": 1, "name": "Trend Following", "description": "Podąża za trendem rynkowym", "enabled": True, "win_rate": 68, "profit_factor": 1.8},
-        {"id": 2, "name": "Mean Reversion", "description": "Wykorzystuje powroty do średniej", "enabled": False, "win_rate": 55, "profit_factor": 1.3},
-        {"id": 3, "name": "Breakout", "description": "Wykrywa i wykorzystuje wybicia", "enabled": True, "win_rate": 62, "profit_factor": 1.5}
-    ]
-    
-    # Przykładowe dane dla alertów
-    alerts = [
-        {"level_class": "warning", "time": "10:15", "message": "Wysoka zmienność na BTC/USDT"},
-        {"level_class": "offline", "time": "09:30", "message": "Utracono połączenie z API"}
-    ]
-    
-    # Przykładowe dane dla transakcji
-    trades = [
-        {"symbol": "BTC/USDT", "type": "BUY", "time": "10:05", "profit": 2.5},
-        {"symbol": "ETH/USDT", "type": "SELL", "time": "09:45", "profit": -1.2},
-        {"symbol": "SOL/USDT", "type": "BUY", "time": "09:15", "profit": 3.8}
-    ]
-    
-    # Przykładowe dane dla sentymentu
-    sentiment_data = {
-        "overall_score": 0.25,
-        "analysis": "Umiarkowanie pozytywny",
-        "sources": {
-            "Twitter": {"score": 0.35, "volume": 1250},
-            "Reddit": {"score": 0.18, "volume": 850},
-            "News": {"score": 0.22, "volume": 320}
-        },
-        "timeframe": "24h",
-        "timestamp": "2025-04-07 08:30:00"
-    }
-    
-    # Przykładowe dane dla anomalii
-    anomalies = [
-        {"timestamp": "10:05", "type": "Spike Detection", "description": "Nagły wzrost wolumenu BTC", "score": 0.85},
-        {"timestamp": "09:30", "type": "Price Pattern", "description": "Nietypowy wzór cenowy na ETH", "score": 0.72}
-    ]
-    
-    return render_template(
-        "dashboard.html",
-        settings=settings,
-        ai_models=ai_models,
-        strategies=strategies,
-        alerts=alerts,
-        trades=trades,
-        sentiment_data=sentiment_data,
-        anomalies=anomalies
+# Konfiguracja formattera i handlerów
+log_formatter = logging.Formatter('%(asctime)s [%(levelname)s] [%(name)s] %(message)s')
+
+# Handler do konsoli
+console_handler = logging.StreamHandler(sys.stdout)
+console_handler.setFormatter(log_formatter)
+
+# Handler do pliku
+file_handler = logging.FileHandler("logs/app.log")
+file_handler.setFormatter(log_formatter)
+
+# Konfiguracja głównego loggera
+root_logger = logging.getLogger()
+root_logger.setLevel(log_level_num)
+root_logger.addHandler(console_handler)
+root_logger.addHandler(file_handler)
+
+# Logger dla modułu głównego
+logger = logging.getLogger("main")
+logger.info(f"Inicjalizacja aplikacji w trybie {os.getenv('APP_ENV', 'development')}")
+logger.info(f"Poziom logowania: {log_level}")
+
+try:
+    # Importy modułów projektu - będą zaimportowane tylko jeśli środowisko jest poprawnie skonfigurowane
+    from data.execution.bybit_connector import BybitConnector
+    from data.utils.api_handler import APIHandler
+    from data.data.market_data_fetcher import MarketDataFetcher
+    from flask import Flask, jsonify, render_template
+
+    # Inicjalizacja Flask
+    app = Flask(__name__, 
+                template_folder="templates",
+                static_folder="static")
+
+    # Konfiguracja Bybit Connector w trybie symulacji
+    logger.info("Inicjalizacja połączenia z Bybit...")
+
+    # Sprawdzenie kluczy API - używanie trybu symulacji, jeśli brak kluczy
+    api_key = os.getenv("BYBIT_API_KEY")
+    api_secret = os.getenv("BYBIT_API_SECRET")
+    test_mode = os.getenv("TEST_MODE", "true").lower() in ["true", "1", "t"]
+
+    # Jeśli brak kluczy lub to przykładowe klucze, włącz tryb symulacji
+    simulation_mode = not api_key or api_key == "simulation_mode_key" or not api_secret
+
+    if simulation_mode:
+        logger.warning("Klucze API nie są skonfigurowane - uruchamianie w trybie symulacji")
+    else:
+        logger.info(f"Łączenie z Bybit w trybie {'testnet' if test_mode else 'mainnet'}")
+
+    bybit = BybitConnector(
+        api_key=api_key,
+        api_secret=api_secret,
+        use_testnet=test_mode,
+        simulation_mode=simulation_mode
     )
 
-@app.route("/api/dashboard/data", methods=["GET"])
-def get_dashboard_data():
-    # Symulowane dane dla dashboardu
-    return jsonify({"success": True, "data": {"balance": 10000.00, "open_positions": 2}})
+    # Funkcja do testowania połączenia z Bybit
+    @app.route('/api/test-bybit-connection')
+    def test_bybit_connection():
+        logger.info("Testowanie połączenia z Bybit...")
+        try:
+            start_time = time.time()
+            connected = bybit.test_connectivity()
+            response_time = time.time() - start_time
 
-@app.route("/api/trading-stats", methods=["GET"])
-def get_trading_stats():
-    # Symulowane statystyki handlowe
-    return jsonify({
-        "success": True,
-        "data": {
-            "total_trades": 120,
-            "win_rate": 0.65,
-            "profit_factor": 1.8,
-            "daily_pnl": 125.50
-        }
-    })
+            if connected:
+                # Pobierz ticker dla BTC/USDT
+                btc_data = bybit.get_ticker("BTCUSDT")
 
-@app.route("/api/recent-trades", methods=["GET"])
-def get_recent_trades():
-    # Symulowane ostatnie transakcje
-    return jsonify({
-        "success": True,
-        "data": [
-            {"id": 1, "symbol": "BTCUSDT", "side": "BUY", "price": 65432.10, "time": "2025-04-07 11:30:45"},
-            {"id": 2, "symbol": "ETHUSDT", "side": "SELL", "price": 3210.50, "time": "2025-04-07 11:15:22"},
-            {"id": 3, "symbol": "SOLUSDT", "side": "BUY", "price": 180.75, "time": "2025-04-07 10:55:18"}
-        ]
-    })
+                return jsonify({
+                    'success': True,
+                    'message': f'Połączenie z Bybit działa poprawnie! Czas odpowiedzi: {response_time:.2f}s',
+                    'response_time': response_time,
+                    'mode': 'testnet' if test_mode else 'mainnet',
+                    'simulation': simulation_mode,
+                    'btc_data': btc_data
+                })
+            else:
+                logger.error("Test połączenia z Bybit nieudany")
+                return jsonify({
+                    'success': False,
+                    'message': 'Nie można połączyć się z Bybit API',
+                    'response_time': response_time,
+                    'mode': 'testnet' if test_mode else 'mainnet',
+                    'simulation': simulation_mode
+                }), 500
 
-@app.route("/api/alerts", methods=["GET"])
-def get_alerts():
-    # Symulowane alerty
-    return jsonify({
-        "success": True,
-        "data": [
-            {"id": 1, "type": "INFO", "message": "Połączono z API Bybit", "time": "2025-04-07 10:00:00"},
-            {"id": 2, "type": "WARNING", "message": "Wysoka zmienność na BTC", "time": "2025-04-07 11:30:00"}
-        ]
-    })
-
-@app.route("/api/ai-models-status", methods=["GET"])
-def get_ai_status():
-    try:
-        # Sprawdzamy czy mamy zapisane modele
-        model_files = []
-        if os.path.exists("saved_models"):
-            model_files = [f for f in os.listdir("saved_models") if f.endswith(".json") or f.endswith(".pkl")]
-        
-        if not model_files:
-            # Jeśli nie ma zapisanych modeli, zwracamy symulowane dane
+        except Exception as e:
+            logger.error(f"Błąd podczas testowania połączenia z Bybit: {str(e)}")
             return jsonify({
-                "success": True,
-                "data": [
-                    {"name": "Trend Predictor", "status": "active", "accuracy": 0.78, "last_update": "2025-04-07 11:45:00"},
-                    {"name": "Volatility Model", "status": "active", "accuracy": 0.82, "last_update": "2025-04-07 11:40:00"},
-                    {"name": "Sentiment Analyzer", "status": "inactive", "accuracy": 0.0, "last_update": "2025-04-07 09:30:00"}
-                ]
-            })
-        
-        # Przygotowujemy dane o modelach
-        models_data = []
-        for model_file in model_files:
-            try:
-                # Parsujemy nazwę modelu
-                parts = model_file.split("_")
-                if len(parts) >= 3:
-                    model_type = parts[0]
-                    symbol = parts[1]
-                    date_parts = parts[2].split(".")
-                    date_str = date_parts[0]
-                    
-                    # Format daty: YYYYMMDD_HHMMSS
-                    if len(date_str) >= 15:
-                        date = datetime.strptime(date_str, "%Y%m%d_%H%M%S")
-                        last_update = date.strftime("%Y-%m-%d %H:%M:%S")
-                    else:
-                        last_update = "Nieznana data"
-                    
-                    # Dodajemy informacje o modelu
-                    models_data.append({
-                        "name": f"{model_type} {symbol}",
-                        "status": "active",
-                        "accuracy": round(random.uniform(0.65, 0.85), 2),  # Losowa dokładność (można zaimplementować odczyt z pliku)
-                        "last_update": last_update
-                    })
-            except Exception as e:
-                logging.error(f"Błąd podczas parsowania pliku modelu {model_file}: {e}")
-        
-        return jsonify({
-            "success": True,
-            "data": models_data
-        })
-    except Exception as e:
-        logging.error(f"Błąd podczas pobierania statusu modeli AI: {e}")
-        # Zwracamy awaryjne dane
-        return jsonify({
-            "success": True,
-            "data": [
-                {"name": "Trend Predictor", "status": "active", "accuracy": 0.78, "last_update": "2025-04-07 11:45:00"},
-                {"name": "Volatility Model", "status": "active", "accuracy": 0.82, "last_update": "2025-04-07 11:40:00"},
-                {"name": "Sentiment Analyzer", "status": "inactive", "accuracy": 0.0, "last_update": "2025-04-07 09:30:00"}
-            ],
-            "error": str(e)
-        })
+                'success': False,
+                'message': f'Błąd: {str(e)}',
+                'error_type': type(e).__name__,
+                'traceback': traceback.format_exc()
+            }), 500
 
-@app.route("/api/train-ai-model", methods=["POST"])
-def train_ai_model():
-    try:
-        # Sprawdzamy czy mamy wymagane parametry
-        data = request.json or {}
-        symbol = data.get("symbol", "BTCUSDT")
-        interval = data.get("interval", "1h")
-        lookback_days = int(data.get("lookback_days", 30))
-        
-        # Importujemy trainer
-        from ai_models.market_data_trainer import MarketDataTrainer
-        
-        # Inicjalizujemy trainer
-        trainer = MarketDataTrainer(
-            symbols=[symbol],
-            interval=interval,
-            lookback_days=lookback_days,
-            test_size=0.2,
-            use_testnet=True
-        )
-        
-        # Trenujemy model
-        result = trainer.train_model_for_symbol(symbol)
-        
-        return jsonify({
-            "success": result.get("success", False),
-            "symbol": symbol,
-            "interval": interval,
-            "lookback_days": lookback_days,
-            "result": result
-        })
-    except Exception as e:
-        logging.error(f"Błąd podczas trenowania modelu AI: {e}")
-        return jsonify({
-            "success": False,
-            "error": str(e)
-        })
+    # Dashboard
+    @app.route('/')
+    def dashboard():
+        """Główny dashboard aplikacji"""
+        try:
+            return render_template('dashboard.html')
+        except Exception as e:
+            logger.error(f"Błąd renderowania dashboard: {str(e)}")
+            return f"Błąd renderowania dashboard: {str(e)}", 500
 
-@app.route("/api/component-status", methods=["GET"])
-def get_component_status():
-    # Symulowany status komponentów systemu
-    return jsonify({
-        "success": True,
-        "components": [
-            {"id": "api_connection", "name": "API Connection", "status": "operational"},
-            {"id": "websocket_feed", "name": "WebSocket Feed", "status": "degraded"},
-            {"id": "ai_prediction", "name": "AI Prediction Engine", "status": "operational"},
-            {"id": "trade_execution", "name": "Trade Execution", "status": "operational"},
-            {"id": "risk_management", "name": "Risk Management", "status": "operational"}
-        ]
-    })
+    # API endpoint dla danych portfela
+    @app.route('/api/portfolio')
+    def get_portfolio():
+        """API endpoint zwracający dane portfela"""
+        try:
+            logger.info("Pobieranie danych portfela...")
 
-@app.route("/api/notifications", methods=["GET"])
-def get_notifications():
-    # Symulowane powiadomienia
-    return jsonify({
-        "success": True,
-        "data": [
-            {"id": 1, "type": "success", "message": "Zlecenie BUY BTCUSDT wykonane", "time": "2025-04-07 11:30:45"},
-            {"id": 2, "type": "warning", "message": "Wysoka zmienność rynku", "time": "2025-04-07 10:15:22"}
-        ]
-    })
-
-@app.route("/api/portfolio", methods=["GET"])
-def get_portfolio():
-    try:
-        # Inicjalizacja konektora Bybit
-        from data.execution.bybit_connector import BybitConnector
-        import os
-        from datetime import datetime
-        
-        # Pobieramy klucze API z zmiennych środowiskowych
-        api_key = os.getenv("BYBIT_API_KEY", "")
-        api_secret = os.getenv("BYBIT_API_SECRET", "")
-        use_testnet = os.getenv("TEST_MODE", "true").lower() in ["true", "1", "t"]
-        
-        # Sprawdzamy czy mamy klucze API
-        simulation_mode = not (api_key and api_secret)
-        
-        # Inicjalizujemy konektor
-        bybit = BybitConnector(
-            api_key=api_key,
-            api_secret=api_secret,
-            use_testnet=use_testnet,
-            simulation_mode=simulation_mode
-        )
-        
-        # Pobieramy saldo portfela
-        wallet_data = bybit.get_wallet_balance()
-        
-        if simulation_mode or "result" not in wallet_data or not wallet_data["result"].get("list"):
-            # Jeśli brak danych lub jesteśmy w trybie symulacji, zwracamy symulowane dane
-            return jsonify({
-                "success": True,
-                "data": {
-                    "total_value": 15240.75,
-                    "assets": [
-                        {"symbol": "BTC", "amount": 0.24, "value_usd": 8760.50, "allocation": 57.5, "pnl_24h": 3.8},
-                        {"symbol": "ETH", "amount": 1.85, "value_usd": 3700.25, "allocation": 24.3, "pnl_24h": -1.2},
-                        {"symbol": "SOL", "amount": 18.5, "value_usd": 1680.00, "allocation": 11.0, "pnl_24h": 5.4},
-                        {"symbol": "USDT", "amount": 1100.00, "value_usd": 1100.00, "allocation": 7.2, "pnl_24h": 0.0}
+            if simulation_mode:
+                # Dane symulowane dla trybu demo
+                return jsonify({
+                    'success': True,
+                    'balance': {
+                        'USDT': 10000.0,
+                        'BTC': 0.5,
+                        'ETH': 5.0
+                    },
+                    'positions': [
+                        {'symbol': 'BTCUSDT', 'amount': 0.1, 'entry_price': 65000.0},
+                        {'symbol': 'ETHUSDT', 'amount': 2.0, 'entry_price': 3500.0}
                     ],
-                    "pnl_total": 1240.75,
-                    "pnl_percentage": 8.85,
-                    "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                    "mode": "symulacja (brak kluczy API lub brak danych)"
-                }
+                    'simulation_mode': True
+                })
+
+            # Rzeczywiste dane z Bybit
+            wallet_data = bybit.get_wallet_balance()
+            logger.debug(f"Otrzymane dane portfela: {wallet_data}")
+
+            # Sprawdź poprawność danych
+            if 'result' not in wallet_data or 'list' not in wallet_data['result']:
+                logger.error(f"Nieprawidłowy format danych portfela: {wallet_data}")
+                return jsonify({
+                    'success': False,
+                    'message': 'Nieprawidłowy format danych z API',
+                    'data': wallet_data
+                }), 500
+
+            return jsonify({
+                'success': True,
+                'data': wallet_data['result'],
+                'simulation_mode': False
             })
-        
-        # Przetwarzamy dane portfela
-        wallet_info = wallet_data["result"]["list"][0]
-        total_value = float(wallet_info.get("totalEquity", 0))
-        coins = wallet_info.get("coin", [])
-        
-        # Inicjalizacja pustej listy aktywów
-        assets = []
-        total_allocation = 0
-        
-        # Dla każdej monety, pobieramy jej cenę i obliczamy wartość
-        for coin in coins:
-            coin_name = coin.get("coin", "")
-            amount = float(coin.get("walletBalance", 0))
-            
-            # Pomijamy monety o zerowym saldzie
-            if amount <= 0:
-                continue
-            
-            # Dla kryptowalut innych niż stablecoiny, pobieramy cenę
-            value_usd = amount
-            if coin_name not in ["USDT", "USDC", "BUSD", "DAI"]:
-                try:
-                    # Pobieramy cenę monety
-                    ticker_symbol = f"{coin_name}USDT"
-                    ticker_data = bybit.get_ticker(ticker_symbol)
-                    
-                    if "result" in ticker_data and "list" in ticker_data["result"] and ticker_data["result"]["list"]:
-                        price = float(ticker_data["result"]["list"][0].get("lastPrice", 0))
-                        value_usd = amount * price
-                except Exception as e:
-                    logging.error(f"Błąd podczas pobierania ceny {coin_name}: {e}")
-            
-            # Dodajemy do listy aktywów
-            assets.append({
-                "symbol": coin_name,
-                "amount": amount,
-                "value_usd": value_usd,
-                "allocation": 0,  # tymczasowo, zostanie zaktualizowane poniżej
-                "pnl_24h": 0  # dane PnL nie są dostępne bezpośrednio z API
+
+        except Exception as e:
+            error_details = {
+                'success': False,
+                'message': f'Błąd pobierania danych portfela: {str(e)}',
+                'error_type': type(e).__name__,
+                'traceback': traceback.format_exc()
+            }
+            logger.error(f"Błąd API /api/portfolio: {error_details['message']}")
+            return jsonify(error_details), 500
+
+    # API endpoint do pobierania danych rynkowych
+    @app.route('/api/market-data/<symbol>')
+    def get_market_data(symbol):
+        """API endpoint zwracający dane rynkowe dla danego symbolu"""
+        try:
+            logger.info(f"Pobieranie danych rynkowych dla {symbol}...")
+
+            # Pobierz ticker dla danego symbolu
+            ticker_data = bybit.get_ticker(symbol)
+
+            # Sprawdź poprawność danych
+            if 'result' not in ticker_data or 'list' not in ticker_data['result']:
+                logger.error(f"Nieprawidłowy format danych tickera: {ticker_data}")
+                return jsonify({
+                    'success': False,
+                    'message': 'Nieprawidłowy format danych z API',
+                    'data': ticker_data
+                }), 500
+
+            return jsonify({
+                'success': True,
+                'data': ticker_data['result'],
+                'timestamp': datetime.now().isoformat(),
+                'simulation_mode': simulation_mode
             })
-            
-            total_allocation += value_usd
-        
-        # Aktualizujemy alokację procentową
-        for asset in assets:
-            if total_allocation > 0:
-                asset["allocation"] = round(asset["value_usd"] / total_allocation * 100, 1)
-        
-        # Sortujemy aktywa według wartości (malejąco)
-        assets.sort(key=lambda x: x["value_usd"], reverse=True)
-        
-        return jsonify({
-            "success": True,
-            "data": {
-                "total_value": total_value,
-                "assets": assets,
-                "pnl_total": 0,  # dane PnL nie są dostępne bezpośrednio z API
-                "pnl_percentage": 0,
-                "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "mode": "dane rzeczywiste"
+
+        except Exception as e:
+            error_details = {
+                'success': False,
+                'message': f'Błąd pobierania danych rynkowych: {str(e)}',
+                'error_type': type(e).__name__,
+                'traceback': traceback.format_exc()
             }
-        })
-    except Exception as e:
-        logging.error(f"Błąd podczas pobierania danych portfela: {e}")
-        return jsonify({
-            "success": False,
-            "error": str(e),
-            "data": {
-                "total_value": 0,
-                "assets": [],
-                "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "mode": "błąd"
-            }
-        })
+            logger.error(f"Błąd API /api/market-data/{symbol}: {error_details['message']}")
+            return jsonify(error_details), 500
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
+    # Uruchomienie aplikacji
+    if __name__ == "__main__":
+        try:
+            logger.info("Uruchamianie serwera Flask na 0.0.0.0:5000")
+            app.run(host='0.0.0.0', port=5000, debug=True)
+        except Exception as e:
+            logger.critical(f"Błąd uruchomienia serwera Flask: {str(e)}")
+            sys.exit(1)
 
-    # Wiadomość startowa
-    logging.info(f"Uruchamianie aplikacji na porcie {port}")
-    print(f"Uruchamianie aplikacji na porcie {port}")
-
-    # Uruchomienie serwera Flask
-    app.run(host="0.0.0.0", port=port, debug=True)
+except Exception as e:
+    logger.critical(f"Krytyczny błąd podczas inicjalizacji aplikacji: {str(e)}")
+    logger.critical(traceback.format_exc())
+    sys.exit(1)
