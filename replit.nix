@@ -1,3 +1,4 @@
+
 { pkgs }: {
   deps = [
     pkgs.python310
@@ -10,5 +11,8 @@
     pkgs.python310Packages.pytz
     pkgs.python310Packages.scikit-learn
     pkgs.python310Packages.matplotlib
+    pkgs.python310Packages.pytest
+    pkgs.python310Packages.black
+    pkgs.python310Packages.flake8
   ];
 }
