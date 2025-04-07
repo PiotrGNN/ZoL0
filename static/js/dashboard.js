@@ -7,203 +7,128 @@ document.addEventListener('DOMContentLoaded', function() {
     updateComponentStatuses();
     fetchNotifications();
     setupEventListeners();
-    initializeChart(); // Added chart initialization
+    initializeChart();
 
-    // Interwały aktualizacji - poprawione interwały
-    setInterval(updateDashboardData, 5000); // Co 5 sekund
-    setInterval(updateComponentStatuses, 10000); // Co 10 sekund
+    // Interwały aktualizacji
+    setInterval(updateDashboardData, 10000); // Co 10 sekund
+    setInterval(updateComponentStatuses, 15000); // Co 15 sekund
     setInterval(fetchNotifications, 60000); // Co minutę
 });
 
 // Liczniki błędów dla obsługi ponownych prób
-let chartErrorCount = 0;
-let statusErrorCount = 0;
-let statsErrorCount = 0;
+let errorCounts = {
+    chart: 0,
+    status: 0,
+    stats: 0,
+    portfolio: 0
+};
 
 // Główne funkcje dashboardu
 function updateDashboardData() {
     console.log('Aktualizacja danych dashboardu...');
+    updatePortfolioData();
     updateCharts();
     updateTradingStats();
-
-function updatePortfolio() {
-    fetch('/api/portfolio')
-        .then(response => response.json())
-        .then(data => {
-            const portfolioContainer = document.getElementById('portfolio-container');
-            if (!portfolioContainer) return;
-            
-            if (data.error) {
-                portfolioContainer.innerHTML = `<div class="no-data">Błąd: ${data.error}</div>`;
-                return;
-            }
-            
-            if (!data.coins || data.coins.length === 0) {
-                portfolioContainer.innerHTML = '<div class="no-data">Brak danych portfela.</div>';
-                return;
-            }
-            
-            let html = '';
-            data.coins.forEach(coin => {
-                html += `
-                <div class="portfolio-item">
-                    <div class="coin-name">${coin.coin}</div>
-                    <div class="coin-balance">Balans: ${coin.walletBalance}</div>
-                    <div class="coin-value">Wartość: ${coin.usdValue || 'N/A'}</div>
-                </div>`;
-            });
-            
-            portfolioContainer.innerHTML = html;
-        })
-        .catch(error => {
-            console.error('Błąd podczas pobierania danych portfela:', error);
-            const portfolioContainer = document.getElementById('portfolio-container');
-            if (portfolioContainer) {
-                portfolioContainer.innerHTML = `<div class="no-data">Błąd połączenia. Spróbuj ponownie.</div>`;
-            }
-        });
-}
-
     updateRecentTrades();
-    updateAlerts();
-    updatePortfolio();
-    updateAIModelsStatus();
+    updateAIModelsStatus(); //Retained from original
+    updateAlerts(); //Retained from original
 }
 
-function updateComponentStatuses() {
-    console.log('Aktualizacja statusów komponentów...');
-
-    fetch('/api/component-status')
+function updatePortfolioData() {
+    fetch('/api/bybit/account-balance')
         .then(response => {
             if (!response.ok) {
-                throw new Error('Błąd pobierania statusów komponentów');
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
             return response.json();
         })
         .then(data => {
-            statusErrorCount = 0; // Reset licznika błędów
-
-            if (data && Array.isArray(data.components)) {
-                data.components.forEach(component => {
-                    updateComponentStatus(component.id, component.status);
-                });
+            if (data.error) {
+                throw new Error(data.error);
             }
+
+            // Aktualizacja interfejsu z danymi portfela
+            const portfolioContainer = document.getElementById('portfolio-container');
+            if (portfolioContainer && data.balances) {
+                let portfolioHTML = '<div class="card"><div class="card-header">Stan portfela</div><div class="card-body">';
+                portfolioHTML += '<table class="table"><thead><tr><th>Waluta</th><th>Dostępne</th><th>Całkowite</th></tr></thead><tbody>';
+
+                for (const [currency, balance] of Object.entries(data.balances)) {
+                    portfolioHTML += `<tr>
+                        <td>${currency}</td>
+                        <td>${Number(balance.available_balance).toFixed(6)}</td>
+                        <td>${Number(balance.wallet_balance).toFixed(6)}</td>
+                    </tr>`;
+                }
+
+                portfolioHTML += '</tbody></table></div></div>';
+                portfolioContainer.innerHTML = portfolioHTML;
+            }
+
+            // Resetuj licznik błędów po sukcesie
+            errorCounts.portfolio = 0;
         })
         .catch(error => {
-            console.error('Błąd podczas pobierania statusów komponentów:', error);
-            statusErrorCount++;
+            errorCounts.portfolio++;
+            console.warn("Błąd podczas pobierania danych portfela:", error);
 
-            if (statusErrorCount <= 3) {
-                // Spróbuj ponownie po 5 sekundach, ale tylko 3 razy
-                setTimeout(updateComponentStatuses, 5000);
-            } else {
-                // Po 3 próbach pokaż błąd na interfejsie
-                showErrorMessage('Nie można połączyć się z serwerem. Sprawdź połączenie sieciowe.');
-            }
-        });
-}
-
-function updateAIModelsStatus() {
-    fetch('/api/ai-models-status')
-        .then(response => {
-            if (!response.ok) {
-                return { models: [] }; // Zwracamy pusty obiekt jeśli API nie istnieje
-            }
-            return response.json();
-        })
-        .then(data => {
-            const aiModelsContainer = document.getElementById('ai-models-container');
-            if (!aiModelsContainer) return;
-
-            if (data && Array.isArray(data.models) && data.models.length > 0) {
-                let modelsHTML = '';
-
-                data.models.forEach(model => {
-                    const accuracyClass = getAccuracyClass(model.accuracy);
-                    modelsHTML += `
-                    <div class="ai-model-card">
-                        <h4>${model.name}</h4>
-                        <div class="model-details">
-                            <div>Typ: ${model.type}</div>
-                            <div>Dokładność: <span class="${accuracyClass}">${model.accuracy}%</span></div>
-                            <div>Status: <span class="status-${model.status.toLowerCase()}">${model.status}</span></div>
-                            <div>Ostatnie użycie: ${model.last_used || 'Nigdy'}</div>
+            // Tylko wyświetl komunikat o błędzie jeśli jest to powtarzający się problem
+            if (errorCounts.portfolio > 3) {
+                const portfolioContainer = document.getElementById('portfolio-container');
+                if (portfolioContainer) {
+                    portfolioContainer.innerHTML = `<div class="card">
+                        <div class="card-header">Stan portfela</div>
+                        <div class="card-body">
+                            <div class="alert alert-warning">
+                                Nie udało się pobrać danych portfela. Spróbuj odświeżyć stronę.
+                            </div>
                         </div>
                     </div>`;
-                });
-
-                aiModelsContainer.innerHTML = modelsHTML;
-                document.getElementById('ai-models-section').style.display = 'block';
-            } else {
-                // Brak modeli lub API nie zwraca poprawnych danych
-                document.getElementById('ai-models-section').style.display = 'none';
+                }
             }
-        })
-        .catch(error => {
-            console.error('Błąd podczas pobierania statusów modeli AI:', error);
-            document.getElementById('ai-models-section').style.display = 'none';
         });
-}
-
-// Funkcje pomocnicze
-function updateComponentStatus(componentId, status) {
-    const component = document.getElementById(componentId);
-    if (component) {
-        // Usuń poprzednie klasy statusu
-        component.classList.remove('status-online', 'status-warning', 'status-offline', 'status-maintenance');
-
-        // Dodaj nową klasę statusu
-        component.classList.add(`status-${status}`);
-
-        // Aktualizuj tekst statusu
-        const statusElement = component.querySelector('.status-text');
-        if (statusElement) {
-            statusElement.textContent = status.charAt(0).toUpperCase() + status.slice(1);
-        }
-    }
 }
 
 function updateCharts() {
-    // Pobierz dane do wykresów
-    fetch('/api/dashboard/data')
+    fetch('/api/chart-data')
         .then(response => {
             if (!response.ok) {
-                throw new Error('Błąd pobierania danych wykresu');
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
             return response.json();
         })
         .then(data => {
-            chartErrorCount = 0; // Reset licznika błędów
-            renderMainChart(data);
-            hideChartError();
+            if (data.success) {
+                const ctx = document.getElementById('portfolio-chart');
+                if (ctx) {
+                    renderChart(ctx, data.data);
+                }
+                errorCounts.chart = 0;
+            } else {
+                throw new Error(data.error || 'Błąd pobierania danych wykresu');
+            }
         })
         .catch(error => {
-            console.error('Błąd podczas pobierania danych wykresu:', error);
-            chartErrorCount++;
-
-            if (chartErrorCount > 3) {
-                // Po 3 próbach pokaż błąd na wykresie
-                showChartError();
+            errorCounts.chart++;
+            console.error('Błąd podczas aktualizacji wykresu:', error);
+            if (errorCounts.chart > 3) {
+                showErrorMessage('Nie udało się załadować wykresu. Spróbuj odświeżyć stronę.');
             }
         });
 }
 
-function renderMainChart(data) {
-    const ctx = document.getElementById('main-chart');
-    if (!ctx) return;
+function renderChart(canvas, data) {
+    if (!canvas) return;
 
-    // Jeżeli wykres już istnieje, zniszcz go
-    if (window.mainChart) {
-        window.mainChart.destroy();
+    // Sprawdź czy wykres już istnieje i go zniszcz
+    if (canvas.chart) {
+        canvas.chart.destroy();
     }
 
-    // Stwórz nowy wykres
-    window.mainChart = new Chart(ctx, {
+    // Utwórz nowy wykres
+    canvas.chart = new Chart(canvas, {
         type: 'line',
-        data: {
-            labels: data.labels,
-            datasets: data.datasets
-        },
+        data: data,
         options: {
             responsive: true,
             maintainAspectRatio: false,
@@ -211,288 +136,183 @@ function renderMainChart(data) {
                 y: {
                     beginAtZero: false
                 }
-            },
-            plugins: {
-                legend: {
-                    position: 'top',
-                    labels: {
-                        font: {
-                            size: 12
-                        }
-                    }
-                },
-                tooltip: {
-                    mode: 'index',
-                    intersect: false
-                }
-            },
-            interaction: {
-                mode: 'nearest',
-                axis: 'x',
-                intersect: false
             }
         }
     });
 }
 
-function showChartError() {
-    const chartContainer = document.querySelector('.chart-container');
-    if (!chartContainer) return;
-
-    // Dodaj komunikat o błędzie
-    if (!document.querySelector('.chart-error-message')) {
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'error-message chart-error-message';
-        errorDiv.innerHTML = `
-            <p>Nie można załadować danych wykresu. Spróbuj ponownie później.</p>
-            <button class="btn btn-primary retry-button" onclick="retryLoadChart()">Spróbuj ponownie</button>
-        `;
-        chartContainer.appendChild(errorDiv);
-    }
-}
-
-function hideChartError() {
-    const errorMessage = document.querySelector('.chart-error-message');
-    if (errorMessage) {
-        errorMessage.remove();
-    }
-}
-
-function retryLoadChart() {
-    hideChartError();
-    initializeChart(); // Call initializeChart instead of updateCharts
-}
-
 function initializeChart() {
-    updateCharts(); // Initialize the chart by calling updateCharts
+    const ctx = document.getElementById('portfolio-chart');
+    if (ctx) {
+        // Tworzymy tymczasowy wykres do czasu załadowania danych
+        renderChart(ctx, {
+            labels: ['Ładowanie...'],
+            datasets: [{
+                label: 'Wartość Portfela',
+                data: [0],
+                borderColor: '#4CAF50',
+                backgroundColor: 'rgba(76, 175, 80, 0.1)'
+            }]
+        });
+    }
 }
 
+function updateComponentStatuses() {
+    console.log('Aktualizacja statusów komponentów...');
+    fetch('/api/system/status')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                updateStatusIndicators(data.components);
+                errorCounts.status = 0;
+            } else {
+                throw new Error(data.error || 'Błąd pobierania statusu systemu');
+            }
+        })
+        .catch(error => {
+            errorCounts.status++;
+            console.error('Błąd podczas aktualizacji statusów komponentów:', error);
+            if (errorCounts.status > 3) {
+                showErrorMessage('Nie udało się zaktualizować statusu systemu.');
+            }
+        });
+}
+
+function updateStatusIndicators(components) {
+    for (const [component, status] of Object.entries(components)) {
+        const indicator = document.getElementById(`${component}-status`);
+        if (indicator) {
+            // Usuń wszystkie klasy statusu
+            indicator.classList.remove('status-online', 'status-warning', 'status-offline', 'status-maintenance');
+
+            // Dodaj odpowiednią klasę
+            if (status === 'active') {
+                indicator.classList.add('status-online');
+                indicator.title = 'Aktywny';
+            } else if (status === 'warning') {
+                indicator.classList.add('status-warning');
+                indicator.title = 'Ostrzeżenie';
+            } else if (status === 'inactive') {
+                indicator.classList.add('status-offline');
+                indicator.title = 'Nieaktywny';
+            } else {
+                indicator.classList.add('status-maintenance');
+                indicator.title = 'Konserwacja';
+            }
+        }
+    }
+}
 
 function updateTradingStats() {
     fetch('/api/trading-stats')
         .then(response => {
             if (!response.ok) {
-                // API może nie istnieć jeszcze, więc używamy symulowanych danych
-                return {
-                    profit: '$1,234.56',
-                    trades_count: 42,
-                    win_rate: '68%',
-                    max_drawdown: '12.3%'
-                };
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
             return response.json();
         })
         .then(data => {
-            statsErrorCount = 0;
+            if (data.error) {
+                throw new Error(data.error);
+            }
 
             // Aktualizuj statystyki
-            if (document.getElementById('profit-value')) {
-                document.getElementById('profit-value').textContent = data.profit || '$0.00';
-            }
+            document.getElementById('profit-value').textContent = data.profit || 'N/A';
+            document.getElementById('trades-count').textContent = data.trades_count || 'N/A';
+            document.getElementById('win-rate').textContent = data.win_rate || 'N/A';
+            document.getElementById('max-drawdown').textContent = data.max_drawdown || 'N/A';
 
-            if (document.getElementById('trades-value')) {
-                document.getElementById('trades-value').textContent = data.trades_count || '0';
-            }
-
-            if (document.getElementById('win-rate-value')) {
-                document.getElementById('win-rate-value').textContent = data.win_rate || 'N/A';
-            }
-
-            if (document.getElementById('drawdown-value')) {
-                document.getElementById('drawdown-value').textContent = data.max_drawdown || '0%';
-            }
+            errorCounts.stats = 0;
         })
         .catch(error => {
-            console.error('Błąd podczas pobierania statystyk tradingowych:', error);
-            statsErrorCount++;
-
-            // Używamy symulowanych danych w przypadku błędu
-            if (document.getElementById('profit-value')) {
-                document.getElementById('profit-value').textContent = '$0.00';
-            }
-
-            if (document.getElementById('trades-value')) {
-                document.getElementById('trades-value').textContent = '0';
-            }
-
-            if (document.getElementById('win-rate-value')) {
-                document.getElementById('win-rate-value').textContent = 'N/A';
-            }
-
-            if (document.getElementById('drawdown-value')) {
-                document.getElementById('drawdown-value').textContent = '0%';
+            errorCounts.stats++;
+            console.error('Błąd podczas aktualizacji statystyk tradingowych:', error);
+            if (errorCounts.stats > 3) {
+                // Ustaw wartości domyślne
+                document.getElementById('profit-value').textContent = 'N/A';
+                document.getElementById('trades-count').textContent = 'N/A';
+                document.getElementById('win-rate').textContent = 'N/A';
+                document.getElementById('max-drawdown').textContent = 'N/A';
             }
         });
 }
 
 function updateRecentTrades() {
-    // Pobierz dane z API
     fetch('/api/recent-trades')
         .then(response => {
             if (!response.ok) {
-                return { trades: [] }; // Pusta lista
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
             return response.json();
         })
         .then(data => {
-            const tradesContainer = document.getElementById('recent-trades-list');
-            if (!tradesContainer) return;
+            const tradesContainer = document.getElementById('recent-trades-container');
+            if (tradesContainer) {
+                if (data.trades && data.trades.length > 0) {
+                    let tradesHTML = '<table class="table"><thead><tr><th>Symbol</th><th>Typ</th><th>Czas</th><th>Zysk</th></tr></thead><tbody>';
 
-            if (data && Array.isArray(data.trades) && data.trades.length > 0) {
-                let tradesHTML = '';
+                    data.trades.forEach(trade => {
+                        const profitClass = trade.profit >= 0 ? 'positive' : 'negative';
+                        tradesHTML += `<tr>
+                            <td>${trade.symbol}</td>
+                            <td>${trade.type}</td>
+                            <td>${trade.time}</td>
+                            <td class="${profitClass}">${trade.profit}%</td>
+                        </tr>`;
+                    });
 
-                data.trades.forEach(trade => {
-                    const profitClass = trade.profit >= 0 ? 'positive' : 'negative';
-
-                    tradesHTML += `
-                    <div class="trade-item">
-                        <div class="trade-symbol">${trade.symbol}</div>
-                        <div class="trade-type">${trade.type}</div>
-                        <div class="trade-time">${trade.time}</div>
-                        <div class="trade-profit ${profitClass}">${trade.profit >= 0 ? '+' : ''}${trade.profit}%</div>
-                    </div>`;
-                });
-
-                tradesContainer.innerHTML = tradesHTML;
-            } else {
-                tradesContainer.innerHTML = '<div class="no-data">Brak transakcji</div>';
+                    tradesHTML += '</tbody></table>';
+                    tradesContainer.innerHTML = tradesHTML;
+                } else {
+                    tradesContainer.innerHTML = '<p class="text-center">Brak ostatnich transakcji</p>';
+                }
             }
         })
         .catch(error => {
             console.error('Błąd podczas pobierania ostatnich transakcji:', error);
-            const tradesContainer = document.getElementById('recent-trades-list');
+            const tradesContainer = document.getElementById('recent-trades-container');
             if (tradesContainer) {
-                tradesContainer.innerHTML = '<div class="no-data">Brak transakcji</div>';
-            }
-        });
-}
-
-function updateAlerts() {
-    // Pobierz dane z API
-    fetch('/api/alerts')
-        .then(response => {
-            if (!response.ok) {
-                return { alerts: [] }; // Pusta lista
-            }
-            return response.json();
-        })
-        .then(data => {
-            const alertsContainer = document.getElementById('alerts-list');
-            if (!alertsContainer) return;
-
-            if (data && Array.isArray(data.alerts) && data.alerts.length > 0) {
-                let alertsHTML = '';
-
-                data.alerts.forEach(alert => {
-                    const alertClass = {
-                        'critical': 'status-offline',
-                        'warning': 'status-warning',
-                        'info': 'status-online'
-                    }[alert.level] || 'status-maintenance';
-
-                    alertsHTML += `
-                    <div class="alert-item ${alertClass}">
-                        <div class="alert-time">${alert.time}</div>
-                        <div class="alert-message">${alert.message}</div>
-                    </div>`;
-                });
-
-                alertsContainer.innerHTML = alertsHTML;
-
-                // Aktualizacja licznika alertów
-                const alertBadge = document.getElementById('alerts-badge');
-                if (alertBadge) {
-                    alertBadge.textContent = data.alerts.length;
-                    alertBadge.style.display = data.alerts.length > 0 ? 'inline-block' : 'none';
-                }
-
-            } else {
-                alertsContainer.innerHTML = '<div class="no-data">Brak alertów</div>';
-
-                // Ukryj badge jeśli nie ma alertów
-                const alertBadge = document.getElementById('alerts-badge');
-                if (alertBadge) {
-                    alertBadge.style.display = 'none';
-                }
-            }
-        })
-        .catch(error => {
-            console.error('Błąd podczas pobierania alertów:', error);
-            const alertsContainer = document.getElementById('alerts-list');
-            if (alertsContainer) {
-                alertsContainer.innerHTML = '<div class="no-data">Brak alertów</div>';
+                tradesContainer.innerHTML = '<p class="text-center">Nie udało się pobrać ostatnich transakcji</p>';
             }
         });
 }
 
 function fetchNotifications() {
-    // Pobieranie powiadomień z API
     fetch('/api/notifications')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
-            if (data.success) {
-                const notifications = data.notifications;
-                if (notifications.length > 0) {
-                    const notificationsList = document.getElementById('notifications-list');
-                    if (notificationsList) {
-                        notificationsList.innerHTML = '';
+            if (data.success && data.notifications) {
+                const notificationsContainer = document.getElementById('notifications-container');
+                if (notificationsContainer) {
+                    if (data.notifications.length > 0) {
                         let notificationsHTML = '';
 
-                        notifications.forEach(notification => {
-                            const notificationClass = {
-                                'critical': 'status-offline',
-                                'alert': 'status-warning',
-                                'warning': 'status-warning',
-                                'info': 'status-online'
-                            }[notification.level] || '';
+                        data.notifications.forEach(notification => {
+                            let typeClass = 'info';
+                            if (notification.type === 'warning') typeClass = 'warning';
+                            if (notification.type === 'error') typeClass = 'danger';
+                            if (notification.type === 'success') typeClass = 'success';
 
-                            notificationsHTML += `
-                            <div class="notification-item ${notificationClass}" data-id="${notification.id}">
-                                <div class="notification-time">${formatTimestamp(notification.timestamp)}</div>
-                                <div class="notification-content">
-                                    <div class="notification-title">${notification.title}</div>
-                                    <div class="notification-message">${notification.message}</div>
-                                </div>
-                                ${!notification.read ? '<div class="unread-indicator"></div>' : ''}
+                            notificationsHTML += `<div class="alert alert-${typeClass}">
+                                <span class="time">${notification.timestamp}</span>
+                                <span class="message">${notification.message}</span>
                             </div>`;
                         });
 
-                        notificationsList.innerHTML = notificationsHTML;
-
-                        // Aktualizacja licznika
-                        const unreadCount = notifications.filter(n => !n.read).length;
-                        const notificationBadge = document.getElementById('notifications-badge');
-                        if (notificationBadge) {
-                            notificationBadge.textContent = unreadCount;
-                            notificationBadge.style.display = unreadCount > 0 ? 'inline-block' : 'none';
-                        }
-
-                        // Dodaj obsługę kliknięć
-                        document.querySelectorAll('.notification-item').forEach(item => {
-                            item.addEventListener('click', function() {
-                                markNotificationAsRead(this.dataset.id);
-                            });
-                        });
-
+                        notificationsContainer.innerHTML = notificationsHTML;
+                    } else {
+                        notificationsContainer.innerHTML = '<p class="text-center">Brak nowych powiadomień</p>';
                     }
-                } else {
-                    const notificationsList = document.getElementById('notifications-list');
-                    if (notificationsList) {
-                        notificationsList.innerHTML = '<div class="no-data">Brak powiadomień</div>';
-
-                        // Ukryj badge
-                        const notificationBadge = document.getElementById('notifications-badge');
-                        if (notificationBadge) {
-                            notificationBadge.style.display = 'none';
-                        }
-                    }
-                }
-
-                // Aktualizacja licznika powiadomień
-                const badge = document.getElementById('notifications-badge');
-                if (badge) {
-                    badge.textContent = notifications.length;
-                    badge.style.display = 'inline-block';
                 }
             }
         })
@@ -501,31 +321,6 @@ function fetchNotifications() {
         });
 }
 
-function markNotificationAsRead(id) {
-    fetch(`/api/notifications/${id}/read`, {
-        method: 'POST'
-    })
-    .then(response => {
-        if (response.ok) {
-            // Odśwież listę powiadomień
-            fetchNotifications();
-        }
-    })
-    .catch(error => {
-        console.error('Błąd oznaczania powiadomienia jako przeczytane:', error);
-    });
-}
-
-function formatTimestamp(timestamp) {
-    const date = new Date(timestamp);
-    return date.toLocaleString();
-}
-
-function getAccuracyClass(accuracy) {
-    if (accuracy >= 70) return 'positive';
-    if (accuracy >= 50) return 'neutral';
-    return 'negative';
-}
 
 function setupEventListeners() {
     // Obsługa przycisków
@@ -633,7 +428,7 @@ function stopTrading() {
 }
 
 function resetSystem() {
-    if (confirm('Czy na pewno chcesz zresetować system? Wszystkie otwarte pozycje zostaną zamknięte.')) {
+    if (confirm('Czy na pewno chcesz zresetować system? Ta operacja zatrzyma wszystkie aktywne procesy.')) {
         fetch('/api/system/reset', {
             method: 'POST'
         })
@@ -641,7 +436,6 @@ function resetSystem() {
         .then(data => {
             if (data.success) {
                 alert('System został zresetowany!');
-                updateDashboardData();
                 updateComponentStatuses();
             } else {
                 alert(`Błąd: ${data.error || 'Nie udało się zresetować systemu.'}`);
@@ -653,24 +447,131 @@ function resetSystem() {
         });
     }
 }
-// Podstawowa funkcjonalność dashboardu
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Dashboard loaded');
-    
-    // Funkcja do odświeżania danych
-    function refreshData() {
-        fetch('/api/dashboard/data')
-            .then(response => response.json())
-            .then(data => {
-                console.log('Dashboard data:', data);
-                // Tutaj można zaktualizować elementy UI
-            })
-            .catch(error => console.error('Error fetching dashboard data:', error));
+
+function updateAIModelsStatus() {
+    fetch('/api/ai-models-status')
+        .then(response => {
+            if (!response.ok) {
+                return { models: [] }; // Zwracamy pusty obiekt jeśli API nie istnieje
+            }
+            return response.json();
+        })
+        .then(data => {
+            const aiModelsContainer = document.getElementById('ai-models-container');
+            if (!aiModelsContainer) return;
+
+            if (data && Array.isArray(data.models) && data.models.length > 0) {
+                let modelsHTML = '';
+
+                data.models.forEach(model => {
+                    const accuracyClass = getAccuracyClass(model.accuracy);
+                    modelsHTML += `
+                    <div class="ai-model-card">
+                        <h4>${model.name}</h4>
+                        <div class="model-details">
+                            <div>Typ: ${model.type}</div>
+                            <div>Dokładność: <span class="${accuracyClass}">${model.accuracy}%</span></div>
+                            <div>Status: <span class="status-${model.status.toLowerCase()}">${model.status}</span></div>
+                            <div>Ostatnie użycie: ${model.last_used || 'Nigdy'}</div>
+                        </div>
+                    </div>`;
+                });
+
+                aiModelsContainer.innerHTML = modelsHTML;
+                document.getElementById('ai-models-section').style.display = 'block';
+            } else {
+                // Brak modeli lub API nie zwraca poprawnych danych
+                document.getElementById('ai-models-section').style.display = 'none';
+            }
+        })
+        .catch(error => {
+            console.error('Błąd podczas pobierania statusów modeli AI:', error);
+            document.getElementById('ai-models-section').style.display = 'none';
+        });
+}
+
+function updateAlerts() {
+    // Pobierz dane z API
+    fetch('/api/alerts')
+        .then(response => {
+            if (!response.ok) {
+                return { alerts: [] }; // Pusta lista
+            }
+            return response.json();
+        })
+        .then(data => {
+            const alertsContainer = document.getElementById('alerts-list');
+            if (!alertsContainer) return;
+
+            if (data && Array.isArray(data.alerts) && data.alerts.length > 0) {
+                let alertsHTML = '';
+
+                data.alerts.forEach(alert => {
+                    const alertClass = {
+                        'critical': 'status-offline',
+                        'warning': 'status-warning',
+                        'info': 'status-online'
+                    }[alert.level] || 'status-maintenance';
+
+                    alertsHTML += `
+                    <div class="alert-item ${alertClass}">
+                        <div class="alert-time">${alert.time}</div>
+                        <div class="alert-message">${alert.message}</div>
+                    </div>`;
+                });
+
+                alertsContainer.innerHTML = alertsHTML;
+
+                // Aktualizacja licznika alertów
+                const alertBadge = document.getElementById('alerts-badge');
+                if (alertBadge) {
+                    alertBadge.textContent = data.alerts.length;
+                    alertBadge.style.display = data.alerts.length > 0 ? 'inline-block' : 'none';
+                }
+
+            } else {
+                alertsContainer.innerHTML = '<div class="no-data">Brak alertów</div>';
+
+                // Ukryj badge jeśli nie ma alertów
+                const alertBadge = document.getElementById('alerts-badge');
+                if (alertBadge) {
+                    alertBadge.style.display = 'none';
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Błąd podczas pobierania alertów:', error);
+            const alertsContainer = document.getElementById('alerts-list');
+            if (alertsContainer) {
+                alertsContainer.innerHTML = '<div class="no-data">Brak alertów</div>';
+            }
+        });
+}
+
+function updateComponentStatus(componentId, status) {
+    const component = document.getElementById(componentId);
+    if (component) {
+        // Usuń poprzednie klasy statusu
+        component.classList.remove('status-online', 'status-warning', 'status-offline', 'status-maintenance');
+
+        // Dodaj nową klasę statusu
+        component.classList.add(`status-${status}`);
+
+        // Aktualizuj tekst statusu
+        const statusElement = component.querySelector('.status-text');
+        if (statusElement) {
+            statusElement.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+        }
     }
-    
-    // Odświeżaj dane co 30 sekund
-    setInterval(refreshData, 30000);
-    
-    // Początkowe pobranie danych
-    refreshData();
-});
+}
+
+function getAccuracyClass(accuracy) {
+    if (accuracy >= 70) return 'positive';
+    if (accuracy >= 50) return 'neutral';
+    return 'negative';
+}
+
+function formatTimestamp(timestamp) {
+    const date = new Date(timestamp);
+    return date.toLocaleString();
+}
