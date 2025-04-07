@@ -50,7 +50,7 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python run_server.py"
+args = "python3 run_server.py"
 
 [[workflows.workflow]]
 name = "Run"
@@ -59,7 +59,7 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python run_server.py"
+args = "python3 run_server.py"
 
 [[workflows.workflow]]
 name = "Init Project"
@@ -68,7 +68,7 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python init_project.py"
+args = "python3 init_project.py"
 
 [[workflows.workflow]]
 name = "Test API Connection"
@@ -86,7 +86,7 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python test_bybit_connection.py"
+args = "python3 test_bybit_connection.py"
 
 [[ports]]
 localPort = 5000
