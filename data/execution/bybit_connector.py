@@ -294,8 +294,8 @@ class BybitConnector:
                     try:
                         # Test połączenia z API z obsługą limitów zapytań
                         try:
-                            # Opóźnienie między zapytaniami, aby uniknąć przekroczenia limitów API
-                            # Przekroczenie limitu żądań zwykle wymaga dłuższej przerwy
+                            # Wydłużone opóźnienie między zapytaniami dla testu połączenia
+                            time.sleep(3.0)  # Dodatkowe 3 sekundy czekania przed testem połączenia
                             self._apply_rate_limit()
                             # Sprawdzanie dostępu do API - w różnych wersjach pybit metoda jest inna
                             if hasattr(self.client, 'get_server_time'):

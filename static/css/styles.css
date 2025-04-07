@@ -321,6 +321,28 @@ table tr:last-child td {
   margin: 10px 0;
   text-align: center;
   border-left: 4px solid var(--danger);
+  font-size: 1.1em;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.error-message p {
+  margin: 5px 0;
+}
+
+.retry-button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.retry-button:hover {
+  background-color: #2980b9;
 }
 
 .loading-indicator {

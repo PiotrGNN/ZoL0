@@ -56,13 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setInterval(fetchNotifications, 60000); // Co minutę
 });
 
-// Licznik błędów dla każdego typu danych
-const errorCounts = {
-    'chart': 0,
-    'balance': 0,
-    'tradingStats': 0,
-    'recentTrades': 0
-};
+// Kontynuujemy używanie istniejącej zmiennej errorCounts zdefiniowanej na początku pliku
 
 // Główne funkcje dashboardu
 function updateDashboardData() {
@@ -85,7 +79,8 @@ const MAX_PORTFOLIO_ERRORS = 3; // Maksymalna liczba błędów przed wyświetlen
 
 // Funkcja do aktualizacji danych portfela
 function updatePortfolioData() {
-    fetch('/api/portfolio')
+    // Dodajemy parametr cache-buster, aby uniknąć problemów z cache przeglądarki
+    fetch('/api/portfolio?_=' + new Date().getTime())
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
