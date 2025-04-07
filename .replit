@@ -1,23 +1,24 @@
-
-run = "python main.py"
-language = "python3"
+run = "python3 main.py"
 entrypoint = "main.py"
+modules = ["python-3.10:v18-20230807-322e88b"]
+hidden = [".pythonlibs"]
 
 [nix]
-channel = "stable-22_11"
+channel = "stable-23_05"
 
 [env]
-PYTHONPATH = "."
+PYTHONPATH = "$PYTHONPATH:${REPL_HOME}"
+PYTHONUNBUFFERED = "1"
+
+[[ports]]
+localPort = 5000
+externalPort = 80
 
 [languages.python3]
 pattern = "**/*.py"
 
 [languages.python3.languageServer]
 start = ["pylsp"]
-
-[[ports]]
-localPort = 5000
-externalPort = 80
 
 [workflows]
 runButton = "Run"
@@ -29,8 +30,12 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python -m pip install -r requirements.txt"
+args = "python3 -m pip install --upgrade pip"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python main.py"
+args = "python3 -m pip install -r requirements.txt"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python3 main.py"
