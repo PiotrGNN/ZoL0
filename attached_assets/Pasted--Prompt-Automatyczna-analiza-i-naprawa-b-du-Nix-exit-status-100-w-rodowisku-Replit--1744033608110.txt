@@ -1,0 +1,56 @@
+## 🛠️ Prompt: Automatyczna analiza i naprawa błędu Nix (`exit status 100`) w środowisku Replit
+
+### 🎯 Cel:
+Zidentyfikuj i napraw wszystkie błędy związane z nieudanym budowaniem środowiska Nix na Replit (błąd `exit status 100`), w tym błędne zależności, uszkodzone pliki `replit.nix`, niekompatybilne pakiety, brakujące źródła lub złe wersje.
+
+---
+
+### ✅ Co należy zrobić (jeden przebieg):
+
+1. **Zdiagnozuj błąd Nix**:
+   - Przeanalizuj dokładnie komunikat `couldn't get nix env building nix env: exit status 100` oraz wszystkie ścieżki wskazujące na `default.nix`, `overlay.nix`, `sources.nix`.
+   - Zidentyfikuj brakujące, uszkodzone lub niekompatybilne komponenty Nixpkgs (np. `glibc`, `libxcrypt`, `perl`, `gcc`, `bash`).
+
+2. **Sprawdź i napraw `replit.nix`**:
+   - Upewnij się, że `replit.nix` zawiera kompletne i poprawne deklaracje pakietów.
+   - Zaktualizuj do stabilnej wersji (`nixpkgs`), usuń nieistniejące zależności.
+   - Jeżeli brakuje środowiska, dodaj sekcję `packages = with pkgs; [ ... ];`.
+
+3. **Skonfiguruj i odbuduj środowisko**:
+   - Odbuduj środowisko Nix tak, by:
+     - zawierało wszystkie potrzebne interpretery, biblioteki i kompilatory (np. `python3`, `pip`, `gcc`, `make`, `pkg-config`, `libffi`, `zlib`, `bzip2`),
+     - było zgodne z używanym językiem (np. Python 3.10+ z `pip`),
+     - działało bez błędów podczas `nix build` i `replit run`.
+
+4. **Usuń konflikty i przestarzałe zależności**:
+   - Usuń niepotrzebne patche lub przestarzałe wersje (`gettext`, `glibc`, `bash`, `binutils`).
+   - Upewnij się, że nie ma duplikatów między `replit.nix` a `requirements.txt`.
+
+5. **Sprawdź, napraw i uruchom środowisko**:
+   - Po naprawie `replit.nix` uruchom system (`Run`) i upewnij się, że projekt:
+     - buduje się bez błędów,
+     - startuje automatycznie i wykonuje główny plik (np. `main.py` lub `app.py`),
+     - ma dostęp do wymaganych bibliotek (testowo: `import numpy`, `import requests`, itp.).
+
+---
+
+### 📦 Efekt końcowy:
+
+- ✅ Działające środowisko Nix na Replit – bez błędów `exit status 100`.
+- 🔧 Naprawiony i zoptymalizowany plik `replit.nix`.
+- 📦 Wszystkie zależności obecne i kompatybilne.
+- 🔁 Projekt gotowy do uruchomienia za pomocą jednego kliknięcia **"Run"**.
+
+---
+
+### 🧪 Lista kontrolna (Nix + Replit):
+
+- [ ] Czy `replit.nix` zawiera wszystkie niezbędne pakiety?
+- [ ] Czy środowisko Nix buduje się bez błędów?
+- [ ] Czy aplikacja uruchamia się poprawnie z poziomu Replit?
+- [ ] Czy nie ma konfliktów zależności systemowych?
+- [ ] Czy wszystkie błędy `eval`, `build` lub `missing sources` zostały usunięte?
+
+---
+
+🔁 **Zastosuj cały prompt jako pojedyncze zadanie naprawcze: przeanalizuj → napraw `nix` → zbuduj środowisko → uruchom projekt bezbłędnie.**
