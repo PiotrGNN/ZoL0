@@ -1,25 +1,49 @@
 // Dashboard Configuration
 const CONFIG = {
-    refreshRates: {
-        dashboard: 30000, // 30 seconds
-        chart: 60000,     // 1 minute
-        trades: 45000,    // 45 seconds
-        alerts: 20000,    // 20 seconds
-        components: 15000 // 15 seconds
-    },
-    maxRetries: 3,
-    retryDelay: 5000      // 5 seconds
+    dashboardRefresh: 30000,   // Odświeżanie dashboardu co 30s
+    componentStatusRefresh: 30000, // Odświeżanie statusu komponentów co 30s
+    chartRefresh: 60000,    // Odświeżanie wykresu co 60s
+    tradesRefresh: 60000,   // Odświeżanie listy transakcji co 60s
+    notificationsRefresh: 30000, // Odświeżanie powiadomień co 30s
+    statsRefresh: 30000     // Odświeżanie statystyk co 30s
 };
 
-// Error tracking
-const errorCounts = {
+// Liczniki błędów dla poszczególnych elementów
+let errorCounts = {
     dashboard: 0,
     chart: 0,
     trades: 0,
-    alerts: 0,
+    notifications: 0,
     components: 0,
-    tradingStats: 0,
-    notifications: 0
+    stats: 0
+};
+
+// Opóźnienia odświeżania w razie błędów
+let refreshRates = {
+    normal: {
+        dashboardRefresh: 30000,
+        componentStatusRefresh: 30000,
+        chartRefresh: 60000,
+        tradesRefresh: 60000,
+        notificationsRefresh: 30000,
+        statsRefresh: 30000
+    },
+    reduced: {
+        dashboardRefresh: 60000,
+        componentStatusRefresh: 60000,
+        chartRefresh: 120000,
+        tradesRefresh: 120000,
+        notificationsRefresh: 60000,
+        statsRefresh: 60000
+    },
+    minimal: {
+        dashboardRefresh: 300000,
+        componentStatusRefresh: 300000,
+        chartRefresh: 600000,
+        tradesRefresh: 600000,
+        notificationsRefresh: 300000,
+        statsRefresh: 300000
+    }
 };
 
 // Document Ready Function
@@ -40,13 +64,13 @@ document.addEventListener('DOMContentLoaded', function() {
     updateNotifications();
 
     // Set up refresh intervals
-    setInterval(updateDashboardData, CONFIG.refreshRates.dashboard);
-    setInterval(updateChartData, CONFIG.refreshRates.chart);
-    setInterval(updateRecentTrades, CONFIG.refreshRates.trades);
-    setInterval(updateAlerts, CONFIG.refreshRates.alerts);
-    setInterval(updateComponentStatus, CONFIG.refreshRates.components);
-    setInterval(updateTradingStats, CONFIG.refreshRates.dashboard);
-    setInterval(updateNotifications, CONFIG.refreshRates.alerts);
+    setInterval(updateDashboardData, CONFIG.dashboardRefresh);
+    setInterval(updateChartData, CONFIG.chartRefresh);
+    setInterval(updateRecentTrades, CONFIG.tradesRefresh);
+    setInterval(updateAlerts, CONFIG.notificationsRefresh);
+    setInterval(updateComponentStatus, CONFIG.componentStatusRefresh);
+    setInterval(updateTradingStats, CONFIG.statsRefresh);
+    setInterval(updateNotifications, CONFIG.notificationsRefresh);
 });
 
 // Initialize UI Components
@@ -204,10 +228,10 @@ function updateTradingStats() {
             updateElementText('drawdown-value', data.max_drawdown);
 
             // Reset error counter on success
-            errorCounts.tradingStats = 0;
+            errorCounts.stats = 0;
         })
         .catch(error => {
-            handleApiError('tradingStats', error);
+            handleApiError('stats', error);
         });
 }
 
@@ -479,7 +503,7 @@ function handleApiError(component, error) {
                 case 'components':
                     updateComponentStatus();
                     break;
-                case 'tradingStats':
+                case 'stats':
                     updateTradingStats();
                     break;
                 case 'notifications':

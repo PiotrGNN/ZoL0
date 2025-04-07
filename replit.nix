@@ -24,6 +24,9 @@
     pkgs.python310Packages.flake8
     pkgs.python310Packages.black
     pkgs.python310Packages.pytest
+    pkgs.python310Packages.pybit
+    pkgs.python310Packages.nltk
+    pkgs.python310Packages.textblob
     pkgs.tk
     pkgs.tcl
   ];

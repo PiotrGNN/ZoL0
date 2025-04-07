@@ -11,7 +11,7 @@ channel = "stable-23_05"
 [env]
 PYTHONPATH = "${REPL_HOME}"
 FLASK_APP = "main.py"
-FLASK_ENV = "development"
+FLASK_DEBUG = "1"
 PORT = "5000"
 
 [packager]
@@ -67,3 +67,12 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python3 main.py"
+
+[[workflows.workflow]]
+name = "Init Project"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python3 init_project.py"

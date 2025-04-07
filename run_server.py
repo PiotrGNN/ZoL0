@@ -1,13 +1,12 @@
-
 #!/usr/bin/env python3
 """
 Skrypt pomocniczy do uruchamiania serwera Flask.
 Rozwiązuje problemy z zajętym portem 5000.
 """
 import os
-import signal
-import subprocess
-import time
+import logging
+import sys
+from main import app
 
 def kill_processes_on_port(port):
     """Zatrzymuje procesy na wskazanym porcie."""
@@ -30,8 +29,23 @@ def kill_processes_on_port(port):
         print(f"Nie znaleziono procesów na porcie {port}: {e}")
 
 if __name__ == "__main__":
-    PORT = 5000
-    print(f"Sprawdzanie portu {PORT}...")
-    kill_processes_on_port(PORT)
-    print(f"Uruchamianie aplikacji Flask na porcie {PORT}...")
-    os.system("python3 main.py")
+    # Konfiguracja logowania
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(message)s",
+        handlers=[
+            logging.FileHandler("logs/server.log"),
+            logging.StreamHandler()
+        ]
+    )
+
+    # Utworzenie katalogu logs jeśli nie istnieje
+    os.makedirs("logs", exist_ok=True)
+
+    # Dodanie katalogu głównego do ścieżki Pythona
+    sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+    # Uruchomienie aplikacji
+    port = int(os.environ.get("PORT", 5000))
+    logging.info(f"Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie {port}")
+    app.run(host='0.0.0.0', port=port, debug=True)
