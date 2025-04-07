@@ -1,415 +1,338 @@
+"""
+WebSocket Manager - moduł odpowiedzialny za utrzymanie połączenia WebSocket
+z giełdą Bybit, obsługę reconnect i logowania komunikatów.
+"""
 
-import websocket
-import threading
-import time
 import json
 import logging
-import random
-from typing import Dict, List, Callable, Optional, Any, Union
-from queue import Queue
+import threading
+import time
+from typing import Callable, Dict, Optional
 
-# Konfiguracja loggera
+import websocket
+
+# Konfiguracja logowania
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.FileHandler("logs/websocket.log"),
-        logging.StreamHandler()
-    ]
+    handlers=[logging.FileHandler("logs/websocket.log"), logging.StreamHandler()],
 )
-logger = logging.getLogger("websocket")
+logger = logging.getLogger("WebSocketManager")
+
 
 class WebSocketManager:
     """
-    Zaawansowany menedżer połączeń WebSocket 
-    z automatycznym reconnect, obsługą błędów i kolejkami wiadomości
+    Klasa zarządzająca połączeniem WebSocket z giełdą.
+
+    Obsługuje:
+    - Automatyczne reconnect po utracie połączenia
+    - Uwierzytelnianie
+    - Subskrypcje na różne tematy (kursów, orderbook, etc.)
+    - Callback dla przychodzących wiadomości
     """
-    
-    def __init__(self, url: str, name: str = "default"):
+
+    def __init__(
+        self,
+        url: str,
+        api_key: Optional[str] = None,
+        api_secret: Optional[str] = None,
+        ping_interval: int = 20,
+        ping_timeout: int = 10,
+        reconnect_attempts: int = 5,
+        reconnect_delay: int = 5,
+    ):
         """
-        Inicjalizacja menedżera WebSocket
-        
+        Inicjalizacja WebSocket Managera.
+
         Args:
-            url (str): Adres URL WebSocket
-            name (str): Nazwa dla identyfikacji połączenia w logach
+            url: URL endpointu WebSocket giełdy
+            api_key: Klucz API (opcjonalny dla publicznych endpointów)
+            api_secret: Sekret API (opcjonalny dla publicznych endpointów)
+            ping_interval: Interwał pingowania w sekundach
+            ping_timeout: Timeout dla pinga w sekundach
+            reconnect_attempts: Maksymalna liczba prób reconnectu
+            reconnect_delay: Opóźnienie między próbami reconnectu w sekundach
         """
         self.url = url
-        self.name = name
+        self.api_key = api_key
+        self.api_secret = api_secret
+        self.ping_interval = ping_interval
+        self.ping_timeout = ping_timeout
+        self.reconnect_attempts = reconnect_attempts
+        self.reconnect_delay = reconnect_delay
+
         self.ws = None
         self.is_connected = False
         self.should_reconnect = True
-        
-        # Kolejka wiadomości
-        self.queue = Queue()
-        self.message_processors = []
-        
-        # Parametry reconnecta
         self.reconnect_count = 0
-        self.max_reconnect = 10
-        self.reconnect_interval = 5  # Początkowy interwał w sekundach
-        self.max_reconnect_interval = 300  # Maksymalny interwał (5 minut)
-        
-        # Subskrypcje do odnowienia po reconnect
+
         self.subscriptions = set()
-        
-        # Thread management
+        self.message_callbacks = []
         self.ws_thread = None
-        self.processor_thread = None
-        self.is_processor_running = False
-        
-        # Statystyki
-        self.stats = {
-            'messages_received': 0,
-            'messages_sent': 0,
-            'errors': 0,
-            'reconnects': 0,
-            'last_message_time': None,
-            'connection_time': None
-        }
-        
-        self.lock = threading.Lock()
-        
-        logger.info(f"WebSocketManager '{name}' zainicjalizowany z URL: {url}")
-    
-    def _on_message(self, ws, message):
-        """Obsługa otrzymanej wiadomości"""
+
+        logger.info(f"WebSocketManager zainicjalizowany dla {url}")
+
+    def connect(self) -> bool:
+        """
+        Nawiązuje połączenie WebSocket i uruchamia wątek nasłuchujący.
+
+        Returns:
+            bool: True jeśli połączenie zostało nawiązane, False w przeciwnym razie
+        """
         try:
-            with self.lock:
-                self.stats['messages_received'] += 1
-                self.stats['last_message_time'] = time.time()
-                
-            # Dodanie wiadomości do kolejki
-            self.queue.put(message)
-            
-        except Exception as e:
-            logger.error(f"Błąd w obsłudze wiadomości WebSocket '{self.name}': {e}")
-    
-    def _on_error(self, ws, error):
-        """Obsługa błędów WebSocket"""
-        with self.lock:
-            self.stats['errors'] += 1
-            
-        logger.error(f"Błąd WebSocket '{self.name}': {error}")
-    
-    def _on_close(self, ws, close_status_code, close_reason):
-        """Obsługa zamknięcia połączenia"""
-        self.is_connected = False
-        logger.warning(f"WebSocket '{self.name}' zamknięty: kod={close_status_code}, powód={close_reason}")
-        
-        # Automatyczny reconnect
-        if self.should_reconnect:
-            self._schedule_reconnect()
-    
-    def _on_open(self, ws):
-        """Obsługa otwarcia połączenia"""
-        self.is_connected = True
-        self.reconnect_count = 0
-        
-        with self.lock:
-            self.stats['connection_time'] = time.time()
-            
-        logger.info(f"WebSocket '{self.name}' połączony")
-        
-        # Odnów subskrypcje
-        self._renew_subscriptions()
-    
-    def _renew_subscriptions(self):
-        """Odnawia wszystkie subskrypcje po reconnect"""
-        if not self.subscriptions:
-            return
-            
-        logger.info(f"Odnawianie {len(self.subscriptions)} subskrypcji dla '{self.name}'")
-        
-        for subscription in self.subscriptions:
-            self.send(subscription)
-    
-    def _schedule_reconnect(self):
-        """Planuje automatyczny reconnect z wykładniczym backoff"""
-        if self.reconnect_count >= self.max_reconnect:
-            logger.error(f"Przekroczono maksymalną liczbę prób połączenia ({self.max_reconnect}) dla '{self.name}'")
-            return
-            
-        # Oblicz interwał z jitter (losowe wahanie)
-        interval = min(self.reconnect_interval * (2 ** self.reconnect_count), self.max_reconnect_interval)
-        jitter = random.uniform(0.8, 1.2)
-        reconnect_time = interval * jitter
-        
-        self.reconnect_count += 1
-        
-        with self.lock:
-            self.stats['reconnects'] += 1
-            
-        logger.info(f"Próba ponownego połączenia '{self.name}' za {reconnect_time:.1f}s (próba {self.reconnect_count}/{self.max_reconnect})")
-        
-        # Zaplanuj reconnect
-        threading.Timer(reconnect_time, self.connect).start()
-    
-    def connect(self):
-        """Nawiązuje połączenie WebSocket"""
-        if self.is_connected:
-            logger.warning(f"WebSocket '{self.name}' jest już połączony")
-            return True
-            
-        try:
-            # Zamknij istniejące połączenie
-            if self.ws is not None:
-                self.ws.close()
-                
-            # Utwórz nowe połączenie
             websocket.enableTrace(False)
             self.ws = websocket.WebSocketApp(
                 self.url,
+                on_open=self._on_open,
                 on_message=self._on_message,
                 on_error=self._on_error,
                 on_close=self._on_close,
-                on_open=self._on_open
+                on_ping=self._on_ping,
+                on_pong=self._on_pong,
             )
-            
-            # Uruchom WebSocket w osobnym wątku
-            self.ws_thread = threading.Thread(target=self.ws.run_forever)
-            self.ws_thread.daemon = True
+
+            self.ws_thread = threading.Thread(
+                target=self.ws.run_forever,
+                kwargs={
+                    "ping_interval": self.ping_interval,
+                    "ping_timeout": self.ping_timeout,
+                },
+                daemon=True,
+            )
             self.ws_thread.start()
-            
-            # Uruchom procesor wiadomości, jeśli nie działa
-            if not self.is_processor_running:
-                self._start_message_processor()
-                
-            # Poczekaj na połączenie
+
+            # Czekamy na nawiązanie połączenia
             timeout = 10
             start_time = time.time()
             while not self.is_connected and time.time() - start_time < timeout:
                 time.sleep(0.1)
-                
+
             return self.is_connected
-            
         except Exception as e:
-            logger.error(f"Błąd podczas łączenia z WebSocket '{self.name}': {e}")
+            logger.error(f"Błąd podczas nawiązywania połączenia WebSocket: {e}")
             return False
-    
-    def _start_message_processor(self):
-        """Uruchamia wątek przetwarzający wiadomości z kolejki"""
-        def processor_job():
-            self.is_processor_running = True
-            logger.info(f"Uruchomiono procesor wiadomości dla '{self.name}'")
-            
-            while self.should_reconnect:  # Używamy tej samej flagi co do reconnect
-                try:
-                    # Pobierz wiadomość z kolejki (z timeoutem)
-                    try:
-                        message = self.queue.get(timeout=1)
-                    except:
-                        continue
-                        
-                    # Przetwórz wiadomość przez wszystkie zarejestrowane procesory
-                    for processor in self.message_processors:
-                        try:
-                            processor(message)
-                        except Exception as e:
-                            logger.error(f"Błąd w procesorze wiadomości '{self.name}': {e}")
-                            
-                    # Oznacz zadanie jako wykonane
-                    self.queue.task_done()
-                    
-                except Exception as e:
-                    logger.error(f"Błąd w procesorze wiadomości '{self.name}': {e}")
-                    time.sleep(1)
-                    
-            logger.info(f"Zatrzymano procesor wiadomości dla '{self.name}'")
-            self.is_processor_running = False
-            
-        self.processor_thread = threading.Thread(target=processor_job)
-        self.processor_thread.daemon = True
-        self.processor_thread.start()
-    
-    def add_message_processor(self, processor: Callable[[str], None]):
+
+    def disconnect(self) -> None:
+        """Zamyka połączenie WebSocket."""
+        self.should_reconnect = False
+        if self.ws:
+            self.ws.close()
+        logger.info("Połączenie WebSocket zostało zamknięte")
+
+    def subscribe(self, topics: list) -> None:
         """
-        Dodaje funkcję przetwarzającą wiadomości
-        
+        Subskrybuje tematy WebSocket.
+
         Args:
-            processor (callable): Funkcja przyjmująca wiadomość jako argument
-        """
-        self.message_processors.append(processor)
-    
-    def send(self, message: Union[str, Dict]) -> bool:
-        """
-        Wysyła wiadomość przez WebSocket
-        
-        Args:
-            message (str | dict): Wiadomość do wysłania (str lub dict konwertowany do JSON)
-            
-        Returns:
-            bool: Status wysłania
+            topics: Lista tematów do subskrypcji
         """
         if not self.is_connected:
-            logger.warning(f"Nie można wysłać wiadomości - WebSocket '{self.name}' nie jest połączony")
-            return False
-            
+            logger.warning("Próba subskrypcji bez aktywnego połączenia")
+            self.subscriptions.update(topics)
+            return
+
         try:
-            # Jeśli wiadomość jest słownikiem, konwertuj do JSON
-            if isinstance(message, dict):
-                message = json.dumps(message)
-                
-            self.ws.send(message)
-            
-            with self.lock:
-                self.stats['messages_sent'] += 1
-                
+            for topic in topics:
+                if topic not in self.subscriptions:
+                    subscribe_message = {
+                        "op": "subscribe",
+                        "args": [topic],
+                    }
+                    self.ws.send(json.dumps(subscribe_message))
+                    self.subscriptions.add(topic)
+                    logger.info(f"Zasubskrybowano temat: {topic}")
+        except Exception as e:
+            logger.error(f"Błąd podczas subskrypcji tematów: {e}")
+
+    def unsubscribe(self, topics: list) -> None:
+        """
+        Anuluje subskrypcję tematów WebSocket.
+
+        Args:
+            topics: Lista tematów do anulowania subskrypcji
+        """
+        if not self.is_connected:
+            logger.warning("Próba anulowania subskrypcji bez aktywnego połączenia")
+            self.subscriptions -= set(topics)
+            return
+
+        try:
+            for topic in topics:
+                if topic in self.subscriptions:
+                    unsubscribe_message = {
+                        "op": "unsubscribe",
+                        "args": [topic],
+                    }
+                    self.ws.send(json.dumps(unsubscribe_message))
+                    self.subscriptions.remove(topic)
+                    logger.info(f"Anulowano subskrypcję tematu: {topic}")
+        except Exception as e:
+            logger.error(f"Błąd podczas anulowania subskrypcji tematów: {e}")
+
+    def add_message_callback(self, callback: Callable[[dict], None]) -> None:
+        """
+        Dodaje callback dla przychodzących wiadomości.
+
+        Args:
+            callback: Funkcja wywołana dla każdej przychodzącej wiadomości
+        """
+        self.message_callbacks.append(callback)
+        logger.debug(f"Dodano nowy callback dla wiadomości (total: {len(self.message_callbacks)})")
+
+    def send_message(self, message: Dict) -> bool:
+        """
+        Wysyła wiadomość przez WebSocket.
+
+        Args:
+            message: Wiadomość do wysłania (zostanie skonwertowana do JSON)
+
+        Returns:
+            bool: True jeśli wiadomość została wysłana, False w przeciwnym razie
+        """
+        if not self.is_connected:
+            logger.warning("Próba wysłania wiadomości bez aktywnego połączenia")
+            return False
+
+        try:
+            self.ws.send(json.dumps(message))
             return True
         except Exception as e:
-            logger.error(f"Błąd podczas wysyłania wiadomości przez WebSocket '{self.name}': {e}")
+            logger.error(f"Błąd podczas wysyłania wiadomości: {e}")
             return False
-    
-    def subscribe(self, subscription):
+
+    def _on_open(self, ws) -> None:
+        """Wywołane po nawiązaniu połączenia WebSocket."""
+        self.is_connected = True
+        self.reconnect_count = 0
+        logger.info("Połączenie WebSocket nawiązane")
+
+        # Jeśli mamy zapisane subskrypcje, ponownie je subskrybujemy
+        if self.subscriptions:
+            self.subscribe(list(self.subscriptions))
+
+        # Jeśli mamy klucze API, uwierzytelniamy się
+        if self.api_key and self.api_secret:
+            self._authenticate()
+
+    def _on_message(self, ws, message) -> None:
         """
-        Dodaje subskrypcję do listy (do odnowienia po reconnect)
-        i wysyła ją
-        
+        Wywołane po otrzymaniu wiadomości.
+
         Args:
-            subscription (str | dict): Wiadomość subskrypcji
-        
-        Returns:
-            bool: Status subskrypcji
+            ws: Obiekt WebSocket
+            message: Otrzymana wiadomość
         """
-        # Dodaj do listy subskrypcji do odnowienia
-        original_subscription = subscription
-        
-        # Konwertuj do JSON, jeśli to słownik
-        if isinstance(subscription, dict):
-            subscription = json.dumps(subscription)
-            
-        # Dodaj do listy subskrypcji
-        self.subscriptions.add(subscription)
-        
-        # Wyślij, jeśli połączony
-        if self.is_connected:
-            return self.send(original_subscription)
-        else:
-            logger.info(f"WebSocket '{self.name}' nie jest połączony. Subskrypcja zostanie wysłana po połączeniu.")
-            return self.connect()
-    
-    def unsubscribe(self, subscription):
+        try:
+            data = json.loads(message)
+
+            # Jeśli to wiadomość typu pong, ignorujemy ją w logach
+            if "op" in data and data["op"] == "pong":
+                return
+
+            logger.debug(f"Odebrano wiadomość: {message[:100]}...")
+
+            # Wywołujemy wszystkie zarejestrowane callbacki
+            for callback in self.message_callbacks:
+                try:
+                    callback(data)
+                except Exception as e:
+                    logger.error(f"Błąd w callbacku wiadomości: {e}")
+        except json.JSONDecodeError:
+            logger.warning(f"Otrzymano nieprawidłową wiadomość JSON: {message[:100]}...")
+        except Exception as e:
+            logger.error(f"Błąd podczas przetwarzania wiadomości: {e}")
+
+    def _on_error(self, ws, error) -> None:
         """
-        Usuwa subskrypcję z listy i wysyła wiadomość
-        
+        Wywołane po wystąpieniu błędu.
+
         Args:
-            subscription (str | dict): Wiadomość anulowania subskrypcji
-        
-        Returns:
-            bool: Status anulowania subskrypcji
+            ws: Obiekt WebSocket
+            error: Błąd
         """
-        # Usuń z listy subskrypcji
-        if isinstance(subscription, dict):
-            subscription_str = json.dumps(subscription)
-        else:
-            subscription_str = subscription
-            
-        # Usuń subskrypcję (jeśli istnieje)
-        if subscription_str in self.subscriptions:
-            self.subscriptions.remove(subscription_str)
-            
-        # Wyślij anulowanie subskrypcji
-        if self.is_connected:
-            return self.send(subscription)
-        else:
-            logger.warning(f"WebSocket '{self.name}' nie jest połączony. Nie można anulować subskrypcji.")
-            return False
-    
-    def disconnect(self):
-        """Rozłącza WebSocket i zatrzymuje wątki"""
-        self.should_reconnect = False
-        
-        if self.ws is not None:
-            self.ws.close()
-            
+        logger.error(f"Błąd WebSocket: {error}")
+
+    def _on_close(self, ws, close_status_code, close_msg) -> None:
+        """
+        Wywołane po zamknięciu połączenia.
+
+        Args:
+            ws: Obiekt WebSocket
+            close_status_code: Kod statusu zamknięcia
+            close_msg: Wiadomość zamknięcia
+        """
         self.is_connected = False
-        
-        # Poczekaj na zakończenie wątków
-        if self.ws_thread is not None:
-            self.ws_thread.join(timeout=1)
-            
-        if self.processor_thread is not None:
-            self.processor_thread.join(timeout=1)
-            
-        logger.info(f"WebSocket '{self.name}' rozłączony")
-    
-    def get_stats(self):
-        """Zwraca statystyki WebSocket"""
-        with self.lock:
-            return self.stats.copy()
-    
-    def is_healthy(self, max_time_without_message=60):
+        logger.info(f"Połączenie WebSocket zamknięte. Kod: {close_status_code}, Komunikat: {close_msg}")
+
+        # Jeśli powinniśmy ponownie połączyć i nie przekroczyliśmy limitu prób
+        if self.should_reconnect and self.reconnect_count < self.reconnect_attempts:
+            self.reconnect_count += 1
+            reconnect_delay = self.reconnect_delay * self.reconnect_count  # Exponential backoff
+            logger.info(f"Próba ponownego połączenia za {reconnect_delay}s (próba {self.reconnect_count}/{self.reconnect_attempts})")
+
+            time.sleep(reconnect_delay)
+            self.connect()
+
+    def _on_ping(self, ws, message) -> None:
         """
-        Sprawdza, czy połączenie WebSocket jest zdrowe
-        
+        Wywołane po otrzymaniu ping.
+
         Args:
-            max_time_without_message (int): Maksymalny czas bez wiadomości (w sekundach)
-            
-        Returns:
-            bool: Status połączenia
+            ws: Obiekt WebSocket
+            message: Wiadomość ping
         """
-        if not self.is_connected:
-            return False
-            
-        with self.lock:
-            last_msg_time = self.stats['last_message_time']
-            
-        if last_msg_time is None:
-            # Jeśli nie otrzymano żadnej wiadomości, sprawdź czas połączenia
-            with self.lock:
-                conn_time = self.stats['connection_time']
-                
-            if conn_time is None:
-                return False
-                
-            # Jeśli połączono niedawno, uznaj za zdrowe
-            return time.time() - conn_time < max_time_without_message
-            
-        # Sprawdź, czy otrzymano wiadomość w ostatnim czasie
-        return time.time() - last_msg_time < max_time_without_message
+        logger.debug("Otrzymano ping od serwera")
+
+    def _on_pong(self, ws, message) -> None:
+        """
+        Wywołane po otrzymaniu pong.
+
+        Args:
+            ws: Obiekt WebSocket
+            message: Wiadomość pong
+        """
+        logger.debug("Otrzymano pong od serwera")
+
+    def _authenticate(self) -> None:
+        """Uwierzytelnia połączenie z użyciem kluczy API."""
+        try:
+            # Implementacja uwierzytelniania zależy od giełdy
+            # Przykład dla Bybit - używa innego formatu uwierzytelniania
+            # To jest uproszczona wersja, w rzeczywistości wymaga generowania podpisu
+            auth_message = {
+                "op": "auth",
+                "args": [self.api_key, int(time.time() * 1000), "signature_placeholder"],
+            }
+            self.ws.send(json.dumps(auth_message))
+            logger.info("Wysłano żądanie uwierzytelnienia")
+        except Exception as e:
+            logger.error(f"Błąd podczas uwierzytelniania: {e}")
+
 
 # Przykład użycia
 if __name__ == "__main__":
-    # Inicjalizacja menedżera WebSocket
-    ws_manager = WebSocketManager(
-        url="wss://stream.bybit.com/v5/public/spot",
-        name="bybit_spot"
-    )
-    
-    # Funkcja przetwarzająca wiadomości
-    def process_message(message):
-        try:
-            data = json.loads(message)
-            print(f"Otrzymano: {json.dumps(data, indent=2)}")
-        except Exception as e:
-            print(f"Błąd przetwarzania: {e}")
-    
-    # Dodanie procesora wiadomości
-    ws_manager.add_message_processor(process_message)
-    
-    # Połączenie
+    # URL dla testnet Bybit
+    ws_url = "wss://stream-testnet.bybit.com/v5/public/spot"
+
+    # Inicjalizacja WebSocket Managera
+    ws_manager = WebSocketManager(ws_url)
+
+    # Przykładowy callback dla wiadomości
+    def handle_message(data):
+        print(f"Otrzymano dane: {data}")
+
+    # Dodajemy callback
+    ws_manager.add_message_callback(handle_message)
+
+    # Nawiązujemy połączenie
     if ws_manager.connect():
-        print("Połączono!")
-        
-        # Subskrypcja orderbooka BTC/USDT
-        subscription = {
-            "op": "subscribe",
-            "args": ["orderbook.50.BTCUSDT"]
-        }
-        ws_manager.subscribe(subscription)
-        
-        # Działaj przez 30 sekund
-        time.sleep(30)
-        
-        # Anuluj subskrypcję
-        unsubscription = {
-            "op": "unsubscribe",
-            "args": ["orderbook.50.BTCUSDT"]
-        }
-        ws_manager.unsubscribe(unsubscription)
-        
-        # Rozłącz
+        # Subskrybujemy kanał ticker dla BTC/USDT
+        ws_manager.subscribe(["tickers.BTCUSDT"])
+
+        # Czekamy przez 60 sekund
+        time.sleep(60)
+
+        # Zamykamy połączenie
         ws_manager.disconnect()
-        
-        print("Rozłączono!")
     else:
-        print("Nie udało się połączyć!")
+        print("Nie udało się nawiązać połączenia WebSocket")

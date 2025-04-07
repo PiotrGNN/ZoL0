@@ -1,260 +1,419 @@
 
+"""
+Fallback Strategy - strategia awaryjna, aktywowana gdy modele AI 
+nie dostarczą sygnału lub mają zbyt niską pewność.
+
+Bazuje na prostych wskaźnikach technicznych i zarządzaniu ryzykiem,
+aby zapewnić sensowne decyzje handlowe podczas awarii modeli AI.
+"""
+
 import logging
+import time
+from datetime import datetime, timedelta
+from typing import Dict, List, Optional, Union
+
 import numpy as np
 import pandas as pd
-from typing import Dict, List, Optional, Union
-from datetime import datetime, timedelta
 
-# Konfiguracja loggera
+# Konfiguracja logowania
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.FileHandler("logs/fallback_strategy.log"),
-        logging.StreamHandler()
-    ]
+    handlers=[logging.FileHandler("logs/fallback_strategy.log"), logging.StreamHandler()],
 )
-logger = logging.getLogger("fallback_strategy")
+logger = logging.getLogger("FallbackStrategy")
+
 
 class FallbackStrategy:
     """
-    Strategia awaryjna używana w przypadku braku sygnałów z AI 
-    lub problemów z główną strategią.
+    Strategia awaryjna używająca prostych wskaźników technicznych.
     
-    Opiera się na prostych wskaźnikach technicznych i zasadach zarządzania ryzykiem.
+    Używana, gdy modele AI:
+    - nie dostarczą sygnału
+    - mają zbyt niską pewność predykcji 
+    - występują problemy z danymi wejściowymi
     """
-    
-    def __init__(self, lookback_period: int = 14, volatility_window: int = 20):
+
+    def __init__(
+        self,
+        rsi_period: int = 14,
+        rsi_overbought: int = 70,
+        rsi_oversold: int = 30,
+        sma_short_period: int = 10,
+        sma_long_period: int = 30,
+        min_interval_minutes: int = 60,
+        risk_reward_ratio: float = 2.0,
+    ):
         """
-        Inicjalizacja strategii awaryjnej
+        Inicjalizacja strategii awaryjnej.
         
         Args:
-            lookback_period (int): Okres wsteczny dla wskaźników
-            volatility_window (int): Okno do obliczania zmienności
+            rsi_period: Okres dla wskaźnika RSI
+            rsi_overbought: Próg wykupienia dla RSI
+            rsi_oversold: Próg wyprzedania dla RSI
+            sma_short_period: Okres dla krótkiej średniej kroczącej
+            sma_long_period: Okres dla długiej średniej kroczącej
+            min_interval_minutes: Minimalny interwał między sygnałami (minuty)
+            risk_reward_ratio: Stosunek zysku do ryzyka
         """
-        self.lookback_period = lookback_period
-        self.volatility_window = volatility_window
-        self.last_signal = None
+        self.rsi_period = rsi_period
+        self.rsi_overbought = rsi_overbought
+        self.rsi_oversold = rsi_oversold
+        self.sma_short_period = sma_short_period
+        self.sma_long_period = sma_long_period
+        self.min_interval_minutes = min_interval_minutes
+        self.risk_reward_ratio = risk_reward_ratio
+        
+        # Ostatni wygenerowany sygnał
         self.last_signal_time = None
+        self.last_signal = None
         
-    def calculate_basic_indicators(self, data: pd.DataFrame) -> pd.DataFrame:
+        logger.info(
+            f"Strategia awaryjna zainicjowana: RSI({rsi_period}), SMA({sma_short_period},{sma_long_period}), "
+            f"Interwał: {min_interval_minutes}min, RR: {risk_reward_ratio}"
+        )
+
+    def generate_signal(self, data: pd.DataFrame) -> Dict:
         """
-        Oblicza podstawowe wskaźniki techniczne
+        Generuje sygnał handlowy na podstawie prostych wskaźników technicznych.
         
         Args:
-            data (pd.DataFrame): Dane cenowe z kolumnami: timestamp, open, high, low, close, volume
-            
+            data: DataFrame z danymi cenowymi, musi zawierać kolumny: 
+                 open, high, low, close, volume, timestamp
+                 
         Returns:
-            pd.DataFrame: Dane z dodanymi wskaźnikami
+            Dict: Słownik zawierający:
+                - 'action': 'BUY', 'SELL' lub 'HOLD'
+                - 'confidence': pewność sygnału (0-1)
+                - 'price': aktualna cena
+                - 'stop_loss': sugerowany poziom stop-loss
+                - 'take_profit': sugerowany poziom take-profit
+                - 'reasons': powody decyzji (lista stringów)
         """
-        df = data.copy()
-        
-        # Upewnij się, że dane są posortowane chronologicznie
-        if 'timestamp' in df.columns:
-            df['timestamp'] = pd.to_datetime(df['timestamp'])
-            df.sort_values('timestamp', inplace=True)
+        try:
+            # Upewniamy się, że mamy wystarczająco danych
+            if len(data) < max(self.rsi_period, self.sma_long_period) + 10:
+                logger.warning(f"Za mało danych: {len(data)} punktów")
+                return self._create_hold_signal(
+                    data, confidence=0.1, reasons=["Niewystarczająca ilość danych historycznych"]
+                )
+                
+            # Sprawdzamy czy kolumny są w odpowiednim formacie
+            required_columns = ["open", "high", "low", "close", "volume"]
+            for col in required_columns:
+                if col not in data.columns:
+                    logger.warning(f"Brak kolumny: {col}")
+                    return self._create_hold_signal(
+                        data, confidence=0.1, reasons=[f"Brak wymaganych danych (kolumna {col})"]
+                    )
             
+            # Przygotowujemy kopię danych (nie modyfikujemy oryginału)
+            df = data.copy()
+            
+            # Upewniamy się, że dane są posortowane chronologicznie
+            if "timestamp" in df.columns:
+                df = df.sort_values("timestamp")
+                
+            # Sprawdzamy czy upłynął minimalny interwał między sygnałami
+            if self.last_signal_time and not self._min_interval_passed():
+                logger.info("Nie upłynął minimalny interwał między sygnałami")
+                return self.last_signal
+                
+            # Obliczamy wskaźniki techniczne
+            self._calculate_indicators(df)
+            
+            # Generujemy sygnał na podstawie wskaźników
+            signal = self._generate_signal_from_indicators(df)
+            
+            # Aktualizujemy ostatni sygnał
+            self.last_signal_time = datetime.now()
+            self.last_signal = signal
+            
+            return signal
+            
+        except Exception as e:
+            logger.error(f"Błąd podczas generowania sygnału awaryjnego: {e}", exc_info=True)
+            return {
+                "action": "HOLD",
+                "confidence": 0.1,
+                "price": data["close"].iloc[-1] if "close" in data.columns and len(data) > 0 else None,
+                "reasons": [f"Błąd podczas analizy: {str(e)}"],
+            }
+
+    def _calculate_indicators(self, df: pd.DataFrame) -> None:
+        """
+        Oblicza wskaźniki techniczne używane przez strategię.
+        
+        Args:
+            df: DataFrame z danymi cenowymi
+        """
         # Średnie kroczące
-        df['sma_short'] = df['close'].rolling(window=5).mean()
-        df['sma_medium'] = df['close'].rolling(window=20).mean()
-        df['sma_long'] = df['close'].rolling(window=50).mean()
+        df["sma_short"] = df["close"].rolling(window=self.sma_short_period).mean()
+        df["sma_long"] = df["close"].rolling(window=self.sma_long_period).mean()
         
         # RSI
-        delta = df['close'].diff()
+        delta = df["close"].diff()
         gain = delta.where(delta > 0, 0)
         loss = -delta.where(delta < 0, 0)
         
-        avg_gain = gain.rolling(window=self.lookback_period).mean()
-        avg_loss = loss.rolling(window=self.lookback_period).mean()
+        avg_gain = gain.rolling(window=self.rsi_period).mean()
+        avg_loss = loss.rolling(window=self.rsi_period).mean()
         
         rs = avg_gain / avg_loss
-        df['rsi'] = 100 - (100 / (1 + rs))
+        df["rsi"] = 100 - (100 / (1 + rs))
         
-        # ATR (Average True Range) - zmienność
-        df['tr'] = np.maximum(
-            df['high'] - df['low'],
-            np.maximum(
-                abs(df['high'] - df['close'].shift(1)),
-                abs(df['low'] - df['close'].shift(1))
-            )
-        )
-        df['atr'] = df['tr'].rolling(window=self.volatility_window).mean()
+        # Wskaźnik zmienności (ATR)
+        tr1 = df["high"] - df["low"]
+        tr2 = abs(df["high"] - df["close"].shift())
+        tr3 = abs(df["low"] - df["close"].shift())
         
-        # Momentum
-        df['momentum'] = df['close'] / df['close'].shift(5) - 1
+        df["tr"] = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
+        df["atr"] = df["tr"].rolling(window=14).mean()
         
-        # Volatility ratio
-        df['volatility_ratio'] = df['atr'] / df['close'] * 100
+        # Wolumen względny
+        df["vol_ma"] = df["volume"].rolling(window=20).mean()
+        df["vol_ratio"] = df["volume"] / df["vol_ma"]
         
-        return df
-    
-    def generate_signal(self, data: pd.DataFrame) -> Dict:
+        logger.debug("Obliczono wskaźniki techniczne dla strategii awaryjnej")
+
+    def _generate_signal_from_indicators(self, df: pd.DataFrame) -> Dict:
         """
-        Generuje sygnał handlowy na podstawie prostych wskaźników
+        Generuje sygnał handlowy na podstawie obliczonych wskaźników.
         
         Args:
-            data (pd.DataFrame): Dane cenowe z obliczonymi wskaźnikami
+            df: DataFrame z danymi i obliczonymi wskaźnikami
             
         Returns:
-            Dict: Sygnał handlowy (BUY, SELL, HOLD)
+            Dict: Sygnał handlowy
         """
-        if len(data) < 50:
-            logger.warning(f"Za mało danych do generowania sygnału: {len(data)} punktów")
-            return {
-                'action': 'HOLD',
-                'confidence': 0.5,
-                'reason': 'Niewystarczająca ilość danych'
-            }
-            
-        # Użyj ostatnich danych
-        df = self.calculate_basic_indicators(data)
-        current = df.iloc[-1]
+        # Pobieramy ostatnie wartości wskaźników
+        last_idx = -1
         
-        # Sprawdź, czy mamy wszystkie potrzebne wskaźniki
-        if pd.isna(current['sma_short']) or pd.isna(current['sma_medium']) or \
-           pd.isna(current['sma_long']) or pd.isna(current['rsi']) or \
-           pd.isna(current['atr']):
-            logger.warning("Brakujące wskaźniki w danych")
-            return {
-                'action': 'HOLD',
-                'confidence': 0.5,
-                'reason': 'Brakujące wskaźniki'
-            }
+        rsi = df["rsi"].iloc[last_idx]
+        sma_short = df["sma_short"].iloc[last_idx]
+        sma_long = df["sma_long"].iloc[last_idx]
+        close = df["close"].iloc[last_idx]
+        atr = df["atr"].iloc[last_idx]
+        vol_ratio = df["vol_ratio"].iloc[last_idx]
         
-        # Przechowywanie powodów sygnału
+        # Lista powodów decyzji
         reasons = []
-        buy_signals = 0
+        
+        # Sprawdzamy sygnały
         sell_signals = 0
+        buy_signals = 0
         
-        # 1. Sygnał z przecięcia średnich kroczących
-        if current['sma_short'] > current['sma_medium'] and df.iloc[-2]['sma_short'] <= df.iloc[-2]['sma_medium']:
-            buy_signals += 1
-            reasons.append("Przecięcie SMA 5/20 w górę")
-        elif current['sma_short'] < current['sma_medium'] and df.iloc[-2]['sma_short'] >= df.iloc[-2]['sma_medium']:
+        # 1. RSI
+        if rsi > self.rsi_overbought:
             sell_signals += 1
-            reasons.append("Przecięcie SMA 5/20 w dół")
-            
-        # 2. Poziomy RSI
-        if current['rsi'] < 30:
+            reasons.append(f"RSI wykupiony ({rsi:.1f})")
+        elif rsi < self.rsi_oversold:
             buy_signals += 1
-            reasons.append(f"Wyprzedanie (RSI={current['rsi']:.1f})")
-        elif current['rsi'] > 70:
+            reasons.append(f"RSI wyprzedany ({rsi:.1f})")
+            
+        # 2. Przecięcie średnich kroczących
+        if sma_short > sma_long:
+            buy_signals += 1
+            reasons.append("Przecięcie SMA w górę (trend wzrostowy)")
+        elif sma_short < sma_long:
             sell_signals += 1
-            reasons.append(f"Wykupienie (RSI={current['rsi']:.1f})")
+            reasons.append("Przecięcie SMA w dół (trend spadkowy)")
             
-        # 3. Trend długoterminowy
-        if current['close'] > current['sma_long']:
-            buy_signals += 0.5
-            reasons.append("Trend długoterminowy wzrostowy")
-        elif current['close'] < current['sma_long']:
-            sell_signals += 0.5
-            reasons.append("Trend długoterminowy spadkowy")
-            
-        # 4. Momentum
-        if current['momentum'] > 0.02:  # 2% momentum
-            buy_signals += 0.5
-            reasons.append(f"Silny momentum wzrostowy: {current['momentum']*100:.1f}%")
-        elif current['momentum'] < -0.02:
-            sell_signals += 0.5
-            reasons.append(f"Silny momentum spadkowy: {current['momentum']*100:.1f}%")
-            
-        # Oblicz siłę sygnału i poziom pewności
-        total_signals = buy_signals + sell_signals
-        max_signals = 3  # Maksymalna liczba sygnałów (1+1+0.5+0.5)
+        # 3. Analiza wolumenu
+        if vol_ratio > 1.5:
+            if close > df["close"].iloc[-2]:
+                buy_signals += 1
+                reasons.append(f"Wysoki wolumen przy wzroście ceny (x{vol_ratio:.1f})")
+            else:
+                sell_signals += 1
+                reasons.append(f"Wysoki wolumen przy spadku ceny (x{vol_ratio:.1f})")
+                
+        # 4. Ostatnie 3 świece (prosta analiza price action)
+        last_3_candles = df.iloc[-3:].copy()
+        price_action = self._analyze_price_action(last_3_candles)
         
-        # Wygeneruj akcję
-        if buy_signals > sell_signals and buy_signals >= 1:
-            action = 'BUY'
-            confidence = min(0.85, buy_signals / max_signals)
-        elif sell_signals > buy_signals and sell_signals >= 1:
-            action = 'SELL'
-            confidence = min(0.85, sell_signals / max_signals)
+        if price_action == "bullish":
+            buy_signals += 1
+            reasons.append("Bycza formacja świecowa")
+        elif price_action == "bearish":
+            sell_signals += 1
+            reasons.append("Niedźwiedzia formacja świecowa")
+            
+        # Ocena pewności na podstawie liczby sygnałów (max 4 sygnały)
+        if buy_signals > sell_signals:
+            action = "BUY"
+            confidence = min(0.5 + (buy_signals / 8), 0.85)  # max 0.85 pewności dla strategii awaryjnej
+            reasons.insert(0, f"{buy_signals} sygnałów kupna vs {sell_signals} sygnałów sprzedaży")
+        elif sell_signals > buy_signals:
+            action = "SELL"
+            confidence = min(0.5 + (sell_signals / 8), 0.85)
+            reasons.insert(0, f"{sell_signals} sygnałów sprzedaży vs {buy_signals} sygnałów kupna")
         else:
-            action = 'HOLD'
+            action = "HOLD"
             confidence = 0.5
-            reasons.append("Brak wyraźnych sygnałów")
+            reasons.insert(0, "Sygnały niejednoznaczne lub sprzeczne")
+            
+        # Ustawienie poziomów Stop Loss i Take Profit
+        sl_distance = atr * 1.5  # 1.5x ATR 
+        tp_distance = sl_distance * self.risk_reward_ratio
         
-        # Oblicz poziomy TP/SL na podstawie ATR
-        current_price = current['close']
-        atr = current['atr']
-        
-        if action == 'BUY':
-            take_profit = current_price + (atr * 3)  # 3x ATR dla TP
-            stop_loss = current_price - (atr * 1.5)  # 1.5x ATR dla SL
-        elif action == 'SELL':
-            take_profit = current_price - (atr * 3)
-            stop_loss = current_price + (atr * 1.5)
+        if action == "BUY":
+            stop_loss = close - sl_distance
+            take_profit = close + tp_distance
+        elif action == "SELL":
+            stop_loss = close + sl_distance
+            take_profit = close - tp_distance
         else:
-            take_profit = None
             stop_loss = None
-        
-        # Zapisz ostatni sygnał
-        self.last_signal = {
-            'action': action,
-            'confidence': confidence,
-            'reasons': reasons,
-            'price': current_price,
-            'take_profit': take_profit,
-            'stop_loss': stop_loss,
-            'timestamp': datetime.now(),
-            'indicators': {
-                'sma_short': current['sma_short'],
-                'sma_medium': current['sma_medium'],
-                'rsi': current['rsi'],
-                'atr': current['atr'],
-                'momentum': current['momentum']
-            }
+            take_profit = None
+            
+        # Konstruujemy sygnał
+        signal = {
+            "action": action,
+            "confidence": confidence,
+            "price": close,
+            "stop_loss": stop_loss,
+            "take_profit": take_profit,
+            "reasons": reasons,
         }
-        self.last_signal_time = datetime.now()
         
-        logger.info(f"Wygenerowano sygnał awaryjny: {action} (pewność: {confidence:.2f}) - {', '.join(reasons)}")
+        logger.info(
+            f"Wygenerowano sygnał awaryjny: {action} z pewnością {confidence:.2f}, "
+            f"Cena: {close:.2f}, SL: {stop_loss:.2f if stop_loss else None}, "
+            f"TP: {take_profit:.2f if take_profit else None}"
+        )
         
-        return self.last_signal
-    
-    def get_last_signal(self) -> Dict:
-        """Zwraca ostatni wygenerowany sygnał"""
-        return self.last_signal
-    
-    def should_update_signal(self, min_interval_minutes: int = 15) -> bool:
+        return signal
+
+    def _analyze_price_action(self, candles: pd.DataFrame) -> str:
         """
-        Sprawdza, czy należy wygenerować nowy sygnał
+        Analizuje formacje świecowe i określa ich charakter.
         
         Args:
-            min_interval_minutes (int): Minimalny interwał między sygnałami w minutach
+            candles: DataFrame z danymi świecowymi
             
         Returns:
-            bool: True, jeśli należy wygenerować nowy sygnał
+            str: "bullish", "bearish" lub "neutral"
+        """
+        # Sprawdzamy trendy między świecami
+        closes = candles["close"].values
+        opens = candles["open"].values
+        
+        # Rozmiary świec (body)
+        candle_sizes = abs(closes - opens)
+        avg_size = np.mean(candle_sizes)
+        
+        # Określamy charakter każdej świecy
+        candle_chars = []
+        for i in range(len(closes)):
+            if closes[i] > opens[i]:
+                if candle_sizes[i] > avg_size * 1.2:
+                    candle_chars.append("strong_bull")
+                else:
+                    candle_chars.append("bull")
+            elif closes[i] < opens[i]:
+                if candle_sizes[i] > avg_size * 1.2:
+                    candle_chars.append("strong_bear")
+                else:
+                    candle_chars.append("bear")
+            else:
+                candle_chars.append("neutral")
+                
+        # Analizujemy sekwencję świec
+        # To bardzo uproszczona analiza - w rzeczywistości analizy formacji świecowych
+        # są znacznie bardziej zaawansowane
+        
+        # Bycze formacje
+        if all(c in ["bull", "strong_bull"] for c in candle_chars):
+            return "bullish"  # Wszystkie świece wzrostowe
+        if candle_chars[-1] == "strong_bull" and candle_chars[-2] in ["bear", "strong_bear"]:
+            return "bullish"  # Odbicie po spadku
+        if candle_chars[-1] == "bull" and all(c in ["bear", "strong_bear"] for c in candle_chars[:-1]):
+            return "bullish"  # Odwrócenie trendu
+            
+        # Niedźwiedzie formacje
+        if all(c in ["bear", "strong_bear"] for c in candle_chars):
+            return "bearish"  # Wszystkie świece spadkowe
+        if candle_chars[-1] == "strong_bear" and candle_chars[-2] in ["bull", "strong_bull"]:
+            return "bearish"  # Załamanie po wzroście
+        if candle_chars[-1] == "bear" and all(c in ["bull", "strong_bull"] for c in candle_chars[:-1]):
+            return "bearish"  # Odwrócenie trendu
+            
+        # Neutralne formacje
+        return "neutral"
+
+    def _create_hold_signal(self, data: pd.DataFrame, confidence: float = 0.1, reasons: Optional[List[str]] = None) -> Dict:
+        """
+        Tworzy sygnał HOLD gdy nie możemy wygenerować prawidłowego sygnału.
+        
+        Args:
+            data: DataFrame z danymi cenowymi
+            confidence: Pewność sygnału (0-1)
+            reasons: Lista powodów decyzji
+            
+        Returns:
+            Dict: Sygnał HOLD
+        """
+        if reasons is None:
+            reasons = ["Niewystarczające dane do analizy"]
+            
+        try:
+            price = data["close"].iloc[-1] if "close" in data.columns and len(data) > 0 else None
+        except Exception:
+            price = None
+            
+        return {
+            "action": "HOLD",
+            "confidence": confidence,
+            "price": price,
+            "stop_loss": None,
+            "take_profit": None,
+            "reasons": reasons,
+        }
+
+    def _min_interval_passed(self) -> bool:
+        """
+        Sprawdza, czy upłynął minimalny interwał między sygnałami.
+        
+        Returns:
+            bool: True jeśli upłynął minimalny interwał
         """
         if self.last_signal_time is None:
             return True
             
         time_diff = datetime.now() - self.last_signal_time
-        return time_diff.total_seconds() / 60 >= min_interval_minutes
+        return time_diff.total_seconds() / 60 >= self.min_interval_minutes
+
 
 # Przykład użycia
 if __name__ == "__main__":
-    import yfinance as yf
-    
-    # Pobierz przykładowe dane
-    data = yf.download("BTC-USD", period="60d", interval="1h")
-    data.reset_index(inplace=True)
-    
-    # Dostosuj nazwy kolumn
-    data.columns = [col.lower() for col in data.columns]
-    data.rename(columns={'date': 'timestamp'}, inplace=True)
-    
-    # Inicjalizuj strategię awaryjną
-    fallback = FallbackStrategy()
-    
-    # Wygeneruj sygnał
-    signal = fallback.generate_signal(data)
-    
-    print(f"Sygnał awaryjny: {signal['action']}")
-    print(f"Pewność: {signal['confidence']:.2f}")
-    print(f"Powody: {', '.join(signal['reasons'])}")
-    print(f"Cena: {signal['price']:.2f}")
-    
-    if signal['take_profit']:
-        print(f"Take Profit: {signal['take_profit']:.2f}")
-    if signal['stop_loss']:
-        print(f"Stop Loss: {signal['stop_loss']:.2f}")
+    try:
+        import yfinance as yf
+        
+        # Pobierz przykładowe dane
+        data = yf.download("BTC-USD", period="60d", interval="1h")
+        data.reset_index(inplace=True)
+        
+        # Dostosuj nazwy kolumn
+        data.columns = [col.lower() for col in data.columns]
+        data.rename(columns={"date": "timestamp"}, inplace=True)
+        
+        # Inicjalizuj strategię awaryjną
+        fallback = FallbackStrategy()
+        
+        # Wygeneruj sygnał
+        signal = fallback.generate_signal(data)
+        
+        print(f"Sygnał awaryjny: {signal['action']}")
+        print(f"Pewność: {signal['confidence']:.2f}")
+        print(f"Powody: {', '.join(signal['reasons'])}")
+        print(f"Cena: {signal['price']:.2f}")
+        
+        if signal["take_profit"]:
+            print(f"Take Profit: {signal['take_profit']:.2f}")
+        if signal["stop_loss"]:
+            print(f"Stop Loss: {signal['stop_loss']:.2f}")
+    except ImportError:
+        print("Zainstaluj yfinance, aby uruchomić ten przykład")
+    except Exception as e:
+        print(f"Błąd podczas testowania strategii awaryjnej: {e}")
