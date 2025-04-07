@@ -25,3 +25,5 @@ black==21.9b0
 colorama==0.4.4
 tqdm==4.62.3
 PyYAML==6.0
+psutil
+pybit

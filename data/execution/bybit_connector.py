@@ -32,11 +32,11 @@ class BybitConnector:
         self.api_secret = api_secret
         self.use_testnet = use_testnet
         self.base_url = "https://api-testnet.bybit.com" if use_testnet else "https://api.bybit.com"
-        
+
         # Inicjalizacja klienta API
         try:
             import pybit
-            
+
             # Sprawdzamy wersję i dostosowujemy inicjalizację do odpowiedniej wersji API
             try:
                 # Próba inicjalizacji dla nowszej wersji API (2.4+)
@@ -59,7 +59,7 @@ class BybitConnector:
             except Exception as e:
                 logging.error(f"Błąd inicjalizacji klienta PyBit: {e}")
                 raise
-                
+
             logging.info(f"Zainicjalizowano klienta ByBit API. Wersja: {self.api_version}, Testnet: {self.use_testnet}")
         except ImportError:
             logging.error("Nie można zaimportować modułu pybit. Sprawdź czy jest zainstalowany.")
@@ -235,17 +235,21 @@ class BybitConnector:
                 masked_key = f"{self.api_key[:4]}{'*' * (len(self.api_key) - 4)}" if self.api_key else "Brak klucza"
                 self.logger.info(f"Próba pobrania danych z {'PRODUKCYJNEGO' if not self.use_testnet else 'TESTOWEGO'} API Bybit. Klucz: {masked_key}")
                 self.logger.info(f"Status API: {'Produkcyjne' if not self.use_testnet else 'Testnet'}")
-                
+
                 try:
                     # Testowanie połączenia z API
                     try:
-                        # Najpierw sprawdźmy czy mamy dostęp do API
-                        time_response = self.client.get_server_time()
+                        # Sprawdzanie dostępu do API - w nowszych wersjach pybit metoda jest inna
+                        if hasattr(self.client, 'get_server_time'):
+                            time_response = self.client.get_server_time()
+                        else:
+                            # Dla nowszych wersji pybit używamy time_service
+                            time_response = self.client.time()
                         self.logger.info(f"Test połączenia z API: {time_response}")
                     except Exception as time_error:
                         self.logger.error(f"Test połączenia z API nie powiódł się: {time_error}")
                         raise Exception(f"Brak dostępu do API Bybit: {time_error}")
-                    
+
                     # Próba pobrania salda konta dla wersji v2
                     try:
                         wallet = self.client.get_wallet_balance()
@@ -260,15 +264,15 @@ class BybitConnector:
                                 wallet = self.client.query_account_info()
                             else:
                                 raise Exception("Brak dostępnych metod do pobrania salda portfela")
-                    
+
                     self.logger.info(f"Odpowiedź API Bybit: {str(wallet)[:200]}...")
-                    
+
                     # Sprawdzenie czy odpowiedź zawiera kod błędu
                     if "retCode" in wallet and wallet["retCode"] != 0:
                         error_msg = wallet.get("retMsg", "Nieznany błąd API")
                         self.logger.error(f"API zwróciło błąd: {error_msg}")
                         raise Exception(f"Błąd API ByBit: {error_msg}")
-                    
+
                     result = {
                         "balances": {},
                         "success": True,
@@ -306,12 +310,12 @@ class BybitConnector:
                                     "available_balance": float(coin_data.get("available_balance", 0) or coin_data.get("availableBalance", 0)),
                                     "wallet_balance": float(coin_data.get("wallet_balance", 0) or coin_data.get("walletBalance", 0))
                                 }
-                    
+
                     if not result["balances"]:
                         self.logger.warning(f"API zwróciło pustą listę sald. Pełna odpowiedź: {wallet}")
                         result["warning"] = "API zwróciło pustą listę sald"
                         self.logger.info("Próba pobrania danych z API zwróciła pustą listę sald. Możliwe przyczyny: brak środków na koncie, nieprawidłowe konto, nieprawidłowe uprawnienia API.")
-                    
+
                     return result
                 except Exception as e:
                     self.logger.error(f"Błąd podczas pobierania danych z prawdziwego API: {e}. Traceback: {traceback.format_exc()}")
