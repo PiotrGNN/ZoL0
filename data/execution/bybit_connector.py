@@ -31,6 +31,22 @@ class BybitConnector:
         self.api_secret = api_secret
         self.use_testnet = use_testnet
         self.base_url = "https://api-testnet.bybit.com" if use_testnet else "https://api.bybit.com"
+        
+        # Inicjalizacja klienta API
+        try:
+            import pybit
+            self.client = pybit.unified_trading.HTTP(
+                api_key=self.api_key,
+                api_secret=self.api_secret,
+                testnet=self.use_testnet
+            )
+            logging.info(f"Zainicjalizowano klienta ByBit API. Testnet: {self.use_testnet}")
+        except ImportError:
+            logging.error("Nie można zaimportować modułu pybit. Sprawdź czy jest zainstalowany.")
+            self.client = None
+        except Exception as e:
+            logging.error(f"Błąd podczas inicjalizacji klienta ByBit: {e}")
+            self.client = None
 
         # Konfiguracja logowania
         log_dir = "logs"

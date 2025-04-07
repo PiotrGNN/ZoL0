@@ -15,12 +15,12 @@ document.addEventListener('DOMContentLoaded', function() {
     setInterval(fetchNotifications, 60000); // Co minutę
 });
 
-// Liczniki błędów dla obsługi ponownych prób
-let errorCounts = {
-    chart: 0,
-    status: 0,
-    stats: 0,
-    portfolio: 0
+// Licznik błędów dla każdego typu danych
+const errorCounts = {
+    'chart': 0,
+    'balance': 0,
+    'tradingStats': 0,
+    'recentTrades': 0
 };
 
 // Główne funkcje dashboardu
@@ -30,8 +30,8 @@ function updateDashboardData() {
     updateCharts();
     updateTradingStats();
     updateRecentTrades();
-    updateAIModelsStatus(); //Retained from original
-    updateAlerts(); //Retained from original
+    updateAIModelsStatus(); 
+    updateAlerts(); 
 }
 
 function updatePortfolioData() {
@@ -66,14 +66,14 @@ function updatePortfolioData() {
             }
 
             // Resetuj licznik błędów po sukcesie
-            errorCounts.portfolio = 0;
+            errorCounts.balance = 0;
         })
         .catch(error => {
-            errorCounts.portfolio++;
+            errorCounts.balance++;
             console.warn("Błąd podczas pobierania danych portfela:", error);
 
             // Tylko wyświetl komunikat o błędzie jeśli jest to powtarzający się problem
-            if (errorCounts.portfolio > 3) {
+            if (errorCounts.balance > 3) {
                 const portfolioContainer = document.getElementById('portfolio-container');
                 if (portfolioContainer) {
                     portfolioContainer.innerHTML = `<div class="card">
@@ -227,12 +227,12 @@ function updateTradingStats() {
             document.getElementById('win-rate').textContent = data.win_rate || 'N/A';
             document.getElementById('max-drawdown').textContent = data.max_drawdown || 'N/A';
 
-            errorCounts.stats = 0;
+            errorCounts.tradingStats = 0;
         })
         .catch(error => {
-            errorCounts.stats++;
+            errorCounts.tradingStats++;
             console.error('Błąd podczas aktualizacji statystyk tradingowych:', error);
-            if (errorCounts.stats > 3) {
+            if (errorCounts.tradingStats > 3) {
                 // Ustaw wartości domyślne
                 document.getElementById('profit-value').textContent = 'N/A';
                 document.getElementById('trades-count').textContent = 'N/A';
