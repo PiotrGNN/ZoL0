@@ -1,5 +1,7 @@
 { pkgs }: {
   deps = [
+    pkgs.xsimd
+    pkgs.libxcrypt
     pkgs.tk
     pkgs.tcl
     pkgs.qhull
