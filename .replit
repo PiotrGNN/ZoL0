@@ -77,3 +77,6 @@ guessImports = true
 
 [interpreter]
 command = ["python3", "-u"]
+
+[workflows]
+runButton = "Run"
