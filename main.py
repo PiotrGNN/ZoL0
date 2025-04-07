@@ -78,8 +78,12 @@ def initialize_system():
             if not api_key or not api_secret:
                 logging.warning("Brak kluczy API ByBit w zmiennych środowiskowych. Sprawdź zakładkę Secrets.")
                 return False
-                
-            logging.info(f"Inicjalizacja klienta ByBit z kluczem: {api_key[:4]}*** testnet={use_testnet}")
+            
+            # Więcej szczegółów o konfiguracji API dla celów debugowania
+            masked_key = f"{api_key[:4]}{'*' * (len(api_key) - 4)}" if api_key else "Brak klucza"
+            masked_secret = f"{api_secret[:4]}{'*' * (len(api_secret) - 4)}" if api_secret else "Brak sekretu"
+            logging.info(f"Inicjalizacja klienta ByBit - Klucz: {masked_key}, Testnet: {use_testnet}")
+            logging.info(f"Produkcyjne API jest {'WŁĄCZONE' if not use_testnet else 'WYŁĄCZONE'}")
 
             bybit_client = BybitConnector(
                 api_key=api_key,
@@ -282,6 +286,44 @@ def get_notifications():
                 'message': 'Wykryto zwiększoną zmienność na rynku BTC/USDT.',
                 'timestamp': (datetime.now() - timedelta(minutes=10)).strftime('%Y-%m-%d %H:%M:%S')
             },
+
+@app.route("/api/bybit/connection-test", methods=["GET"])
+def test_bybit_connection():
+    """Endpoint do testowania połączenia z ByBit API."""
+    if not bybit_client:
+        return jsonify({"success": False, "error": "Klient ByBit nie jest zainicjalizowany", "testnet": True}), 500
+
+    try:
+        # Test połączenia poprzez pobranie czasu serwera
+        server_time = bybit_client.get_server_time()
+        
+        # Test połączenia przez próbę pobrania salda (wymaga autentykacji)
+        balance_test = bybit_client.get_account_balance()
+        
+        # Sprawdzenie, czy używamy testnet czy produkcyjnego API
+        is_testnet = bybit_client.use_testnet
+        
+        connection_status = {
+            "success": True,
+            "api_initialized": True,
+            "server_time": server_time,
+            "testnet": is_testnet,
+            "environment": "testnet" if is_testnet else "production",
+            "authentication": balance_test.get("success", False),
+            "balance_data": "Dostępne" if balance_test.get("success", False) else "Błąd autoryzacji",
+            "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+        
+        logger.info(f"Test połączenia z ByBit API: {connection_status}")
+        return jsonify(connection_status)
+    except Exception as e:
+        logger.error(f"Błąd podczas testowania połączenia z ByBit API: {e}", exc_info=True)
+        return jsonify({
+            "success": False, 
+            "error": str(e),
+            "testnet": bybit_client.use_testnet if bybit_client else None
+        }), 500
+
             {
                 'id': 3,
                 'type': 'success',

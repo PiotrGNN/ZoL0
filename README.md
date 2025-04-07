@@ -20,7 +20,12 @@ System tradingowy z integracją ByBit API, zoptymalizowany do działania w środ
 1. Skonfiguruj zmienne środowiskowe w zakładce Secrets w Replit:
    - `BYBIT_API_KEY` - Klucz API ByBit
    - `BYBIT_API_SECRET` - Sekret API ByBit
-   - `BYBIT_USE_TESTNET` - Ustawić na "true" lub "false"
+   - `BYBIT_USE_TESTNET` - Ustawić na "false" dla API produkcyjnego lub "true" dla środowiska testowego
+
+UWAGA: Podczas pracy z produkcyjnymi kluczami API, upewnij się że:
+- Klucze API mają ograniczone uprawnienia (tylko odczyt, jeśli nie potrzebujesz handlu)
+- Włączone są dodatkowe zabezpieczenia na koncie ByBit (2FA, ograniczenia IP)
+- Regularnie zmieniasz klucze API, jeśli wykryjesz jakiekolwiek niestandardowe zachowanie
 
 2. Zainstaluj zależności:
    ```
