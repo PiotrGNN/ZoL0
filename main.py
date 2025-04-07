@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, request
 
 # Konfiguracja logowania
+os.makedirs("logs", exist_ok=True)
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",

@@ -8,47 +8,26 @@ websocket-client==1.6.4
 
 # Analiza danych i AI
 matplotlib==3.7.2
-tensorflow==2.13.0
-keras==2.13.1
-statsmodels==0.13.0
-prophet==1.0.1
-pyod==0.9.5
-optuna==3.3.0
 
 # Giełda i trading
 ccxt==4.0.90
-python-binance==1.0.19
 colorama==0.4.6
 pybit==5.0.0
 
 # Bazy danych
-sqlalchemy==1.4.25
-pymongo==3.12.0
 
 # Narzędzia deweloperskie
 pytest==7.3.1
-pytest-mock==3.11.1
 flake8==3.9.2
-black==21.9b0
-mypy==0.910
-pytest-cov==4.1.0
 
 # Optymalizacja
-hyperopt==0.2.7
 
 # Wdrożenie
-gunicorn==20.1.0
-waitress==2.0.0
 
 # API i obsługa danych (additional packages)
 seaborn==0.12.2
-xgboost==1.7.6
 scikit-learn==1.3.0
 
 # Inne narzędzia
 tqdm==4.66.1
 pyyaml==6.0.1
-nltk==3.8.1
-pyjwt==2.8.0
-scipy==1.11.1
-pymysql==1.1.0

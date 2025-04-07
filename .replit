@@ -1,4 +1,3 @@
-
 entrypoint = "main.py"
 modules = ["python-3.10:v18-20230807-322e88b"]
 
@@ -11,7 +10,7 @@ channel = "stable-23_05"
 PYTHONPATH = "${REPL_HOME}"
 
 [deployment]
-run = ["python3", "main.py"]
+run = ["python", "main.py"]
 deploymentTarget = "cloudrun"
 
 [unitTest]
@@ -59,3 +58,12 @@ command = "python3"
 
 [workflows]
 runButton = "Run"
+
+[[workflows.workflow]]
+name = "Run"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python main.py"
