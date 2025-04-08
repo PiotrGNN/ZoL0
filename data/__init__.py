@@ -1,90 +1,82 @@
 """
-Inicjalizacja pakietu 'data'.
-
-Ten plik __init__.py automatycznie importuje wszystkie moduły (.py) znajdujące się w bieżącym katalogu
-oraz wszystkie podpakiety (foldery zawierające __init__.py), z wyłączeniem tych przeznaczonych wyłącznie do testów.
-Dodatkowo re-eksportuje wybrane moduły z podpakietu 'data' (czyli z folderu data/data),
-umożliwiając import:
-    from data import HistoricalDataManager, data_preprocessing
-bez konieczności znajomości wewnętrznej struktury katalogów.
+Inicjalizacja głównego pakietu data.
+Zapewnia prawidłowe importowanie wszystkich podpakietów.
 """
 
 import os
 import importlib
-from typing import List
+import logging
+from typing import List, Dict, Any
 
-# Wymuszenie importu standardowego modułu logowania jako 'py_logging'
-py_logging = importlib.import_module("logging")
+# Konfiguracja loggera
+logger = logging.getLogger(__name__)
 
+# Lista wszystkich podpakietów
 __all__: List[str] = []
 
-# Lista podpakietów do wykluczenia z automatycznego importu
-EXCLUDE_SUBPACKAGES = {"tests"}
+# Mapowanie pakietów do ich aliasów do użycia w importach
+PACKAGE_ALIASES: Dict[str, str] = {
+    "data": "data_package",  # Unikamy konfliktu nazw data.data
+    "execution": "execution",
+    "indicators": "indicators",
+    "logging": "log_package",  # Unikamy konfliktu z modułem logging
+    "optimization": "optimization",
+    "risk_management": "risk_management",
+    "strategies": "strategies",
+    "tests": "tests",
+    "utils": "utils"
+}
 
-
-def _import_all_modules_from_directory(directory: str, package: str) -> None:
+def import_subpackage(subpackage_name: str) -> Any:
     """
-    Importuje wszystkie moduły .py z danego katalogu (pomijając __init__.py)
-    i dodaje ich nazwy do listy __all__.
-    
+    Importuje podpakiet i obsługuje błędy.
+
     Args:
-        directory: Ścieżka do katalogu, w którym szukamy plików .py.
-        package: Nazwa pakietu używana przy importach względnych.
+        subpackage_name: Nazwa podpakietu do zaimportowania
+
+    Returns:
+        Zaimportowany moduł lub None w przypadku błędu
     """
-    for filename in os.listdir(directory):
-        if filename.endswith(".py") and filename != "__init__.py":
-            module_name: str = filename[:-3]
-            try:
-                module = importlib.import_module(f".{module_name}", package=package)
-            except Exception as error:
-                py_logging.warning(
-                    "Pomijam moduł '%s' z powodu błędu: %s", module_name, error
-                )
-                continue
-            globals()[module_name] = module
-            __all__.append(module_name)
+    try:
+        # Użyj aliasu, aby uniknąć konfliktów nazw
+        alias = PACKAGE_ALIASES.get(subpackage_name, subpackage_name)
 
+        # Pełna ścieżka importu
+        import_path = f"data.{subpackage_name}"
 
-def _import_all_subpackages(directory: str, package: str) -> None:
-    """
-    Importuje wszystkie podkatalogi, które są pakietami (zawierają __init__.py),
-    i dodaje ich nazwy do listy __all__, z wyłączeniem określonych folderów.
-    
-    Args:
-        directory: Ścieżka do katalogu, w którym szukamy podpakietów.
-        package: Nazwa pakietu używana przy importach względnych.
-    """
-    for item in os.listdir(directory):
-        if item in EXCLUDE_SUBPACKAGES:
-            py_logging.info("Wykluczam podpakiet '%s' z automatycznego importu.", item)
-            continue
-        subdir: str = os.path.join(directory, item)
-        if os.path.isdir(subdir) and os.path.exists(os.path.join(subdir, "__init__.py")):
-            try:
-                subpackage = importlib.import_module(f".{item}", package=package)
-            except Exception as error:
-                py_logging.warning(
-                    "Pomijam podpakiet '%s' z powodu błędu: %s", item, error
-                )
-                continue
-            globals()[item] = subpackage
-            __all__.append(item)
+        # Spróbuj zaimportować podpakiet
+        module = importlib.import_module(import_path)
 
+        # Dodaj do globals() pod aliasem
+        globals()[alias] = module
 
-def _import_all(directory: str, package: str) -> None:
-    """
-    Importuje wszystkie moduły i podpakiety z danego katalogu.
-    
-    Args:
-        directory: Ścieżka do katalogu, z którego mają być importowane składniki.
-        package: Nazwa pakietu używana przy importach względnych.
-    """
-    _import_all_modules_from_directory(directory, package)
-    _import_all_subpackages(directory, package)
+        # Dodaj alias do __all__
+        if alias not in __all__:
+            __all__.append(alias)
 
+        logger.info(f"Zaimportowano podpakiet {import_path} jako {alias}")
+        return module
 
-_current_dir: str = os.path.dirname(os.path.abspath(__file__))
-_import_all(_current_dir, __name__)
+    except ImportError as e:
+        logger.warning(f"Pomijam podpakiet {subpackage_name} z powodu błędu: {e}")
+        return None
+    except Exception as e:
+        logger.error(f"Nieoczekiwany błąd podczas importowania {subpackage_name}: {e}")
+        return None
+
+# Importuj wszystkie podpakiety
+current_dir = os.path.dirname(os.path.abspath(__file__))
+for item in os.listdir(current_dir):
+    item_path = os.path.join(current_dir, item)
+
+    # Sprawdź czy to katalog i czy zawiera __init__.py (podpakiet)
+    if os.path.isdir(item_path) and os.path.exists(os.path.join(item_path, "__init__.py")):
+        import_subpackage(item)
+
+# Dodaj bezpośrednio dostępne funkcje i klasy
+def get_available_subpackages() -> List[str]:
+    """Zwraca listę dostępnych podpakietów."""
+    return __all__
 
 # Re-export wybranych modułów z podpakietu "data" (czyli folderu data/data)
 # Pozwala to na importowanie np. HistoricalDataManager oraz data_preprocessing
@@ -94,7 +86,7 @@ try:
     if "HistoricalDataManager" not in __all__:
         __all__.append("HistoricalDataManager")
 except ImportError as error:
-    py_logging.warning("Nie udało się re-eksportować HistoricalDataManager: %s", error)
+    logger.warning("Nie udało się re-eksportować HistoricalDataManager: %s", error)
 
 try:
     from .data import data_preprocessing
@@ -102,4 +94,4 @@ try:
     if "data_preprocessing" not in __all__:
         __all__.append("data_preprocessing")
 except ImportError as error:
-    py_logging.warning("Nie udało się re-eksportować data_preprocessing: %s", error)
+    logger.warning("Nie udało się re-eksportować data_preprocessing: %s", error)

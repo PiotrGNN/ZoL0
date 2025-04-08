@@ -1,102 +1,81 @@
-# Trading Bot z Integracją ByBit API
+# Trading Engine - System Tradingowy 🚀
 
-System tradingowy z integracją ByBit API, zoptymalizowany do działania w środowisku Replit.
+## 📋 Spis treści
+- [Instalacja](#-instalacja)
+- [Uruchomienie](#-uruchomienie)
+- [Struktura projektu](#-struktura-projektu)
+- [Rozwiązywanie problemów](#-rozwiązywanie-problemów)
+- [Komponenty systemu](#-komponenty-systemu)
 
-## 🚀 Funkcjonalności
+## 🔧 Instalacja
 
-- Połączenie z giełdą ByBit przez REST API
-- Pobieranie danych rynkowych w czasie rzeczywistym
-- Obsługa kont testowych (testnet) i rzeczywistych
-- Analiza techniczna z wykorzystaniem popularnych wskaźników
-- Dashboard z wizualizacją danych i alarmami
-- Zaawansowane zarządzanie limitami API
-- Inteligentne buforowanie danych
+### W środowisku Replit
+Projekt jest skonfigurowany do pracy w środowisku Replit. Wszystkie niezbędne pakiety są określone w `replit.nix` i zostaną automatycznie zainstalowane.
 
-## 🔧 Wymagania
+1. **Przygotowanie środowiska**:
+   - W Replit wybierz przycisk `Run` lub uruchom workflow `Init Project` w panelu `Shell`
+   - Uruchomienie `init_project.py` automatycznie stworzy wymagane katalogi i pliki konfiguracyjne
 
-- Python 3.8+
-- Konto ByBit z kluczami API
+2. **Konfiguracja API**:
+   - Utwórz plik `.env` w głównym katalogu projektu (lub użyj narzędzia Secrets w Replit)
+   - Dodaj klucze API Bybit zgodnie z plikiem `.env.example`
 
-## ⚙️ Konfiguracja
+## 🚀 Uruchomienie
 
-1. Skonfiguruj plik `.env` w katalogu głównym (możesz wykorzystać `.env.example` jako szablon):
-   ```
-   BYBIT_API_KEY=twój_klucz_api
-   BYBIT_API_SECRET=twój_sekret_api
-   BYBIT_USE_TESTNET=true  # Zmień na false dla produkcyjnego API
+### Workflow'y (zalecane)
+W Replit dostępne są gotowe workflow:
 
-   # Parametry rate limitingu API
-   API_MIN_INTERVAL=10.0
-   API_MAX_CALLS_PER_MINUTE=3
-   API_CACHE_TTL_MULTIPLIER=15.0
-   ```
+- **Run/Run Server** - uruchamia aplikację Flask
+- **Test Bybit Connection** - testuje połączenie z API Bybit
+- **Init Project** - inicjalizuje projekt
 
-   Alternatywnie możesz użyć narzędzia Secrets w Replit:
-   - `BYBIT_API_KEY` - Klucz API ByBit
-   - `BYBIT_API_SECRET` - Sekret API ByBit
-   - `BYBIT_USE_TESTNET` - Ustawić na "false" dla API produkcyjnego lub "true" dla środowiska testowego
-
-2. Uruchom aplikację za pomocą przycisku "Run" w Replit lub wykonaj:
-   ```
-   python main.py
-   ```
-
-3. Dashboard będzie dostępny pod URL-em wygenerowanym przez Replit (zakładka Webview).
-
-## 🛠️ Rozwiązywanie problemów
-
-### Przekraczanie limitów API (Error 403/429)
-
-System został zoptymalizowany pod kątem zarządzania limitami API, ale jeśli nadal występują problemy:
-
-1. **Używaj testnet zamiast produkcyjnego API**
-   - Ustaw `BYBIT_USE_TESTNET=true` w pliku `.env` lub Secrets
-
-2. **Dostosuj parametry limitowania zapytań**
-   - Zwiększ `API_MIN_INTERVAL` (np. do 15.0 sekund)
-   - Zmniejsz `API_MAX_CALLS_PER_MINUTE` (np. do 2)
-
-3. **Korzystaj z cache**
-   - System automatycznie buforuje odpowiedzi API
-   - Możesz zwiększyć czas buforowania zmieniając `API_CACHE_TTL_MULTIPLIER`
-
-### Problemy z połączeniem do API
-
-Jeśli występują problemy z połączeniem do API ByBit:
-
-1. **Sprawdź poprawność kluczy API**
-   - Upewnij się, że klucze są poprawne i mają odpowiednie uprawnienia
-
-2. **Sprawdź ograniczenia geograficzne**
-   - ByBit może blokować dostęp z niektórych lokalizacji
-   - Rozważ użycie VPN, jeśli to konieczne
-
-3. **Ograniczenia w środowisku Replit**
-   - Replit może mieć ograniczenia w zakresie niektórych zapytań zewnętrznych
-   - Upewnij się, że masz aktualne środowisko z właściwymi uprawnieniami
-
-## 🔄 Aktualizacja
-
-System został zoptymalizowany do działania w środowisku Replit. Jeśli potrzebujesz zaktualizować zależności:
+### Ręczne uruchomienie
+Alternatywnie możesz uruchomić aplikację ręcznie:
 
 ```bash
-pip install -r requirements.txt
+python3 run_server.py
 ```
 
-## 📊 Dashboard
+## 📁 Struktura projektu
 
-Dashboard prezentuje:
-- Stan portfela
-- Ostatnie transakcje
-- Wykresy wartości portfela
-- Statystyki handlowe
-- Alerty i powiadomienia
+```
+trading_engine/
+├── data/                  # Główny pakiet danych
+│   ├── execution/         # Komunikacja z giełdą (Bybit)
+│   ├── indicators/        # Wskaźniki techniczne i analizy
+│   ├── strategies/        # Strategie tradingowe
+│   └── utils/             # Narzędzia pomocnicze
+├── ai_models/             # Modele uczenia maszynowego
+├── static/                # Pliki statyczne dla interfejsu
+├── templates/             # Szablony HTML
+├── main.py                # Główny plik aplikacji
+└── run_server.py          # Skrypt uruchamiający serwer
+```
 
-## ⚠️ Ważne informacje
+## 🔍 Rozwiązywanie problemów
 
-- **Testuj najpierw z testnet API** - Zawsze testuj swoje strategie najpierw z API testowym, zanim przejdziesz do prawdziwego handlu.
-- **Ograniczenia API** - ByBit ma limity zapytań API. System został zoptymalizowany pod kątem zarządzania tymi limitami, ale nadal możliwe jest ich przekroczenie przy intensywnym użytkowaniu.
-- **Bezpieczeństwo kluczy API** - Nigdy nie udostępniaj swoich kluczy API. W Replit używaj funkcji Secrets do przechowywania kluczy.
+### Problemy z portami
+Jeśli występuje problem z portem 5000/8080, skrypt `run_server.py` automatycznie znajdzie dostępny port.
+
+### Problemy z API Bybit
+Uruchom test połączenia:
+```bash
+python3 test_bybit_connection.py
+```
+
+### Problemy z importami
+Jeśli występują problemy z importami modułów:
+1. Sprawdź czy pliki `__init__.py` istnieją w każdym katalogu pakietu
+2. Uruchom aplikację z flagą debug: `python3 -m pdb run_server.py`
+
+## 🧩 Komponenty systemu
+
+- **Dashboard** - interfejs webowy (Flask) pokazujący stan systemu
+- **BybitConnector** - komunikacja z API Bybit
+- **Strategie tradingowe** - logika podejmowania decyzji inwestycyjnych
+- **Modele AI** - predykcja ruchów cen i analiza sentymentu
+- **System powiadomień** - alerty i komunikaty
+- **Risk management** - zarządzanie ryzykiem i wielkością pozycji
 
 ## 📦 Zależności
 Główne biblioteki (z oryginalnego projektu, może wymagać aktualizacji):
@@ -105,32 +84,6 @@ Główne biblioteki (z oryginalnego projektu, może wymagać aktualizacji):
 - Scikit-learn - modele ML do analizy i predykcji
 - Matplotlib/Chart.js - wizualizacja danych
 - ByBit API client library (dodatkowa biblioteka do integracji z ByBit)
-
-
-## 📋 Struktura projektu (częściowo z oryginalnego projektu)
-
-```
-├── ai_models/              # Modele AI/ML do analizy i predykcji
-├── data/                   # Moduły danych, strategie i narzędzia
-│   ├── data/               # Pobieranie i przetwarzanie danych
-│   ├── execution/          # Wykonywanie transakcji
-│   ├── indicators/         # Wskaźniki techniczne i analizy
-│   ├── logging/            # System logowania i detekcji anomalii
-│   ├── optimization/       # Optymalizacja strategii i backtesting
-│   ├── risk_management/    # Zarządzanie ryzykiem
-│   ├── strategies/         # Strategie tradingowe
-│   ├── tests/              # Testy jednostkowe i integracyjne
-│   └── utils/              # Narzędzia pomocnicze
-├── logs/                   # Pliki logów
-├── reports/                # Raporty i analizy
-├── saved_models/           # Zapisane modele ML
-├── static/                 # Pliki statyczne dla interfejsu
-│   ├── css/                # Style CSS
-│   └── js/                 # Skrypty JavaScript
-├── templates/              # Szablony HTML
-├── .env.example            # Przykładowy plik konfiguracyjny
-└── main.py                 # Główny plik uruchomieniowy
-```
 
 ## 📝 Licencja
 

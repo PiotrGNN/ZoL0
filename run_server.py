@@ -53,28 +53,32 @@ if __name__ == "__main__":
     sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
     # Uruchomienie aplikacji
-    # W środowisku Replit najlepiej używać portu 5000 (zostanie przekierowany na 80/443)
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 8080))  # Używamy portu 8080 jako domyślnego
     
     # Sprawdzamy, czy port jest zajęty i próbujemy kilka alternatyw
     import socket
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    port_available = False
     
-    # Lista portów do wypróbowania w kolejności preferencji
-    for test_port in [5000, 8080, 3000, 8000]:
+    # W Replit preferowane porty to 5000, 8080, 3000
+    preferred_ports = [8080, 5000, 3000, 8000, 0]  # 0 oznacza automatyczny wybór
+    
+    for test_port in preferred_ports:
         try:
-            s.bind(('0.0.0.0', test_port))
-            port_available = True
-            port = test_port
-            break
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.bind(('0.0.0.0', test_port))
+                port = test_port
+                logging.info(f"Znaleziono wolny port: {port}")
+                break
         except socket.error:
             logging.warning(f"Port {test_port} zajęty, próbujemy inny...")
-    s.close()
-    
-    if not port_available:
-        logging.warning("Wszystkie testowane porty zajęte, używam portu 0 (automatyczny wybór)")
+    else:
+        # Wykonuje się tylko gdy nie znaleziono portu w pętli
         port = 0
+        logging.warning("Wszystkie testowane porty zajęte, używam automatycznego wyboru systemu")
+    
+    # Ustaw zmienną środowiskową, aby inne części aplikacji wiedziały, który port jest używany
+    os.environ["PORT"] = str(port)
     
     logging.info(f"Uruchamianie aplikacji Flask na porcie {port if port != 0 else 'automatycznie wybranym'}")
-    app.run(host='0.0.0.0', port=port, debug=False)  # Wyłączamy debug w trybie produkcyjnym
+    # debug=False w środowisku produkcyjnym pozwala uniknąć przeładowań w pętli
+    debug_mode = os.environ.get("FLASK_DEBUG", "false").lower() == "true"
+    app.run(host='0.0.0.0', port=port, debug=debug_mode)
