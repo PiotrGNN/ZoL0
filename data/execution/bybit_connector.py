@@ -108,8 +108,14 @@ class BybitConnector:
             from data.utils.cache_manager import get_cached_data
             rate_limited_data, found = get_cached_data("api_rate_limited")
             if found and rate_limited_data:
-                self.rate_limit_exceeded = True
-                self.logger.warning("Wykryto zapisaną flagę przekroczenia limitów API. Ustawiam tryb oszczędzania limitów.")
+                # Bezpieczny dostęp - wartość może być słownikiem lub typem prostym
+                if isinstance(rate_limited_data, dict) and rate_limited_data.get("value", False):
+                    self.rate_limit_exceeded = True
+                elif not isinstance(rate_limited_data, dict) and rate_limited_data:
+                    self.rate_limit_exceeded = True
+                
+                if self.rate_limit_exceeded:
+                    self.logger.warning("Wykryto zapisaną flagę przekroczenia limitów API. Ustawiam tryb oszczędzania limitów.")
         except Exception as e:
             self.logger.warning(f"Nie można sprawdzić stanu limitów API: {e}")
 
@@ -358,6 +364,8 @@ class BybitConnector:
                     # Użyj proxy jeśli skonfigurowane
                     response = requests.get(v5_endpoint, timeout=5, proxies=self.proxies)
 
+                    server_time = {"timeNow": int(time.time() * 1000)}  # Domyślna wartość jako zabezpieczenie
+                    
                     if response.status_code == 200:
                         data = response.json()
                         if data.get("retCode") == 0 and "result" in data:
@@ -376,23 +384,32 @@ class BybitConnector:
                                     server_time = {"timeNow": data["serverTime"]}
                                     self.logger.debug(f"Pobrano czas serwera z Spot API: {server_time}")
                                 else:
-                                    raise Exception(f"Błędna odpowiedź z endpointu Spot: {data}")
+                                    self.logger.warning(f"Błędna odpowiedź z endpointu Spot: {data}. Używam czasu lokalnego.")
                             else:
-                                raise Exception(f"Błąd HTTP {response.status_code} dla obu endpointów czasu serwera")
+                                self.logger.warning(f"Błąd HTTP {response.status_code} dla obu endpointów czasu serwera. Używam czasu lokalnego.")
                     else:
-                        raise Exception(f"Błąd HTTP {response.status_code} dla V5 API")
-                except Exception as e:
-                    self.logger.warning(f"Nie udało się pobrać czasu serwera przez HTTP: {e}. Używam czasu lokalnego.")
-
-                    # Zapisz wynik w cache
+                        self.logger.warning(f"Błąd HTTP {response.status_code} dla V5 API. Używam czasu lokalnego.")
+                        
+                    # Zapisz wynik w cache - nawet jeśli używamy czasu lokalnego
                     try:
                         from data.utils.cache_manager import store_cached_data
                         cache_key = f"server_time_{self.use_testnet}"
                         store_cached_data(cache_key, server_time)
                     except Exception as cache_error:
                         self.logger.warning(f"Błąd podczas zapisu do cache: {cache_error}")
-
-                    raise
+                        
+                    # Kontynuujemy bez rzucania wyjątku, używając lokalnego czasu jeśli nie udało się pobrać czasu serwera
+                except Exception as e:
+                    self.logger.warning(f"Nie udało się pobrać czasu serwera przez HTTP: {e}. Używam czasu lokalnego.")
+                    server_time = {"timeNow": int(time.time() * 1000)}
+                    
+                    # Zapisz lokalny czas w cache jako fallback
+                    try:
+                        from data.utils.cache_manager import store_cached_data
+                        cache_key = f"server_time_{self.use_testnet}"
+                        store_cached_data(cache_key, server_time)
+                    except Exception as cache_error:
+                        self.logger.warning(f"Błąd podczas zapisu do cache: {cache_error}")
 
                     # Ekstrakcja czasu z różnych formatów API
                     if "timeNow" in server_time:
@@ -1097,12 +1114,24 @@ class BybitConnector:
             self.last_api_call = time.time()
             return
 
-        # Sprawdź czy mamy blokadę CloudFront - w takim przypadku korzystamy z cache
-        cloudfront_status = get_cloudfront_status()
-        if cloudfront_status.get("blocked", False):
-            self.logger.warning(f"Wykryto aktywną blokadę CloudFront: {cloudfront_status.get('error', '')}. Używanie danych z cache.")
-            self.rate_limit_exceeded = True
-            return
+        # Bezpieczne pobieranie statusu CloudFront
+        try:
+            cloudfront_status = get_cloudfront_status()
+            is_blocked = False
+            
+            # Bezpieczne sprawdzenie czy mamy blokadę CloudFront
+            if isinstance(cloudfront_status, dict):
+                is_blocked = cloudfront_status.get("blocked", False)
+            
+            if is_blocked:
+                error_msg = "Unknown error"
+                if isinstance(cloudfront_status, dict):
+                    error_msg = cloudfront_status.get("error", "Unknown error")
+                self.logger.warning(f"Wykryto aktywną blokadę CloudFront: {error_msg}. Używanie danych z cache.")
+                self.rate_limit_exceeded = True
+                return
+        except Exception as e:
+            self.logger.warning(f"Błąd podczas sprawdzania statusu CloudFront: {e}. Kontynuowanie z domyślnymi ustawieniami.")
 
         # Pobierz aktualny status API z cache_manager
         api_status = get_api_status()

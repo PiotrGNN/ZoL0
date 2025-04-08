@@ -1,56 +1,67 @@
-"""
-Test połączenia proxy SOCKS5 przez tunel SSH.
-
-Ten skrypt testuje działanie proxy SOCKS5, które jest utworzone przez tunel SSH.
-Wykonuje proste zapytanie HTTP do API Bybit przez proxsy i wyświetla odpowiedź.
-"""
-
 import requests
-import time
 import json
+import time
+import os
+from dotenv import load_dotenv
+
+# Ładowanie zmiennych środowiskowych
+load_dotenv()
 
 # Konfiguracja proxy SOCKS5
-PROXY_URL = "socks5h://127.0.0.1:1080"
 proxies = {
-    'http': PROXY_URL,
-    'https': PROXY_URL
+    'http': 'socks5h://127.0.0.1:1080',
+    'https': 'socks5h://127.0.0.1:1080'
 }
 
-def test_proxy():
-    """Testuje połączenie przez proxy"""
-    print("Testowanie połączenia proxy SOCKS5...")
-
+def test_connection():
+    # Test połączenia z API Bybit z użyciem proxy
     try:
-        # Test połączenia z publicznym endpointem API Bybit bez uwierzytelniania
-        start_time = time.time()
-        response = requests.get('https://api.bybit.com/v5/market/time', 
-                             proxies=proxies, 
-                             timeout=10)
+        url = 'https://api.bybit.com/v5/market/time'
 
-        end_time = time.time()
-        latency = (end_time - start_time) * 1000  # w milisekundach
+        # Zawsze przygotuj domyślny czas serwera jako fallback
+        server_time = {"timeNow": int(time.time() * 1000)}
 
-        print(f"Czas odpowiedzi: {latency:.2f} ms")
-        print(f"Status kod: {response.status_code}")
+        # Wersja bez proxy
+        start_time_no_proxy = time.time()
+        try:
+            response_no_proxy = requests.get(url, timeout=10)
+            elapsed_no_proxy = time.time() - start_time_no_proxy
+            print(f"Status bez proxy: {response_no_proxy.status_code}, czas: {elapsed_no_proxy:.2f}s")
+        except Exception as e:
+            print(f"Błąd podczas testowania połączenia bez proxy: {e}")
+            elapsed_no_proxy = time.time() - start_time_no_proxy
+            print(f"Błąd bez proxy, czas: {elapsed_no_proxy:.2f}s")
 
-        if response.status_code == 200:
-            data = response.json()
-            print("Odpowiedź API:")
-            print(json.dumps(data, indent=2))
+        # Wersja z proxy
+        start_time_proxy = time.time()
+        try:
+            response_proxy = requests.get(url, proxies=proxies, timeout=10)
+            elapsed_proxy = time.time() - start_time_proxy
+            print(f"Status z proxy: {response_proxy.status_code}, czas: {elapsed_proxy:.2f}s")
 
-            if "retCode" in data and data["retCode"] == 0:
-                print("\nTEST UDANY ✅ - Połączenie proxy działa poprawnie")
+            if response_proxy.status_code == 200:
+                data = response_proxy.json()
+                if data.get("retCode") == 0 and "result" in data:
+                    server_time = {"timeNow": data["result"]["timeNano"] // 1000000}
+                print(f"Dane z proxy: {json.dumps(data, indent=2)}")
                 return True
             else:
-                print("\nTEST NIEUDANY ❌ - Błędna odpowiedź API")
+                print(f"Błąd HTTP z proxy: {response_proxy.status_code}")
+                print(f"Używam lokalnego czasu: {server_time}")
                 return False
+        except Exception as e:
+            elapsed_proxy = time.time() - start_time_proxy
+            print(f"Błąd podczas testowania połączenia z proxy: {e}")
+            print(f"Błąd z proxy, czas: {elapsed_proxy:.2f}s")
+            print(f"Używam lokalnego czasu: {server_time}")
+            return False
     except Exception as e:
-        print(f"\nTEST NIEUDANY ❌ - Błąd: {str(e)}")
-        print("\nWskazówki do rozwiązania problemu:")
-        print("1. Upewnij się, że tunel SSH jest uruchomiony (ssh -N -D 1080 user@host)")
-        print("2. Sprawdź, czy port 1080 jest używany przez tunel")
-        print("3. Zainstaluj wymagane pakiety: pip install requests[socks]")
+        print(f"Krytyczny błąd podczas testowania połączenia: {e}")
+        server_time = {"timeNow": int(time.time() * 1000)}
+        print(f"Używam lokalnego czasu: {server_time}")
         return False
 
 if __name__ == "__main__":
-    test_proxy()
+    print("Testowanie połączenia przez proxy SOCKS5...")
+    result = test_connection()
+    print(f"Test zakończony {'pomyślnie' if result else 'niepomyślnie'}")

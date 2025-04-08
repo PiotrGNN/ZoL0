@@ -131,8 +131,14 @@ def get_cached_data(key: str) -> Tuple[Any, bool]:
             logger.debug(f"Dane w cache dla klucza {key} są przeterminowane.")
             return None, False
 
+        # Bezpieczne pobieranie danych - jeśli dane są boolean, opakuj je w słownik
+        data = cache_entry["data"]
+        if isinstance(data, bool):
+            logger.debug(f"Pobrano boolean z cache dla klucza {key}, opakowanie w słownik")
+            data = {"value": data}
+        
         logger.debug(f"Pobrano dane z cache dla klucza: {key}")
-        return cache_entry["data"], True
+        return data, True
     except Exception as e:
         logger.error(f"Błąd podczas pobierania danych z cache dla klucza {key}: {e}")
         return None, False
@@ -223,7 +229,7 @@ def get_api_status() -> Dict[str, Any]:
     Returns:
         Dict[str, Any]: Słownik zawierający status API
     """
-    global API_STATS
+    global API_STATS, RATE_LIMIT_LAST_RESET, RATE_LIMIT_EXCEEDED, CLOUDFRONT_BLOCK
 
     # Sprawdź, czy przekroczyliśmy limit zapytań
     if API_STATS["call_count"] > MAX_CALLS_PER_MINUTE and time.time() - RATE_LIMIT_LAST_RESET < 60:
@@ -234,13 +240,18 @@ def get_api_status() -> Dict[str, Any]:
             API_STATS["call_count"] = 0
             API_STATS["rate_limited"] = False
 
+    # Bezpieczne pobieranie wartości z CLOUDFRONT_BLOCK
+    cloudfront_blocked = False
+    if isinstance(CLOUDFRONT_BLOCK, dict) and "blocked" in CLOUDFRONT_BLOCK:
+        cloudfront_blocked = CLOUDFRONT_BLOCK["blocked"]
+
     return {
         "last_call_time": API_STATS["last_call_time"],
         "call_count": API_STATS["call_count"],
         "error_count": API_STATS["error_count"],
         "last_error": API_STATS["last_error"],
-        "rate_limited": API_STATS["rate_limited"] or RATE_LIMIT_EXCEEDED or CLOUDFRONT_BLOCK["blocked"],
-        "cloudfront_blocked": CLOUDFRONT_BLOCK["blocked"]
+        "rate_limited": API_STATS["rate_limited"] or RATE_LIMIT_EXCEEDED or cloudfront_blocked,
+        "cloudfront_blocked": cloudfront_blocked
     }
 
 def record_api_call(success: bool = True, error: Optional[str] = None) -> None:
