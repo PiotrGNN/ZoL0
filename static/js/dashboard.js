@@ -147,6 +147,13 @@ function updatePortfolioData() {
         })
         .catch(error => {
             console.error("Błąd podczas pobierania danych portfela:", error);
+            // Wyświetl przyjazny komunikat błędu w interfejsie
+            document.getElementById('portfolio-container').innerHTML = `
+                <div class="alert alert-warning">
+                    Nie udało się pobrać danych portfela. Sprawdź połączenie z API.
+                    <button class="btn btn-sm btn-outline-primary ml-2" onclick="updatePortfolioData()">Spróbuj ponownie</button>
+                </div>
+            `;
             handleApiError('portfolio');
         });
 }
@@ -215,6 +222,13 @@ function updateDashboardData() {
         })
         .catch(error => {
             console.error("Błąd podczas pobierania danych dashboardu:", error);
+            // Wyświetl przyjazny komunikat błędu w interfejsie
+            document.getElementById('dashboard-container').innerHTML = `
+                <div class="alert alert-warning">
+                    Nie udało się pobrać danych dashboardu. Sprawdź połączenie z API.
+                    <button class="btn btn-sm btn-outline-primary ml-2" onclick="updateDashboardData()">Spróbuj ponownie</button>
+                </div>
+            `;
             handleApiError('dashboard');
         });
 
