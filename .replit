@@ -61,7 +61,7 @@ pattern = "**/*.py"
 start = "pylsp"
 
 [workflows]
-runButton = "Run Fixed App"
+runButton = "Run"
 
 [[workflows.workflow]]
 name = "Run"
@@ -71,12 +71,3 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python main.py"
-
-[[workflows.workflow]]
-name = "Run Fixed App"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python setup_local_packages.py && python main.py"

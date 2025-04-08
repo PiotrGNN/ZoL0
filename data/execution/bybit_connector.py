@@ -610,20 +610,30 @@ class BybitConnector:
                                 from data.utils.cache_manager import detect_cloudfront_error, set_cloudfront_block_status
                                 # Wykrywanie błędów CloudFront i limitów IP
                                 if detect_cloudfront_error(error_str):
+                                    self.rate_limit_exceeded = True
+                                    self.last_rate_limit_reset = time.time()
+                                    self.remaining_rate_limit = 0
+                                    
+                                    # Ustaw blokadę CloudFront
+                                    set_cloudfront_block_status(True, error_str)
+                                    self.logger.warning(f"Wykryto blokadę/limit API w komunikacie błędu: {error_str}")
                             except ImportError:
                                 # Jeśli funkcje nie istnieją, implementujemy prostą weryfikację
                                 error_str_lower = error_str.lower()
                                 has_cloudfront_error = any(indicator in error_str_lower for indicator in 
                                                            ['cloudfront', 'distribution', '403', 'rate limit', '429'])
                                 if has_cloudfront_error:
-                                self.rate_limit_exceeded = True
-                                self.last_rate_limit_reset = time.time()
+                                    self.rate_limit_exceeded = True
+                                    self.last_rate_limit_reset = time.time()
                                     self.remaining_rate_limit = 0
 
                                     # Bardzo agresywny backoff dla problemów z CloudFront i IP rate limit
                                     if "cloudfront" in error_str.lower() or "The Amazon CloudFront distribution" in error_str:
                                         self.logger.critical(f"Wykryto blokadę CloudFront - przechodzę w tryb pełnego fallback")
-                                        set_cloudfront_block_status(True, error_str)
+                                        try:
+                                            set_cloudfront_block_status(True, error_str)
+                                        except Exception as cf_err:
+                                            self.logger.error(f"Błąd podczas ustawiania statusu blokady CloudFront: {cf_err}")
 
                                         # Ustaw ekstremalnie długi backoff dla blokady CloudFront
                                         self.min_time_between_calls = 30.0  # minimum 30s między zapytaniami
@@ -633,7 +643,10 @@ class BybitConnector:
                                         self._backoff_attempt = 5  # Wysoka wartość dla długiego czasu oczekiwania
                                     else:
                                         self.logger.warning(f"Przekroczono limit zapytań API - używam cache lub danych symulowanych")
-                                        set_cloudfront_block_status(True, f"IP Rate Limit: {error_str}")
+                                        try:
+                                            set_cloudfront_block_status(True, f"IP Rate Limit: {error_str}")
+                                        except Exception as cf_err:
+                                            self.logger.error(f"Błąd podczas ustawiania statusu blokady CloudFront: {cf_err}")
 
                                         # Ustaw parametry backoff dla IP rate limit
                                         self.min_time_between_calls = 20.0  # 20s zgodnie z wymaganiami
