@@ -1,29 +1,77 @@
 
 run = "python main.py"
-entrypoint = "main.py"
-hidden = [".config", ".git", ".gitignore", ".env"]
+language = "python3"
+hidden = [".gitignore", ".config", "**/__pycache__", "**/.mypy_cache", "**/*.pyc"]
+modules = ["pytz-2022.1:v1-20220323-3ba6212", "pytest-6.2.5:v1-20220617-19ea357"]
+
+[nix]
+channel = "stable-22_05"
 
 [env]
-PYTHONPATH = "."
-FLASK_APP = "main.py"
-FLASK_ENV = "development"
-FLASK_DEBUG = "1"
-PORT = "5000"
-HOST = "0.0.0.0"
+PYTHONPATH = "/home/runner/${REPL_SLUG}"
+PATH = "${PATH}:${REPL_HOME}/.config/npm/node_global/bin"
+PIP_NO_BINARY = "ta-lib"
+
+[packager]
+language = "python3"
+ignoredPackages = ["unit_tests"]
+
+  [packager.features]
+  packageSearch = true
+  guessImports = true
+  enabledForHosting = false
+
+[unitTest]
+language = "python3"
+
+[debugger]
+support = true
+
+  [debugger.interactive]
+  transport = "localhost:0"
+  startCommand = ["dap-python", "main.py"]
+
+    [debugger.interactive.integratedAdapter]
+    dapTcpAddress = "localhost:0"
+
+    [debugger.interactive.initializeMessage]
+    command = "initialize"
+    type = "request"
+
+      [debugger.interactive.initializeMessage.arguments]
+      adapterID = "debugpy"
+      clientID = "replit"
+      clientName = "replit.com"
+      columnsStartAt1 = true
+      linesStartAt1 = true
+      locale = "en-us"
+      pathFormat = "path"
+      supportsInvalidatedEvent = true
+      supportsProgressReporting = true
+      supportsRunInTerminalRequest = true
+      supportsVariablePaging = true
+      supportsVariableType = true
+
+    [debugger.interactive.launchMessage]
+    command = "launch"
+    type = "request"
+    
+      [debugger.interactive.launchMessage.arguments]  
+      args = []
+      cwd = "."
+      console = "externalTerminal"
+      debugOptions = []
+      program = "main.py"
+      request = "launch"
+      type = "python"
 
 [languages]
 
-[languages.python]
+[languages.python3]
 pattern = "**/*.py"
 
-[languages.python.languageServer]
+[languages.python3.languageServer]
 start = "pylsp"
-
-[nix]
-channel = "stable-22_11"
-
-[gitHubImport]
-requiredFiles = [".replit", "replit.nix", ".gitignore"]
 
 [deployment]
 run = ["sh", "-c", "python main.py"]
@@ -31,12 +79,3 @@ deploymentTarget = "cloudrun"
 
 [workflows]
 runButton = "Run"
-
-[[workflows.workflow]]
-name = "Run"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python main.py"

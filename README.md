@@ -1,65 +1,87 @@
-
 # ZoL0-1 Trading System
 
-## 📊 Overview
+## 🚀 O Projekcie
 
-ZoL0-1 is an advanced algorithmic trading system designed for cryptocurrency markets, with a primary focus on ByBit integration. The system includes AI-powered market analysis, risk management, and automated trading strategies.
+Zaawansowany system tradingowy oparty na modułowej architekturze, umożliwiający algorytmiczny handel na rynkach kryptowalut z wykorzystaniem API ByBit. System integruje analizę techniczną, zarządzanie ryzykiem i modele sztucznej inteligencji.
 
-## 🚀 Quick Start
+## 📋 Funkcjonalności
 
-### Running on Replit
+- ✅ Łączność z API ByBit (testnet i produkcja)
+- ✅ Zarządzanie ryzykiem portfela 
+- ✅ Wielostrategiowe podejście do handlu
+- ✅ Interfejs graficzny (dashboard)
+- ✅ Analiza sentymentu rynkowego
+- ✅ Backtesting strategii
+- ✅ Wykrywanie anomalii rynkowych
 
-1. Click the **Run** button at the top of the Replit interface
-2. Wait for the system to initialize
-3. Access the web dashboard at the opened URL
+## 🛠️ Architektura Systemu
 
-### Local Development
+Projekt ma modułową strukturę, składającą się z:
 
+- `data/` - moduły przetwarzania danych, wskaźników i strategii
+- `python_libs/` - uproszczone biblioteki do szybkiego prototypowania
+- `static/` - pliki statyczne (CSS, JavaScript)
+- `templates/` - szablony HTML
+- `utils/` - narzędzia pomocnicze
+- `main.py` - główny punkt wejścia aplikacji
+
+## 🚀 Uruchomienie
+
+Aby uruchomić system:
+
+1. Zainstaluj zależności:
 ```bash
-# Install dependencies
 pip install -r requirements.txt
+```
 
-# Run the application
+2. Skonfiguruj środowisko:
+```bash
+# Skopiuj plik .env.example do .env i dostosuj ustawienia
+cp .env.example .env
+```
+
+3. Uruchom aplikację:
+```bash
 python main.py
 ```
 
-## 🔑 Environment Configuration
+## 🔧 Diagnostyka i Rozwiązywanie Problemów
 
-Create a `.env` file in the root directory with the following parameters:
+### Trading Engine Warning
+Jeśli otrzymujesz ostrzeżenie "Trading Engine Warning", może to być spowodowane:
+- Brakiem danych rynkowych
+- Niedostępnością instrumentów
+- Błędnymi ustawieniami strategii
 
+Sprawdź logi w `logs/trading_engine.log` dla szczegółowych informacji.
+
+### Risk Manager Warning
+Ostrzeżenia Risk Managera mogą wystąpić w przypadku:
+- Niepoliczonego ryzyka (brak danych cenowych)
+- Pozycji, która nie została otwarta
+- Przekroczenia limitów ryzyka
+
+Sprawdź logi w `logs/portfolio_risk.log` dla diagnostyki.
+
+## 📊 Dashboard
+
+System posiada interfejs graficzny dostępny pod adresem:
 ```
-# API Bybit - Configuration
-BYBIT_API_KEY=your_api_key
-BYBIT_API_SECRET=your_api_secret
-BYBIT_USE_TESTNET=true
-
-# Application modes
-DEBUG=True
-LOG_LEVEL=INFO
-IS_PRODUCTION=False
+http://127.0.0.1:5000/dashboard
 ```
 
-## 🏗️ System Architecture
+## 🔒 Bezpieczeństwo
 
-The system consists of several components:
+Pamiętaj, że używanie API produkcyjnego wiąże się z ryzykiem. Zawsze:
+- Używaj kluczy API z ograniczeniami
+- Testuj na testnet przed wdrożeniem produkcyjnym
+- Monitoruj aktywnie działanie systemu
 
-1. **API Connector** - Interface with ByBit API
-2. **Data Processor** - Market data processing and analysis
-3. **Trading Engine** - Core trading logic and strategy execution
-4. **Risk Manager** - Position sizing and risk assessment
-5. **AI Models** - Market prediction and anomaly detection
+## 📄 Licencja
 
-## 📈 Features
-
-- **Advanced Trading Strategies** - Multiple built-in strategies including trend following, mean reversion, and breakout
-- **Risk Management** - Sophisticated position sizing and drawdown protection
-- **Sentiment Analysis** - Multi-source market sentiment tracking
-- **Anomaly Detection** - ML-based market anomaly identification
-- **Portfolio Optimization** - Asset allocation and portfolio rebalancing
-- **Performance Monitoring** - Real-time trading and system performance metrics
+Ten projekt jest udostępniany na licencji MIT.
 
 ## 📁 Project Structure
-
 ```
 ├── ai_models/            # AI and ML models
 ├── data/                 # Data processing and strategy implementations
@@ -77,23 +99,23 @@ The system consists of several components:
 └── requirements.txt      # Project dependencies
 ```
 
-## 📝 License
+## 🔑 Environment Configuration
+Create a `.env` file in the root directory with the following parameters:
 
-This project is proprietary software. All rights reserved.
+```
+# API Bybit - Configuration
+BYBIT_API_KEY=your_api_key
+BYBIT_API_SECRET=your_api_secret
+BYBIT_USE_TESTNET=true
 
-## 🔧 Troubleshooting
-
-If you encounter any issues:
-
-1. Check the logs in the `logs/` directory
-2. Ensure your API keys are correctly configured
-3. Verify that all dependencies are installed
-4. For more complex issues, see the system status indicators on the dashboard
+# Application modes
+DEBUG=True
+LOG_LEVEL=INFO
+IS_PRODUCTION=False
+```
 
 ## 🛠️ Development
-
 ### Adding a New Strategy
-
 Create a new strategy file in `data/strategies/` with the following structure:
 
 ```python
@@ -107,14 +129,12 @@ class MyNewStrategy:
 ```
 
 ### Contributing
-
 1. Fork the repository
 2. Create a feature branch
 3. Implement your changes
 4. Submit a pull request
 
 ## 📊 Performance Metrics
-
 The system tracks key performance indicators:
 
 - Win Rate

@@ -174,15 +174,41 @@ def initialize_system():
             strategy_manager = None
             logging.warning("Brak modułu StrategyManager")
             
+        # Inicjalizacja zarządcy ryzyka
+        risk_manager = None
+        try:
+            from python_libs.simplified_risk_manager import SimplifiedRiskManager
+            risk_manager = SimplifiedRiskManager(
+                max_risk=0.05, 
+                max_position_size=0.2, 
+                max_drawdown=0.1
+            )
+            logging.info("Zainicjalizowano SimplifiedRiskManager")
+        except ImportError as e:
+            logging.warning(f"Nie można zaimportować SimplifiedRiskManager: {e}")
+            
         # Inicjalizacja silnika handlowego
         global trading_engine
         if SimplifiedTradingEngine:
             trading_engine = SimplifiedTradingEngine(
-                risk_manager=None,  # Dodać później
+                risk_manager=risk_manager,
                 strategy_manager=strategy_manager,
                 exchange_connector=bybit_client
             )
             logging.info(f"Zainicjalizowano silnik handlowy (Trading Engine) z biblioteki {trading_engine_lib}")
+            
+            # Aktywacja strategii i uruchomienie silnika
+            if strategy_manager:
+                strategy_manager.activate_strategy("trend_following")
+                logging.info("Aktywowano strategię 'trend_following'")
+                
+            # Uruchomienie silnika z odpowiednim symbolem
+            symbols = ["BTCUSDT"]
+            engine_started = trading_engine.start_trading(symbols)
+            if engine_started:
+                logging.info(f"Silnik handlowy uruchomiony dla symboli: {symbols}")
+            else:
+                logging.warning(f"Nie udało się uruchomić silnika handlowego: {trading_engine.get_status().get('last_error', 'Nieznany błąd')}")
         else:
             trading_engine = None
             logging.warning("Brak modułu silnika handlowego (Trading Engine)")
@@ -630,17 +656,37 @@ def get_component_status():
 
         # Trading Engine Status
         trading_engine_status = 'offline'
+        trading_engine_details = {}
         if trading_engine:
             try:
                 # Pobierz status z silnika handlowego
                 engine_status = trading_engine.get_status()
+                
+                # Dodatkowe szczegóły dla diagnostyki
+                trading_engine_details = {
+                    'active_symbols': engine_status.get('active_symbols', []),
+                    'active_strategies': engine_status.get('active_strategies', []),
+                    'last_error': engine_status.get('last_error', None)
+                }
+                
                 if engine_status['status'] == 'running':
                     trading_engine_status = 'online'
+                    
+                    # Sprawdź ryzyko dla aktywnych symboli
+                    if hasattr(trading_engine, 'calculate_positions_risk'):
+                        try:
+                            risk_levels = trading_engine.calculate_positions_risk()
+                            trading_engine_details['risk_levels'] = risk_levels
+                            logging.info(f"Poziomy ryzyka: {risk_levels}")
+                        except Exception as risk_e:
+                            logging.warning(f"Nie można obliczyć ryzyka: {risk_e}")
+                            
                 elif engine_status['status'] == 'error':
                     trading_engine_status = 'warning'
                     logging.warning(f"Problem z silnikiem handlowym: {engine_status.get('last_error', 'Nieznany błąd')}")
                 else:
                     trading_engine_status = 'offline'
+                    logging.info("Silnik handlowy jest wyłączony")
             except Exception as e:
                 logging.error(f"Błąd podczas sprawdzania statusu silnika handlowego: {e}", exc_info=True)
                 trading_engine_status = 'warning'
@@ -648,9 +694,16 @@ def get_component_status():
         # Data Processor Status - sprawdź czy można załadować dane
         data_processor_status = 'online'
         try:
-            # Tutaj można dodać faktyczną weryfikację, np. sprawdzenie dostępu do danych historycznych
-            pass
-        except Exception:
+            # Pobierz przykładowe dane z silnika handlowego dla diagnostyki
+            if trading_engine and hasattr(trading_engine, 'get_market_data'):
+                test_data = trading_engine.get_market_data('BTCUSDT')
+                if test_data is None or not test_data:
+                    logging.warning("Data Processor Warning: nie można pobrać danych testowych")
+                    data_processor_status = 'warning'
+                else:
+                    logging.info(f"Data Processor: pobrano dane testowe dla BTCUSDT (cena: {test_data.get('price', 'N/A')})")
+        except Exception as e:
+            logging.error(f"Błąd w Data Processor: {e}")
             data_processor_status = 'warning'
 
         # Risk Manager Status - zakładamy, że działa, jeśli silnik handlowy działa
