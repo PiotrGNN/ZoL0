@@ -34,6 +34,7 @@ class BybitConnector:
         self.api_key = api_key
         self.api_secret = api_secret
         self.use_testnet = use_testnet
+        # Upewnij się, że używasz odpowiedniego URL API
         self.base_url = "https://api-testnet.bybit.com" if use_testnet else "https://api.bybit.com"
         self.client = None
         self.api_version = None
@@ -41,11 +42,11 @@ class BybitConnector:
         self._connection_test_time = 0
         self._connection_test_result = None
 
-        # Inicjalizacja śledzenia limitów API
+        # Inicjalizacja śledzenia limitów API - bardziej restrykcyjne dla produkcji
         self.last_api_call = 0
-        self.min_time_between_calls = 5.0 if not use_testnet else 3.0  # Konserwatywne limity od początku
-        self.rate_limit_backoff = 15.0 if not use_testnet else 10.0  # Dłuższy backoff dla produkcji
-        self.remaining_rate_limit = 30 if not use_testnet else 50  # Bezpieczniejszy limit początkowy
+        self.min_time_between_calls = 10.0 if not use_testnet else 3.0  # Ostrzejsze limity dla produkcji
+        self.rate_limit_backoff = 30.0 if not use_testnet else 10.0  # Znacznie dłuższy backoff dla produkcji
+        self.remaining_rate_limit = 20 if not use_testnet else 50  # Bezpieczniejszy limit początkowy dla produkcji
         self.rate_limit_exceeded = False  # Flaga oznaczająca przekroczenie limitu
         self.last_rate_limit_reset = time.time()  # Czas ostatniego resetu limitu
 
@@ -81,7 +82,10 @@ class BybitConnector:
         # Sprawdź czy używamy produkcyjnego API i pokaż ostrzeżenie
         if self.is_production_api():
             # Ostrzeżenie jest pokazywane w is_production_api()
-            pass
+            # Dodatkowe sprawdzenia kluczy produkcyjnych
+            if self.api_key is None or len(self.api_key) < 10 or self.api_secret is None or len(self.api_secret) < 10:
+                self.logger.critical("BŁĄD: Nieprawidłowe klucze API dla środowiska produkcyjnego!")
+                raise ValueError("Nieprawidłowe klucze API dla środowiska produkcyjnego. Sprawdź konfigurację.")
         else:
             self.logger.info("Używasz testnet API (środowisko testowe).")
 
@@ -886,6 +890,19 @@ class BybitConnector:
         """
         try:
             self._apply_rate_limit()
+            
+            # Dodatkowe potwierdzenie dla produkcyjnego API
+            if self.is_production_api():
+                self.logger.warning(f"PRODUKCYJNE ZLECENIE: {side} {quantity} {symbol} za {price if order_type == 'Limit' else 'Market'}")
+                
+                # Limity wielkości zleceń dla produkcyjnego API
+                max_order_value_usd = 1000.0  # Maksymalna wartość zlecenia w USD dla bezpieczeństwa
+                est_order_value = quantity * price if order_type == "Limit" else quantity * price
+                
+                if est_order_value > max_order_value_usd and "BTC" in symbol:
+                    self.logger.critical(f"ODRZUCONO ZLECENIE: Przekroczono maksymalną wartość zlecenia ({est_order_value} USD > {max_order_value_usd} USD)")
+                    return {"success": False, "error": f"Zlecenie przekracza maksymalną dozwoloną wartość {max_order_value_usd} USD"}
+            
             # Sprawdzenie poprawności danych
             if side not in ["Buy", "Sell"]:
                 return {"success": False, "error": "Nieprawidłowa strona zlecenia. Musi być 'Buy' lub 'Sell'."}
@@ -1010,10 +1027,10 @@ class BybitConnector:
 
         # Synchronizuj parametry rate limiter'a z cache_manager (raz na minutę)
         if not hasattr(self, '_rate_limit_synced') or now - getattr(self, '_last_sync_time', 0) > 60:
-            # Produkcyjne parametry: max 3 wywołania co 20 sekund
+            # Produkcyjne parametry: max 2 wywołania co 30 sekund (bardzo konserwatywne)
             if is_production:
-                max_calls = 3
-                min_interval = 20.0  # 20 sekund między zapytaniami
+                max_calls = 2
+                min_interval = 30.0  # 30 sekund między zapytaniami dla produkcji 
             else:
                 max_calls = 6
                 min_interval = 10.0

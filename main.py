@@ -93,6 +93,11 @@ def initialize_system():
             if not api_key or not api_secret:
                 logging.warning("Brak kluczy API ByBit w zmiennych środowiskowych. Sprawdź zakładkę Secrets.")
                 return False
+                
+            # Dodatkowa weryfikacja kluczy dla produkcji
+            if not use_testnet and (len(api_key) < 10 or len(api_secret) < 10):
+                logging.critical("BŁĄD KRYTYCZNY: Nieprawidłowe klucze produkcyjne API. Wymagane odpowiednie klucze dla środowiska produkcyjnego!")
+                return False
 
             # Więcej szczegółów o konfiguracji API dla celów debugowania
             masked_key = f"{api_key[:4]}{'*' * (len(api_key) - 4)}" if api_key else "Brak klucza"
@@ -108,6 +113,7 @@ def initialize_system():
                 print("===========================================\n\n")
 
             # Użyj wartości z konfiguracji lub zmiennych środowiskowych
+            # Domyślnie używaj produkcyjnego API
             use_testnet = os.getenv("BYBIT_USE_TESTNET", "false").lower() == "true"
             bybit_client = BybitConnector(
                 api_key=api_key,

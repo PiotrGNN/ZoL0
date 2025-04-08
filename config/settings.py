@@ -58,7 +58,7 @@ default_settings: Dict[str, Any] = {
         "BYBIT": {
             "api_key": os.getenv("BYBIT_API_KEY", "bybit_dummy_key"),
             "api_secret": os.getenv("BYBIT_API_SECRET", "bybit_dummy_secret"),
-            "use_testnet": os.getenv("BYBIT_USE_TESTNET", "true").lower() == "true",
+            "use_testnet": os.getenv("BYBIT_USE_TESTNET", "false").lower() == "true",
         },
         "TRADING": {"commission": 0.001, "spread": 0.0005, "slippage": 0.0005},
         "SECURITY": {"access_restrictions": False, "password_encryption": False},
