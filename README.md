@@ -1,59 +1,124 @@
-# Inteligentny System Tradingowy
 
-## Opis Projektu
-Kompleksowy system tradingowy integrujący sztuczną inteligencję, analizę techniczną, zarządzanie ryzykiem oraz automatyzację handlu na giełdzie kryptowalut Bybit.
+# ZoL0-1 Trading System
 
-## Instalacja
+## 📊 Overview
+
+ZoL0-1 is an advanced algorithmic trading system designed for cryptocurrency markets, with a primary focus on ByBit integration. The system includes AI-powered market analysis, risk management, and automated trading strategies.
+
+## 🚀 Quick Start
+
+### Running on Replit
+
+1. Click the **Run** button at the top of the Replit interface
+2. Wait for the system to initialize
+3. Access the web dashboard at the opened URL
+
+### Local Development
 
 ```bash
-git clone https://github.com/twoj-username/trading-system.git
-cd trading-system
+# Install dependencies
 pip install -r requirements.txt
-python init_project.py
-```
 
-## Konfiguracja
-1. Skopiuj plik `.env.example` do `.env`
-2. Uzupełnij zmienne środowiskowe w pliku `.env`, w tym klucze API Bybit
-3. Dostosuj parametry systemu w pliku `config/settings.yml`
-
-## Uruchomienie
-
-```bash
+# Run the application
 python main.py
 ```
 
-Aplikacja będzie dostępna pod adresem http://0.0.0.0:5000
+## 🔑 Environment Configuration
 
-## Struktura Projektu
+Create a `.env` file in the root directory with the following parameters:
 
-- `ai_models/` - Modele AI i uczenia maszynowego
-- `data/` - Wszystkie moduły przetwarzania danych
-  - `execution/` - Wykonywanie zleceń i komunikacja z giełdą
-  - `indicators/` - Wskaźniki techniczne i analiza sentymentu
-  - `strategies/` - Strategie handlowe
-  - `risk_management/` - Zarządzanie ryzykiem
-- `static/` - Pliki statyczne (CSS, JavaScript)
-- `templates/` - Szablony HTML
-- `logs/` - Pliki logów
-- `config/` - Pliki konfiguracyjne
+```
+# API Bybit - Configuration
+BYBIT_API_KEY=your_api_key
+BYBIT_API_SECRET=your_api_secret
+BYBIT_USE_TESTNET=true
 
-## Główne Funkcje
-- Dashboard z podglądem stanu systemu i portfela
-- Automatyczne strategie handlowe z możliwością dynamicznego przełączania
-- Analiza sentymentu rynkowego
-- Wykrywanie anomalii rynkowych
-- Zarządzanie ryzykiem portfela
-- Optymalizacja strategii na podstawie danych historycznych
+# Application modes
+DEBUG=True
+LOG_LEVEL=INFO
+IS_PRODUCTION=False
+```
 
-## Status Komponentów
-- Trading Engine: Automatyczny system handlowy
-- API Connector: Połączenie z API giełdy
-- Data Processor: Przetwarzanie danych rynkowych
-- Risk Manager: Zarządzanie ryzykiem portfela
+## 🏗️ System Architecture
 
-## Rozwijanie Projektu
-Aby dodać nową strategię, utwórz nowy plik w folderze `data/strategies/` i zaimplementuj wymagane metody.
+The system consists of several components:
 
-## 📚 Dokumentacja
-Szczegółowa dokumentacja API i modułów dostępna jest w katalogu `docs/`.  Dodatkowo: [Bybit API V5](https://bybit-exchange.github.io/docs/v5/intro)
+1. **API Connector** - Interface with ByBit API
+2. **Data Processor** - Market data processing and analysis
+3. **Trading Engine** - Core trading logic and strategy execution
+4. **Risk Manager** - Position sizing and risk assessment
+5. **AI Models** - Market prediction and anomaly detection
+
+## 📈 Features
+
+- **Advanced Trading Strategies** - Multiple built-in strategies including trend following, mean reversion, and breakout
+- **Risk Management** - Sophisticated position sizing and drawdown protection
+- **Sentiment Analysis** - Multi-source market sentiment tracking
+- **Anomaly Detection** - ML-based market anomaly identification
+- **Portfolio Optimization** - Asset allocation and portfolio rebalancing
+- **Performance Monitoring** - Real-time trading and system performance metrics
+
+## 📁 Project Structure
+
+```
+├── ai_models/            # AI and ML models
+├── data/                 # Data processing and strategy implementations
+│   ├── execution/        # Exchange connectors and order execution
+│   ├── indicators/       # Technical and market indicators
+│   ├── optimization/     # Strategy and portfolio optimization
+│   ├── risk_management/  # Risk assessment and position sizing
+│   ├── strategies/       # Trading strategies
+│   └── utils/            # Utility functions and helpers
+├── logs/                 # System logs
+├── python_libs/          # Local library modules
+├── static/               # Web frontend static assets
+├── templates/            # HTML templates
+├── main.py               # Main application entry point
+└── requirements.txt      # Project dependencies
+```
+
+## 📝 License
+
+This project is proprietary software. All rights reserved.
+
+## 🔧 Troubleshooting
+
+If you encounter any issues:
+
+1. Check the logs in the `logs/` directory
+2. Ensure your API keys are correctly configured
+3. Verify that all dependencies are installed
+4. For more complex issues, see the system status indicators on the dashboard
+
+## 🛠️ Development
+
+### Adding a New Strategy
+
+Create a new strategy file in `data/strategies/` with the following structure:
+
+```python
+class MyNewStrategy:
+    def __init__(self, params):
+        self.params = params
+        
+    def analyze(self, data):
+        # Implement strategy logic
+        return signals
+```
+
+### Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Implement your changes
+4. Submit a pull request
+
+## 📊 Performance Metrics
+
+The system tracks key performance indicators:
+
+- Win Rate
+- Profit Factor
+- Maximum Drawdown
+- Sharpe Ratio
+- Sortino Ratio

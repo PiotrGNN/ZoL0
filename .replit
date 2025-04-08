@@ -1,33 +1,30 @@
-run = "python main.py"
-language = "python3"
-entrypoint = "main.py"
 
-hidden = [".pythonlibs"]
+run = "python main.py"
+entrypoint = "main.py"
+hidden = [".config", ".git", ".gitignore", ".env"]
 
 [env]
 PYTHONPATH = "."
+FLASK_APP = "main.py"
+FLASK_ENV = "development"
+FLASK_DEBUG = "1"
 PORT = "5000"
 HOST = "0.0.0.0"
 
+[languages]
+
+[languages.python]
+pattern = "**/*.py"
+
+[languages.python.languageServer]
+start = "pylsp"
+
 [nix]
-channel = "stable-23_11"
+channel = "stable-22_11"
+
+[gitHubImport]
+requiredFiles = [".replit", "replit.nix", ".gitignore"]
 
 [deployment]
-run = "python main.py"
+run = ["sh", "-c", "python main.py"]
 deploymentTarget = "cloudrun"
-
-[workflows]
-runButton = "Run"
-
-[[workflows.workflow]]
-name = "Run"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python main.py"
-
-[[ports]]
-localPort = 5000
-externalPort = 80

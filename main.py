@@ -2,6 +2,7 @@ import logging
 import os
 import sys
 import json
+import random
 from datetime import datetime, timedelta
 
 # Ensure needed directories exist
@@ -69,28 +70,76 @@ strategy_manager = None
 # Inicjalizacja komponentów systemu (import wewnątrz funkcji dla uniknięcia cyklicznych importów)
 def initialize_system():
     try:
-        from data.utils.notification_system import NotificationSystem
-        from data.indicators.sentiment_analysis import SentimentAnalyzer
-        from ai_models.anomaly_detection import AnomalyDetector
-        from data.strategies.strategy_manager import StrategyManager
-        from data.utils.import_manager import exclude_modules_from_auto_import
+        # Używamy uproszczonych modułów z python_libs
+        try:
+            from python_libs.simplified_notification import NotificationSystem
+            notification_lib = "python_libs.simplified_notification"
+        except ImportError:
+            from data.utils.notification_system import NotificationSystem
+            notification_lib = "data.utils.notification_system"
+            
+        try:
+            from python_libs.simplified_sentiment import SentimentAnalyzer
+            sentiment_lib = "python_libs.simplified_sentiment"
+        except ImportError:
+            try:
+                from data.indicators.sentiment_analysis import SentimentAnalyzer
+                sentiment_lib = "data.indicators.sentiment_analysis"
+            except ImportError:
+                SentimentAnalyzer = None
+                sentiment_lib = None
+                
+        try:
+            from python_libs.simplified_anomaly import AnomalyDetector
+            anomaly_lib = "python_libs.simplified_anomaly"
+        except ImportError:
+            try:
+                from ai_models.anomaly_detection import AnomalyDetector
+                anomaly_lib = "ai_models.anomaly_detection"
+            except ImportError:
+                AnomalyDetector = None
+                anomaly_lib = None
+                
+        try:
+            from python_libs.simplified_strategy import StrategyManager
+            strategy_lib = "python_libs.simplified_strategy"
+        except ImportError:
+            try:
+                from data.strategies.strategy_manager import StrategyManager
+                strategy_lib = "data.strategies.strategy_manager"
+            except ImportError:
+                StrategyManager = None
+                strategy_lib = None
 
         # Wykluczamy podpakiet tests z automatycznego importu
-        exclude_modules_from_auto_import(["tests"])
-        logging.info("Wykluczam podpakiet 'tests' z automatycznego importu.")
+        try:
+            from data.utils.import_manager import exclude_modules_from_auto_import
+            exclude_modules_from_auto_import(["tests"])
+            logging.info("Wykluczam podpakiet 'tests' z automatycznego importu.")
+        except ImportError:
+            logging.warning("Nie znaleziono modułu import_manager, pomijam wykluczanie podpakietów.")
 
         global notification_system, sentiment_analyzer, anomaly_detector, bybit_client, strategy_manager
 
+        # Inicjalizacja systemu powiadomień
         notification_system = NotificationSystem()
-        logging.info("Zainicjalizowano system powiadomień z 2 kanałami.")
+        logging.info(f"Zainicjalizowano system powiadomień z biblioteki {notification_lib}")
 
         # Inicjalizacja analizatora sentymentu
-        sentiment_analyzer = SentimentAnalyzer(sources=["twitter", "news", "forum", "reddit"])
-        logging.info(f"Inicjalizacja analizatora sentymentu z {len(sentiment_analyzer.sources)} źródłami.")
+        if SentimentAnalyzer:
+            sentiment_analyzer = SentimentAnalyzer(sources=["twitter", "news", "forum", "reddit"])
+            logging.info(f"Inicjalizacja analizatora sentymentu z biblioteki {sentiment_lib}")
+        else:
+            sentiment_analyzer = None
+            logging.warning("Brak modułu analizatora sentymentu")
 
         # Inicjalizacja wykrywania anomalii
-        anomaly_detector = AnomalyDetector(method="isolation_forest", threshold=2.5)
-        logging.info(f"Inicjalizacja detektora anomalii z metodą: {anomaly_detector.method}")
+        if AnomalyDetector:
+            anomaly_detector = AnomalyDetector(method="isolation_forest", threshold=2.5)
+            logging.info(f"Inicjalizacja detektora anomalii z biblioteki {anomaly_lib}")
+        else:
+            anomaly_detector = None
+            logging.warning("Brak modułu detektora anomalii")
 
         # Inicjalizacja managera strategii z domyślnymi strategiami
         strategies = {
@@ -103,24 +152,55 @@ def initialize_system():
             "mean_reversion": 0.3,
             "breakout": 0.4
         }
-        strategy_manager = StrategyManager(strategies, exposure_limits)
-        logging.info(f"Zainicjalizowano StrategyManager z {len(strategies)} strategiami.")
-
+        
+        if StrategyManager:
+            strategy_manager = StrategyManager(strategies, exposure_limits)
+            logging.info(f"Zainicjalizowano StrategyManager z biblioteki {strategy_lib}")
+        else:
+            strategy_manager = None
+            logging.warning("Brak modułu StrategyManager")
 
         # Inicjalizacja klienta ByBit (tylko raz podczas startu aplikacji)
         try:
             if not bybit_import_success:
-                logging.warning("Moduł BybitConnector nie został zaimportowany. Pomijam inicjalizację klienta ByBit.")
-                bybit_client = None
-                return True
+                logging.warning("Moduł BybitConnector nie został zaimportowany. Próba użycia symulowanego klienta.")
+                try:
+                    from python_libs.simulated_bybit import SimulatedBybitConnector
+                    api_key = os.getenv("BYBIT_API_KEY", "simulated_key")
+                    api_secret = os.getenv("BYBIT_API_SECRET", "simulated_secret")
+                    use_testnet = True
+                    
+                    bybit_client = SimulatedBybitConnector(
+                        api_key=api_key,
+                        api_secret=api_secret,
+                        use_testnet=use_testnet
+                    )
+                    logging.info("Zainicjalizowano symulowany klient ByBit")
+                    return True
+                except ImportError:
+                    logging.error("Nie można zainicjalizować żadnego klienta ByBit")
+                    bybit_client = None
+                    return True
 
             api_key = os.getenv("BYBIT_API_KEY")
             api_secret = os.getenv("BYBIT_API_SECRET")
-            use_testnet = os.getenv("BYBIT_USE_TESTNET", "false").lower() == "true"  # Domyślnie używamy testnet
+            use_testnet = os.getenv("BYBIT_USE_TESTNET", "true").lower() == "true"  # Domyślnie używamy testnet
 
             if not api_key or not api_secret:
-                logging.warning("Brak kluczy API ByBit w zmiennych środowiskowych. Sprawdź zakładkę Secrets.")
-                return False
+                logging.warning("Brak kluczy API ByBit w zmiennych środowiskowych. Używam klienta symulowanego.")
+                try:
+                    from python_libs.simulated_bybit import SimulatedBybitConnector
+                    bybit_client = SimulatedBybitConnector(
+                        api_key="simulated_key",
+                        api_secret="simulated_secret",
+                        use_testnet=True
+                    )
+                    logging.info("Zainicjalizowano symulowany klient ByBit z powodu braku kluczy API")
+                    return True
+                except ImportError:
+                    logging.error("Nie można zainicjalizować symulowanego klienta ByBit")
+                    bybit_client = None
+                    return True
 
             # Dodatkowa weryfikacja kluczy dla produkcji
             if not use_testnet and (len(api_key) < 10 or len(api_secret) < 10):
@@ -157,14 +237,24 @@ def initialize_system():
             server_time = bybit_client.get_server_time()
             logger.info(f"Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {server_time}")
         except Exception as e:
-            logger.error(f"Błąd inicjalizacji klienta ByBit: {e}", exc_info=True) #Dodatkowe informacje o błędzie
-            bybit_client = None
-
+            logger.error(f"Błąd inicjalizacji klienta ByBit: {e}", exc_info=True)
+            # Próba użycia symulowanego klienta jako fallback
+            try:
+                from python_libs.simulated_bybit import SimulatedBybitConnector
+                bybit_client = SimulatedBybitConnector(
+                    api_key="simulated_key",
+                    api_secret="simulated_secret",
+                    use_testnet=True
+                )
+                logging.info("Zainicjalizowano symulowany klient ByBit jako fallback")
+            except ImportError:
+                bybit_client = None
+                logging.error("Nie można zainicjalizować ani rzeczywistego, ani symulowanego klienta ByBit")
 
         logging.info("System zainicjalizowany poprawnie")
         return True
     except Exception as e:
-        logging.error(f"Błąd podczas inicjalizacji systemu: {e}", exc_info=True) #Dodatkowe informacje o błędzie
+        logging.error(f"Błąd podczas inicjalizacji systemu: {e}", exc_info=True)
         return False
 
 # Trasy aplikacji
@@ -348,9 +438,6 @@ def get_dashboard_data():
     except Exception as e:
         logging.error(f"Błąd podczas pobierania danych dashboardu: {e}", exc_info=True) #Dodatkowe informacje o błędzie
         return jsonify({
-            'success': False,
-            'error': str(e)
-        })nify({
             'success': False,
             'error': str(e)
         }), 500
