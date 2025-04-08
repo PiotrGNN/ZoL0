@@ -1,301 +1,349 @@
 """
-cache_manager.py - Moduł zarządzający buforowaniem danych API i śledzeniem limitów zapytań
+cache_manager.py
+---------------
+Moduł odpowiedzialny za zarządzanie cache'em danych API i limitami zapytań.
+Implementuje mechanizmy buforowania oraz kontroli dostępu do API.
 """
 
-import os
 import json
-import time
 import logging
-from typing import Any, Dict, Tuple, Optional, List, Union
-from datetime import datetime
+import os
+import time
+from typing import Any, Dict, List, Optional, Tuple, Union
 
-# Konfiguracja logowania
-logger = logging.getLogger(__name__)
+# Konfiguracja logowania - Ulepszona wersja z oryginalnego kodu i edytora
+logger = logging.getLogger("cache_manager")
 if not logger.handlers:
-    handler = logging.FileHandler("logs/cache_manager.log")
+    log_dir = "logs"
+    os.makedirs(log_dir, exist_ok=True)
+    file_handler = logging.FileHandler(os.path.join(log_dir, "cache_manager.log"))
     formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
     logger.setLevel(logging.INFO)
 
-# Katalog przechowywania cache
+# Globalne zmienne konfiguracyjne
 CACHE_DIR = "data/cache"
-os.makedirs(CACHE_DIR, exist_ok=True)
+DEFAULT_TTL = 300  # 5 minut
 
-# Parametry dla różnych środowisk
-ENVIRONMENT_CONFIG = {
-    'production': {
-        'min_interval': 20.0,       # Jeszcze bardziej konserwatywny odstęp między zapytaniami (20000ms)
-        'max_calls_per_minute': 3,  # Radykalnie zmniejszony limit dla produkcji
-        'cache_ttl_multiplier': 15.0,# Ekstremalnie długi czas cache'owania dla produkcji
-        'server_time_ttl': 1800,     # 30 minut cache'owania czasu serwera (by uniknąć odpytywania)
-        'rate_limit_reset_time': 1800# 30 minut po przekroczeniu limitu zanim spróbujemy ponownie
-    },
-    'development': {
-        'min_interval': 5.0,        # Zwiększony minimalny odstęp między zapytaniami (5000ms)
-        'max_calls_per_minute': 10, # Konserwatywny limit dla środowiska deweloperskiego
-        'cache_ttl_multiplier': 4.0,# Dłuższy czas cache'owania
-        'server_time_ttl': 300,     # 5 minut cache'owania czasu serwera
-        'rate_limit_reset_time': 300# 5 minut po przekroczeniu limitu zanim spróbujemy ponownie
-    }
+# Parametry limitowania zapytań API
+MAX_CALLS_PER_MINUTE = 6  # Domyślna wartość
+MIN_INTERVAL_BETWEEN_CALLS = 10.0  # Domyślny minimalny odstęp w sekundach
+RATE_LIMIT_LAST_RESET = time.time()
+RATE_LIMIT_EXCEEDED = False
+CLOUDFRONT_BLOCK = {
+    "blocked": False,
+    "since": 0,
+    "error": "",
+    "reset_time": 0
 }
 
-# Sprawdź, czy używamy produkcyjnego API na podstawie zmiennych środowiskowych
-_is_production = os.getenv('BYBIT_USE_TESTNET', 'true').lower() != 'true' or os.getenv('IS_PRODUCTION', 'false').lower() == 'true'
-_env_config = ENVIRONMENT_CONFIG['production'] if _is_production else ENVIRONMENT_CONFIG['development']
+# Statystyki API
+API_STATS = {
+    "last_call_time": 0,
+    "call_count": 0,
+    "error_count": 0,
+    "last_error": None,
+    "rate_limited": False
+}
 
-# Funkcja do wykrywania błędów CloudFront
-def detect_cloudfront_error(error_message: str) -> bool:
+def init_cache_manager():
+    """Inicjuje menedżer cache, tworząc niezbędne katalogi."""
+    try:
+        os.makedirs(CACHE_DIR, exist_ok=True)
+        logger.info("Cache zainicjalizowany z domyślnymi parametrami")
+        return True
+    except Exception as e:
+        logger.error(f"Błąd podczas inicjalizacji cache: {e}")
+        return False
+
+def set_rate_limit_parameters(max_calls_per_minute: int = 6, min_interval: float = 10.0):
     """
-    Wykrywa błędy związane z CloudFront i limitami IP w komunikatach błędów.
+    Ustawia parametry limitowania zapytań API.
 
     Args:
-        error_message: Wiadomość błędu do analizy
+        max_calls_per_minute (int): Maksymalna liczba wywołań na minutę
+        min_interval (float): Minimalny odstęp między wywołaniami w sekundach
+    """
+    global MAX_CALLS_PER_MINUTE, MIN_INTERVAL_BETWEEN_CALLS
+
+    MAX_CALLS_PER_MINUTE = max_calls_per_minute
+    MIN_INTERVAL_BETWEEN_CALLS = min_interval
+    logger.info(f"Ustawiono parametry rate limitera: max_calls_per_minute={max_calls_per_minute}, min_interval={min_interval}s")
+
+def _get_cache_path(key: str) -> str:
+    """Generuje ścieżkę do pliku cache dla danego klucza."""
+    # Upewnij się, że klucz jest bezpieczny i nie zawiera znaków niedozwolonych w ścieżkach
+    safe_key = "".join(c if c.isalnum() or c in ('_', '-', '.') else '_' for c in key)
+    return os.path.join(CACHE_DIR, f"{safe_key}.json")
+
+def store_cached_data(key: str, data: Any) -> bool:
+    """
+    Zapisuje dane w cache.
+
+    Args:
+        key (str): Klucz identyfikujący dane
+        data (Any): Dane do zapisania
 
     Returns:
-        bool: True jeśli wykryto błąd CloudFront/IP limit, False w przeciwnym razie
+        bool: True jeśli zapis się powiódł, False w przeciwnym wypadku
+    """
+    try:
+        os.makedirs(CACHE_DIR, exist_ok=True)
+        cache_path = _get_cache_path(key)
+
+        cache_entry = {
+            "data": data,
+            "timestamp": time.time(),
+            "ttl": DEFAULT_TTL
+        }
+
+        with open(cache_path, 'w') as f:
+            json.dump(cache_entry, f)
+
+        logger.debug(f"Zapisano dane w cache dla klucza: {key}")
+        return True
+    except Exception as e:
+        logger.error(f"Błąd podczas zapisywania danych w cache dla klucza {key}: {e}")
+        return False
+
+def get_cached_data(key: str) -> Tuple[Any, bool]:
+    """
+    Pobiera dane z cache.
+
+    Args:
+        key (str): Klucz identyfikujący dane
+
+    Returns:
+        Tuple[Any, bool]: Krotka (dane, znaleziono), gdzie 'znaleziono' to flaga wskazująca czy dane były w cache
+    """
+    try:
+        cache_path = _get_cache_path(key)
+
+        if not os.path.exists(cache_path):
+            return None, False
+
+        with open(cache_path, 'r') as f:
+            cache_entry = json.load(f)
+
+        # Sprawdź czy dane nie są przeterminowane
+        if time.time() - cache_entry["timestamp"] > cache_entry.get("ttl", DEFAULT_TTL):
+            logger.debug(f"Dane w cache dla klucza {key} są przeterminowane.")
+            return None, False
+
+        logger.debug(f"Pobrano dane z cache dla klucza: {key}")
+        return cache_entry["data"], True
+    except Exception as e:
+        logger.error(f"Błąd podczas pobierania danych z cache dla klucza {key}: {e}")
+        return None, False
+
+def is_cache_valid(key: str, ttl: int = DEFAULT_TTL) -> bool:
+    """
+    Sprawdza czy dane w cache są wciąż ważne.
+
+    Args:
+        key (str): Klucz identyfikujący dane
+        ttl (int): Maksymalny czas życia danych w sekundach
+
+    Returns:
+        bool: True jeśli dane są ważne, False w przeciwnym przypadku
+    """
+    try:
+        cache_path = _get_cache_path(key)
+
+        if not os.path.exists(cache_path):
+            return False
+
+        with open(cache_path, 'r') as f:
+            cache_entry = json.load(f)
+
+        # Sprawdź czy dane nie są przeterminowane
+        current_time = time.time()
+        entry_time = cache_entry["timestamp"]
+        entry_ttl = cache_entry.get("ttl", DEFAULT_TTL)
+
+        # Używamy przekazanego TTL, jeśli jest mniejszy niż TTL zapisany w cache
+        effective_ttl = min(ttl, entry_ttl)
+
+        if current_time - entry_time > effective_ttl:
+            return False
+
+        return True
+    except Exception as e:
+        logger.error(f"Błąd podczas sprawdzania ważności cache dla klucza {key}: {e}")
+        return False
+
+def invalidate_cache(key: str) -> bool:
+    """
+    Unieważnia wpis w cache.
+
+    Args:
+        key (str): Klucz identyfikujący dane
+
+    Returns:
+        bool: True jeśli unieważnienie się powiodło, False w przeciwnym przypadku
+    """
+    try:
+        cache_path = _get_cache_path(key)
+
+        if os.path.exists(cache_path):
+            os.remove(cache_path)
+            logger.debug(f"Unieważniono cache dla klucza: {key}")
+            return True
+
+        logger.debug(f"Brak danych w cache dla klucza: {key}")
+        return False
+    except Exception as e:
+        logger.error(f"Błąd podczas unieważniania cache dla klucza {key}: {e}")
+        return False
+
+def clear_all_cache() -> bool:
+    """
+    Czyści cały cache.
+
+    Returns:
+        bool: True jeśli czyszczenie się powiodło, False w przeciwnym przypadku
+    """
+    try:
+        if os.path.exists(CACHE_DIR):
+            for filename in os.listdir(CACHE_DIR):
+                if filename.endswith('.json'):
+                    os.remove(os.path.join(CACHE_DIR, filename))
+
+        logger.info("Wyczyszczono cały cache")
+        return True
+    except Exception as e:
+        logger.error(f"Błąd podczas czyszczenia cache: {e}")
+        return False
+
+def get_api_status() -> Dict[str, Any]:
+    """
+    Zwraca aktualny status API.
+
+    Returns:
+        Dict[str, Any]: Słownik zawierający status API
+    """
+    global API_STATS
+
+    # Sprawdź, czy przekroczyliśmy limit zapytań
+    if API_STATS["call_count"] > MAX_CALLS_PER_MINUTE and time.time() - RATE_LIMIT_LAST_RESET < 60:
+        API_STATS["rate_limited"] = True
+    else:
+        # Reset licznika co minutę
+        if time.time() - RATE_LIMIT_LAST_RESET >= 60:
+            API_STATS["call_count"] = 0
+            API_STATS["rate_limited"] = False
+
+    return {
+        "last_call_time": API_STATS["last_call_time"],
+        "call_count": API_STATS["call_count"],
+        "error_count": API_STATS["error_count"],
+        "last_error": API_STATS["last_error"],
+        "rate_limited": API_STATS["rate_limited"] or RATE_LIMIT_EXCEEDED or CLOUDFRONT_BLOCK["blocked"],
+        "cloudfront_blocked": CLOUDFRONT_BLOCK["blocked"]
+    }
+
+def record_api_call(success: bool = True, error: Optional[str] = None) -> None:
+    """
+    Rejestruje wywołanie API.
+
+    Args:
+        success (bool): Czy wywołanie się powiodło
+        error (Optional[str]): Komunikat błędu, jeśli wystąpił
+    """
+    global API_STATS, RATE_LIMIT_LAST_RESET
+
+    API_STATS["last_call_time"] = time.time()
+    API_STATS["call_count"] += 1
+
+    if not success:
+        API_STATS["error_count"] += 1
+        API_STATS["last_error"] = error
+
+        # Sprawdź, czy błąd dotyczy przekroczenia limitu
+        if error and ("rate limit" in error.lower() or "429" in error or "403" in error):
+            API_STATS["rate_limited"] = True
+
+    # Reset licznika co minutę
+    if time.time() - RATE_LIMIT_LAST_RESET >= 60:
+        RATE_LIMIT_LAST_RESET = time.time()
+        API_STATS["call_count"] = 1  # Zaczynamy od 1, bo właśnie wykonaliśmy wywołanie
+
+def detect_cloudfront_error(error_message: str) -> bool:
+    """
+    Wykrywa błędy związane z CloudFront i limitami IP w komunikacie błędu.
+
+    Args:
+        error_message (str): Komunikat błędu do analizy
+
+    Returns:
+        bool: True jeśli wykryto błąd CloudFront lub limit IP, False w przeciwnym przypadku
     """
     error_lower = error_message.lower()
     cloudfront_indicators = [
         'cloudfront', 
         'distribution', 
-        '403 forbidden',
-        'rate limit',
-        '429 too many requests',
+        '403', 
+        'rate limit', 
+        '429', 
+        'too many requests',
         'access denied',
-        'ip address has been blocked',
-        'throttled',
-        'operation too frequent',
-        'too many requests'
+        'quota exceeded',
+        'ip has been blocked'
     ]
 
-    for indicator in cloudfront_indicators:
-        if indicator in error_lower:
-            logger.warning(f"Wykryto błąd CloudFront/IP limit: '{indicator}' w '{error_message}'")
-            return True
+    return any(indicator in error_lower for indicator in cloudfront_indicators)
 
-    return False
-
-def get_cached_data(key: str) -> Tuple[Any, bool]:
+def set_cloudfront_block_status(blocked: bool, error_message: str = "") -> None:
     """
-    Pobiera dane z cache'a.
-
-    Args:
-        key: Klucz pod którym zapisano dane
-
-    Returns:
-        Tuple zawierający (dane, czy_znaleziono)
-    """
-    # Sprawdź cache na dysku
-    file_path = os.path.join(CACHE_DIR, f"{key}.json")
-    if os.path.exists(file_path):
-        try:
-            with open(file_path, 'r') as f:
-                data = json.load(f)
-                return data, True
-        except Exception as e:
-            logger.warning(f"Błąd podczas odczytu cache z dysku dla klucza {key}: {e}")
-
-    return None, False
-
-def store_cached_data(key: str, data: Any) -> None:
-    """
-    Zapisuje dane w cache'u.
-
-    Args:
-        key: Klucz pod którym zapisać dane
-        data: Dane do zapisania
-    """
-    try:
-        file_path = os.path.join(CACHE_DIR, f"{key}.json")
-        with open(file_path, 'w') as f:
-            json.dump(data, f)
-    except Exception as e:
-        logger.warning(f"Błąd podczas zapisu cache na dysk dla klucza {key}: {e}")
-
-def is_cache_valid(key: str, ttl: int = 300) -> bool:
-    """
-    Sprawdza czy cache jest wciąż ważny.
-
-    Args:
-        key: Klucz cache'a
-        ttl: Czas życia w sekundach (domyślnie 5 minut)
-
-    Returns:
-        bool: True jeśli cache jest ważny, False w przeciwnym wypadku
-    """
-    file_path = os.path.join(CACHE_DIR, f"{key}.json")
-    if not os.path.exists(file_path):
-        return False
-
-    current_time = time.time()
-    last_update = os.path.getmtime(file_path)
-
-    return current_time - last_update < ttl
-
-def clear_cache(key: str = None) -> None:
-    """
-    Czyści cache.
-
-    Args:
-        key: Opcjonalny klucz. Jeśli None, czyści cały cache.
-    """
-    if key is None:
-        # Usuń pliki cache z dysku
-        for file_name in os.listdir(CACHE_DIR):
-            if file_name.endswith('.json'):
-                try:
-                    os.remove(os.path.join(CACHE_DIR, file_name))
-                except Exception as e:
-                    logger.warning(f"Nie można usunąć pliku cache {file_name}: {e}")
-    else:
-        # Usuń plik cache z dysku
-        file_path = os.path.join(CACHE_DIR, f"{key}.json")
-        if os.path.exists(file_path):
-            try:
-                os.remove(file_path)
-            except Exception as e:
-                logger.warning(f"Nie można usunąć pliku cache {key}: {e}")
-
-def get_api_status() -> Dict[str, Any]:
-    """
-    Zwraca aktualny status API i parametry limitera.
-
-    Returns:
-        Dict[str, Any]: Status API
-    """
-    # Sprawdź czy jesteśmy w stanie rate_limit
-    rate_limited, found = get_cached_data("api_rate_limited")
-    is_limited = found and rate_limited
-
-    # Sprawdź status blokady CloudFront
-    cloudfront_status = get_cloudfront_status()
-
-    return {
-        "rate_limited": is_limited,
-        "calls_left": 5 if not is_limited else 0,
-        "environment": 'production' if _is_production else 'development',
-        "cloudfront_blocked": cloudfront_status.get("blocked", False)
-    }
-
-def set_cloudfront_block_status(blocked: bool, error_message: str = ""):
-    """
-    Ustawia status blokady CloudFront w cache.
+    Ustawia status blokady CloudFront.
 
     Args:
         blocked (bool): Czy blokada jest aktywna
-        error_message (str): Opcjonalny komunikat błędu
+        error_message (str): Komunikat błędu związany z blokadą
     """
-    cloudfront_status = {
-        "blocked": blocked,
-        "timestamp": time.time(),
-        "error": error_message
-    }
-    store_cached_data("cloudfront_status", cloudfront_status)
-    logger.warning(f"Status blokady CloudFront ustawiony na: {blocked}")
+    global CLOUDFRONT_BLOCK
+
+    if blocked:
+        CLOUDFRONT_BLOCK["blocked"] = True
+        CLOUDFRONT_BLOCK["since"] = time.time()
+        CLOUDFRONT_BLOCK["error"] = error_message
+        CLOUDFRONT_BLOCK["reset_time"] = time.time() + 1800  # 30 minut blokady
+        logger.warning(f"Ustawiono status blokady CloudFront: {error_message}")
+    else:
+        # Resetuj status blokady
+        CLOUDFRONT_BLOCK["blocked"] = False
+        CLOUDFRONT_BLOCK["error"] = ""
+        logger.info("Zresetowano status blokady CloudFront")
 
 def get_cloudfront_status() -> Dict[str, Any]:
     """
-    Pobiera aktualny status blokady CloudFront.
+    Zwraca aktualny status blokady CloudFront.
 
     Returns:
-        Dict[str, Any]: Status blokady CloudFront
+        Dict[str, Any]: Słownik zawierający status blokady CloudFront
     """
-    status, found = get_cached_data("cloudfront_status")
-    if not found:
-        status = {"blocked": False, "timestamp": 0, "error": ""}
+    global CLOUDFRONT_BLOCK
 
-    # Jeśli blokada trwa dłużej niż 60 minut, automatycznie ją resetujemy
-    if status.get("blocked", False) and time.time() - status.get("timestamp", 0) > 3600:
-        status["blocked"] = False
-        status["error"] = "Automatyczny reset blokady po 60 minutach"
-        store_cached_data("cloudfront_status", status)
-        logger.info("Automatyczny reset blokady CloudFront po 60 minutach")
+    # Sprawdź, czy minął czas blokady
+    if CLOUDFRONT_BLOCK["blocked"] and time.time() > CLOUDFRONT_BLOCK["reset_time"]:
+        CLOUDFRONT_BLOCK["blocked"] = False
+        CLOUDFRONT_BLOCK["error"] = ""
+        logger.info("Automatyczny reset statusu blokady CloudFront po upływie czasu blokady")
 
-    return status
-
-# Funkcje do obsługi blokady CloudFront (zduplikowane w oryginale, usunięte)
-
+    return {
+        "blocked": CLOUDFRONT_BLOCK["blocked"],
+        "since": CLOUDFRONT_BLOCK["since"],
+        "error": CLOUDFRONT_BLOCK["error"],
+        "reset_time": CLOUDFRONT_BLOCK["reset_time"],
+        "time_left": max(0, CLOUDFRONT_BLOCK["reset_time"] - time.time()) if CLOUDFRONT_BLOCK["blocked"] else 0
+    }
 
 # Automatyczna inicjalizacja przy imporcie
-def init_cache():
-    """Inicjalizuje cache i ustawia domyślne parametry."""
-    # Ustaw konserwatywne limity dla Bybit API
-    set_rate_limit_parameters(max_calls_per_minute=6, min_interval=10.0)
+init_cache_manager()
 
-    # Ustaw w cache flagę rate_limit na False
-    store_cached_data("api_rate_limited", False)
+from functools import wraps
 
-    logger.info("Cache zainicjalizowany z domyślnymi parametrami")
-
-def set_rate_limit_parameters(max_calls_per_minute: int = None, min_interval: float = None):
-    """
-    Ustawia parametry rate limitera.
-
-    Args:
-        max_calls_per_minute: Maksymalna liczba zapytań na minutę
-        min_interval: Minimalny odstęp między zapytaniami w sekundach
-    """
-    if max_calls_per_minute is not None:
-        _env_config["max_calls_per_minute"] = max_calls_per_minute
-
-    if min_interval is not None:
-        _env_config["min_interval"] = min_interval
-
-    logger.info(f"Ustawiono parametry rate limitera: max_calls_per_minute={_env_config['max_calls_per_minute']}, min_interval={_env_config['min_interval']}s")
-
-init_cache()
-
-
-if __name__ == "__main__":
-    # Przykład użycia
-    @cache_with_ttl(ttl=10)
-    def slow_function(param):
-        logger.info(f"Wywołanie slow_function({param})")
-        time.sleep(2)  # Symulacja długiego przetwarzania
-        return f"Wynik {param}"
-
-    @rate_limit
-    def api_function(param):
-        logger.info(f"Wywołanie api_function({param})")
-        return f"API Wynik {param}"
-
-    @adaptive_cache
-    def smart_api_function(param):
-        logger.info(f"Wywołanie smart_api_function({param})")
-
-        # Symulacja czasami przekraczająca limit
-        if param % 3 == 0:
-            raise Exception("You have breached the rate limit. (ErrCode: 403)")
-
-        return f"Smart API Wynik {param}"
-
-    # Test cache'owania
-    for i in range(5):
-        logger.info(f"Test {i+1}")
-        result = slow_function(1)
-        logger.info(f"Wynik: {result}")
-        time.sleep(1)
-
-    # Test rate limitingu
-    for i in range(5):
-        result = api_function(i)
-        logger.info(f"API Wynik: {result}")
-
-    # Test adaptacyjnego cache'a
-    for i in range(10):
-        try:
-            result = smart_api_function(i)
-            logger.info(f"Smart API Wynik: {result}")
-        except Exception as e:
-            logger.error(f"Błąd: {e}")
-        time.sleep(0.1)
-
-    # Sprawdź status API
-    status = get_api_status()
-    logger.info(f"Status API: {status}")
-
-#Missing functions from edited snippet are added here:
 def cache_with_ttl(ttl: int = 300, key_prefix: str = ""):
     """
     Dekorator do cachowania wyników funkcji.
@@ -341,30 +389,38 @@ def rate_limit(func):
     """
     @wraps(func)
     def wrapper(*args, **kwargs):
+        global API_STATS, RATE_LIMIT_LAST_RESET, RATE_LIMIT_EXCEEDED
         current_time = time.time()
 
         # Sprawdź czy nie przekroczono limitu zapytań na minutę
-        if _env_config["calls_count"] >= _env_config["max_calls_per_minute"]:
-            sleep_time = 60 - (current_time - _env_config["window_start"]) + 0.1
+        if API_STATS["call_count"] >= MAX_CALLS_PER_MINUTE:
+            sleep_time = 60 - (current_time - RATE_LIMIT_LAST_RESET) + 0.1
             if sleep_time > 0:
                 logger.warning(f"Przekroczono limit zapytań na minutę. Oczekiwanie {sleep_time:.2f}s")
                 time.sleep(sleep_time)
-            _env_config["calls_count"] = 0
-            _env_config["window_start"] = time.time()
-
+            RATE_LIMIT_LAST_RESET = current_time
+            API_STATS["call_count"] = 0
+            RATE_LIMIT_EXCEEDED = True
 
         # Zachowaj minimalny odstęp między zapytaniami
-        time_since_last_call = current_time - _env_config["last_call"]
-        if time_since_last_call < _env_config["min_interval"]:
-            sleep_time = _env_config["min_interval"] - time_since_last_call
+        time_since_last_call = current_time - API_STATS["last_call_time"]
+        if time_since_last_call < MIN_INTERVAL_BETWEEN_CALLS:
+            sleep_time = MIN_INTERVAL_BETWEEN_CALLS - time_since_last_call
             time.sleep(sleep_time)
 
         # Aktualizuj liczniki
-        _env_config["last_call"] = time.time()
-        _env_config["calls_count"] += 1
+        API_STATS["last_call_time"] = current_time
+        API_STATS["call_count"] += 1
+        RATE_LIMIT_EXCEEDED = False
 
         # Wywołaj oryginalną funkcję
-        return func(*args, **kwargs)
+        try:
+            result = func(*args, **kwargs)
+            record_api_call() #Record successful call
+            return result
+        except Exception as e:
+            record_api_call(False, str(e)) #Record failed call with error
+            raise
 
     return wrapper
 
@@ -387,12 +443,10 @@ def adaptive_cache(func):
         cache_key = f"adaptive_{func.__name__}_{hash(args_str)}"
 
         # Sprawdź czy dane są w cache'u
-        ttl = 300
+        ttl = DEFAULT_TTL
 
         # W przypadku API statusu sprawdzamy również flagę rate_limit
-        rate_limit_key = "api_rate_limited"
-        rate_limited, found = get_cached_data(rate_limit_key)
-        if found and rate_limited:
+        if get_api_status()["rate_limited"]:
             ttl = 3600
             logger.info(f"Wykryto flagę rate_limit, używam dłuższego TTL: {3600}s")
 
@@ -410,17 +464,12 @@ def adaptive_cache(func):
             store_cached_data(cache_key, result)
 
             # Resetuj flagę rate_limit jeśli funkcja zakończyła się sukcesem
-            store_cached_data(rate_limit_key, False)
-
             return result
         except Exception as e:
             # Sprawdź czy błąd dotyczy przekroczenia limitu zapytań
             error_str = str(e).lower()
             if "rate limit" in error_str or "429" in error_str or "403" in error_str:
-                logger.warning(f"Wykryto przekroczenie limitu API w funkcji {func.__name__}. Ustawiam flagę rate_limit.")
-
-                # Ustaw flagę rate_limit
-                store_cached_data(rate_limit_key, True)
+                logger.warning(f"Wykryto przekroczenie limitu API w funkcji {func.__name__}.")
 
                 # Próbuj użyć ostatnich znanych danych z cache'a (nawet jeśli TTL minęło)
                 data, found = get_cached_data(cache_key)
@@ -432,4 +481,51 @@ def adaptive_cache(func):
             raise
 
     return wrapper
-from functools import wraps
+
+# Przykład użycia (z oryginalnego kodu) - Zostawione dla testów
+if __name__ == "__main__":
+    @cache_with_ttl(ttl=10)
+    def slow_function(param):
+        logger.info(f"Wywołanie slow_function({param})")
+        time.sleep(2)  # Symulacja długiego przetwarzania
+        return f"Wynik {param}"
+
+    @rate_limit
+    def api_function(param):
+        logger.info(f"Wywołanie api_function({param})")
+        return f"API Wynik {param}"
+
+    @adaptive_cache
+    def smart_api_function(param):
+        logger.info(f"Wywołanie smart_api_function({param})")
+
+        # Symulacja czasami przekraczająca limit
+        if param % 3 == 0:
+            raise Exception("You have breached the rate limit. (ErrCode: 403)")
+
+        return f"Smart API Wynik {param}"
+
+    # Test cache'owania
+    for i in range(5):
+        logger.info(f"Test {i+1}")
+        result = slow_function(1)
+        logger.info(f"Wynik: {result}")
+        time.sleep(1)
+
+    # Test rate limitingu
+    for i in range(5):
+        result = api_function(i)
+        logger.info(f"API Wynik: {result}")
+
+    # Test adaptacyjnego cache'a
+    for i in range(10):
+        try:
+            result = smart_api_function(i)
+            logger.info(f"Smart API Wynik: {result}")
+        except Exception as e:
+            logger.error(f"Błąd: {e}")
+        time.sleep(0.1)
+
+    # Sprawdź status API
+    status = get_api_status()
+    logger.info(f"Status API: {status}")

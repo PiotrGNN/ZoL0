@@ -1,156 +1,130 @@
-
-#!/usr/bin/env python3
 """
-Skrypt do zestawiania tunelu SSH SOCKS5 proxy
-Umożliwia przekierowanie ruchu API przez zewnętrzny serwer VPS
+setup_ssh_tunnel.py
+------------------
+Skrypt do tworzenia tunelu SSH dla połączenia proxy SOCKS5.
+Przydatne, gdy API wymaga stałego adresu IP lub gdy konieczne jest obejście ograniczeń geograficznych.
+
+Użycie:
+1. Ustaw zmienne środowiskowe lub edytuj wartości w skrypcie
+2. Uruchom: python setup_ssh_tunnel.py
+3. Zostaw terminal otwarty (tunel działa w tle)
+4. Używaj proxy w swoich aplikacjach: socks5://127.0.0.1:1080
 """
 
 import os
 import sys
 import time
-import logging
 import subprocess
 import signal
-import atexit
-from dotenv import load_dotenv
+import argparse
 
-# Konfiguracja logowania
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s [%(levelname)s] %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
-)
-logger = logging.getLogger('ssh_tunnel')
+# Domyślne parametry połączenia
+DEFAULT_SSH_HOST = "your_server_ip" # Zmień na adres swojego serwera
+DEFAULT_SSH_PORT = 22
+DEFAULT_SSH_USER = "root" # Zmień na nazwę użytkownika SSH 
+DEFAULT_LOCAL_PORT = 1080
+DEFAULT_KEY_PATH = "~/.ssh/id_rsa" # Ścieżka do klucza SSH
 
-def load_config():
-    """Ładuje konfigurację z .env lub zmiennych środowiskowych"""
-    load_dotenv()
-    
-    # Odczytaj zmienne konfiguracyjne
-    config = {
-        'VPS_USER': os.getenv('VPS_USER'),
-        'VPS_HOST': os.getenv('VPS_HOST'),
-        'VPS_PORT': os.getenv('VPS_PORT', '22'),
-        'VPS_KEY_PATH': os.getenv('VPS_KEY_PATH', None),
-        'SOCKS_PORT': os.getenv('SOCKS_PORT', '1080')
-    }
-    
-    # Sprawdź czy kluczowe zmienne są ustawione
-    if not config['VPS_USER'] or not config['VPS_HOST']:
-        logger.error("Brak wymaganych zmiennych środowiskowych: VPS_USER, VPS_HOST")
-        logger.info("Dodaj te zmienne do pliku .env lub ustaw je w środowisku")
-        sys.exit(1)
-        
-    return config
+def parse_arguments():
+    """Parsuje argumenty wiersza poleceń"""
+    parser = argparse.ArgumentParser(description="Ustaw tunel SSH dla proxy SOCKS5")
 
-def start_ssh_tunnel(config):
-    """Uruchamia tunel SSH SOCKS5"""
-    ssh_cmd = ['ssh', '-N', '-D', config['SOCKS_PORT']]
-    
-    # Dodaj ścieżkę do klucza SSH, jeśli podano
-    if config['VPS_KEY_PATH']:
-        ssh_cmd.extend(['-i', config['VPS_KEY_PATH']])
-    
-    # Dodaj port SSH, jeśli inny niż domyślny
-    if config['VPS_PORT'] != '22':
-        ssh_cmd.extend(['-p', config['VPS_PORT']])
-    
-    # Dodaj adres serwera docelowego
-    ssh_cmd.append(f"{config['VPS_USER']}@{config['VPS_HOST']}")
-    
-    logger.info(f"Uruchamianie tunelu SSH SOCKS5 na porcie {config['SOCKS_PORT']}")
-    logger.info(f"Komenda: {' '.join(ssh_cmd)}")
-    
-    # Uruchom proces SSH
-    process = subprocess.Popen(
-        ssh_cmd,
-        stdout=subprocess.PIPE, 
-        stderr=subprocess.PIPE
-    )
-    
-    # Funkcja do czyszczenia przy wyjściu
-    def cleanup():
-        if process.poll() is None:
-            logger.info("Zatrzymywanie tunelu SSH")
-            process.terminate()
-            process.wait()
-    
-    # Zarejestruj funkcję czyszczącą przy wyjściu
-    atexit.register(cleanup)
-    
-    # Obsługa sygnałów SIGINT i SIGTERM
+    parser.add_argument("--host", 
+                        default=os.getenv("SSH_HOST", DEFAULT_SSH_HOST),
+                        help="Adres serwera SSH (domyślnie: z env SSH_HOST lub wartość domyślna)")
+
+    parser.add_argument("--port", 
+                        type=int,
+                        default=int(os.getenv("SSH_PORT", DEFAULT_SSH_PORT)),
+                        help="Port serwera SSH (domyślnie: z env SSH_PORT lub 22)")
+
+    parser.add_argument("--user", 
+                        default=os.getenv("SSH_USER", DEFAULT_SSH_USER),
+                        help="Nazwa użytkownika SSH (domyślnie: z env SSH_USER lub root)")
+
+    parser.add_argument("--local-port", 
+                        type=int,
+                        default=int(os.getenv("LOCAL_PORT", DEFAULT_LOCAL_PORT)),
+                        help="Lokalny port dla proxy SOCKS5 (domyślnie: z env LOCAL_PORT lub 1080)")
+
+    parser.add_argument("--key", 
+                        default=os.getenv("SSH_KEY_PATH", DEFAULT_KEY_PATH),
+                        help="Ścieżka do klucza SSH (domyślnie: z env SSH_KEY_PATH lub ~/.ssh/id_rsa)")
+
+    parser.add_argument("--timeout", 
+                        type=int,
+                        default=int(os.getenv("TUNNEL_TIMEOUT", 0)),
+                        help="Timeout tunelu w sekundach, 0 = bez limitu (domyślnie: z env TUNNEL_TIMEOUT lub 0)")
+
+    return parser.parse_args()
+
+def setup_ssh_tunnel(args):
+    """Ustanawia tunel SSH dla proxy SOCKS5"""
+
+    print(f"Ustanawianie tunelu SSH SOCKS5 na localhost:{args.local_port}...")
+    print(f"Łączenie z serwerem: {args.user}@{args.host}:{args.port}")
+
+    # Przygotowanie polecenia SSH
+    cmd = [
+        "ssh",
+        "-N",  # Nie wykonuj zdalnego polecenia
+        "-D", f"{args.local_port}",  # Ustanów tunel SOCKS
+        "-o", "ExitOnForwardFailure=yes",  # Zakończ, jeśli przekierowanie się nie powiedzie
+        "-o", "ServerAliveInterval=60",  # Wysyłaj pakiety co 60s, aby utrzymać połączenie
+        "-o", "ServerAliveCountMax=3",  # Maksymalna liczba nieudanych keepalive przed rozłączeniem
+    ]
+
+    if args.key != "":
+        cmd.extend(["-i", os.path.expanduser(args.key)])
+
+    if args.port != 22:
+        cmd.extend(["-p", str(args.port)])
+
+    cmd.append(f"{args.user}@{args.host}")
+
+    # Obsługa sygnałów do czystego zakończenia
     def signal_handler(sig, frame):
-        logger.info(f"Otrzymano sygnał {sig}, zamykanie tunelu")
-        cleanup()
+        print("\nPrzerywanie tunelu SSH...")
+        if tunnel_process:
+            tunnel_process.terminate()
         sys.exit(0)
-    
+
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGTERM, signal_handler)
-    
-    return process
 
-def test_connection():
-    """Testuje połączenie przez proxy"""
-    import requests
-    
+    # Uruchomienie tunelu
     try:
-        proxies = {
-            'http': 'socks5h://127.0.0.1:1080',
-            'https': 'socks5h://127.0.0.1:1080'
-        }
-        
-        logger.info("Testowanie połączenia przez proxy...")
-        response = requests.get('https://api.bybit.com/v5/market/time', 
-                                proxies=proxies, 
-                                timeout=10)
-        
-        if response.status_code == 200:
-            data = response.json()
-            logger.info(f"Połączenie działa! Czas serwera: {data}")
-            return True
+        tunnel_process = subprocess.Popen(cmd)
+        print(f"Tunel SSH uruchomiony (PID: {tunnel_process.pid})")
+        print(f"Proxy SOCKS5 dostępne pod adresem: socks5://127.0.0.1:{args.local_port}")
+        print("Naciśnij Ctrl+C, aby zatrzymać tunel")
+
+        # Czekanie z timeoutem lub bez limitu
+        if args.timeout > 0:
+            print(f"Tunel zostanie zamknięty po {args.timeout} sekundach...")
+            time.sleep(args.timeout)
+            tunnel_process.terminate()
+            print("Tunel SSH zakończony (timeout)")
         else:
-            logger.error(f"Błąd połączenia: {response.status_code} - {response.text}")
-            return False
+            # Czekaj na zakończenie procesu
+            tunnel_process.wait()
+
     except Exception as e:
-        logger.error(f"Nie można połączyć się przez proxy: {e}")
+        print(f"Błąd podczas tworzenia tunelu SSH: {e}")
+        if tunnel_process:
+            tunnel_process.terminate()
         return False
 
-def main():
-    """Główna funkcja skryptu"""
-    logger.info("Konfiguracja tunelu SSH SOCKS5 proxy")
-    
-    # Załaduj konfigurację
-    config = load_config()
-    
-    # Uruchom tunel SSH
-    process = start_ssh_tunnel(config)
-    
-    # Poczekaj na ustanowienie tunelu
-    logger.info("Czekam 5 sekund na ustanowienie tunelu...")
-    time.sleep(5)
-    
-    # Przeprowadź test połączenia
-    if test_connection():
-        logger.info("Tunel SSH SOCKS5 działa poprawnie!")
-    else:
-        logger.warning("Test połączenia nie powiódł się, ale tunel może nadal działać")
-    
-    logger.info(f"Tunel SSH SOCKS5 uruchomiony na porcie {config['SOCKS_PORT']}")
-    logger.info("Naciśnij Ctrl+C, aby zakończyć")
-    
-    # Czekaj na zakończenie procesu
-    try:
-        process.wait()
-    except KeyboardInterrupt:
-        logger.info("Otrzymano Ctrl+C, kończenie pracy")
-    
-    # Sprawdź kod wyjścia
-    if process.returncode != 0:
-        stderr = process.stderr.read().decode('utf-8')
-        logger.error(f"Tunel SSH zakończył się z błędem (kod {process.returncode}): {stderr}")
-        return 1
-    
-    return 0
+    return True
 
 if __name__ == "__main__":
-    sys.exit(main())
+    args = parse_arguments()
+
+    # Sprawdź, czy podano wymagane parametry
+    if args.host == DEFAULT_SSH_HOST:
+        print("UWAGA: Używasz domyślnego adresu serwera. Ustaw rzeczywisty adres poprzez:")
+        print("- Zmienną środowiskową SSH_HOST")
+        print("- Argument --host")
+        print("- Edycję wartości DEFAULT_SSH_HOST w kodzie")
+
+    setup_ssh_tunnel(args)

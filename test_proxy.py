@@ -1,108 +1,56 @@
-
-#!/usr/bin/env python3
 """
-Skrypt do testowania połączenia przez SOCKS5 proxy
+Test połączenia proxy SOCKS5 przez tunel SSH.
+
+Ten skrypt testuje działanie proxy SOCKS5, które jest utworzone przez tunel SSH.
+Wykonuje proste zapytanie HTTP do API Bybit przez proxsy i wyświetla odpowiedź.
 """
 
 import requests
+import time
 import json
-import logging
-import os
-from dotenv import load_dotenv
 
-# Konfiguracja logowania
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s [%(levelname)s] %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
-)
-logger = logging.getLogger('proxy_test')
+# Konfiguracja proxy SOCKS5
+PROXY_URL = "socks5h://127.0.0.1:1080"
+proxies = {
+    'http': PROXY_URL,
+    'https': PROXY_URL
+}
 
-# Załaduj zmienne środowiskowe
-load_dotenv()
-proxy_url = os.getenv('PROXY_URL', 'socks5h://127.0.0.1:1080')
+def test_proxy():
+    """Testuje połączenie przez proxy"""
+    print("Testowanie połączenia proxy SOCKS5...")
 
-def test_direct_connection():
-    """Test połączenia bezpośredniego do API Bybit"""
     try:
-        logger.info("Test połączenia bezpośredniego do API Bybit...")
-        response = requests.get('https://api.bybit.com/v5/market/time', timeout=10)
-        
-        logger.info(f"Status: {response.status_code}")
-        logger.info(f"Odpowiedź: {json.dumps(response.json(), indent=2)}")
-        return response.status_code == 200
-    except Exception as e:
-        logger.error(f"Błąd połączenia bezpośredniego: {e}")
-        return False
-
-def test_proxy_connection():
-    """Test połączenia przez proxy do API Bybit"""
-    try:
-        proxies = {
-            'http': proxy_url,
-            'https': proxy_url
-        }
-        
-        logger.info(f"Test połączenia przez proxy {proxy_url} do API Bybit...")
+        # Test połączenia z publicznym endpointem API Bybit bez uwierzytelniania
+        start_time = time.time()
         response = requests.get('https://api.bybit.com/v5/market/time', 
-                               proxies=proxies, 
-                               timeout=10)
-        
-        logger.info(f"Status: {response.status_code}")
-        logger.info(f"Odpowiedź: {json.dumps(response.json(), indent=2)}")
-        return response.status_code == 200
-    except Exception as e:
-        logger.error(f"Błąd połączenia przez proxy: {e}")
-        return False
+                             proxies=proxies, 
+                             timeout=10)
 
-def check_my_ip():
-    """Sprawdza publiczny adres IP (z i bez proxy)"""
-    try:
-        # Sprawdź IP bez proxy
-        logger.info("Sprawdzanie publicznego IP bez proxy...")
-        direct_ip = requests.get('https://api.ipify.org?format=json', timeout=10).json()
-        logger.info(f"Adres IP bez proxy: {direct_ip['ip']}")
-        
-        # Sprawdź IP z proxy
-        proxies = {
-            'http': proxy_url,
-            'https': proxy_url
-        }
-        logger.info(f"Sprawdzanie publicznego IP przez proxy {proxy_url}...")
-        proxy_ip = requests.get('https://api.ipify.org?format=json', 
-                               proxies=proxies, 
-                               timeout=10).json()
-        logger.info(f"Adres IP przez proxy: {proxy_ip['ip']}")
-        
-        # Porównaj adresy
-        if direct_ip['ip'] != proxy_ip['ip']:
-            logger.info("✅ Proxy działa poprawnie! Adresy IP są różne.")
-            return True
-        else:
-            logger.warning("⚠️ Proxy może nie działać poprawnie - te same adresy IP.")
-            return False
-    except Exception as e:
-        logger.error(f"Błąd podczas sprawdzania IP: {e}")
-        return False
+        end_time = time.time()
+        latency = (end_time - start_time) * 1000  # w milisekundach
 
-def main():
-    """Główna funkcja skryptu"""
-    logger.info("=== TEST POŁĄCZENIA PROXY ===")
-    
-    direct_ok = test_direct_connection()
-    proxy_ok = test_proxy_connection()
-    
-    logger.info("\n=== WYNIKI TESTÓW ===")
-    logger.info(f"Połączenie bezpośrednie: {'✅ OK' if direct_ok else '❌ BŁĄD'}")
-    logger.info(f"Połączenie przez proxy: {'✅ OK' if proxy_ok else '❌ BŁĄD'}")
-    
-    logger.info("\n=== TEST ADRESU IP ===")
-    check_my_ip()
-    
-    if proxy_ok:
-        logger.info("\n✅ Proxy SOCKS5 działa poprawnie!")
-    else:
-        logger.error("\n❌ Proxy SOCKS5 nie działa. Sprawdź konfigurację tunelu SSH.")
+        print(f"Czas odpowiedzi: {latency:.2f} ms")
+        print(f"Status kod: {response.status_code}")
+
+        if response.status_code == 200:
+            data = response.json()
+            print("Odpowiedź API:")
+            print(json.dumps(data, indent=2))
+
+            if "retCode" in data and data["retCode"] == 0:
+                print("\nTEST UDANY ✅ - Połączenie proxy działa poprawnie")
+                return True
+            else:
+                print("\nTEST NIEUDANY ❌ - Błędna odpowiedź API")
+                return False
+    except Exception as e:
+        print(f"\nTEST NIEUDANY ❌ - Błąd: {str(e)}")
+        print("\nWskazówki do rozwiązania problemu:")
+        print("1. Upewnij się, że tunel SSH jest uruchomiony (ssh -N -D 1080 user@host)")
+        print("2. Sprawdź, czy port 1080 jest używany przez tunel")
+        print("3. Zainstaluj wymagane pakiety: pip install requests[socks]")
+        return False
 
 if __name__ == "__main__":
-    main()
+    test_proxy()

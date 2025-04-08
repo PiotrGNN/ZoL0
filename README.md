@@ -1,89 +1,112 @@
-# Trading System with AI Integration
+# 🤖 Inteligentny System Tradingowy
 
-## 📈 Overview
-A comprehensive trading system with AI-powered market analysis, technical indicators, and automated execution features. The system uses ByBit API for trading operations.  This system includes a dashboard for real-time portfolio monitoring and management of automated trading strategies on cryptocurrency exchanges, with a focus on ByBit integration.
+## 📝 Opis projektu
+Zaawansowany system tradingowy z analizą rynku w czasie rzeczywistym, zarządzaniem ryzykiem i inteligentnym wykonywaniem zleceń. Wykorzystuje algorytmy uczenia maszynowego i analizę sentymentu rynku dla automatycznego podejmowania decyzji.
 
-## 🚀 Quick Start
+## 🚀 Funkcje
+- Połączenie z API Bybit (testnet i produkcyjne)
+- Analiza techniczna i algorytmiczne strategie tradingowe
+- Integracja z VPN/Proxy przez tunel SSH (omijanie limitów geograficznych)
+- Automatyczne dostosowanie do limitów API (backoff eksponencjalny)
+- Modele AI do przewidywania ruchów cenowych
+- System powiadomień i monitorowania transakcji
+- Interaktywny dashboard (Flask)
 
-### Installation
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/username/trading-system.git
-   cd trading-system
-   ```
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Copy the `.env.example` file to `.env` and configure your settings:
-   ```bash
-   cp .env.example .env
-   ```
-4. Run the application:
-   ```bash
-   python main.py
-   ```
-5. Access the application: Open your browser and go to: `http://localhost:5000`
+## 📋 Wymagania
+- Python 3.8+
+- Aktywne konto Bybit z kluczami API
+- Dostęp do VPS (opcjonalnie, dla tunelu SSH)
 
+## ⚙️ Instalacja
+```bash
+# Klonowanie repozytorium
+git clone <URL_repozytorium>
+cd inteligentny-system-tradingowy
 
-## 🔧 Configuration
-Configure the system through the `.env` file or environment variables:
-- `BYBIT_API_KEY`: Your ByBit API key
-- `BYBIT_API_SECRET`: Your ByBit API secret
-- `BYBIT_USE_TESTNET`: Set to "true" to use the testnet environment (recommended for testing)
-- `USE_SIMULATED_DATA`: Set to "true" to use simulated data instead of real API calls
-- `RISK_LEVEL` - Level of risk: `low`, `medium`, `high`
-- `MAX_POSITION_SIZE` - Maximum position size as % of portfolio
-- `API_RATE_LIMIT` - Enable smart API request limiting
-- `API_CACHE_ENABLED` - Enable API response caching
+# Instalacja zależności
+pip install -r requirements.txt
 
+# Konfiguracja
+cp .env.example .env
+# Edytuj plik .env dodając swoje klucze API
+```
 
-## 🧠 AI Models
-The system includes various AI models for market analysis:
-- Anomaly detection
-- Sentiment analysis
-- Price prediction
-- Reinforcement learning for trading strategies
+## 🔧 Konfiguracja
+1. Utwórz klucze API w panelu Bybit
+2. Uzupełnij plik `.env` swoimi kluczami
+3. Ustaw `BYBIT_TESTNET=true` dla środowiska testowego lub `BYBIT_TESTNET=false` dla produkcji
+
+### ⚠️ Środowisko produkcyjne
+Gdy `BYBIT_TESTNET=false` operujesz na prawdziwych środkach! System zastosuje dodatkowe zabezpieczenia.
+
+## 🏃 Uruchomienie
+```bash
+# Standardowe uruchomienie
+python main.py
+
+# Uruchomienie z VPN przez tunel SSH (jeśli potrzebne)
+python setup_ssh_tunnel.py
+# W nowym terminalu:
+python main.py
+```
 
 ## 📊 Dashboard
-Access the web dashboard at `http://localhost:5000` to monitor:
-- Current positions
-- Account balance
-- Performance metrics
-- Market sentiment and anomalies
+Dostęp do dashboardu pod adresem: `http://localhost:5000`
 
-## 🔧 Troubleshooting
+## 🔒 Konfiguracja VPN/Proxy
+System umożliwia działanie przez tunel SSH dla stabilnego połączenia API:
+
+1. Uruchom: `python setup_ssh_tunnel.py --host <twoj_vps_ip> --user <nazwa_uzytkownika>`
+2. Ustaw `USE_PROXY=True` w pliku `.env`
+3. Testuj: `python test_proxy.py`
+
+## 🧠 AI Models
+System zawiera różne modele AI do analizy rynku:
+- Wykrywanie anomalii
+- Analiza sentymentu
+- Predykcja cen
+- Reinforcement learning dla strategii tradingowych
+
+## 📊 Dashboard
+Dostęp do panelu webowego pod adresem `http://localhost:5000` do monitorowania:
+- Aktualnych pozycji
+- Stanu konta
+- Metryk wydajności
+- Sentymentu rynku i anomalii
+
+## 🔧 Rozwiązywanie problemów
 
 ### Problemy z limitami API (403/429 Errors)
-If you encounter rate limit errors (403/429):
+Jeśli napotkasz błędy limitów API (403/429):
 
-1. Set `BYBIT_USE_TESTNET=true` in your `.env` file
-2. Wait 5-10 minutes before retrying
-3. Set `USE_SIMULATED_DATA=true` for testing without API calls
-4. Consider using a different IP address (e.g., via VPN or proxy).
-5. For testing, use simulation mode - set `USE_SIMULATED_DATA=true` in `.env`
-
+1. Ustaw `BYBIT_TESTNET=true` w pliku `.env`
+2. Poczekaj 5-10 minut przed ponowną próbą
+3. Ustaw `USE_SIMULATED_DATA=true` dla testów bez wywoływania API
+4. Rozważ użycie innego adresu IP (np. przez VPN lub proxy)
+5. Do testów, użyj trybu symulacji - ustaw `USE_SIMULATED_DATA=true` w `.env`
 
 ### Problemy z zależnościami
-If you have dependency conflicts, try installing without dependencies:
+Jeśli masz konflikty zależności, spróbuj zainstalować bez zależności:
 ```bash
 pip install -r requirements.txt --no-deps
 ```
 
-Then install missing packages manually.
+Następnie zainstaluj brakujące pakiety ręcznie.
 
 ### Błędy importu
-If you encounter import errors:
+Jeśli napotkasz błędy importu:
 ```bash
 python fix_imports.py
 ```
 
 ### Testy
-To fix and run tests:
+Aby naprawić i uruchomić testy:
 ```bash
 python fix_tests.py
 ```
 
+## 📜 Licencja
+Ten projekt jest udostępniany na licencji MIT.
 
 ## 📁 Project Structure
 - `main.py` - Main application entry point
@@ -105,16 +128,11 @@ python fix_tests.py
 - **Integracja z giełdą**: ByBit API
 - **Przechowywanie danych**: Buforowanie JSON, cache-management
 
-## 📄 Licencja
-
-This project is licensed under the MIT License.
-
 ## Uruchomienie
 1. Skonfiguruj zmienne środowiskowe w pliku `.env`
 2. Uruchom aplikację: `python main.py`
 
 ## Konfiguracja tunelu SSH SOCKS5 Proxy
-
 Jeśli masz problemy z dostępem do API Bybit z Replit, możesz skonfigurować tunel SSH SOCKS5:
 
 1. Edytuj plik `.env` i ustaw poniższe zmienne:

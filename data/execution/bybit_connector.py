@@ -1127,6 +1127,7 @@ class BybitConnector:
                 time.sleep(3.0)  # Dodatkowa pauza
 
             # Synchronizuj parametry
+            from data.utils.cache_manager import set_rate_limit_parameters
             set_rate_limit_parameters(
                 max_calls_per_minute=max_calls,
                 min_interval=min_interval
