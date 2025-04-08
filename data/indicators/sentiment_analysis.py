@@ -183,3 +183,86 @@ class SentimentAnalyzer:
             return "Negatywny"
         else:
             return "Bardzo negatywny"
+"""
+sentiment_analysis.py
+-------------------
+Moduł do analizy sentymentu rynkowego.
+"""
+
+import logging
+import random
+from datetime import datetime
+from typing import Dict, Any, List
+
+# Konfiguracja logowania
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s"
+)
+logger = logging.getLogger(__name__)
+
+class SentimentAnalyzer:
+    """Klasa do analizy sentymentu danych rynkowych i wiadomości."""
+    
+    def __init__(self):
+        """Inicjalizacja analizatora sentymentu."""
+        logger.info("Inicjalizacja analizatora sentymentu")
+        self.last_analysis = None
+    
+    def analyze(self) -> Dict[str, Any]:
+        """
+        Analizuje sentyment na podstawie danych rynkowych i wiadomości.
+        
+        Returns:
+            Dict[str, Any]: Wynik analizy sentymentu
+        """
+        # Symulacja analizy sentymentu dla demonstracji
+        sentiments = ["Bardzo pozytywny", "Pozytywny", "Neutralny", "Negatywny", "Bardzo negatywny"]
+        confidence = random.uniform(0.65, 0.95)
+        selected_sentiment = random.choice(sentiments)
+        
+        self.last_analysis = {
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "analysis": selected_sentiment,
+            "confidence": round(confidence, 2),
+            "sources_analyzed": random.randint(50, 200),
+            "market_mood": self._get_market_mood(selected_sentiment)
+        }
+        
+        logger.info(f"Przeprowadzono analizę sentymentu: {selected_sentiment} (pewność: {round(confidence*100)}%)")
+        return self.last_analysis
+    
+    def _get_market_mood(self, sentiment: str) -> str:
+        """
+        Określa nastrój rynku na podstawie sentymentu.
+        
+        Args:
+            sentiment: Wynik analizy sentymentu
+            
+        Returns:
+            str: Ogólny nastrój rynku
+        """
+        if sentiment in ["Bardzo pozytywny", "Pozytywny"]:
+            return "Byczo"
+        elif sentiment == "Neutralny":
+            return "Neutralnie"
+        else:
+            return "Niedźwiedzio"
+    
+    def get_sentiment_history(self) -> List[Dict[str, Any]]:
+        """
+        Zwraca historię sentymentu w czasie.
+        
+        Returns:
+            List[Dict[str, Any]]: Historia sentymentu
+        """
+        # Symulowane dane historyczne
+        return [
+            {"date": "2025-04-01", "sentiment": "Neutralny", "confidence": 0.78},
+            {"date": "2025-04-02", "sentiment": "Pozytywny", "confidence": 0.82},
+            {"date": "2025-04-03", "sentiment": "Pozytywny", "confidence": 0.85},
+            {"date": "2025-04-04", "sentiment": "Bardzo pozytywny", "confidence": 0.91},
+            {"date": "2025-04-05", "sentiment": "Neutralny", "confidence": 0.76},
+            {"date": "2025-04-06", "sentiment": "Negatywny", "confidence": 0.72},
+            {"date": "2025-04-07", "sentiment": "Neutralny", "confidence": 0.79}
+        ]

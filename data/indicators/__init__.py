@@ -29,11 +29,14 @@ def _import_all_modules_from_directory(directory: str, package: str) -> None:
             module_name: str = filename[:-3]
             try:
                 module = importlib.import_module(f".{module_name}", package=package)
+                globals()[module_name] = module
+                if module_name not in __all__:
+                    __all__.append(module_name)
             except Exception as error:
-                raise ImportError(
-                    f"Nie udało się zaimportować modułu '{module_name}' z pakietu '{package}'."
-                ) from error
-            globals()[module_name] = module
+                print(f"Nie udało się zaimportować modułu '{module_name}' z pakietu '{package}': {error}")
+
+# Importuj moduły z bieżącego katalogu
+_import_all_modules_from_directory(os.path.dirname(__file__), __name__)
             __all__.append(module_name)
 
 

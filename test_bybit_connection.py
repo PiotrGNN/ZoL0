@@ -216,3 +216,111 @@ if __name__ == "__main__":
         logger.info("2. Sprawdź, czy klucze API są poprawne i mają odpowiednie uprawnienia")
         logger.info("3. Sprawdź połączenie internetowe i upewnij się, że firewall nie blokuje dostępu do API Bybit")
         logger.info("4. Jeśli używasz produkcyjnego API, upewnij się, że Twój adres IP jest dozwolony w ustawieniach API Bybit")
+#!/usr/bin/env python3
+"""
+test_bybit_connection.py
+----------------------
+Prosty skrypt do testowania połączenia z API ByBit.
+"""
+
+import os
+import logging
+import json
+from datetime import datetime
+
+# Konfiguracja logowania
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler("logs/api_test.log"),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
+
+# Dodanie katalogu głównego do ścieżki Pythona
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+# Ładowanie zmiennych środowiskowych
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    os.system("pip install python-dotenv")
+    from dotenv import load_dotenv
+    load_dotenv()
+
+def test_bybit_connection():
+    """Test połączenia z API ByBit."""
+    try:
+        from data.execution.bybit_connector import BybitConnector
+        
+        # Pobieranie kluczy API z zmiennych środowiskowych
+        api_key = os.getenv("BYBIT_API_KEY")
+        api_secret = os.getenv("BYBIT_API_SECRET")
+        use_testnet = os.getenv("BYBIT_USE_TESTNET", "true").lower() == "true"
+        
+        if not api_key or not api_secret:
+            print("❌ BŁĄD: Brak kluczy API ByBit w zmiennych środowiskowych")
+            print("   Dodaj BYBIT_API_KEY i BYBIT_API_SECRET do pliku .env")
+            return False
+        
+        # Informacja o środowisku
+        env_type = "TESTNET" if use_testnet else "PRODUKCYJNYM"
+        masked_key = f"{api_key[:4]}{'*' * (len(api_key) - 4)}" if api_key else "Brak klucza"
+        masked_secret = f"{api_secret[:4]}{'*' * (len(api_secret) - 4)}" if api_secret else "Brak sekretu"
+        
+        print(f"\n📡 Test połączenia z API ByBit ({env_type})")
+        print(f"🔑 Klucz API: {masked_key}")
+        print(f"🔐 Sekret API: {masked_secret}")
+        
+        # Inicjalizacja klienta ByBit
+        bybit_client = BybitConnector(
+            api_key=api_key,
+            api_secret=api_secret,
+            use_testnet=use_testnet
+        )
+        
+        # Test połączenia - pobranie czasu serwera
+        server_time = bybit_client.get_server_time()
+        
+        if "error" in server_time:
+            print(f"❌ Błąd połączenia: {server_time['error']}")
+            return False
+        
+        print(f"✅ Połączenie udane! Czas serwera: {server_time['time']}")
+        
+        # Test pobierania danych konta (wymaga uwierzytelnienia)
+        balance = bybit_client.get_account_balance()
+        
+        if balance.get("success", False):
+            print("✅ Uwierzytelnienie poprawne, pobrano dane konta")
+            print(f"💰 Dostępne środki: {json.dumps(balance['balances'], indent=2)}")
+        else:
+            print(f"❌ Błąd pobierania danych konta: {balance.get('error', 'Nieznany błąd')}")
+        
+        return True
+    
+    except ImportError as e:
+        print(f"❌ Błąd importu: {e}")
+        print("   Sprawdź instalację wymaganych pakietów")
+        return False
+    except Exception as e:
+        print(f"❌ Nieoczekiwany błąd: {e}")
+        return False
+
+if __name__ == "__main__":
+    print("\n🚀 Test połączenia z API ByBit\n")
+    
+    # Utworzenie katalogu na logi, jeśli nie istnieje
+    os.makedirs("logs", exist_ok=True)
+    
+    # Uruchomienie testu
+    result = test_bybit_connection()
+    
+    if result:
+        print("\n✅ Test zakończony pomyślnie")
+    else:
+        print("\n❌ Test zakończony niepowodzeniem")

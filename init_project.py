@@ -127,3 +127,129 @@ def main():
 
 if __name__ == "__main__":
     main()
+#!/usr/bin/env python3
+"""
+init_project.py
+-------------
+Skrypt do inicjalizacji projektu, tworzenia wymaganych katalogów i naprawy importów.
+"""
+
+import os
+import sys
+import logging
+import subprocess
+from typing import List
+
+# Konfiguracja logowania
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler("logs/init_project.log", mode="w"),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
+
+def create_required_directories():
+    """Tworzy wymagane katalogi projektu."""
+    directories = [
+        "logs",
+        "data/cache",
+        "reports",
+        "static/css",
+        "static/js",
+        "templates"
+    ]
+    
+    for directory in directories:
+        os.makedirs(directory, exist_ok=True)
+        logger.info(f"Utworzono katalog: {directory}")
+
+def check_required_packages():
+    """Sprawdza i instaluje wymagane pakiety."""
+    required_packages = [
+        "flask",
+        "python-dotenv",
+        "requests",
+        "pandas",
+        "numpy",
+        "matplotlib",
+        "scikit-learn",
+        "pytest",
+        "flake8",
+        "black",
+        "psutil"
+    ]
+    
+    missing_packages = []
+    for package in required_packages:
+        try:
+            __import__(package.replace("-", "_"))
+        except ImportError:
+            missing_packages.append(package)
+    
+    if missing_packages:
+        logger.warning(f"Brakujące pakiety: {', '.join(missing_packages)}")
+        print(f"📦 Instalacja brakujących pakietów: {', '.join(missing_packages)}")
+        
+        try:
+            subprocess.check_call([sys.executable, "-m", "pip", "install"] + missing_packages)
+            logger.info(f"Zainstalowano pakiety: {', '.join(missing_packages)}")
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Błąd instalacji pakietów: {e}")
+    else:
+        logger.info("Wszystkie wymagane pakiety są zainstalowane")
+
+def fix_imports():
+    """Uruchamia skrypt naprawy importów."""
+    try:
+        if os.path.exists("fix_imports.py"):
+            logger.info("Uruchamianie skryptu naprawy importów")
+            subprocess.check_call([sys.executable, "fix_imports.py"])
+        else:
+            logger.warning("Brak skryptu fix_imports.py")
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Błąd podczas naprawy importów: {e}")
+
+def create_example_env_file():
+    """Tworzy przykładowy plik .env, jeśli nie istnieje."""
+    if not os.path.exists(".env"):
+        with open(".env", "w") as f:
+            f.write("# Konfiguracja Flask\n")
+            f.write("FLASK_APP=main.py\n")
+            f.write("FLASK_ENV=development\n")
+            f.write("FLASK_DEBUG=1\n")
+            f.write("PORT=5000\n\n")
+            f.write("# API ByBit\n")
+            f.write("BYBIT_API_KEY=YourApiKeyHere\n")
+            f.write("BYBIT_API_SECRET=YourApiSecretHere\n")
+            f.write("BYBIT_USE_TESTNET=true\n")
+        
+        logger.info("Utworzono przykładowy plik .env")
+
+def main():
+    """Główna funkcja inicjalizacji projektu."""
+    print("\n🚀 Inicjalizacja projektu\n")
+    
+    # Utworzenie katalogów
+    create_required_directories()
+    print("✅ Utworzono wymagane katalogi")
+    
+    # Sprawdzenie pakietów
+    check_required_packages()
+    print("✅ Sprawdzono wymagane pakiety")
+    
+    # Naprawa importów
+    fix_imports()
+    print("✅ Naprawiono importy")
+    
+    # Utworzenie przykładowego pliku .env
+    create_example_env_file()
+    print("✅ Utworzono przykładowy plik .env")
+    
+    print("\n🎉 Inicjalizacja projektu zakończona pomyślnie!\n")
+    print("👉 Teraz możesz uruchomić aplikację używając \"Run Server\"")
+
+if __name__ == "__main__":
+    main()

@@ -1,3 +1,4 @@
+
 import logging
 import os
 import re
@@ -11,12 +12,14 @@ logging.basicConfig(
 )
 
 # Foldery do przeszukania
-SEARCH_DIRS = ["data"]
+SEARCH_DIRS = ["data", "ai_models", "config"]
 
 # Lista błędnych importów i ich poprawnych wersji
 IMPORT_FIXES = {
     "from data.risk_management.advanced_order_execution import": "from data.execution.advanced_order_execution import",
     "import data.risk_management.advanced_order_execution": "import data.execution.advanced_order_execution",
+    "from data.execution.stop_loss_manager import": "from data.risk_management.stop_loss_manager import",
+    "import data.execution.stop_loss_manager": "import data.risk_management.stop_loss_manager",
 }
 
 
