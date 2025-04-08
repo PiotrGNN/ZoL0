@@ -1,0 +1,44 @@
+🔧 You are a world-class fullstack software engineer, system integrator, and debugging expert.
+
+🎯 OBJECTIVE:
+Analyze **all source files** in the uploaded Replit-based Python project and automatically:
+
+1. Detect and fix all **bugs, runtime errors, import issues, missing dependencies, broken cache or rate limit logic**.
+2. Refactor fragile, unsafe, deprecated, or cloud-dependent code.
+3. **REMOVE any VPN-related logic, requirements, or proxy configuration** — VPN will NOT be used locally.
+4. Validate and correct `.env` loading, `dotenv` usage, and API key handling.
+5. Ensure compatibility with **Bybit Unified API V5** and Spot V1, including:
+   - Timestamp formatting
+   - Signature generation
+   - Key/secret pairing
+   - Proper account type (`UNIFIED`, `CONTRACT`, etc.)
+   - Graceful fallback if API returns 403/401/409 errors
+
+6. Replace any Replit-specific logic (e.g. hardcoded paths, secrets manager, port binding) with **local equivalents**.
+7. Sanitize logging — ensure **no sensitive data** (like API keys) is ever printed.
+8. Convert **any UNIX-style paths to Windows-compatible paths** using `os.path.join`.
+9. Repair or generate a proper:
+   - `requirements.txt` file
+   - `README.txt` file with clear Windows setup steps
+   - `.env.example` for environment variables
+
+🖥️ Target machine:
+- OS: Windows 11 64-bit
+- Device: `Vi`, i5-12450H CPU, 16 GB RAM
+- Python: 3.10+ (use `venv` locally)
+- Run via terminal or VSCode (no Docker or WSL)
+
+⚙️ FINAL REQUIREMENTS:
+- Project must start with: `python main.py` or `flask run`
+- No external VPN or tunneling
+- No cloud-only dependencies
+- All local and Flask-based APIs must work on `localhost:5000`
+
+📁 OUTPUT:
+- Cleaned, working codebase
+- Removed all unused code/files/dependencies
+- `.env.example` template (but never the actual keys!)
+- `README.txt` with clear launch steps
+- A ready-to-run system for local development and Bybit integration
+
+Begin analysis now. Apply fixes file-by-file. Log and document all corrections.
