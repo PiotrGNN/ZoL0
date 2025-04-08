@@ -166,35 +166,84 @@ function updatePortfolioData() {
 // Aktualizacja głównych danych dashboardu
 function updateDashboardData() {
     console.log("Aktualizacja danych dashboardu...");
-    fetch(CONFIG.apiEndpoints.dashboard)
+    fetch('/api/dashboard/data')
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                appState.dashboardData = data;
-                appState.lastUpdated.dashboard = Date.now();
-                updateDashboardUI(data);
+                document.getElementById('balance-value').textContent = `${data.balance.toFixed(2)} USDT`;
+                document.getElementById('profit-loss-value').textContent = `${data.profit_loss > 0 ? '+' : ''}${data.profit_loss.toFixed(2)} USDT`;
+                document.getElementById('open-positions-value').textContent = data.open_positions;
+                document.getElementById('total-trades-value').textContent = data.total_trades;
+                document.getElementById('win-rate-value').textContent = `${data.win_rate.toFixed(1)}%`;
+                document.getElementById('max-drawdown-value').textContent = `${data.max_drawdown.toFixed(1)}%`;
+                document.getElementById('market-sentiment-value').textContent = data.market_sentiment;
+                document.getElementById('last-updated').textContent = `Ostatnia aktualizacja: ${data.last_updated}`;
+
+                // Aktualizacja sekcji sentymentu w zakładce analityki
+                updateSentimentSection(data.sentiment_data);
             } else {
                 console.error("Błąd podczas pobierania danych dashboardu:", data.error);
-                handleApiError('dashboard');
             }
         })
         .catch(error => {
             console.error("Błąd podczas pobierania danych dashboardu:", error);
-            // Wyświetl przyjazny komunikat błędu w interfejsie
-            document.getElementById('dashboard-container').innerHTML = `
-                <div class="alert alert-warning">
-                    Nie udało się pobrać danych dashboardu. Sprawdź połączenie z API.
-                    <button class="btn btn-sm btn-outline-primary ml-2" onclick="updateDashboardData()">Spróbuj ponownie</button>
-                </div>
-            `;
-            handleApiError('dashboard');
         });
+}
 
-    // Pobierz również dane portfela podczas aktualizacji dashboardu
-    updatePortfolioData();
+function updateSentimentSection(sentimentData) {
+    const sentimentContainer = document.getElementById('sentiment-container');
 
-    // Aktualizuj czas ostatniej aktualizacji
-    updateLastRefreshed();
+    if (!sentimentData) {
+        sentimentContainer.innerHTML = '<div class="no-data">Brak danych o sentymencie rynkowym</div>';
+        return;
+    }
+
+    let sentimentClass = 'neutral';
+    if (sentimentData.overall_score > 0.1) {
+        sentimentClass = 'positive';
+    } else if (sentimentData.overall_score < -0.1) {
+        sentimentClass = 'negative';
+    }
+
+    let sourcesHtml = '';
+    for (const [source, data] of Object.entries(sentimentData.sources)) {
+        let sourceClass = 'neutral';
+        if (data.score > 0.1) {
+            sourceClass = 'positive';
+        } else if (data.score < -0.1) {
+            sourceClass = 'negative';
+        }
+
+        sourcesHtml += `
+        <li>
+            <strong>${source}</strong>: 
+            <span class="${sourceClass}">
+                ${data.score.toFixed(2)}
+            </span>
+            (${data.volume} wzmianek)
+        </li>`;
+    }
+
+    sentimentContainer.innerHTML = `
+        <div class="sentiment-score">
+            <div class="sentiment-label">Ogólny sentyment:</div>
+            <div class="sentiment-value ${sentimentClass}">
+                ${sentimentData.analysis}
+            </div>
+        </div>
+
+        <div class="sentiment-details">
+            <h4>Źródła danych:</h4>
+            <ul>
+                ${sourcesHtml}
+            </ul>
+        </div>
+
+        <div class="sentiment-footer">
+            <div>Zakres czasowy: ${sentimentData.time_range}</div>
+            <div>Ostatnia aktualizacja: ${sentimentData.timestamp}</div>
+        </div>
+    `;
 }
 
 // Aktualizacja UI dashboardu

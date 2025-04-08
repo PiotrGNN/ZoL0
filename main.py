@@ -314,6 +314,23 @@ def get_portfolio_data():
 @app.route('/api/dashboard/data')
 def get_dashboard_data():
     try:
+        # Formatowanie danych sentymentu dla frontendu
+        sentiment_data = None
+        if sentiment_analyzer:
+            raw_sentiment = sentiment_analyzer.analyze()
+            sentiment_data = {
+                'analysis': raw_sentiment['analysis'],
+                'overall_score': raw_sentiment['value'],
+                'sources': {
+                    source: {
+                        'score': value,
+                        'volume': random.randint(10, 100)  # Symulacja ilości wzmianek
+                    } for source, value in raw_sentiment['sources'].items()
+                },
+                'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                'time_range': 'ostatnie 24 godziny'
+            }
+        
         # Symulowane dane dla demonstracji
         return jsonify({
             'success': True,
@@ -324,12 +341,16 @@ def get_dashboard_data():
             'win_rate': 68.5,
             'max_drawdown': 8.2,
             'market_sentiment': sentiment_analyzer.analyze()["analysis"] if sentiment_analyzer else 'Neutralny',
+            'sentiment_data': sentiment_data,
             'anomalies': anomaly_detector.get_detected_anomalies() if anomaly_detector else [],
             'last_updated': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         })
     except Exception as e:
         logging.error(f"Błąd podczas pobierania danych dashboardu: {e}", exc_info=True) #Dodatkowe informacje o błędzie
         return jsonify({
+            'success': False,
+            'error': str(e)
+        })nify({
             'success': False,
             'error': str(e)
         }), 500
