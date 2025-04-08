@@ -1,0 +1,135 @@
+Bybit offers several authenticated API endpoints related to account balances and wallet information across its Spot v1 and Unified V5 APIs. Below is a detailed overview of these endpoints, including their HTTP methods, endpoint paths, use cases, authentication requirements, accepted parameters, and sample Python requests with proper signature logic.
+
+**1. Unified V5 API: Get Wallet Balance**
+
+- **HTTP Method and Endpoint Path:**
+  - `GET /v5/account/wallet-balance`
+
+- **Use Case:**
+  - Retrieves wallet balance and asset information for each currency. By default, only currencies with non-zero assets or liabilities are returned.
+
+- **Requires Authentication:**
+  - Yes
+
+- **Accepted Parameters:**
+  - `accountType` (string, required): Specifies the account type.
+    - For Unified Trading Account (UTA) 2.0: `UNIFIED`
+    - For UTA 1.0: `UNIFIED` or `CONTRACT` (inverse derivatives wallet)
+    - For Classic account: `CONTRACT` or `SPOT`
+  - `coin` (string, optional): Coin name(s) in uppercase. If not provided, returns non-zero asset info. Multiple coins can be queried, separated by commas (e.g., `USDT,USDC`).
+
+- **Sample Valid Request in Python:**
+
+  
+```python
+  import time
+  import hmac
+  import hashlib
+  import requests
+
+  # Define API key and secret
+  api_key = 'your_api_key'
+  api_secret = 'your_api_secret'
+
+  # Define endpoint and parameters
+  endpoint = 'https://api.bybit.com/v5/account/wallet-balance'
+  params = {
+      'accountType': 'UNIFIED',
+      'coin': 'USDT,USDC'
+  }
+
+  # Generate timestamp
+  timestamp = str(int(time.time() * 1000))
+
+  # Create the pre-sign string
+  param_str = '&'.join([f"{key}={value}" for key, value in sorted(params.items())])
+  pre_sign = f"{timestamp}{api_key}{param_str}"
+
+  # Generate the signature
+  signature = hmac.new(
+      bytes(api_secret, 'utf-8'),
+      bytes(pre_sign, 'utf-8'),
+      hashlib.sha256
+  ).hexdigest()
+
+  # Set headers
+  headers = {
+      'X-BAPI-API-KEY': api_key,
+      'X-BAPI-TIMESTAMP': timestamp,
+      'X-BAPI-SIGN': signature,
+      'Content-Type': 'application/json'
+  }
+
+  # Send the GET request
+  response = requests.get(endpoint, headers=headers, params=params)
+  print(response.json())
+  ```
+
+
+  *Note: Ensure that the `accountType` parameter matches your account configuration. The `coin` parameter is optional; omit it to retrieve all non-zero assets.*
+
+**2. Spot v1 API: Get Wallet Balance**
+
+- **HTTP Method and Endpoint Path:**
+  - `GET /spot/v1/account`
+
+- **Use Case:**
+  - Fetches wallet balance information for the spot account.
+
+- **Requires Authentication:**
+  - Yes
+
+- **Accepted Parameters:**
+  - None
+
+- **Sample Valid Request in Python:**
+
+  
+```python
+  import time
+  import hmac
+  import hashlib
+  import requests
+
+  # Define API key and secret
+  api_key = 'your_api_key'
+  api_secret = 'your_api_secret'
+
+  # Define endpoint
+  endpoint = 'https://api.bybit.com/spot/v1/account'
+
+  # Generate timestamp
+  timestamp = str(int(time.time() * 1000))
+
+  # Create the pre-sign string
+  pre_sign = f"{timestamp}{api_key}"
+
+  # Generate the signature
+  signature = hmac.new(
+      bytes(api_secret, 'utf-8'),
+      bytes(pre_sign, 'utf-8'),
+      hashlib.sha256
+  ).hexdigest()
+
+  # Set headers
+  headers = {
+      'X-BAPI-API-KEY': api_key,
+      'X-BAPI-TIMESTAMP': timestamp,
+      'X-BAPI-SIGN': signature,
+      'Content-Type': 'application/json'
+  }
+
+  # Send the GET request
+  response = requests.get(endpoint, headers=headers)
+  print(response.json())
+  ```
+
+
+  *Note: The Spot v1 API may have different authentication headers compared to the Unified V5 API. Ensure you follow the correct authentication process as per the API documentation.*
+
+For comprehensive details and the latest updates, refer to Bybit's official API documentation:
+
+- Unified V5 API: [Get Wallet Balance](https://bybit-exchange.github.io/docs/v5/account/wallet-balance)
+- Spot v1 API: [Get Wallet Balance](https://bybit-exchange.github.io/docs/spot/v1/account)
+
+*Ensure that you handle your API keys securely and adhere to Bybit's API rate limits and usage policies when integrating these endpoints into your application.* 
