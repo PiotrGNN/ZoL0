@@ -253,8 +253,8 @@ class BybitConnector:
                         # Próba z endpointem Unified v5 API - najnowszym i zalecanym
                         v5_endpoint = f"{self.base_url}/v5/market/time"
                         self.logger.debug(f"Próba pobierania czasu z endpointu v5: {v5_endpoint}")
-                        # Użyj proxy jeśli skonfigurowane
-                        response = requests.get(v5_endpoint, timeout=5, proxies=self.proxies)
+                        # Direct connection without proxy
+                        response = requests.get(v5_endpoint, timeout=10)
                         if response.status_code == 200:
                             data = response.json()
                             if data.get("retCode") == 0 and "result" in data:
@@ -266,8 +266,8 @@ class BybitConnector:
                             # Próba z endpointem Spot API
                             spot_endpoint = f"{self.base_url}/spot/v1/time"
                             self.logger.debug(f"Próba pobierania czasu z endpointu spot: {spot_endpoint}")
-                            # Użyj proxy jeśli skonfigurowane
-                            response = requests.get(spot_endpoint, timeout=5, proxies=self.proxies)
+                            # Direct connection without proxy
+                            response = requests.get(spot_endpoint, timeout=10)
                             if response.status_code == 200:
                                 data = response.json()
                                 if data.get("ret_code") == 0 and "serverTime" in data:
@@ -421,39 +421,37 @@ class BybitConnector:
                     v5_endpoint = f"{self.base_url}/v5/market/time"
                     self.logger.debug(f"Pobieranie czasu z V5 API: {v5_endpoint}")
 
-                    # Użyj proxy jeśli skonfigurowane
-                    try:
-                        response = requests.get(v5_endpoint, timeout=5, proxies=self.proxies)
+                    # Direct connection without proxy
+                    response = requests.get(v5_endpoint, timeout=10)
 
-                        if response.status_code == 200:
-                            data = response.json()
-                            if data.get("retCode") == 0 and "result" in data:
-                                server_time = {"timeNow": data["result"]["timeNano"] // 1000000}
-                                self.logger.debug(f"Pobrano czas serwera z V5 API: {server_time}")
-                            else:
-                                # Próba z endpointem Spot API jako fallback
-                                spot_endpoint = f"{self.base_url}/spot/v1/time"
-                                self.logger.debug(f"Pobieranie czasu z Spot API: {spot_endpoint}")
-
-                                try:
-                                    # Użyj proxy jeśli skonfigurowane
-                                    response = requests.get(spot_endpoint, timeout=5, proxies=self.proxies)
-
-                                    if response.status_code == 200:
-                                        data = response.json()
-                                        if data.get("ret_code") == 0 and "serverTime" in data:
-                                            server_time = {"timeNow": data["serverTime"]}
-                                            self.logger.debug(f"Pobrano czas serwera z Spot API: {server_time}")
-                                        else:
-                                            self.logger.warning(f"Błędna odpowiedź z endpointu Spot: {data}. Używam czasu lokalnego.")
-                                    else:
-                                        self.logger.warning(f"Błąd HTTP {response.status_code} dla Spot API. Używam czasu lokalnego.")
-                                except Exception as spot_err:
-                                    self.logger.warning(f"Błąd podczas pobierania czasu z Spot API: {spot_err}. Używam czasu lokalnego.")
+                    if response.status_code == 200:
+                        data = response.json()
+                        if data.get("retCode") == 0 and "result" in data:
+                            server_time = {"timeNow": data["result"]["timeNano"] // 1000000}
+                            self.logger.debug(f"Pobrano czas serwera z V5 API: {server_time}")
                         else:
-                            self.logger.warning(f"Błąd HTTP {response.status_code} dla V5 API. Używam czasu lokalnego.")
-                    except Exception as v5_err:
-                        self.logger.warning(f"Błąd podczas pobierania czasu z V5 API: {v5_err}. Używam czasu lokalnego.")
+                            # Próba z endpointem Spot API jako fallback
+                            spot_endpoint = f"{self.base_url}/spot/v1/time"
+                            self.logger.debug(f"Pobieranie czasu z Spot API: {spot_endpoint}")
+
+                            try:
+                                # Direct connection without proxy
+                                response = requests.get(spot_endpoint, timeout=10)
+
+                                if response.status_code == 200:
+                                    data = response.json()
+                                    if data.get("ret_code") == 0 and "serverTime" in data:
+                                        server_time = {"timeNow": data["serverTime"]}
+                                        self.logger.debug(f"Pobrano czas serwera z Spot API: {server_time}")
+                                    else:
+                                        self.logger.warning(f"Błędna odpowiedź z endpointu Spot: {data}. Używam czasu lokalnego.")
+                                else:
+                                    self.logger.warning(f"Błąd HTTP {response.status_code} dla Spot API. Używam czasu lokalnego.")
+                            except Exception as spot_err:
+                                self.logger.warning(f"Błąd podczas pobierania czasu z Spot API: {spot_err}. Używam czasu lokalnego.")
+                    else:
+                        self.logger.warning(f"Błąd HTTP {response.status_code} dla V5 API. Używam czasu lokalnego.")
+                    
 
                     # Zapisz wynik w cache - nawet jeśli używamy czasu lokalnego
                     try:
@@ -684,8 +682,8 @@ class BybitConnector:
                                 # Próba z endpointem Unified v5 API
                                 v5_endpoint = f"{self.base_url}/v5/market/time"
                                 self.logger.debug(f"Test połączenia z V5 API: {v5_endpoint}")
-                                # Użyj proxy jeśli skonfigurowane
-                                response = requests.get(v5_endpoint, timeout=5, proxies=self.proxies)
+                                # Direct connection without proxy
+                                response = requests.get(v5_endpoint, timeout=10)
 
                                 if response.status_code == 200:
                                     data = response.json()
@@ -698,8 +696,8 @@ class BybitConnector:
                                     # Fallback do Spot API
                                     spot_endpoint = f"{self.base_url}/spot/v1/time"
                                     self.logger.debug(f"Test połączenia ze Spot API: {spot_endpoint}")
-                                    # Użyj proxy jeśli skonfigurowane
-                                    response = requests.get(spot_endpoint, timeout=5, proxies=self.proxies)
+                                    # Direct connection without proxy
+                                    response = requests.get(spot_endpoint, timeout=10)
 
                                     if response.status_code == 200:
                                         data = response.json()
@@ -844,8 +842,8 @@ class BybitConnector:
                                 }
 
                                 self.logger.debug(f"Wysyłanie zapytania do V5 API: {v5_endpoint} z parametrami: {params}")
-                                # Użyj proxy jeśli skonfigurowane
-                                response = requests.get(v5_endpoint, headers=headers, params=params, timeout=10, proxies=self.proxies)
+                                # Direct connection without proxy
+                                response = requests.get(v5_endpoint, headers=headers, params=params, timeout=10)
 
                                 if response.status_code == 200:
                                     wallet = response.json()
@@ -872,8 +870,8 @@ class BybitConnector:
                                     }
 
                                     self.logger.debug(f"Próba zapytania do Spot API v1: {spot_endpoint}")
-                                    # Użyj proxy jeśli skonfigurowane
-                                    response = requests.get(spot_endpoint, headers=headers, timeout=10, proxies=self.proxies)
+                                    # Direct connection without proxy
+                                    response = requests.get(spot_endpoint, headers=headers, timeout=10)
 
                                     if response.status_code == 200:
                                         wallet = response.json()

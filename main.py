@@ -4,13 +4,18 @@ import sys
 import json
 from datetime import datetime, timedelta
 
+# Ensure needed directories exist
+os.makedirs("logs", exist_ok=True)
+os.makedirs("data/cache", exist_ok=True)
+
 # Add local packages directory to path
 LOCAL_LIBS_DIR = "python_libs"
 if os.path.exists(LOCAL_LIBS_DIR):
     sys.path.insert(0, LOCAL_LIBS_DIR)
 
-# Dodanie katalogu głównego do ścieżki Pythona
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+# Add base directory to Python path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(current_dir)
 
 try:
     from dotenv import load_dotenv

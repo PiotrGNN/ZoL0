@@ -1,94 +1,95 @@
 
-"""
-Script to fix common import issues in the project.
-This ensures all packages are properly available in the Python path.
-"""
-
 import os
 import sys
-import subprocess
 import logging
+import subprocess
+import importlib
+import pkg_resources
 
-# Set up logging
+# Setup logging
 logging.basicConfig(
+    filename='fix_imports_log.txt',
     level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.FileHandler("fix_imports_log.txt"),
-        logging.StreamHandler()
-    ]
+    format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
 def check_and_install_dependencies():
-    """Check if all required packages are installed and install them if needed."""
-    try:
-        with open("requirements.txt", "r") as f:
-            requirements = f.read().splitlines()
-        
-        # Filter out comments and empty lines
-        requirements = [r for r in requirements if r and not r.startswith("#")]
-        
-        for req in requirements:
-            try:
-                package_name = req.split("==")[0].split(">=")[0].strip()
-                __import__(package_name)
-                logging.info(f"Package {package_name} is already installed.")
-            except ImportError:
-                logging.warning(f"Package {package_name} is missing. Installing...")
-                subprocess.check_call([sys.executable, "-m", "pip", "install", req])
-                logging.info(f"Successfully installed {req}")
-    except Exception as e:
-        logging.error(f"Error checking dependencies: {e}")
+    """Check for required dependencies and install if missing."""
+    required_packages = [
+        'flask', 'requests', 'pandas', 'numpy', 'pybit', 
+        'python-dotenv', 'pydantic', 'apscheduler'
+    ]
+    
+    logging.info("Checking required packages...")
+    installed_packages = {pkg.key for pkg in pkg_resources.working_set}
+    missing_packages = [pkg for pkg in required_packages if pkg.lower() not in installed_packages]
+    
+    if missing_packages:
+        logging.info(f"Installing missing packages: {', '.join(missing_packages)}")
+        print(f"Installing missing packages: {', '.join(missing_packages)}")
+        try:
+            subprocess.check_call([sys.executable, '-m', 'pip', 'install'] + missing_packages)
+            logging.info("Successfully installed missing packages.")
+            print("Successfully installed missing packages.")
+        except Exception as e:
+            logging.error(f"Failed to install packages: {e}")
+            print(f"Error installing packages: {e}")
+            print("Try manually installing with:")
+            print(f"pip install {' '.join(missing_packages)}")
+    else:
+        logging.info("All required packages already installed.")
 
 def fix_imports():
-    """Fix import issues by adding project directories to Python path."""
+    """Fix import issues in the project."""
+    # Add project directory to the Python path
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    sys.path.append(base_dir)
+    logging.info(f"Added {base_dir} to sys.path")
+    
+    # Create necessary directories
+    for directory in ['logs', 'data/cache']:
+        dir_path = os.path.join(base_dir, directory)
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path)
+            logging.info(f"Created directory: {dir_path}")
+    
+    # Check for common import issues
     try:
-        # Add project root to path
-        project_root = os.path.dirname(os.path.abspath(__file__))
-        if project_root not in sys.path:
-            sys.path.append(project_root)
-            logging.info(f"Added {project_root} to Python path")
-        
-        # Add specific subdirectories to path
-        for dir_name in ["data", "ai_models", "templates"]:
-            dir_path = os.path.join(project_root, dir_name)
-            if os.path.isdir(dir_path) and dir_path not in sys.path:
-                sys.path.append(dir_path)
-                logging.info(f"Added {dir_path} to Python path")
-        
-        # Create __init__.py files where needed
-        dirs_to_check = [
-            os.path.join(project_root, "data"),
-            os.path.join(project_root, "ai_models"),
-            os.path.join(project_root, "templates"),
+        # Test importing key modules
+        import_tests = [
+            "from data.execution.bybit_connector import BybitConnector",
+            "from data.utils.cache_manager import get_cached_data, store_cached_data",
+            "from dotenv import load_dotenv",
+            "import flask"
         ]
         
-        for dir_path in dirs_to_check:
-            if not os.path.isdir(dir_path):
-                continue
-                
-            init_file = os.path.join(dir_path, "__init__.py")
-            if not os.path.exists(init_file):
-                with open(init_file, "w") as f:
-                    f.write('"""Package initialization."""\n')
-                logging.info(f"Created {init_file}")
-                
-            # Check subdirectories too
-            for subdir in os.listdir(dir_path):
-                subdir_path = os.path.join(dir_path, subdir)
-                if os.path.isdir(subdir_path):
-                    init_file = os.path.join(subdir_path, "__init__.py")
-                    if not os.path.exists(init_file):
-                        with open(init_file, "w") as f:
-                            f.write('"""Package initialization."""\n')
-                        logging.info(f"Created {init_file}")
-        
-        logging.info("Import paths fixed successfully")
+        for test in import_tests:
+            try:
+                exec(test)
+                logging.info(f"Successfully imported: {test}")
+            except ImportError as e:
+                logging.error(f"Import error with '{test}': {e}")
+                print(f"Import error with '{test}': {e}")
+                print("This might require manual fixing.")
+
+        logging.info("All key imports checked.")
     except Exception as e:
-        logging.error(f"Error fixing imports: {e}")
+        logging.error(f"Error in import testing: {e}")
+        print(f"Error checking imports: {e}")
+
+    # Fix specific import paths if needed
+    print("\nNOTE: If you still experience import errors when running the application,")
+    print("make sure to run the application from the project's root directory.")
+    print("You can also try: python -m main")
 
 if __name__ == "__main__":
     logging.info("Starting import fix process")
     check_and_install_dependencies()
     fix_imports()
     logging.info("Import fix process completed")
+    
+    print("\nImport fix process completed")
+    print("Check 'fix_imports_log.txt' for details")
+    print("\nNext steps:")
+    print("1. Run the application: python main.py")
+    print("2. If issues persist, check logs in 'logs' directory")

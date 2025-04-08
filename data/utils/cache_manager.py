@@ -546,3 +546,34 @@ if __name__ == "__main__":
     # Sprawdź status API
     status = get_api_status()
     logger.info(f"Status API: {status}")
+
+def safe_cache_get(key: str, default_value=None, expected_keys: List[str] = None):
+    """
+    Safely retrieves data from cache with validation and fallback.
+
+    Parameters:
+        key (str): Cache key to retrieve
+        default_value: Value to return if cache miss or validation fails
+        expected_keys (List[str]): Optional list of keys that must exist in cached dict
+
+    Returns:
+        Any: The cached value if found and valid, otherwise default_value
+    """
+    try:
+        data, found = get_cached_data(key)
+
+        # Check if data was found
+        if not found or data is None:
+            return default_value
+
+        # If expected_keys provided, verify all keys exist in data
+        if expected_keys and isinstance(data, dict):
+            if not all(k in data for k in expected_keys):
+                missing_keys = [k for k in expected_keys if k not in data]
+                logging.warning(f"Cache data for {key} missing required keys: {missing_keys}")
+                return default_value
+
+        return data
+    except Exception as e:
+        logging.error(f"Error in safe_cache_get for key {key}: {e}")
+        return default_value

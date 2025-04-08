@@ -1,23 +1,19 @@
 
 @echo off
-echo Starting Inteligentny System Tradingowy...
-echo.
-echo Checking directories...
-if not exist "logs" mkdir logs
-if not exist "data\cache" mkdir data\cache
-if not exist "reports" mkdir reports
-if not exist "saved_models" mkdir saved_models
+echo Starting Intelligent Trading System...
+echo Creating logs directory if it doesn't exist...
+if not exist logs mkdir logs
 
-echo.
-echo Verifying environment...
-if not exist ".env" (
-    echo Creating .env from .env.example
-    copy .env.example .env
-    echo Please edit .env with your API keys before continuing!
-    pause
+echo Activating Python environment if it exists...
+if exist venv\Scripts\activate.bat (
+    call venv\Scripts\activate.bat
+) else (
+    echo No virtual environment found. If you want to create one:
+    echo python -m venv venv
+    echo venv\Scripts\activate.bat
 )
 
-echo.
 echo Starting application...
 python main.py
+
 pause
