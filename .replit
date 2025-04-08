@@ -1,5 +1,4 @@
-
-run = "python main.py"
+run = "python run_server.py"
 entrypoint = "main.py"
 modules = ["python-3.10:v18-20230807-322e88b"]
 
@@ -33,27 +32,26 @@ pattern = "**/*.py"
 start = "pylsp"
 
 [deployment]
-run = ["python", "main.py"]
+run = ["python", "run_server.py"]
 deploymentTarget = "cloudrun"
 
 [server]
 host = "0.0.0.0"
-port = 0  # Automatyczny wybór portu
+port = 5000  # Port dla aplikacji Flask
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[[ports]]
+localPort = 8080
+externalPort = 8080
 
 [workflows]
-runButton = "Run"
+runButton = "Run Server"
 
 [[workflows.workflow]]
 name = "Run Server"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python3 run_server.py"
-
-[[workflows.workflow]]
-name = "Run"
 author = 31819671
 mode = "sequential"
 
@@ -71,15 +69,6 @@ task = "shell.exec"
 args = "python3 init_project.py"
 
 [[workflows.workflow]]
-name = "Test API Connection"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python test_api_connection.py"
-
-[[workflows.workflow]]
 name = "Test Bybit Connection"
 author = 31819671
 mode = "sequential"
@@ -87,29 +76,3 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python3 test_bybit_connection.py"
-
-[[ports]]
-localPort = 3000
-externalPort = 3000
-
-[[ports]]
-localPort = 5000
-externalPort = 80
-
-[[ports]]
-localPort = 8080
-externalPort = 8080
-run = ["python3", "run_server.py"]
-hidden = [".config", ".cache", ".local"]
-language = "python3"
-
-[nix]
-channel = "stable-22_11"
-
-[languages]
-
-[languages.python3]
-pattern = "**/*.py"
-
-[languages.python3.languageServer]
-start = "pylsp"
