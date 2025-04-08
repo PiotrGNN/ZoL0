@@ -192,3 +192,116 @@ if __name__ == "__main__":
     except Exception as e:
         logging.error("Błąd w module AI_strategy_generator.py: %s", e)
         raise
+"""
+AI_strategy_generator.py
+----------------------
+Moduł generujący strategie tradingowe z wykorzystaniem sztucznej inteligencji.
+"""
+
+import logging
+import json
+import os
+from typing import Dict, Any, List, Optional, Tuple
+
+# Konfiguracja logowania
+logger = logging.getLogger("ai_strategy_generator")
+if not logger.handlers:
+    log_dir = "logs"
+    os.makedirs(log_dir, exist_ok=True)
+    file_handler = logging.FileHandler(os.path.join(log_dir, "ai_strategy_generator.log"))
+    formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+    logger.setLevel(logging.INFO)
+
+class AIStrategyGenerator:
+    """
+    Klasa generująca strategie tradingowe z wykorzystaniem sztucznej inteligencji.
+    """
+
+    def __init__(self, model_type: str = "gpt"):
+        """
+        Inicjalizacja generatora strategii AI.
+
+        Parameters:
+            model_type (str): Typ modelu AI do wykorzystania
+        """
+        self.model_type = model_type
+        self.strategies = []
+        self.strategies_dir = os.path.join("data", "strategies", "generated")
+        os.makedirs(self.strategies_dir, exist_ok=True)
+        logger.info(f"Inicjalizacja generatora strategii AI z modelem {model_type}")
+
+    def generate_strategy(self, market_data: Dict[str, Any], 
+                          market_conditions: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Generuje nową strategię tradingową na podstawie danych rynkowych.
+
+        Parameters:
+            market_data (Dict[str, Any]): Dane rynkowe
+            market_conditions (Dict[str, Any]): Warunki rynkowe
+
+        Returns:
+            Dict[str, Any]: Wygenerowana strategia
+        """
+        logger.info("Generowanie nowej strategii tradingowej")
+        
+        # Implementacja stub - generuje prostą strategię
+        strategy = {
+            "name": "AI Generated Strategy",
+            "type": "trend_following",
+            "parameters": {
+                "fast_ma": 10,
+                "slow_ma": 50,
+                "rsi_period": 14
+            },
+            "indicators": ["ma", "rsi", "volume"],
+            "description": "Strategia wygenerowana przez model AI"
+        }
+        
+        self.strategies.append(strategy)
+        return strategy
+
+    def save_strategy(self, strategy: Dict[str, Any], filename: Optional[str] = None) -> str:
+        """
+        Zapisuje wygenerowaną strategię do pliku.
+
+        Parameters:
+            strategy (Dict[str, Any]): Strategia do zapisania
+            filename (Optional[str]): Opcjonalna nazwa pliku
+
+        Returns:
+            str: Ścieżka do zapisanego pliku
+        """
+        if filename is None:
+            filename = f"ai_strategy_{len(self.strategies)}.json"
+            
+        file_path = os.path.join(self.strategies_dir, filename)
+        
+        with open(file_path, 'w') as f:
+            json.dump(strategy, f, indent=4)
+            
+        logger.info(f"Zapisano strategię do pliku: {file_path}")
+        return file_path
+
+    def load_strategy(self, filename: str) -> Dict[str, Any]:
+        """
+        Wczytuje strategię z pliku.
+
+        Parameters:
+            filename (str): Nazwa pliku strategii
+
+        Returns:
+            Dict[str, Any]: Wczytana strategia
+        """
+        file_path = os.path.join(self.strategies_dir, filename)
+        
+        try:
+            with open(file_path, 'r') as f:
+                strategy = json.load(f)
+                
+            logger.info(f"Wczytano strategię z pliku: {file_path}")
+            return strategy
+        except Exception as e:
+            logger.error(f"Błąd podczas wczytywania strategii z pliku {file_path}: {e}")
+            return {}

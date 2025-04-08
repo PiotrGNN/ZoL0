@@ -202,3 +202,126 @@ if __name__ == "__main__":
     except Exception as e:
         logging.error("Błąd w module trade_logger.py: %s", e)
         raise
+"""
+trade_logger.py
+--------------
+Moduł do logowania transakcji w systemie tradingowym.
+"""
+
+import logging
+import os
+import json
+import time
+from datetime import datetime
+from typing import Dict, Any, List, Optional
+
+# Konfiguracja logowania
+logger = logging.getLogger("trade_logger")
+if not logger.handlers:
+    log_dir = "logs"
+    os.makedirs(log_dir, exist_ok=True)
+    file_handler = logging.FileHandler(os.path.join(log_dir, "trade_logger.log"))
+    formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+    logger.setLevel(logging.INFO)
+
+class TradeLogger:
+    """
+    Klasa do logowania transakcji w systemie tradingowym.
+    """
+
+    def __init__(self, log_file: Optional[str] = None):
+        """
+        Inicjalizacja loggera transakcji.
+
+        Parameters:
+            log_file (Optional[str]): Opcjonalna ścieżka do pliku logów
+        """
+        self.log_file = log_file or os.path.join("logs", "trades.log")
+        self.trades = []
+        logger.info(f"Inicjalizacja loggera transakcji, plik logów: {self.log_file}")
+
+    def log_trade(self, trade_data: Dict[str, Any]) -> None:
+        """
+        Loguje transakcję.
+
+        Parameters:
+            trade_data (Dict[str, Any]): Dane transakcji
+        """
+        # Dodaj timestamp, jeśli go nie ma
+        if "timestamp" not in trade_data:
+            trade_data["timestamp"] = int(time.time() * 1000)
+            
+        if "datetime" not in trade_data:
+            trade_data["datetime"] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            
+        # Zapisz do listy transakcji
+        self.trades.append(trade_data)
+        
+        # Zapisz do pliku
+        try:
+            with open(self.log_file, 'a') as f:
+                f.write(json.dumps(trade_data) + "\n")
+                
+            logger.info(f"Zalogowano transakcję: {trade_data.get('symbol')} {trade_data.get('side')} {trade_data.get('quantity')}")
+        except Exception as e:
+            logger.error(f"Błąd podczas zapisywania transakcji do pliku: {e}")
+
+    def get_trades(self, limit: Optional[int] = None) -> List[Dict[str, Any]]:
+        """
+        Pobiera listę zalogowanych transakcji.
+
+        Parameters:
+            limit (Optional[int]): Maksymalna liczba transakcji do zwrócenia
+
+        Returns:
+            List[Dict[str, Any]]: Lista transakcji
+        """
+        if limit is not None and limit > 0:
+            return self.trades[-limit:]
+        return self.trades
+
+    def get_trade_statistics(self) -> Dict[str, Any]:
+        """
+        Oblicza statystyki transakcji.
+
+        Returns:
+            Dict[str, Any]: Statystyki transakcji
+        """
+        if not self.trades:
+            return {
+                "total_trades": 0,
+                "win_rate": 0.0,
+                "avg_profit": 0.0,
+                "max_profit": 0.0,
+                "max_loss": 0.0
+            }
+            
+        # Obliczanie statystyk
+        winning_trades = [t for t in self.trades if t.get("profit", 0) > 0]
+        profits = [t.get("profit", 0) for t in self.trades]
+        
+        stats = {
+            "total_trades": len(self.trades),
+            "win_rate": len(winning_trades) / len(self.trades) if self.trades else 0.0,
+            "avg_profit": sum(profits) / len(profits) if profits else 0.0,
+            "max_profit": max(profits) if profits else 0.0,
+            "max_loss": min(profits) if profits else 0.0
+        }
+        
+        logger.info(f"Wygenerowano statystyki transakcji: {len(self.trades)} transakcji, win rate: {stats['win_rate']:.2f}")
+        return stats
+
+    def clear_logs(self) -> None:
+        """Czyści logi transakcji."""
+        self.trades = []
+        
+        # Tworzenie pustego pliku logów
+        try:
+            with open(self.log_file, 'w') as f:
+                pass
+                
+            logger.info("Wyczyszczono logi transakcji")
+        except Exception as e:
+            logger.error(f"Błąd podczas czyszczenia pliku logów: {e}")

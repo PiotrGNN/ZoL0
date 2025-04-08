@@ -42,11 +42,11 @@ class BybitConnector:
             api_secret (str): Sekret API Bybit.
             use_testnet (bool): Czy używać środowiska testowego (domyślnie odczytywane ze zmiennych środowiskowych).
             lazy_connect (bool): Czy opóźnić połączenie z API do pierwszego użycia.
-            proxies (Dict[str, str]): Słownik proxy (np. {'http': 'socks5h://127.0.0.1:1080', 'https': 'socks5h://127.0.0.1:1080'})
+            proxies (Dict[str, str]): Nie używane w wersji lokalnej (zachowane dla kompatybilności)
         """
         self.api_key = api_key
         self.api_secret = api_secret
-        self.proxies = proxies
+        self.proxies = None  # Nie używamy proxy w wersji lokalnej
 
         # Priorytetyzacja parametrów:
         # 1. Przekazany parametr use_testnet
@@ -253,13 +253,18 @@ class BybitConnector:
                         # Próba z endpointem Unified v5 API - najnowszym i zalecanym
                         v5_endpoint = f"{self.base_url}/v5/market/time"
                         self.logger.debug(f"Próba pobierania czasu z endpointu v5: {v5_endpoint}")
-                        # Direct connection without proxy
                         response = requests.get(v5_endpoint, timeout=10)
                         if response.status_code == 200:
                             data = response.json()
                             if data.get("retCode") == 0 and "result" in data:
-                                server_time = {"timeNow": data["result"]["timeNano"] // 1000000}
-                                self.logger.debug(f"Czas serwera v5: {server_time}")
+                                try:
+                                    time_nano = int(data["result"]["timeNano"])
+                                    server_time = {"timeNow": time_nano // 1000000}
+                                    self.logger.debug(f"Czas serwera v5: {server_time}")
+                                except (TypeError, ValueError) as e:
+                                    # W przypadku błędu konwersji używamy milisekund
+                                    server_time = {"timeNow": int(time.time() * 1000)}
+                                    self.logger.warning(f"Błąd konwersji czasu serwera: {e}. Używam czasu lokalnego.")
                             else:
                                 raise Exception(f"Błędna odpowiedź z endpointu v5: {data}")
                         else:

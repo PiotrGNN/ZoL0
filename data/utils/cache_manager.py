@@ -126,6 +126,11 @@ def get_cached_data(key: str) -> Tuple[Any, bool]:
         with open(cache_path, 'r') as f:
             cache_data = json.load(f)
 
+        # Sprawdź czy dane zawierają timestamp
+        if "timestamp" not in cache_data:
+            logger.warning(f"Brak pola 'timestamp' w danych cache dla klucza {key}")
+            return None, False
+
         # Sprawdź czy dane nie są przeterminowane
         if time.time() - cache_data["timestamp"] > cache_data.get("ttl", DEFAULT_TTL):
             logger.debug(f"Dane w cache dla klucza {key} są przeterminowane.")
@@ -133,9 +138,9 @@ def get_cached_data(key: str) -> Tuple[Any, bool]:
 
         # Upewnij się, że zwracamy słownik lub None, nigdy wartość bool
         data = cache_data.get('data')
-        if data is False:
-            logger.warning(f"Cache zwrócił wartość bool (False) dla klucza '{key}', zamiast słownika. Zwracam None.")
-            return None
+        if isinstance(data, bool):
+            logger.warning(f"Cache zwrócił wartość bool ({data}) dla klucza '{key}', zamiast słownika. Zwracam {data}.")
+            return data, True
 
         return data, True
     except Exception as e:
@@ -159,28 +164,38 @@ def is_cache_valid(key: str, ttl: int = DEFAULT_TTL) -> bool:
         if not os.path.exists(cache_path):
             return False
 
-        with open(cache_path, 'r') as f:
-            cache_entry = json.load(f)
-
-        # Sprawdź czy dane zawierają wymagane pola
-        required_fields = ["timestamp"]
-        for field in required_fields:
-            if field not in cache_entry:
-                logger.warning(f"Brakujące pole '{field}' w cache dla klucza {key}")
-                return False
-
-        # Sprawdź czy dane nie są przeterminowane
-        current_time = time.time()
-        entry_time = cache_entry["timestamp"]
-        entry_ttl = cache_entry.get("ttl", DEFAULT_TTL)
-
-        # Używamy przekazanego TTL, jeśli jest mniejszy niż TTL zapisany w cache
-        effective_ttl = min(ttl, entry_ttl)
-
-        if current_time - entry_time > effective_ttl:
+        try:
+            with open(cache_path, 'r') as f:
+                cache_entry = json.load(f)
+        except (json.JSONDecodeError, UnicodeDecodeError) as json_err:
+            logger.error(f"Uszkodzony plik cache dla klucza {key}: {json_err}")
             return False
 
-        return True
+        # Sprawdź czy dane zawierają wymagane pola
+        if not isinstance(cache_entry, dict):
+            logger.warning(f"Cache dla klucza {key} nie jest słownikiem")
+            return False
+            
+        if "timestamp" not in cache_entry:
+            logger.warning(f"Brakujące pole 'timestamp' w cache dla klucza {key}")
+            return False
+
+        # Sprawdź czy dane nie są przeterminowane
+        try:
+            current_time = time.time()
+            entry_time = float(cache_entry["timestamp"])
+            entry_ttl = float(cache_entry.get("ttl", DEFAULT_TTL))
+
+            # Używamy przekazanego TTL, jeśli jest mniejszy niż TTL zapisany w cache
+            effective_ttl = min(ttl, entry_ttl)
+
+            if current_time - entry_time > effective_ttl:
+                return False
+
+            return True
+        except (ValueError, TypeError) as e:
+            logger.error(f"Błąd konwersji typów w cache dla klucza {key}: {e}")
+            return False
     except Exception as e:
         logger.error(f"Błąd podczas sprawdzania ważności cache dla klucza {key}: {e}")
         return False

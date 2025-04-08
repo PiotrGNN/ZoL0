@@ -190,3 +190,69 @@ if __name__ == "__main__":
     except Exception as e:
         logging.error("Testy jednostkowe nie powiodły się: %s", e)
         raise
+"""
+anomaly_detector.py
+------------------
+Moduł wykrywający anomalie w danych tradingowych.
+"""
+
+import logging
+from typing import Dict, List, Any
+
+# Konfiguracja logowania
+logger = logging.getLogger("anomaly_detector")
+if not logger.handlers:
+    log_dir = "logs"
+    import os
+    os.makedirs(log_dir, exist_ok=True)
+    file_handler = logging.FileHandler(os.path.join(log_dir, "anomaly_detector.log"))
+    formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+    logger.setLevel(logging.INFO)
+
+class AnomalyDetector:
+    """
+    Klasa wykrywająca anomalie w danych tradingowych.
+    """
+
+    def __init__(self, detection_method: str = "statistical"):
+        """
+        Inicjalizacja detektora anomalii.
+
+        Parameters:
+            detection_method (str): Metoda wykrywania anomalii 
+                                   ('statistical', 'ml', 'hybrid')
+        """
+        self.detection_method = detection_method
+        self.anomalies_detected = []
+        logger.info(f"Inicjalizacja detektora anomalii z metodą: {detection_method}")
+
+    def detect(self, data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """
+        Wykrywa anomalie w danych.
+
+        Parameters:
+            data (List[Dict[str, Any]]): Dane do analizy
+
+        Returns:
+            List[Dict[str, Any]]: Lista wykrytych anomalii
+        """
+        # Implementacja stub - zwraca pustą listę
+        logger.debug(f"Wykrywanie anomalii w {len(data)} punktach danych metodą {self.detection_method}")
+        return []
+
+    def get_detected_anomalies(self) -> List[Dict[str, Any]]:
+        """
+        Zwraca listę wykrytych anomalii.
+
+        Returns:
+            List[Dict[str, Any]]: Lista wykrytych anomalii
+        """
+        logger.debug("Pobieranie wykrytych anomalii")
+        return self.anomalies_detected
+
+    def reset(self) -> None:
+        """Resetuje stan detektora anomalii."""
+        self.anomalies_detected = []
+        logger.debug("Reset detektora anomalii")

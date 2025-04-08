@@ -200,3 +200,93 @@ if __name__ == "__main__":
     except Exception as e:
         logging.error("Błąd w PortfolioRiskManager: %s", e)
         raise
+"""
+portfolio_risk.py
+----------------
+Moduł do oceny i zarządzania ryzykiem portfela.
+"""
+
+import logging
+from typing import Dict, Any, List
+
+# Konfiguracja logowania
+logger = logging.getLogger("portfolio_risk")
+if not logger.handlers:
+    log_dir = "logs"
+    import os
+    os.makedirs(log_dir, exist_ok=True)
+    file_handler = logging.FileHandler(os.path.join(log_dir, "portfolio_risk.log"))
+    formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+    logger.setLevel(logging.INFO)
+
+class PortfolioRiskManager:
+    """
+    Klasa do zarządzania ryzykiem portfela.
+    """
+
+    def __init__(self, max_risk_per_trade: float = 0.02, max_open_positions: int = 5):
+        """
+        Inicjalizacja menedżera ryzyka portfela.
+
+        Parameters:
+            max_risk_per_trade (float): Maksymalny procent kapitału ryzyka na transakcję
+            max_open_positions (int): Maksymalna liczba otwartych pozycji
+        """
+        self.max_risk_per_trade = max_risk_per_trade
+        self.max_open_positions = max_open_positions
+        self.current_positions = []
+        logger.info(f"Inicjalizacja menedżera ryzyka portfela: max_risk={max_risk_per_trade}, max_positions={max_open_positions}")
+
+    def calculate_position_size(self, account_balance: float, risk_per_trade: float = None, 
+                                stop_loss_pct: float = 0.02) -> float:
+        """
+        Oblicza rozmiar pozycji na podstawie ryzyka.
+
+        Parameters:
+            account_balance (float): Saldo konta
+            risk_per_trade (float): Procent kapitału do zaryzykowania (jeśli None, używa max_risk_per_trade)
+            stop_loss_pct (float): Procent stop loss
+
+        Returns:
+            float: Zalecany rozmiar pozycji
+        """
+        if risk_per_trade is None:
+            risk_per_trade = self.max_risk_per_trade
+            
+        risk_amount = account_balance * risk_per_trade
+        position_size = risk_amount / stop_loss_pct
+        
+        logger.debug(f"Obliczono rozmiar pozycji: {position_size} dla salda {account_balance}")
+        return position_size
+
+    def evaluate_portfolio_risk(self, portfolio: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Ocenia ryzyko całego portfela.
+
+        Parameters:
+            portfolio (Dict[str, Any]): Dane portfela
+
+        Returns:
+            Dict[str, Any]: Metryki ryzyka portfela
+        """
+        # Implementacja stub - zwraca podstawowe metryki ryzyka
+        risk_metrics = {
+            "total_risk": 0.0,
+            "max_drawdown": 0.0,
+            "sharpe_ratio": 0.0,
+            "risk_level": "low"
+        }
+        
+        logger.info("Ocena ryzyka portfela")
+        return risk_metrics
+
+    def can_open_new_position(self) -> bool:
+        """
+        Sprawdza, czy można otworzyć nową pozycję.
+
+        Returns:
+            bool: True jeśli można otworzyć nową pozycję, False w przeciwnym przypadku
+        """
+        return len(self.current_positions) < self.max_open_positions

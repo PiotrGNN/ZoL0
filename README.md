@@ -1,5 +1,6 @@
+# Inteligentny System Tradingowy
 
-# 🤖 Inteligentny System Tradingowy
+System do automatycznego tradingu na giełdzie Bybit z wykorzystaniem różnych strategii i modeli AI.
 
 ## 📝 Project Description
 Advanced trading system with real-time market analysis, risk management, and intelligent order execution. Utilizes machine learning algorithms and market sentiment analysis for automated decision-making.
@@ -13,65 +14,97 @@ Advanced trading system with real-time market analysis, risk management, and int
 - Interactive dashboard (Flask)
 
 ## 📋 System Requirements
-- Python 3.10+ (3.10 recommended)
-- Active Bybit account with API keys
-- Internet connection
-- Windows 10/11
+- Windows 11 (lub 10)
+- Python 3.10+
+- Dostęp do internetu
+- Konto na giełdzie Bybit z kluczami API
 
-## ⚙️ Local Installation on Windows
+
+## 🚀 Instrukcja instalacji lokalnej
+
+### 1. Pobierz projekt
+
+Pobierz i rozpakuj projekt do wybranego folderu, np. `C:\Users\piotr\Desktop\miner\ZoL0-1`.
+
+### 2. Utwórz plik .env
+
+Skopiuj plik `.env.example` do `.env` i wprowadź odpowiednie wartości:
+
+```
+BYBIT_API_KEY=TwójKluczAPI
+BYBIT_API_SECRET=TwójSekretAPI
+BYBIT_USE_TESTNET=true  # Ustaw na false dla produkcyjnego API (z prawdziwymi środkami)
+```
+
+### 3. Zainstaluj zależności
+
+Otwórz wiersz poleceń (CMD) w folderze projektu i wykonaj:
 
 ```cmd
-# Clone repository (if using Git)
-git clone <repository_URL>
-cd intelligent-trading-system
-
-# Alternatively, after downloading .zip archive
-# 1. Extract the ZIP file
-# 2. Open command prompt (cmd) in the extracted project location
-
-# Create a virtual environment
-python -m venv venv
-
-# Activate the virtual environment
-venv\Scripts\activate
-
-# Install dependencies
 pip install -r requirements.txt
-
-# Configuration
-copy .env.example .env
-# Edit the .env file with your API keys
 ```
 
-## 🔧 Configuration
-1. Create API keys in your Bybit account panel
-2. Fill in the `.env` file with your keys
-3. Set `BYBIT_TESTNET=true` for test environment or `BYBIT_TESTNET=false` for production
+### 4. Uruchom aplikację
 
-### ⚠️ Production Environment
-When `BYBIT_TESTNET=false`, you are operating with real funds! The system will apply additional safeguards.
-
-## 🏃 Running on Windows
+Metoda 1: Użyj skryptu bat:
 ```cmd
-# Standard execution
-python main.py
-
-# Alternatively, use the batch file
 run_windows.bat
-
-# Alternative execution with full logging
-python -u main.py > logs\app_output.log 2>&1
 ```
 
-## 📊 Dashboard
-Access the dashboard at: `http://localhost:5000`
+Metoda 2: Uruchom bezpośrednio Pythona:
+```cmd
+python main.py
+```
 
-## 🧠 AI Models
-The system contains various AI models for market analysis:
-- Anomaly detection
-- Sentiment analysis
-- Price prediction
-- Reinforcement learning for trading strategies
+Aplikacja będzie dostępna pod adresem: http://localhost:5000
+
+### 5. Test połączenia z Bybit API
+
+Aby sprawdzić czy połączenie z Bybit API działa poprawnie, uruchom:
+
+```cmd
+python test_bybit_connection.py
+```
+
+## 🔧 Rozwiązywanie problemów
+
+### Brak modułu
+
+Jeśli pojawi się błąd o brakującym module, zainstaluj go ręcznie:
+
+```cmd
+pip install nazwa_modułu
+```
+
+### Problemy z połączeniem API
+
+1. Sprawdź poprawność kluczy API w pliku `.env`
+2. Upewnij się, że masz działające połączenie z internetem
+3. Sprawdź czy Twoje klucze API mają odpowiednie uprawnienia na Bybit
+
+### Inne problemy
+
+1. Sprawdź logi w katalogu `logs/`
+2. Uruchom aplikację w trybie debug: `python main.py --debug`
+
+
+## 📁 Struktura projektu
+
+- `main.py` - Główny punkt wejścia aplikacji
+- `data/` - Dane, strategie i narzędzia
+  - `execution/` - Moduły do interakcji z giełdą
+  - `indicators/` - Wskaźniki techniczne
+  - `risk_management/` - Zarządzanie ryzykiem
+  - `strategies/` - Strategie tradingowe
+  - `utils/` - Funkcje narzędziowe
+- `ai_models/` - Modele AI/ML do analizy rynku
+- `static/` - Zasoby front-end
+- `templates/` - Szablony HTML
+- `logs/` - Logi aplikacji
+
+## 📜 Licencja
+
+Ten projekt jest rozpowszechniany na licencji MIT.
 
 ## 📊 Dashboard
 Access the web panel at `http://localhost:5000` to monitor:
@@ -80,58 +113,9 @@ Access the web panel at `http://localhost:5000` to monitor:
 - Performance metrics
 - Market sentiment and anomalies
 
-## 🔧 Testing Bybit Connection
-To test your connection to Bybit API:
-```cmd
-python test_bybit_connection.py
-```
-
-## 🔧 Troubleshooting on Windows
-
-### API limit issues (403/429 Errors)
-If you encounter API rate limit errors (403/429):
-
-1. Set `BYBIT_TESTNET=true` in the `.env` file
-2. Wait 5-10 minutes before trying again
-3. Set `USE_SIMULATED_DATA=true` for testing without making API calls
-
-### Dependency issues
-If you have problems installing dependencies, try installing them individually:
-```cmd
-pip install flask requests pandas numpy python-dotenv pybit
-```
-
-### Import errors
-If you encounter import errors:
-```cmd
-python fix_imports.py
-```
-
-### Tests
-To fix and run tests:
-```cmd
-python fix_tests.py
-```
-
-## 📜 License
-This project is distributed under the MIT license.
-
-## 📁 Project Structure
-- `main.py` - Main application entry point
-- `data/` - Data processing and API integration
-  - `execution/` - Modules for exchange interaction
-  - `indicators/` - Technical indicators and analysis
-  - `risk_management/` - Risk management modules
-  - `strategies/` - Trading strategies
-  - `utils/` - Utility functions
-- `ai_models/` - AI/ML models for market analysis
-- `static/` - Frontend resources
-- `templates/` - HTML templates
-- `logs/` - Application logs
-
-## 🔧 Technologies
-- **Backend**: Python, Flask
-- **Frontend**: HTML, CSS, JavaScript, Chart.js
-- **Data Analysis**: Pandas, NumPy
-- **Exchange Integration**: ByBit API
-- **Data Storage**: JSON caching, cache management
+## 🧠 AI Models
+The system contains various AI models for market analysis:
+- Anomaly detection
+- Sentiment analysis
+- Price prediction
+- Reinforcement learning for trading strategies

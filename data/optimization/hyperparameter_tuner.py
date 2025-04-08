@@ -196,3 +196,74 @@ if __name__ == "__main__":
     except Exception as e:
         logging.error("Błąd w module hyperparameter_tuner.py: %s", e)
         raise
+"""
+hyperparameter_tuner.py
+----------------------
+Moduł odpowiedzialny za strojenie hiperparametrów strategii tradingowych.
+"""
+
+import logging
+from typing import Dict, Any, List, Callable, Optional
+
+# Konfiguracja logowania
+logger = logging.getLogger("hyperparameter_tuner")
+if not logger.handlers:
+    log_dir = "logs"
+    import os
+    os.makedirs(log_dir, exist_ok=True)
+    file_handler = logging.FileHandler(os.path.join(log_dir, "hyperparameter_tuner.log"))
+    formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+    logger.setLevel(logging.INFO)
+
+class HyperparameterTuner:
+    """
+    Klasa do strojenia hiperparametrów strategii tradingowych.
+    """
+
+    def __init__(self, optimization_method: str = "grid_search"):
+        """
+        Inicjalizacja tunera hiperparametrów.
+
+        Parameters:
+            optimization_method (str): Metoda optymalizacji parametrów 
+                                      ('grid_search', 'random_search', 'bayesian')
+        """
+        self.optimization_method = optimization_method
+        self.best_params = {}
+        logger.info(f"Inicjalizacja tunera hiperparametrów z metodą: {optimization_method}")
+
+    def tune(self, 
+             param_grid: Dict[str, List[Any]], 
+             evaluation_function: Callable[[Dict[str, Any]], float], 
+             max_iterations: int = 100) -> Dict[str, Any]:
+        """
+        Wykonuje strojenie hiperparametrów.
+
+        Parameters:
+            param_grid (Dict[str, List[Any]]): Siatka parametrów do przeszukania
+            evaluation_function (Callable): Funkcja oceniająca zestaw parametrów
+            max_iterations (int): Maksymalna liczba iteracji
+
+        Returns:
+            Dict[str, Any]: Najlepszy znaleziony zestaw parametrów
+        """
+        logger.info(f"Rozpoczęcie strojenia parametrów metodą {self.optimization_method}")
+        # Implementacja stub - zwraca pierwszy zestaw parametrów z siatki
+        best_params = {}
+        for param_name, param_values in param_grid.items():
+            if param_values:
+                best_params[param_name] = param_values[0]
+                
+        self.best_params = best_params
+        return best_params
+
+    def get_best_params(self) -> Dict[str, Any]:
+        """
+        Zwraca najlepszy znaleziony zestaw parametrów.
+
+        Returns:
+            Dict[str, Any]: Najlepszy zestaw parametrów
+        """
+        return self.best_params

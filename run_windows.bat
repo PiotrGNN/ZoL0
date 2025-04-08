@@ -1,19 +1,17 @@
 
 @echo off
-echo Starting Intelligent Trading System...
-echo Creating logs directory if it doesn't exist...
-if not exist logs mkdir logs
+echo === Inteligentny System Tradingowy - Uruchamianie na Windows ===
+echo.
 
-echo Activating Python environment if it exists...
-if exist venv\Scripts\activate.bat (
-    call venv\Scripts\activate.bat
-) else (
-    echo No virtual environment found. If you want to create one:
-    echo python -m venv venv
-    echo venv\Scripts\activate.bat
-)
+echo Tworzenie wymaganych katalogów...
+mkdir logs 2>nul
+mkdir data\cache 2>nul
 
-echo Starting application...
+echo Sprawdzanie i instalacja wymaganych pakietów...
+pip install -r requirements.txt
+
+echo Uruchamianie systemu tradingowego...
 python main.py
 
+echo.
 pause
