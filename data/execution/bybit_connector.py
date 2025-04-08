@@ -1143,10 +1143,11 @@ class BybitConnector:
                                     ])
 
                                 # Poprawne tworzenie pre_sign zgodnie z dokumentacją V5
+                                recv_window = "20000"  # Używamy stałej wartości recv_window
                                 if param_str:
-                                    pre_sign = f"{timestamp}{self.api_key}{param_str}"
+                                    pre_sign = f"{timestamp}{self.api_key}{recv_window}{param_str}"
                                 else:
-                                    pre_sign = f"{timestamp}{self.api_key}"
+                                    pre_sign = f"{timestamp}{self.api_key}{recv_window}"
 
                                 # Generowanie sygnatury HMAC SHA256
                                 signature = hmac.new(
@@ -1159,7 +1160,7 @@ class BybitConnector:
                                     "X-BAPI-API-KEY": self.api_key,
                                     "X-BAPI-TIMESTAMP": timestamp,
                                     "X-BAPI-SIGN": signature,
-                                    "X-BAPI-RECV-WINDOW": "20000",
+                                    "X-BAPI-RECV-WINDOW": recv_window,  # Używamy tej samej wartości co w pre_sign
                                     "Content-Type": "application/json"
                                 }
 
