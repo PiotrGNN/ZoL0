@@ -21,14 +21,14 @@ class BybitConnector:
     Klasa do komunikacji z giełdą Bybit.
     """
 
-    def __init__(self, api_key: str = None, api_secret: str = None, use_testnet: bool = True, lazy_connect: bool = True):
+    def __init__(self, api_key: str = None, api_secret: str = None, use_testnet: bool = False, lazy_connect: bool = True):
         """
         Inicjalizuje połączenie z Bybit.
 
         Parameters:
             api_key (str): Klucz API Bybit.
             api_secret (str): Sekret API Bybit.
-            use_testnet (bool): Czy używać środowiska testowego.
+            use_testnet (bool): Czy używać środowiska testowego (domyślnie False - produkcyjne API).
             lazy_connect (bool): Czy opóźnić połączenie z API do pierwszego użycia.
         """
         self.api_key = api_key

@@ -14,9 +14,9 @@ const CONFIG = {
         components: '/api/component-status',
         aiModels: '/api/ai-models-status',
         system: '/api/system/status',
-        bybitServerTime: '/api/bybit/server-time',
-        bybitBalance: '/api/bybit/account-balance',
-        bybitConnectionTest: '/api/bybit/connection-test',
+        bybitServerTime: 'https://api.bybit.com/v2/public/time', // Updated to production endpoint
+        bybitBalance: 'https://api.bybit.com/v2/private/wallet/balance', // Updated to production endpoint
+        bybitConnectionTest: 'https://api.bybit.com/v2/public/time', // Updated to production endpoint
         notifications: '/api/notifications',
         chartData: '/api/chart-data'
     }
@@ -502,17 +502,4 @@ function showNotification(type, message) {
             }, 500);
         }, 5000);
     }
-}
-
-// Konfiguracja dashboardu
-// Sprawdź czy CONFIG już istnieje, aby uniknąć duplikacji
-if (typeof CONFIG === 'undefined') {
-  const CONFIG = {
-    refreshInterval: 5000,  // Odświeżanie co 5 sekund
-    apiEndpoints: {
-      dashboard: '/api/dashboard/data',
-      portfolio: '/api/portfolio',
-      components: '/api/component-status'
-    }
-  };
 }

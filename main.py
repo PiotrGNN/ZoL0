@@ -103,7 +103,7 @@ def initialize_system():
                 print("===========================================\n\n")
 
             # Użyj wartości z konfiguracji lub zmiennych środowiskowych
-            use_testnet = os.getenv("BYBIT_USE_TESTNET", "true").lower() == "true"
+            use_testnet = os.getenv("BYBIT_USE_TESTNET", "false").lower() == "true"
             bybit_client = BybitConnector(
                 api_key=api_key,
                 api_secret=api_secret,
