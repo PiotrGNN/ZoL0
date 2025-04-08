@@ -1,0 +1,76 @@
+### 🎯 Cel:
+Jesteś doświadczonym architektem oprogramowania i specjalistą od integracji API. Twoim zadaniem jest dostarczyć **kompletną, precyzyjną i aktualną dokumentację techniczną** dotyczącą **wszystkich endpointów związanych z saldem i portfelem użytkownika** w API Bybit — zarówno dla Spot v1, jak i Unified V5.
+
+---
+
+### 📋 Zakres odpowiedzi:
+
+Dla każdego endpointu uwzględnij następujące informacje w **zwięzłym i klarownym formacie**:
+
+1. **Pełna ścieżka endpointu (z prefiksem API)**  
+2. **Metoda HTTP** (`GET`, `POST`, itp.)
+3. **Wymagane uwierzytelnienie?** (`Tak` / `Nie`)
+4. **Opis funkcjonalności**
+5. **Parametry zapytania lub ciała (z typami i wymagalnością)**
+6. **Przykład zapytania z podpisem (`signature`) w Pythonie (`requests`)**
+7. **Typowa struktura odpowiedzi (parsowana, skrócona)**
+
+---
+
+### ✅ Wymagania techniczne:
+
+- **Bądź zgodny z oficjalną dokumentacją Bybit** (ostatnia wersja).
+- Używaj wyłącznie sprawdzonych, produkcyjnych przykładów (bez danych testowych).
+- Podpisuj zapytania zgodnie ze standardem HMAC SHA256 (z `timestamp`, `api_key`, `sign`, `recv_window`).
+- Jeśli endpoint nie działa w `Spot v1`, podaj odpowiednik w `Unified V5`, lub zaznacz to jawnie.
+- Kod musi być gotowy do użycia w profesjonalnych klientach API.
+
+---
+
+### 📌 Format przykładowy (dla każdego endpointu):
+
+```markdown
+#### 📘 Endpoint: Get Wallet Balance (Unified V5)
+
+- **Path:** `GET /v5/account/wallet-balance`
+- **Auth:** ✅ Tak
+- **Opis:** Zwraca dostępne saldo konta użytkownika na koncie Spot/Derivatives.
+- **Parametry:**
+  - `accountType` (string, wymagany): np. `UNIFIED`, `SPOT`, `CONTRACT`
+  - `coin` (string, opcjonalny): `BTC`, `USDT`, itd.
+
+- **Przykład (Python):**
+```python
+import time, hmac, hashlib, requests
+
+API_KEY = "xxx"
+API_SECRET = "yyy"
+timestamp = str(int(time.time() * 1000))
+params = f"apiKey={API_KEY}&timestamp={timestamp}&accountType=UNIFIED"
+signature = hmac.new(API_SECRET.encode(), params.encode(), hashlib.sha256).hexdigest()
+
+headers = {"Content-Type": "application/json"}
+url = f"https://api.bybit.com/v5/account/wallet-balance?{params}&sign={signature}"
+
+response = requests.get(url, headers=headers)
+print(response.json())
+```
+
+- **Przykładowa odpowiedź:**
+```json
+{
+  "retCode": 0,
+  "result": {
+    "list": [{
+      "coin": "USDT",
+      "walletBalance": "1500.00",
+      "availableToWithdraw": "1450.00"
+    }]
+  }
+}
+```
+```
+
+---
+
+Wygeneruj odpowiedź w dokładnie takim formacie.
