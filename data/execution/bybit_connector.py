@@ -1108,13 +1108,26 @@ class BybitConnector:
 
                         # Próba pobrania salda konta z uwzględnieniem różnych API
                         wallet = None
-                        wallet_methods = [('get_wallet_balance', {}),
-                                          ('get_wallet_balance', {
-                                              'coin': 'USDT'
-                                          }), ('query_account_info', {}),
-                                          ('get_account_overview', {}),
-                                          ('get_account_balance', {}),
-                                          ('get_balances', {})]
+                        
+                        # Dla kont UNIFIED pomijamy API V2, które zwraca błąd 409
+                        # Priorytetyzujemy bezpośrednie zapytanie HTTP do API V5
+                        wallet_methods = []
+                        
+                        # Sprawdzamy czy używamy konta UNIFIED
+                        is_unified_account = True  # Domyślnie zakładamy że używamy konta UNIFIED
+                        
+                        # Jeśli nie używamy konta UNIFIED, dodajemy standardowe metody API V2
+                        if not is_unified_account:
+                            wallet_methods = [('get_wallet_balance', {}),
+                                            ('get_wallet_balance', {
+                                                'coin': 'USDT'
+                                            }), ('query_account_info', {}),
+                                            ('get_account_overview', {}),
+                                            ('get_account_balance', {}),
+                                            ('get_balances', {})]
+                            self.logger.info("Używam standardowych metod API dla konta non-UNIFIED")
+                        else:
+                            self.logger.info("Używam tylko API V5 dla konta UNIFIED")
 
                         # Jeśli powyższe metody nie zadziałały, spróbuj bezpośredniego zapytania HTTP do V5 API
                         if wallet is None:
@@ -1126,12 +1139,12 @@ class BybitConnector:
 
                                 # Parametry zgodnie z dokumentacją V5 API
                                 params = {
-                                    'accountType':
-                                    'UNIFIED'  # Można dostosować w zależności od typu konta
+                                    'accountType': 'UNIFIED'  # Można dostosować w zależności od typu konta
                                 }
 
                                 # Tworzenie sygnatury zgodnie z dokumentacją V5 API
                                 timestamp = str(int(time.time() * 1000))
+                                recv_window = "20000"  # Używamy stałej wartości recv_window
 
                                 # Przygotowanie parametrów do sygnatury
                                 # Upewnij się, że parametry są posortowane alfabetycznie po kluczach
@@ -1143,11 +1156,12 @@ class BybitConnector:
                                     ])
 
                                 # Poprawne tworzenie pre_sign zgodnie z dokumentacją V5
-                                recv_window = "20000"  # Używamy stałej wartości recv_window
+                                # Format: timestamp + api_key + recv_window + query_string
+                                pre_sign = f"{timestamp}{self.api_key}{recv_window}"
                                 if param_str:
-                                    pre_sign = f"{timestamp}{self.api_key}{recv_window}{param_str}"
-                                else:
-                                    pre_sign = f"{timestamp}{self.api_key}{recv_window}"
+                                    pre_sign = f"{pre_sign}&{param_str}"
+                                
+                                self.logger.debug(f"Generowanie podpisu dla API V5. Pre-sign: {pre_sign}")
 
                                 # Generowanie sygnatury HMAC SHA256
                                 signature = hmac.new(
@@ -1277,17 +1291,34 @@ class BybitConnector:
                             # Sprawdź czy result zawiera listę (typowy format V5 API)
                             if "list" in wallet["result"] and isinstance(wallet["result"]["list"], list):
                                 for coin_data in wallet["result"]["list"]:
-                                    coin = coin_data.get("coin")
-                                    if coin:
-                                        result["balances"][coin] = {
-                                            "equity": float(coin_data.get("equity", 0)),
-                                            "available_balance": float(
-                                                coin_data.get("availableBalance", 0) or 
-                                                coin_data.get("availableToWithdraw", 0)
-                                            ),
-                                            "wallet_balance": float(coin_data.get("walletBalance", 0))
-                                        }
-                                        self.logger.debug(f"Dodano saldo dla {coin}: {result['balances'][coin]}")
+                                    # Bezpieczne pobieranie coin z obsługą sytuacji gdy może być listą
+                                    if isinstance(coin_data, dict):
+                                        coin = coin_data.get("coin")
+                                        # Upewnienie się że coin jest stringiem, a nie listą
+                                        if isinstance(coin, str) and coin:
+                                            result["balances"][coin] = {
+                                                "equity": float(coin_data.get("equity", 0)),
+                                                "available_balance": float(
+                                                    coin_data.get("availableBalance", 0) or 
+                                                    coin_data.get("availableToWithdraw", 0)
+                                                ),
+                                                "wallet_balance": float(coin_data.get("walletBalance", 0))
+                                            }
+                                            self.logger.debug(f"Dodano saldo dla {coin}: {result['balances'][coin]}")
+                                        elif isinstance(coin, list) and coin:
+                                            # Jeśli coin jest listą, iteruj po jej elementach
+                                            self.logger.warning(f"Otrzymano listę coin zamiast stringa: {coin}")
+                                            for single_coin in coin:
+                                                if isinstance(single_coin, str) and single_coin:
+                                                    result["balances"][single_coin] = {
+                                                        "equity": float(coin_data.get("equity", 0)),
+                                                        "available_balance": float(
+                                                            coin_data.get("availableBalance", 0) or 
+                                                            coin_data.get("availableToWithdraw", 0)
+                                                        ),
+                                                        "wallet_balance": float(coin_data.get("walletBalance", 0))
+                                                    }
+                                                    self.logger.debug(f"Dodano saldo dla coin z listy: {single_coin}")
                         elif wallet and "result" in wallet and isinstance(
                                 wallet["result"], dict):
                             # Starsza struktura API ByBit lub format usdt_perpetual
