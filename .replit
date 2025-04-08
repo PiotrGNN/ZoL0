@@ -1,16 +1,25 @@
 run = "python main.py"
-entrypoint = "main.py"
 modules = ["python-3.10:v18-20230807-322e88b"]
 
-hidden = [".config", "**/__pycache__", "**/.mypy_cache", "**/*.pyc"]
+hidden = [".pythonlibs"]
 
 [nix]
 channel = "stable-23_05"
 
 [env]
-PYTHONPATH = "${REPL_HOME}"
-FLASK_APP = "main.py"
-FLASK_ENV = "development"
+PYTHONPATH = "$PYTHONPATH:${REPL_HOME}"
+PYTHONUNBUFFERED = "1"
+
+[unitTest]
+language = "python3"
+
+[gitHubImport]
+requiredFiles = [".replit", "replit.nix"]
+
+[deployment]
+run = ["python", "main.py"]
+deploymentTarget = "cloudrun"
+ignorePorts = false
 
 [packager]
 language = "python3"
@@ -19,9 +28,6 @@ language = "python3"
 packageSearch = true
 guessImports = true
 
-[unitTest]
-language = "python3"
-
 [languages]
 
 [languages.python3]
@@ -29,10 +35,6 @@ pattern = "**/*.py"
 
 [languages.python3.languageServer]
 start = "pylsp"
-
-[deployment]
-run = ["python", "main.py"]
-deploymentTarget = "cloudrun"
 
 [server]
 host = "0.0.0.0"

@@ -1,117 +1,75 @@
-# Trading Bot z Integracją ByBit API
+# System Tradingowy z Dashboardem
 
-System tradingowy z integracją ByBit API, zoptymalizowany do działania w środowisku Replit.
+## 📋 Opis projektu
+Zaawansowany system tradingowy z dashboardem do monitorowania i zarządzania strategiami handlu automatycznego na giełdach kryptowalut, ze szczególnym uwzględnieniem integracji z ByBit.
 
 ## 🚀 Funkcjonalności
 
-- Połączenie z giełdą ByBit przez REST API
-- Pobieranie danych rynkowych w czasie rzeczywistym
-- Obsługa kont testowych (testnet) i rzeczywistych
-- Analiza techniczna z wykorzystaniem popularnych wskaźników
-- Dashboard z wizualizacją danych i alarmami
-- Zaawansowane zarządzanie limitami API
-- Inteligentne buforowanie danych
+- **Dashboard analityczny** z wizualizacją danych portfela w czasie rzeczywistym
+- **Integracja z API ByBit** (obsługa zarówno testnet jak i produkcyjnego API)
+- **Zarządzanie ryzykiem** z konfigurowalnymi parametrami
+- **Analiza sentymentu rynku** z wykorzystaniem AI
+- **Wykrywanie anomalii cenowych** w czasie rzeczywistym
+- **System alertów i powiadomień** o ważnych zdarzeniach na rynku
+- **Zarządzanie portfelem** z monitorowaniem sald i historii transakcji
 
-## 🔧 Wymagania
+## 🔧 Technologie
 
-- Python 3.8+
-- Konto ByBit z kluczami API
+- **Backend**: Python, Flask
+- **Frontend**: HTML, CSS, JavaScript, Chart.js
+- **Analiza danych**: Pandas, NumPy
+- **Integracja z giełdą**: ByBit API
+- **Przechowywanie danych**: Buforowanie JSON, cache-management
 
-## ⚙️ Konfiguracja
+## 🛠️ Instalacja i uruchomienie
 
-1. Skonfiguruj plik `.env` w katalogu głównym (możesz wykorzystać `.env.example` jako szablon):
+### Wymagania wstępne
+- Python 3.10+
+- Pip
+
+### Kroki instalacji
+
+1. **Klonowanie repozytorium**:
+   ```bash
+   git clone https://github.com/username/trading-system.git
+   cd trading-system
    ```
-   BYBIT_API_KEY=twój_klucz_api
-   BYBIT_API_SECRET=twój_sekret_api
-   BYBIT_USE_TESTNET=true  # Zmień na false dla produkcyjnego API
-   ```
 
-   Alternatywnie możesz użyć narzędzia Secrets w Replit:
-   - `BYBIT_API_KEY` - Klucz API ByBit
-   - `BYBIT_API_SECRET` - Sekret API ByBit
-   - `BYBIT_USE_TESTNET` - Ustawić na "false" dla API produkcyjnego lub "true" dla środowiska testowego
-
-2. Zainstaluj zależności:
-   ```
+2. **Instalacja zależności**:
+   ```bash
    pip install -r requirements.txt
    ```
 
-3. Uruchom aplikację:
-   ```
+3. **Konfiguracja środowiska**:
+   - Skopiuj plik `.env.example` do `.env`:
+     ```bash
+     cp .env.example .env
+     ```
+   - Wypełnij zmienne środowiskowe w pliku `.env` swoimi danymi, w tym kluczami API ByBit
+
+4. **Uruchomienie aplikacji**:
+   ```bash
    python main.py
    ```
 
-## ⚠️ Bezpieczeństwo API
+5. **Dostęp do aplikacji**:
+   Otwórz przeglądarkę i przejdź do adresu:
+   ```
+   http://localhost:5000
+   ```
 
-UWAGA: Podczas pracy z produkcyjnymi kluczami API:
-- Zawsze używaj kluczy z minimalnymi wymaganymi uprawnieniami (tylko odczyt jeśli nie potrzebujesz handlu)
-- Włącz dodatkowe zabezpieczenia na koncie ByBit (2FA, ograniczenia IP)
-- Regularnie zmieniaj klucze API
-- Ustaw odpowiednie limity handlowe w panelu API ByBit
-- Nigdy nie pushuj pliku .env do repozytorium!
+## ⚙️ Konfiguracja
 
-## 📊 Dashboard
+### Zmienne środowiskowe
 
-Dashboard jest dostępny na głównej stronie aplikacji i zawiera:
-- Aktualne dane rynkowe i wskaźniki techniczne
-- Stan konta i otwarte pozycje
-- Alerty i powiadomienia
-- Statystyki handlowe
-- Status komponentów systemu
+Główne parametry konfiguracyjne w pliku `.env`:
 
-## 🔍 Rozwiązywanie problemów
-
-Jeśli napotkasz problemy z limitami API (błędy 403 lub CloudFront):
-1. Zmniejsz częstotliwość odpytywania API poprzez edycję parametrów w `data/utils/cache_manager.py`
-2. Upewnij się, że używasz testnet podczas rozwoju aplikacji
-3. Sprawdź logi błędów w katalogu `logs/`
-- Wykresy analityczne
-- Powiadomienia i alerty
-
-## 🔒 Bezpieczeństwo
-
-- Nigdy nie przechowuj kluczy API w kodzie
-- Używaj narzędzia Secrets w Replit do bezpiecznego przechowywania kluczy
-- Regularnie weryfikuj uprawnienia kluczy API
-- Rozważ użycie testnet do testowania przed użyciem rzeczywistych środków
-
-## 📝 Licencja
-
-Ten projekt jest dostępny na licencji MIT.
-
-## 📋 Struktura projektu (częściowo z oryginalnego projektu)
-
-```
-├── ai_models/              # Modele AI/ML do analizy i predykcji
-├── data/                   # Moduły danych, strategie i narzędzia
-│   ├── data/               # Pobieranie i przetwarzanie danych
-│   ├── execution/          # Wykonywanie transakcji
-│   ├── indicators/         # Wskaźniki techniczne i analizy
-│   ├── logging/            # System logowania i detekcji anomalii
-│   ├── optimization/       # Optymalizacja strategii i backtesting
-│   ├── risk_management/    # Zarządzanie ryzykiem
-│   ├── strategies/         # Strategie tradingowe
-│   ├── tests/              # Testy jednostkowe i integracyjne
-│   └── utils/              # Narzędzia pomocnicze
-├── logs/                   # Pliki logów
-├── reports/                # Raporty i analizy
-├── saved_models/           # Zapisane modele ML
-├── static/                 # Pliki statyczne dla interfejsu
-│   ├── css/                # Style CSS
-│   └── js/                 # Skrypty JavaScript
-├── templates/              # Szablony HTML
-├── .env.example            # Przykładowy plik konfiguracyjny
-└── main.py                 # Główny plik uruchomieniowy
-```
-
-## 📦 Zależności
-
-Główne biblioteki (z oryginalnego projektu, może wymagać aktualizacji):
-- Flask - framework webowy
-- Pandas/NumPy - przetwarzanie danych
-- Scikit-learn - modele ML do analizy i predykcji
-- Matplotlib/Chart.js - wizualizacja danych
-- ByBit API client library (dodatkowa biblioteka do integracji z ByBit)
+- `BYBIT_API_KEY` i `BYBIT_API_SECRET` - klucze dostępu do API ByBit
+- `BYBIT_USE_TESTNET` - `true` dla testowej wersji, `false` dla produkcyjnej
+- `RISK_LEVEL` - poziom ryzyka: `low`, `medium`, `high`
+- `MAX_POSITION_SIZE` - maksymalny rozmiar pozycji jako % portfela
+- `API_RATE_LIMIT` - włączenie inteligentnego limitowania zapytań API
+- `API_CACHE_ENABLED` - włączenie cache'owania odpowiedzi API
 
 ## 🔧 Rozwiązywanie problemów
 
@@ -129,7 +87,7 @@ The Amazon CloudFront distribution is configured to block access from your count
 ```
 
 Rozwiązania:
-1. Zmodyfikuj zmienną `USE_TESTNET` w pliku `.env` na `true`
+1. Zmodyfikuj zmienną `BYBIT_USE_TESTNET` w pliku `.env` na `true`
 2. Poczekaj 5-10 minut przed następną próbą połączenia
 3. Zmniejsz częstotliwość odpytywania API w `data/utils/cache_manager.py`
 4. Korzystaj z innego adresu IP (np. przez VPN lub proxy)
@@ -153,110 +111,42 @@ Aby naprawić i uruchomić testy:
 ```
 python fix_tests.py
 ```
-# System Tradingowy - Dashboard
 
-## Opis projektu
-System tradingowy z dashboardem do monitorowania i zarządzania strategiami handlu automatycznego na giełdach kryptowalut.
+## 📁 Struktura projektu
 
-## Funkcjonalności
-- Połączenie z API giełdy ByBit (testnet i produkcja)
-- Dashboard wizualizujący dane portfela
-- Śledzenie statystyk tradingowych
-- Monitoring ostatnich transakcji
-- System alertów i powiadomień
+- `main.py` - Główny plik aplikacji
+- `data/` - Moduły przetwarzania danych i integracji z API
+  - `execution/` - Moduły wykonywania operacji na giełdzie
+  - `indicators/` - Wskaźniki techniczne i analizy
+  - `risk_management/` - Zarządzanie ryzykiem
+  - `strategies/` - Strategie handlowe
+  - `utils/` - Narzędzia pomocnicze
+- `ai_models/` - Modele AI do analizy rynku
+- `static/` - Pliki statyczne (CSS, JavaScript)
+- `templates/` - Szablony HTML
+- `logs/` - Logi aplikacji
 
-## Instalacja i uruchomienie
+## 📊 Przykłady użycia
 
-### Wymagania
-- Python 3.8+
-- Przeglądarka internetowa z obsługą JavaScript
+### Monitorowanie portfela
+Po uruchomieniu aplikacji, dashboard prezentuje aktualny stan portfela, historyczne wyniki oraz wykres wartości.
 
-### Instalacja
-1. Sklonuj repozytorium
-2. Zainstaluj wymagane zależności:
+### Testowanie API
+Możesz testować połączenie z API ByBit za pomocą endpointu:
 ```
-pip install -r requirements.txt
-```
-3. Skonfiguruj zmienne środowiskowe w pliku `.env` (na podstawie `.env.example`)
-
-### Uruchomienie
-```
-python main.py
+http://localhost:5000/api/bybit/connection-test
 ```
 
-Po uruchomieniu, dashboard będzie dostępny pod adresem: `http://localhost:5000`
+### Debugowanie
+Wszystkie logi znajdują się w katalogu `logs/`, co pomaga w diagnozowaniu problemów.
 
-## Konfiguracja API
-Aby połączyć się z giełdą ByBit, należy:
-1. Utworzyć klucze API na platformie ByBit
-2. Uzupełnić dane w pliku `.env`:
-```
-BYBIT_API_KEY=twój_klucz_api
-BYBIT_API_SECRET=twój_sekret_api
-USE_PRODUCTION_API=false  # zmień na true dla połączenia produkcyjnego
-```
+## 🔒 Bezpieczeństwo
 
-## Bezpieczeństwo
-- Używaj testnet do testowania działania systemu
-- Przed użyciem produkcyjnego API, upewnij się, że Twoje klucze API mają odpowiednie ograniczenia
-- Rozpoczynaj od małych transakcji, aby przetestować działanie systemu
+- Klucze API są przechowywane tylko lokalnie w pliku `.env` (nie są wersjonowane)
+- System wspiera tryb testnet - zalecany do testów i nauki
+- Wbudowane limity zapytań API zapobiegają przekroczeniu limitów giełdy
+- Moduł cache'owania zmniejsza liczbę zapytań i poprawia wydajność
 
-## Rozwiązywanie problemów
-Jeśli napotkasz problemy z wyświetlaniem dashboard, sprawdź:
-1. Czy wszystkie biblioteki zostały poprawnie zainstalowane
-2. Czy aplikacja Flask działa prawidłowo (sprawdź logi)
-3. Czy masz dostęp do API ByBit (sprawdź połączenie internetowe i ważność kluczy API)
+## 📄 Licencja
 
-## Trading Bot
-
-Inteligentny bot tradingowy do automatycznego handlu na giełdzie kryptowalut.
-
-### Funkcje
-
-- Analiza techniczna i fundamentalna rynku
-- Wykonywanie transakcji na podstawie sygnałów
-- Zarządzanie ryzykiem i kapitałem
-- Optymalizacja strategii handlowych
-- Inteligentne zarządzanie limitami API i cache
-
-### Instalacja
-
-```bash
-pip install -r requirements.txt
-```
-
-### Konfiguracja
-
-Skopiuj plik `.env.example` do `.env` i ustaw swoje klucze API:
-
-```
-BYBIT_API_KEY=twoj_klucz_api
-BYBIT_API_SECRET=twoj_sekret_api
-BYBIT_USE_TESTNET=true  # Ustaw na true dla testowego API
-```
-
-#### Zarządzanie limitami API
-
-System posiada zaawansowany mechanizm zarządzania limitami API, który:
-
-- Używa inteligentnego cache'owania danych
-- Stosuje opóźnioną inicjalizację (lazy initialization) klientów API
-- Dynamicznie dostosowuje częstotliwość zapytań w zależności od statusu API
-- Zabezpiecza przed przekroczeniem limitów zapytań API
-
-Możesz dostroić parametry w pliku `.env`:
-
-```
-API_RATE_LIMIT=true
-API_CACHE_ENABLED=true
-API_MIN_INTERVAL=5.0  # Minimalny czas między zapytaniami API (sekundy)
-API_MAX_CALLS_PER_MINUTE=6  # Limit zapytań API na minutę
-```
-
-### Uruchomienie
-
-```bash
-python main.py
-```
-
-Po uruchomieniu, interfejs webowy będzie dostępny pod adresem [http://localhost:5000](http://localhost:5000)
+Ten projekt jest dostępny na licencji MIT.

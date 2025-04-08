@@ -61,3 +61,7 @@ def _import_all(directory: str, package: str) -> None:
 
 _current_dir: str = os.path.dirname(os.path.abspath(__file__))
 _import_all(_current_dir, __name__)
+# Inicjalizacja pakietu testów
+"""
+Pakiet zawierający testy dla różnych komponentów systemu.
+"""

@@ -1,9 +1,10 @@
 import logging
+import json
+import os
 import time
 import threading
-import os
-import json
-from typing import Any, Dict, List, Tuple, Optional
+from pathlib import Path
+from typing import Any, Dict, List, Tuple, Optional, Union
 from functools import wraps
 from datetime import datetime, timedelta
 
@@ -367,13 +368,8 @@ def adaptive_cache(func):
     return wrapper
 
 
-def get_api_status():
-    """
-    Sprawdza status limitów API i zwraca informacje o dostępności.
-
-    Returns:
-        Dict zawierający informacje o statusie API
-    """
+def get_api_status() -> Dict[str, Any]:
+    """Zwraca aktualny status API i parametry limitera."""
     with _rate_limiter["lock"]:
         current_time = time.time()
         time_in_window = current_time - _rate_limiter["window_start"]
@@ -402,6 +398,7 @@ def get_api_status():
             "time_since_startup": current_time - _rate_limiter["startup_time"],
             "environment": _rate_limiter["environment"]
         }
+
 
 def is_in_startup_phase():
     """
