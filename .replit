@@ -1,5 +1,8 @@
+run = "python main.py"
 entrypoint = "main.py"
-run = "python run_server.py"
+modules = ["python-3.10:v18-20230807-322e88b"]
+
+hidden = [".config", "**/__pycache__", "**/.mypy_cache", "**/*.pyc"]
 
 [nix]
 channel = "stable-23_05"
@@ -7,8 +10,7 @@ channel = "stable-23_05"
 [env]
 PYTHONPATH = "${REPL_HOME}"
 FLASK_APP = "main.py"
-FLASK_DEBUG = "1"
-PORT = "8080"
+FLASK_ENV = "development"
 
 [packager]
 language = "python3"
@@ -20,6 +22,8 @@ guessImports = true
 [unitTest]
 language = "python3"
 
+[languages]
+
 [languages.python3]
 pattern = "**/*.py"
 
@@ -27,80 +31,37 @@ pattern = "**/*.py"
 start = "pylsp"
 
 [deployment]
-run = ["python", "run_server.py"]
+run = ["python", "main.py"]
 deploymentTarget = "cloudrun"
 
 [server]
 host = "0.0.0.0"
-port = 8080
+port = 5000
+
+[port]
+5000 = "http"
 
 [[ports]]
-localPort = 8080
+localPort = 5000
 externalPort = 80
 
+[interpreter]
+command = [
+  "python3"
+]
+
+[runOnStart]
+pattern = "**/*.py"
+command = "python3"
+
 [workflows]
-runButton = "Run Server"
+runButton = "Run"
 
 [[workflows.workflow]]
-name = "Run Server"
+name = "Run"
 author = 31819671
 mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python3 run_server.py"
-
-[[workflows.workflow]]
-name = "Init Project"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python3 init_project.py"
-
-[[workflows.workflow]]
-name = "Test Bybit Connection"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python3 test_bybit_connection.py"
-
-[[workflows.workflow]]
-name = "Diagnoza Importów"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python3 -c \"import sys; print('Python path:', sys.path); "
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "import os; print('Working directory:', os.getcwd());"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "print('Sprawdzam pakiety:');"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "for pkg in ['python-dotenv', 'flask', 'pandas', 'matplotlib', 'requests', 'pybit', 'numpy']:"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "    try:"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "        __import__(pkg.replace('-', '_')); print(f'✓ {pkg}')"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "    except ImportError:"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "        print(f'❌ {pkg}')\""
+args = "python3 main.py"

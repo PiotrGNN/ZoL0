@@ -10,8 +10,6 @@ import os
 import random
 import time
 import traceback
-import hmac
-import hashlib
 from datetime import datetime
 from typing import Dict, List, Any, Optional
 import requests
@@ -94,16 +92,6 @@ class BybitConnector:
         Parameters:
             force (bool): Czy wymusić reinicjalizację, nawet jeśli klient już istnieje.
         """
-        # Dodatkowe logowanie do debugowania
-        self.logger.info("=" * 50)
-        self.logger.info("INICJALIZACJA KLIENTA BYBIT API")
-        self.logger.info(f"API Key: {self.api_key[:4]}{'*' * (len(self.api_key) - 4) if self.api_key else 'Brak'}")
-        self.logger.info(f"API Secret: {self.api_secret[:4]}{'*' * (len(self.api_secret) - 4) if self.api_secret else 'Brak'}")
-        self.logger.info(f"Testnet: {self.use_testnet}")
-        self.logger.info(f"Base URL: {self.base_url}")
-        self.logger.info(f"Lazy Connect: {not force}")
-        self.logger.info("=" * 50)
-        
         # Jeśli klient istnieje i nie wymuszamy, to pomijamy
         if self.client is not None and not force and self._connection_initialized:
             return True
@@ -491,39 +479,8 @@ class BybitConnector:
         # Import managera cache
         from data.utils.cache_manager import get_cached_data, store_cached_data, is_cache_valid, get_api_status
 
-        # Rozszerzone logowanie dla diagnostyki
-        self.logger.info("=" * 50)
-        self.logger.info("DIAGNOSTYKA API BYBIT - get_account_balance")
-        self.logger.info(f"API Key: {self.api_key[:4]}{'*' * (len(self.api_key) - 4) if self.api_key else 'Brak'}")
-        self.logger.info(f"API Secret: {self.api_secret[:4]}{'*' * (len(self.api_secret) - 4) if self.api_secret else 'Brak'}")
-        self.logger.info(f"Testnet: {self.use_testnet}")
-        self.logger.info(f"Base URL: {self.base_url}")
-        self.logger.info(f"API Version: {self.api_version}")
-        self.logger.info(f"Rate limit exceeded: {self.rate_limit_exceeded}")
-        
-        # Sprawdź załadowanie zmiennych środowiskowych
-        import os
-        env_vars = {
-            "BYBIT_API_KEY": os.environ.get("BYBIT_API_KEY", "Brak"),
-            "BYBIT_API_SECRET": os.environ.get("BYBIT_API_SECRET", "Brak"),
-            "BYBIT_USE_TESTNET": os.environ.get("BYBIT_USE_TESTNET", "Brak"),
-            "API_MIN_INTERVAL": os.environ.get("API_MIN_INTERVAL", "Brak"),
-            "API_MAX_CALLS_PER_MINUTE": os.environ.get("API_MAX_CALLS_PER_MINUTE", "Brak"),
-        }
-        
-        masked_env = {}
-        for key, value in env_vars.items():
-            if value != "Brak" and ("API_KEY" in key or "SECRET" in key):
-                masked_value = value[:4] + "*" * (len(value) - 4) if len(value) > 4 else "****"
-                masked_env[key] = masked_value
-            else:
-                masked_env[key] = value
-                
-        self.logger.info(f"Zmienne środowiskowe: {masked_env}")
-        self.logger.info("=" * 50)
-
         # Klucz cache
-        cache_key = f"account_balance_{self.api_key[:8] if self.api_key else 'none'}_{self.use_testnet}"
+        cache_key = f"account_balance_{self.api_key[:8]}_{self.use_testnet}"
 
         # Sprawdź status API - jeśli przekroczono limity, użyj dłuższego TTL
         api_status = get_api_status()
@@ -1111,196 +1068,3 @@ if __name__ == "__main__":
 
     cancel_result = connector.cancel_order(order_id=order_result.get("order_id"))
     print(f"Wynik anulowania zlecenia: {cancel_result}")
-"""
-bybit_connector.py
------------------
-Moduł do komunikacji z API giełdy ByBit.
-"""
-
-import logging
-import os
-import time
-import json
-from datetime import datetime
-from typing import Dict, Any, Optional, List, Union
-
-import requests
-
-# Konfiguracja logowania
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.FileHandler("logs/bybit_connector.log"),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger(__name__)
-
-class BybitConnector:
-    """Klasa do obsługi API ByBit."""
-    
-    def __init__(self, api_key: str, api_secret: str, use_testnet: bool = True, lazy_connect: bool = False):
-        """
-        Inicjalizacja połączenia z API ByBit.
-        
-        Args:
-            api_key: Klucz API ByBit
-            api_secret: Sekret API ByBit
-            use_testnet: Czy używać środowiska testowego (True) czy produkcyjnego (False)
-            lazy_connect: Czy opóźnić inicjalizację połączenia do pierwszego wywołania
-        """
-        self.api_key = api_key
-        self.api_secret = api_secret
-        self.use_testnet = use_testnet
-        
-        # Ustalenie URL API na podstawie środowiska
-        self.base_url = "https://api-testnet.bybit.com" if use_testnet else "https://api.bybit.com"
-        
-        # Utworzenie katalogu cache
-        os.makedirs("data/cache", exist_ok=True)
-        
-        # Informacja o środowisku
-        env_type = "TESTNET" if use_testnet else "PRODUKCYJNYM"
-        logger.info(f"Inicjalizacja klienta ByBit w środowisku {env_type}")
-        
-        # Jeśli nie używamy lazy initialization, sprawdź połączenie od razu
-        if not lazy_connect:
-            try:
-                self.get_server_time()
-                logger.info("Połączenie z API ByBit zainicjalizowane pomyślnie")
-            except Exception as e:
-                logger.error(f"Błąd inicjalizacji klienta ByBit: {e}")
-    
-    def get_server_time(self) -> Dict[str, Any]:
-        """
-        Pobiera czas serwera ByBit.
-        
-        Returns:
-            Dict: Odpowiedź zawierająca czas serwera
-        """
-        try:
-            # Sprawdź czy mamy cache
-            cache_file = f"data/cache/server_time_{self.use_testnet}.json"
-            
-            # Jeśli cache istnieje i nie jest starszy niż 5 minut, zwróć dane z cache
-            if os.path.exists(cache_file):
-                try:
-                    with open(cache_file, "r") as f:
-                        cache_data = json.load(f)
-                        cache_time = cache_data.get("cache_timestamp", 0)
-                        
-                        # Jeśli cache jest "świeży" (mniej niż 5 min), użyj go
-                        if time.time() - cache_time < 300:  # 300 sekund = 5 minut
-                            logger.debug("Zwracam czas serwera z cache")
-                            return {
-                                "time": cache_data.get("time"),
-                                "timestamp": cache_data.get("timestamp"),
-                                "cached": True
-                            }
-                except Exception as e:
-                    logger.warning(f"Błąd odczytu cache: {e}")
-            
-            # Jeśli nie mamy cache lub jest nieważny, pobierz z API
-            response = requests.get(f"{self.base_url}/v3/public/time")
-            response.raise_for_status()
-            data = response.json()
-            
-            if data.get("retCode") == 0:
-                result = {
-                    "time": datetime.fromtimestamp(data["result"]["timeSecond"]).strftime('%Y-%m-%d %H:%M:%S'),
-                    "timestamp": data["result"]["timeSecond"],
-                    "cached": False
-                }
-                
-                # Zapisz do cache
-                with open(cache_file, "w") as f:
-                    cache_data = {**result, "cache_timestamp": time.time()}
-                    json.dump(cache_data, f)
-                
-                return result
-            else:
-                logger.error(f"Błąd API ByBit: {data.get('retMsg')}")
-                return {"error": data.get("retMsg")}
-        
-        except requests.exceptions.RequestException as e:
-            logger.error(f"Błąd połączenia z API ByBit: {e}")
-            return {"error": f"Błąd połączenia: {str(e)}"}
-        except Exception as e:
-            logger.error(f"Nieoczekiwany błąd: {e}")
-            return {"error": f"Nieoczekiwany błąd: {str(e)}"}
-    
-    def get_account_balance(self) -> Dict[str, Any]:
-        """
-        Pobiera stan konta.
-        
-        Returns:
-            Dict: Odpowiedź zawierająca dane o saldzie
-        """
-        try:
-            # Symulowane dane dla testów, bez rzeczywistego wywołania API 
-            # W pełnej implementacji należy dodać uwierzytelnianie i prawdziwe wywołanie API
-            
-            return {
-                "success": True,
-                "balances": {
-                    "BTC": {
-                        "equity": 0.01,
-                        "available_balance": 0.01, 
-                        "wallet_balance": 0.01
-                    },
-                    "USDT": {
-                        "equity": 1000,
-                        "available_balance": 950,
-                        "wallet_balance": 1000
-                    }
-                }, 
-                "note": "Dane testowe - implementacja symulacyjna"
-            }
-        except Exception as e:
-            logger.error(f"Błąd podczas pobierania stanu konta: {e}")
-            return {"success": False, "error": str(e)}
-    
-    def get_klines(self, symbol: str, interval: str = "15", limit: int = 10) -> List[Dict[str, Any]]:
-        """
-        Pobiera dane świec (klines) dla wybranego symbolu.
-        
-        Args:
-            symbol: Symbol instrumentu (np. "BTCUSDT")
-            interval: Interwał czasowy (np. "1", "5", "15", "30", "60", "D")
-            limit: Liczba świec do pobrania
-            
-        Returns:
-            List: Lista słowników z danymi świec
-        """
-        # Implementacja symulacyjna
-        return [
-            {"time": "2025-04-07 12:00", "open": 65000, "high": 65500, "low": 64800, "close": 65200, "volume": 100},
-            {"time": "2025-04-07 12:15", "open": 65200, "high": 65300, "low": 64900, "close": 65100, "volume": 90},
-            {"time": "2025-04-07 12:30", "open": 65100, "high": 65400, "low": 65000, "close": 65300, "volume": 110}
-        ]
-    
-    def get_order_book(self, symbol: str, limit: int = 5) -> Dict[str, Any]:
-        """
-        Pobiera księgę zleceń dla wybranego symbolu.
-        
-        Args:
-            symbol: Symbol instrumentu (np. "BTCUSDT")
-            limit: Głębokość księgi (liczba poziomów)
-            
-        Returns:
-            Dict: Słownik z danymi księgi zleceń
-        """
-        # Implementacja symulacyjna
-        return {
-            "bids": [
-                [65000, 1.5],
-                [64900, 2.3],
-                [64800, 3.1]
-            ],
-            "asks": [
-                [65100, 1.2],
-                [65200, 2.1],
-                [65300, 2.8]
-            ]
-        }

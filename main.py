@@ -7,32 +7,6 @@ from datetime import datetime, timedelta
 # Dodanie katalogu głównego do ścieżki Pythona
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-def check_required_packages():
-    """Sprawdza wymagane pakiety i wyświetla informację o brakujących."""
-    required_packages = [
-        "python-dotenv",
-        "flask",
-        "pybit",
-        "requests",
-        "numpy",
-        "pandas",
-        "matplotlib"
-    ]
-    
-    missing_packages = []
-    for package in required_packages:
-        try:
-            __import__(package.replace('-', '_'))
-        except ImportError:
-            missing_packages.append(package)
-    
-    if missing_packages:
-        print(f"UWAGA: Brakujące pakiety: {', '.join(missing_packages)}")
-        print("W środowisku Replit, pakiety powinny być zdefiniowane w replit.nix")
-        
-# Sprawdzenie wymaganych pakietów
-check_required_packages()
-
 try:
     from dotenv import load_dotenv
 except ImportError:
@@ -58,28 +32,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Ładowanie zmiennych środowiskowych
-load_dotenv(override=True)  # override=True wymusza ponowne załadowanie zmiennych
-
-# Sprawdzenie czy zmienne zostały załadowane
-api_key = os.getenv("BYBIT_API_KEY")
-api_secret = os.getenv("BYBIT_API_SECRET")
-if api_key and api_secret:
-    logging.info(f"Zmienne środowiskowe API załadowane poprawnie: {api_key[:5]}***")
-else:
-    logging.warning("Nie znaleziono kluczy API w zmiennych środowiskowych")
-    # Próba alternatywnego podejścia do załadowania zmiennych
-    dotenv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env')
-    if os.path.exists(dotenv_path):
-        load_dotenv(dotenv_path=dotenv_path, override=True)
-        logging.info(f"Załadowano zmienne ze ścieżki: {dotenv_path}")
-        
-        # Sprawdź czy zmienne zostały załadowane po alternatywnym podejściu
-        api_key = os.getenv("BYBIT_API_KEY")
-        api_secret = os.getenv("BYBIT_API_SECRET")
-        if api_key and api_secret:
-            logging.info("Pomyślnie załadowano zmienne po alternatywnym podejściu")
-        else:
-            logging.warning("Nadal nie znaleziono kluczy API po alternatywnym podejściu")
+load_dotenv()
 
 # Import klienta ByBit
 try:
@@ -652,7 +605,7 @@ if __name__ == "__main__":
             f.write("BYBIT_USE_TESTNET=true\n")
         logging.info("Utworzono plik .env z domyślnymi ustawieniami")
 
-    # Uruchomienie aplikacji - używamy automatycznego wyboru portu
-    port = int(os.environ.get("PORT", 0))  # Port 0 oznacza, że system znajdzie wolny port
-    logging.info(f"Uruchamianie aplikacji Flask - system wybierze wolny port")
+    # Uruchomienie aplikacji - zawsze używamy 0.0.0.0 i portu 5000 w Replit
+    port = int(os.environ.get("PORT", 5000))
+    logging.info(f"Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie {port}")
     app.run(host='0.0.0.0', port=port, debug=True)
