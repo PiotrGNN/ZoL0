@@ -1239,6 +1239,14 @@ class BybitConnector:
 
                         self.logger.info(
                             f"Odpowiedź API Bybit: {str(wallet)[:200]}...")
+                        
+                        # Dodatkowe logowanie struktury odpowiedzi dla celów diagnostycznych
+                        if "result" in wallet:
+                            result_keys = list(wallet["result"].keys()) if isinstance(wallet["result"], dict) else "nie jest słownikiem"
+                            self.logger.debug(f"Struktura odpowiedzi - klucze w result: {result_keys}")
+                            if "list" in wallet["result"] and isinstance(wallet["result"]["list"], list):
+                                first_item = wallet["result"]["list"][0] if wallet["result"]["list"] else "pusta lista"
+                                self.logger.debug(f"Pierwszy element listy: {first_item}")
 
                         # Sprawdzenie czy odpowiedź zawiera kod błędu
                         if "retCode" in wallet and wallet["retCode"] != 0:
@@ -1256,23 +1264,22 @@ class BybitConnector:
                         }
 
                         # Obsługa różnych formatów odpowiedzi w zależności od wersji API
-                        if wallet and "result" in wallet and "list" in wallet[
-                                "result"]:
-                            # Nowsza struktura API ByBit
-                            for coin_data in wallet["result"]["list"]:
-                                coin = coin_data.get("coin")
-                                if coin:
-                                    result["balances"][coin] = {
-                                        "equity":
-                                        float(coin_data.get("equity", 0)),
-                                        "available_balance":
-                                        float(
-                                            coin_data.get(
-                                                "availableBalance", 0)),
-                                        "wallet_balance":
-                                        float(coin_data.get(
-                                            "walletBalance", 0))
-                                    }
+                        if wallet and "result" in wallet:
+                            # Nowsza struktura API ByBit V5
+                            # Sprawdź czy result zawiera listę (typowy format V5 API)
+                            if "list" in wallet["result"] and isinstance(wallet["result"]["list"], list):
+                                for coin_data in wallet["result"]["list"]:
+                                    coin = coin_data.get("coin")
+                                    if coin:
+                                        result["balances"][coin] = {
+                                            "equity": float(coin_data.get("equity", 0)),
+                                            "available_balance": float(
+                                                coin_data.get("availableBalance", 0) or 
+                                                coin_data.get("availableToWithdraw", 0)
+                                            ),
+                                            "wallet_balance": float(coin_data.get("walletBalance", 0))
+                                        }
+                                        self.logger.debug(f"Dodano saldo dla {coin}: {result['balances'][coin]}")
                         elif wallet and "result" in wallet and isinstance(
                                 wallet["result"], dict):
                             # Starsza struktura API ByBit lub format usdt_perpetual
