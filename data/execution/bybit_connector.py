@@ -1154,14 +1154,17 @@ class BybitConnector:
                                         f"{key}={value}" for key, value in
                                         sorted(params.items())
                                     ])
+                                
+                                self.logger.debug(f"Parametry do podpisu (sorted): {param_str}")
 
                                 # Poprawne tworzenie pre_sign zgodnie z dokumentacją V5
                                 # Format: timestamp + api_key + recv_window + query_string
-                                pre_sign = f"{timestamp}{self.api_key}{recv_window}"
                                 if param_str:
-                                    pre_sign = f"{pre_sign}&{param_str}"
+                                    pre_sign = f"{timestamp}{self.api_key}{recv_window}&{param_str}"
+                                else:
+                                    pre_sign = f"{timestamp}{self.api_key}{recv_window}"
                                 
-                                self.logger.debug(f"Generowanie podpisu dla API V5. Pre-sign: {pre_sign}")
+                                self.logger.debug(f"Generowanie podpisu dla API V5. Pre-sign: [{pre_sign}]")
 
                                 # Generowanie sygnatury HMAC SHA256
                                 signature = hmac.new(
