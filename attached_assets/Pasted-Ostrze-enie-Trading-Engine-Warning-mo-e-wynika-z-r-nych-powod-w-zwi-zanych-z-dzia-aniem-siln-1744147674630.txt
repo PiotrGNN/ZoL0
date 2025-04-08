@@ -1,0 +1,35 @@
+Ostrzeżenie **"Trading Engine Warning"** może wynikać z różnych powodów związanych z działaniem silnika handlowego. Aby rozwiązać problem, oto kilka kroków, które warto podjąć:
+
+### 1. **Sprawdzenie szczegółów ostrzeżenia**:
+   - Zidentyfikowanie pełnego komunikatu ostrzeżenia pomoże ustalić przyczynę. Zwykle ostrzeżenie dotyczy problemów z danymi wejściowymi lub nieprawidłową konfiguracją.
+   - Sprawdź logi, aby sprawdzić dokładny tekst ostrzeżenia.
+
+### 2. **Analiza konfiguracji algorytmu**:
+   - Upewnij się, że **wszystkie parametry** dla silnika handlowego są poprawnie ustawione:
+     - **Modele** AI i strategii handlowych
+     - **Progi ryzyka** i limity pozycji
+     - **Parametry rynkowe** (np. zakres cenowy, dźwignia)
+
+### 3. **Zasoby systemowe**:
+   - Zbyt mała ilość zasobów (np. pamięci RAM, procesora) może powodować ostrzeżenia, zwłaszcza jeśli algorytm próbuje przetwarzać duże ilości danych. Upewnij się, że masz wystarczającą ilość zasobów do uruchomienia silnika handlowego.
+
+### 4. **Status połączenia z ByBit**:
+   - Sprawdź, czy połączenie z ByBit jest stabilne. Czasami silnik handlowy może wyświetlić ostrzeżenie, jeśli połączenie z serwerami ByBit jest niestabilne lub wystąpiły problemy z API.
+
+### 5. **Sprawdzenie parametrów w kodzie**:
+   - Jeśli masz kod, który inicjalizuje silnik handlowy, sprawdź, czy wszystkie argumenty są przekazywane prawidłowo.
+   - Przykład inicjalizacji silnika:
+     ```python
+     engine = TradingEngine(config=config)
+     engine.start_trading()
+     ```
+   - Upewnij się, że wartości w `config` są prawidłowe i dostosowane do Twoich wymagań handlowych.
+
+### 6. **Weryfikacja danych wejściowych**:
+   - Jeśli silnik handlowy korzysta z zewnętrznych danych (np. z rynku ByBit, wskaźników technicznych), upewnij się, że są one aktualne i prawidłowo sformatowane.
+   - Błędy związane z danymi wejściowymi mogą prowadzić do ostrzeżeń w silniku handlowym.
+
+### 7. **Debugowanie**:
+   - Uruchom system w trybie debugowania, aby uzyskać dokładniejsze informacje o tym, co wywołuje ostrzeżenie. Możesz dodać logowanie w kodzie, aby sprawdzić, które operacje powodują problem.
+
+Jeśli masz dostęp do pełnego komunikatu o ostrzeżeniu lub logów, podaj je, aby dokładniej zdiagnozować problem.
