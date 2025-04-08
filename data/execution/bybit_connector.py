@@ -16,24 +16,50 @@ from datetime import datetime
 from typing import Dict, List, Any, Optional
 import requests
 
+def is_env_flag_true(env_var_name: str) -> bool:
+    """
+    Sprawdza, czy zmienna środowiskowa jest ustawiona na wartość prawdziwą.
+    
+    Args:
+        env_var_name: Nazwa zmiennej środowiskowej do sprawdzenia
+        
+    Returns:
+        bool: True jeśli wartość zmiennej to "1", "true" lub "yes" (bez uwzględnienia wielkości liter)
+    """
+    return os.getenv(env_var_name, "").strip().lower() in ["1", "true", "yes"]
+
 class BybitConnector:
     """
     Klasa do komunikacji z giełdą Bybit.
     """
 
-    def __init__(self, api_key: str = None, api_secret: str = None, use_testnet: bool = False, lazy_connect: bool = True):
+    def __init__(self, api_key: str = None, api_secret: str = None, use_testnet: bool = None, lazy_connect: bool = True):
         """
         Inicjalizuje połączenie z Bybit.
 
         Parameters:
             api_key (str): Klucz API Bybit.
             api_secret (str): Sekret API Bybit.
-            use_testnet (bool): Czy używać środowiska testowego (domyślnie False - produkcyjne API).
+            use_testnet (bool): Czy używać środowiska testowego (domyślnie odczytywane ze zmiennych środowiskowych).
             lazy_connect (bool): Czy opóźnić połączenie z API do pierwszego użycia.
         """
         self.api_key = api_key
         self.api_secret = api_secret
-        self.use_testnet = use_testnet
+        
+        # Priorytetyzacja parametrów:
+        # 1. Przekazany parametr use_testnet
+        # 2. BYBIT_TESTNET
+        # 3. BYBIT_USE_TESTNET
+        # 4. Domyślnie False (produkcja)
+        if use_testnet is None:
+            if is_env_flag_true("BYBIT_TESTNET"):
+                self.use_testnet = True
+            elif os.getenv("BYBIT_USE_TESTNET", "false").lower() == "true":
+                self.use_testnet = True
+            else:
+                self.use_testnet = False
+        else:
+            self.use_testnet = use_testnet
         # Upewnij się, że używasz odpowiedniego URL API
         self.base_url = "https://api-testnet.bybit.com" if use_testnet else "https://api.bybit.com"
         self.client = None

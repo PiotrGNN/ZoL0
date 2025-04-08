@@ -88,12 +88,12 @@ def initialize_system():
 
             api_key = os.getenv("BYBIT_API_KEY")
             api_secret = os.getenv("BYBIT_API_SECRET")
-            use_testnet = os.getenv("BYBIT_USE_TESTNET", "true").lower() == "true"  # Domyślnie używamy testnet
+            use_testnet = os.getenv("BYBIT_USE_TESTNET", "false").lower() == "true"  # Domyślnie używamy testnet
 
             if not api_key or not api_secret:
                 logging.warning("Brak kluczy API ByBit w zmiennych środowiskowych. Sprawdź zakładkę Secrets.")
                 return False
-                
+
             # Dodatkowa weryfikacja kluczy dla produkcji
             if not use_testnet and (len(api_key) < 10 or len(api_secret) < 10):
                 logging.critical("BŁĄD KRYTYCZNY: Nieprawidłowe klucze produkcyjne API. Wymagane odpowiednie klucze dla środowiska produkcyjnego!")
@@ -597,10 +597,27 @@ def test_bybit_connection():
         }), 500
 
 
+import os
+
+def is_env_flag_true(env_var_name: str) -> bool:
+    return os.getenv(env_var_name, "").strip().lower() in ["1", "true", "yes"]
+
 # Uruchomienie aplikacji
 if __name__ == "__main__":
     # Tworzenie katalogu logs jeśli nie istnieje
     os.makedirs("logs", exist_ok=True)
+
+    # Sprawdź środowisko - czy na pewno używamy produkcyjnego API
+    if is_env_flag_true("BYBIT_TESTNET"):
+        logger.warning("❌ OSTRZEŻENIE: .env wskazuje na testnet (BYBIT_TESTNET=True). Ustaw BYBIT_TESTNET=False, jeśli chcesz realny rynek!")
+    elif os.getenv("BYBIT_USE_TESTNET", "false").lower() == "true":
+        logger.warning("❌ OSTRZEŻENIE: .env wskazuje na testnet (BYBIT_USE_TESTNET=true). Ustaw BYBIT_USE_TESTNET=false, jeśli chcesz realny rynek!")
+    else:
+        logger.warning("🚨 PRODUKCYJNE API BYBIT JEST WŁĄCZONE! OPERUJESZ PRAWDZIWYMI ŚRODKAMI!")
+        print("\n\n========== PRODUKCYJNE API BYBIT ==========")
+        print("🚨 UWAGA 🚨 Używasz PRODUKCYJNEGO API ByBit")
+        print("Operacje handlowe będą mieć REALNE SKUTKI FINANSOWE!")
+        print("===========================================\n\n")
 
     # Inicjalizacja systemu
     initialize_system()
