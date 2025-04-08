@@ -40,7 +40,8 @@ class BybitConnector:
                  api_secret: str = None,
                  use_testnet: bool = None,
                  lazy_connect: bool = True,
-                 proxies: Dict[str, str] = None):
+                 proxies: Dict[str, str] = None,
+                 market_type: str = "spot"):
         """
         Inicjalizuje połączenie z Bybit.
 
@@ -50,10 +51,12 @@ class BybitConnector:
             use_testnet (bool): Czy używać środowiska testowego (domyślnie odczytywane ze zmiennych środowiskowych).
             lazy_connect (bool): Czy opóźnić połączenie z API do pierwszego użycia.
             proxies (Dict[str, str]): Nie używane w wersji lokalnej (zachowane dla kompatybilności)
+            market_type (str): Typ rynku - "spot" lub "futures"
         """
         self.api_key = api_key
         self.api_secret = api_secret
         self.proxies = None  # Nie używamy proxy w wersji lokalnej
+        self.market_type = market_type.lower()
 
         # Priorytetyzacja parametrów:
         # 1. Przekazany parametr use_testnet
@@ -70,7 +73,7 @@ class BybitConnector:
         else:
             self.use_testnet = use_testnet
         # Upewnij się, że używasz odpowiedniego URL API
-        self.base_url = "https://api-testnet.bybit.com" if use_testnet else "https://api.bybit.com"
+        self.base_url = "https://api-testnet.bybit.com" if self.use_testnet else "https://api.bybit.com"
         self.client = None
         self.api_version = None
         self._connection_initialized = False
@@ -79,9 +82,9 @@ class BybitConnector:
 
         # Inicjalizacja śledzenia limitów API - bardziej restrykcyjne dla produkcji
         self.last_api_call = 0
-        self.min_time_between_calls = 10.0 if not use_testnet else 3.0  # Ostrzejsze limity dla produkcji
-        self.rate_limit_backoff = 30.0 if not use_testnet else 10.0  # Znacznie dłuższy backoff dla produkcji
-        self.remaining_rate_limit = 20 if not use_testnet else 50  # Bezpieczniejszy limit początkowy dla produkcji
+        self.min_time_between_calls = 10.0 if not self.use_testnet else 3.0  # Ostrzejsze limity dla produkcji
+        self.rate_limit_backoff = 30.0 if not self.use_testnet else 10.0  # Znacznie dłuższy backoff dla produkcji
+        self.remaining_rate_limit = 20 if not self.use_testnet else 50  # Bezpieczniejszy limit początkowy dla produkcji
         self.rate_limit_exceeded = False  # Flaga oznaczająca przekroczenie limitu
         self.last_rate_limit_reset = time.time(
         )  # Czas ostatniego resetu limitu
@@ -117,7 +120,7 @@ class BybitConnector:
             self.logger.info("Używasz testnet API (środowisko testowe).")
 
         self.logger.info(
-            f"BybitConnector zainicjalizowany. Testnet: {use_testnet}, Lazy connect: {lazy_connect}"
+            f"BybitConnector zainicjalizowany. Testnet: {self.use_testnet}, Lazy connect: {lazy_connect}, Market type: {self.market_type}"
         )
 
         # Sprawdź, czy już mamy informację o przekroczeniu limitów w cache
@@ -160,7 +163,7 @@ class BybitConnector:
             self._initialize_client()
         else:
             self.logger.info(
-                f"BybitConnector w trybie lazy initialization. Testnet: {use_testnet}"
+                f"BybitConnector w trybie lazy initialization. Testnet: {self.use_testnet}, Market type: {self.market_type}"
             )
 
     def _initialize_client(self, force=False):
@@ -196,8 +199,6 @@ class BybitConnector:
                 self.logger.info("Reset stanu przekroczenia limitów API.")
 
         try:
-            import pybit
-
             # Sprawdzamy wersję i dostosowujemy inicjalizację do odpowiedniej wersji API
             try:
                 # Próba inicjalizacji dla nowszej wersji API używając odpowiednich klas rynkowych
@@ -231,6 +232,7 @@ class BybitConnector:
                         )
                     except ImportError:
                         # Ostatnia szansa - używamy ogólnego HTTP
+                        import pybit
                         self.client = pybit.HTTP(endpoint=endpoint,
                                                  api_key=self.api_key,
                                                  api_secret=self.api_secret,
@@ -764,7 +766,7 @@ class BybitConnector:
 
             for i in range(limit):
                 bid_price = base_price * (1 - 0.001 * (i + 1))
-                ask_price = base_price * (1 + 0.001 * (i + 1))
+                ask_price = base_price * (1 +0.001 * (i + 1))
 
                 bid_amount = random.uniform(
                     0.1, 2.0) if "BTC" in symbol else random.uniform(

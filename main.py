@@ -59,11 +59,12 @@ app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", os.urandom(24))
 
 # Deklaracja zmiennych globalnych
-global bybit_client, notification_system, sentiment_analyzer, anomaly_detector
+global bybit_client, notification_system, sentiment_analyzer, anomaly_detector, strategy_manager
 bybit_client = None
 notification_system = None
 sentiment_analyzer = None
 anomaly_detector = None
+strategy_manager = None
 
 # Inicjalizacja komponentów systemu (import wewnątrz funkcji dla uniknięcia cyklicznych importów)
 def initialize_system():
@@ -71,20 +72,40 @@ def initialize_system():
         from data.utils.notification_system import NotificationSystem
         from data.indicators.sentiment_analysis import SentimentAnalyzer
         from ai_models.anomaly_detection import AnomalyDetector
+        from data.strategies.strategy_manager import StrategyManager
         from data.utils.import_manager import exclude_modules_from_auto_import
 
         # Wykluczamy podpakiet tests z automatycznego importu
         exclude_modules_from_auto_import(["tests"])
         logging.info("Wykluczam podpakiet 'tests' z automatycznego importu.")
 
-        global notification_system, sentiment_analyzer, anomaly_detector, bybit_client
+        global notification_system, sentiment_analyzer, anomaly_detector, bybit_client, strategy_manager
 
         notification_system = NotificationSystem()
         logging.info("Zainicjalizowano system powiadomień z 2 kanałami.")
 
-        sentiment_analyzer = SentimentAnalyzer()
+        # Inicjalizacja analizatora sentymentu
+        sentiment_analyzer = SentimentAnalyzer(sources=["twitter", "news", "forum", "reddit"])
+        logging.info(f"Inicjalizacja analizatora sentymentu z {len(sentiment_analyzer.sources)} źródłami.")
 
-        anomaly_detector = AnomalyDetector()
+        # Inicjalizacja wykrywania anomalii
+        anomaly_detector = AnomalyDetector(method="isolation_forest", threshold=2.5)
+        logging.info(f"Inicjalizacja detektora anomalii z metodą: {anomaly_detector.method}")
+
+        # Inicjalizacja managera strategii z domyślnymi strategiami
+        strategies = {
+            "trend_following": {"name": "Trend Following", "enabled": True},
+            "mean_reversion": {"name": "Mean Reversion", "enabled": False},
+            "breakout": {"name": "Breakout", "enabled": True}
+        }
+        exposure_limits = {
+            "trend_following": 0.5,
+            "mean_reversion": 0.3,
+            "breakout": 0.4
+        }
+        strategy_manager = StrategyManager(strategies, exposure_limits)
+        logging.info(f"Zainicjalizowano StrategyManager z {len(strategies)} strategiami.")
+
 
         # Inicjalizacja klienta ByBit (tylko raz podczas startu aplikacji)
         try:
@@ -105,12 +126,12 @@ def initialize_system():
             if not use_testnet and (len(api_key) < 10 or len(api_secret) < 10):
                 logging.critical("BŁĄD KRYTYCZNY: Nieprawidłowe klucze produkcyjne API. Wymagane odpowiednie klucze dla środowiska produkcyjnego!")
                 return False
-                
+
             # Informacja o systemie operacyjnym
             import platform
             system_info = f"{platform.system()} {platform.release()}"
             logging.info(f"System operacyjny: {system_info}")
-            
+
             # Więcej szczegółów o konfiguracji API dla celów debugowania
             masked_key = f"{api_key[:4]}{'*' * (len(api_key) - 4)}" if api_key else "Brak klucza"
             masked_secret = f"{api_secret[:4]}{'*' * (len(api_secret) - 4)}" if api_secret else "Brak sekretu"
@@ -302,8 +323,8 @@ def get_dashboard_data():
             'total_trades': 48,
             'win_rate': 68.5,
             'max_drawdown': 8.2,
-            'market_sentiment': sentiment_analyzer.analyze()["analysis"] if 'sentiment_analyzer' in globals() else 'Neutralny',
-            'anomalies': anomaly_detector.get_detected_anomalies() if 'anomaly_detector' in globals() else [],
+            'market_sentiment': sentiment_analyzer.analyze()["analysis"] if sentiment_analyzer else 'Neutralny',
+            'anomalies': anomaly_detector.get_detected_anomalies() if anomaly_detector else [],
             'last_updated': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         })
     except Exception as e:
@@ -491,10 +512,10 @@ def get_component_status():
 
         # Data Processor Status
         data_processor_status = 'online'
-        
+
         # Risk Manager Status
         risk_manager_status = 'online'
-        
+
         # Budowanie odpowiedzi
         components = [
             {
@@ -514,10 +535,10 @@ def get_component_status():
                 'status': risk_manager_status
             }
         ]
-        
+
         # Log diagnostyczny
         logger.info(f"Statusy komponentów: API: {api_connector_status}, Trading: {trading_engine_status}")
-        
+
         return jsonify({'components': components})
     except Exception as e:
         logging.error(f"Błąd podczas pobierania statusu komponentów: {e}", exc_info=True)
@@ -571,7 +592,8 @@ def get_system_status():
             'ml_prediction': 'active',
             'order_execution': 'active',
             'notification_system': 'active' if 'notification_system' in globals() else 'inactive',
-            'bybit_api':'active' if bybit_client else 'inactive'
+            'bybit_api':'active' if bybit_client else 'inactive',
+            'strategy_manager': 'active' if strategy_manager else 'inactive'
         },
         'last_updated': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     })
@@ -665,15 +687,15 @@ def get_portfolio():
                 },
                 "source": "simulation"
             })
-        
+
         # Próba pobrania danych z API
         logger.info("Próbuję pobrać dane portfela z API ByBit")
         balance = bybit_client.get_account_balance()
-        
+
         # Upewnij się, że zwracany JSON ma wymagane pole success
         if "success" not in balance:
             balance["success"] = True
-            
+
         # Upewnij się, że mamy słownik balances nawet jeśli API zwróciło błąd
         if "balances" not in balance or not balance["balances"]:
             logger.warning("API zwróciło puste dane portfela, używam danych testowych")
@@ -682,14 +704,14 @@ def get_portfolio():
                 "USDT": {"equity": 1000, "available_balance": 950, "wallet_balance": 1000}
             }
             balance["source"] = "fallback_empty"
-        
+
         logger.info(f"Zwracam dane portfela: {balance.get('source', 'api')}")
         return jsonify(balance)
     except Exception as e:
         logger.error(f"Błąd podczas pobierania danych portfela: {e}", exc_info=True)
         # Szczegółowe dane diagnostyczne
         logger.error(f"Szczegóły błędu: {type(e).__name__}, {str(e)}")
-        
+
         return jsonify({
             "success": True,  # Ustawiamy True, aby frontend nie wyświetlał błędu
             "balances": {
@@ -714,7 +736,7 @@ def test_bybit_connection():
         balance_test = bybit_client.get_account_balance()
 
         # Sprawdzenie, czy używamy testnet czy produkcyjnego API
-        is_testnet = bybit_client.use_testnet
+        is_testnet = bybit_client.usetestnet
 
         connection_status = {
             "success": True,

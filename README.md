@@ -1,112 +1,59 @@
-# Trading Platform
+# Inteligentny System Tradingowy
 
-## 📌 Opis
+## Opis Projektu
+Kompleksowy system tradingowy integrujący sztuczną inteligencję, analizę techniczną, zarządzanie ryzykiem oraz automatyzację handlu na giełdzie kryptowalut Bybit.
 
-Kompleksowa platforma do automatycznego tradingu, wykorzystująca zaawansowane algorytmy i sztuczną inteligencję do analizy rynków kryptowalut.
+## Instalacja
 
-## 🚀 Funkcje
-
-- Podłączenie do Bybit API z obsługą kont testowych i produkcyjnych
-- Moduły analizy technicznej i sentymentu
-- Wykrywanie anomalii rynkowych
-- Strategie oparte na uczeniu maszynowym
-- Zarządzanie ryzykiem i kapitałem
-- Interfejs webowy do monitorowania i kontroli
-
-## 🛠️ Instalacja
-
-### Wymagania
-
-- Python 3.10+
-- Windows 11/10, Linux lub macOS
-
-### Kroki instalacji
-
-1. Sklonuj repozytorium:
-```
-git clone https://github.com/username/trading-platform.git
-cd trading-platform
-```
-
-2. Utwórz i aktywuj wirtualne środowisko (opcjonalnie, ale zalecane):
-```
-# Windows
-python -m venv venv
-venv\Scripts\activate
-
-# Linux/macOS
-python -m venv venv
-source venv/bin/activate
-```
-
-3. Zainstaluj zależności:
-```
+```bash
+git clone https://github.com/twoj-username/trading-system.git
+cd trading-system
 pip install -r requirements.txt
+python init_project.py
 ```
 
-4. Skonfiguruj ustawienia:
-- Skopiuj `.env.example` do `.env`
-- Edytuj plik `.env` i wprowadź swoje klucze API
+## Konfiguracja
+1. Skopiuj plik `.env.example` do `.env`
+2. Uzupełnij zmienne środowiskowe w pliku `.env`, w tym klucze API Bybit
+3. Dostosuj parametry systemu w pliku `config/settings.yml`
 
-```
-cp .env.example .env
-```
+## Uruchomienie
 
-## 🚀 Uruchomienie aplikacji
-
-### Windows
-
-```
-run_windows.bat
-```
-
-lub
-
-```
+```bash
 python main.py
 ```
 
-### Linux/macOS
+Aplikacja będzie dostępna pod adresem http://0.0.0.0:5000
 
-```
-python main.py
-```
+## Struktura Projektu
 
-## 🧪 Testowanie
+- `ai_models/` - Modele AI i uczenia maszynowego
+- `data/` - Wszystkie moduły przetwarzania danych
+  - `execution/` - Wykonywanie zleceń i komunikacja z giełdą
+  - `indicators/` - Wskaźniki techniczne i analiza sentymentu
+  - `strategies/` - Strategie handlowe
+  - `risk_management/` - Zarządzanie ryzykiem
+- `static/` - Pliki statyczne (CSS, JavaScript)
+- `templates/` - Szablony HTML
+- `logs/` - Pliki logów
+- `config/` - Pliki konfiguracyjne
 
-### Test połączenia z Bybit API
+## Główne Funkcje
+- Dashboard z podglądem stanu systemu i portfela
+- Automatyczne strategie handlowe z możliwością dynamicznego przełączania
+- Analiza sentymentu rynkowego
+- Wykrywanie anomalii rynkowych
+- Zarządzanie ryzykiem portfela
+- Optymalizacja strategii na podstawie danych historycznych
 
-```
-python test_bybit_connection.py
-```
+## Status Komponentów
+- Trading Engine: Automatyczny system handlowy
+- API Connector: Połączenie z API giełdy
+- Data Processor: Przetwarzanie danych rynkowych
+- Risk Manager: Zarządzanie ryzykiem portfela
+
+## Rozwijanie Projektu
+Aby dodać nową strategię, utwórz nowy plik w folderze `data/strategies/` i zaimplementuj wymagane metody.
 
 ## 📚 Dokumentacja
-
 Szczegółowa dokumentacja API i modułów dostępna jest w katalogu `docs/`.  Dodatkowo: [Bybit API V5](https://bybit-exchange.github.io/docs/v5/intro)
-
-
-## ⚠️ Uwagi
-
-- Domyślnie system używa trybu TESTNET - aby używać prawdziwego tradingu, zmień `BYBIT_USE_TESTNET=false` w pliku `.env`
-- Zachowaj ostrożność przy korzystaniu z produkcyjnego API - wszystkie transakcje są rzeczywiste i mogą prowadzić do strat finansowych
-
-## 🔧 Rozwiązywanie problemów
-### Brak modułu
-Jeśli pojawi się błąd o brakującym module, zainstaluj go ręcznie:
-```cmd
-pip install nazwa_modułu
-```
-
-### Problemy z połączeniem API
-1. Sprawdź poprawność kluczy API w pliku `.env`
-2. Upewnij się, że masz działające połączenie z internetem
-3. Sprawdź czy Twoje klucze API mają odpowiednie uprawnienia na Bybit
-
-### Inne problemy
-1. Sprawdź logi w katalogu `logs/`
-2. Uruchom aplikację w trybie debug: `python main.py --debug`
-
-
-## 📝 Licencja
-
-To oprogramowanie jest dostępne na licencji MIT.
