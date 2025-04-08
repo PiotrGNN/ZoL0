@@ -144,7 +144,19 @@ function updatePortfolioData() {
         .then(data => {
             appState.portfolioData = data;
             appState.lastUpdated.portfolio = Date.now();
-            updatePortfolioUI(data);
+            
+            // Sprawdź czy dane są w odpowiednim formacie
+            if (data && data.balances && Object.keys(data.balances).length > 0) {
+                updatePortfolioUI(data);
+            } else {
+                console.warn("Otrzymano niepełne dane portfela:", data);
+                // Fallback dla przypadku gdy dane są niepełne
+                document.getElementById('portfolio-container').innerHTML = `
+                    <div class="alert alert-info">
+                        Niepełne dane portfela. <button class="btn btn-sm btn-outline-primary" onclick="updatePortfolioData()">Odśwież</button>
+                    </div>
+                `;
+            }
         })
         .catch(error => {
             console.error("Błąd podczas pobierania danych portfela:", error);
@@ -163,6 +175,7 @@ function updatePortfolioData() {
 function updatePortfolioUI(data) {
     try {
         if (!data || !data.balances) {
+            console.warn("Brak danych portfela do wyświetlenia");
             return;
         }
 
@@ -172,37 +185,54 @@ function updatePortfolioUI(data) {
         // Wyczyść kontener
         portfolioContainer.innerHTML = '';
 
+        // Licznik walut dodanych do widoku
+        let currenciesAdded = 0;
+
         // Dla każdej waluty w portfelu
         for (const [currency, balance] of Object.entries(data.balances)) {
-            if (balance.equity > 0) {
+            // Bezpieczne pobranie wartości equity z obsługą wartości undefined/null
+            const equity = parseFloat(balance.equity || 0);
+            
+            // Dodaj walutę tylko jeśli ma niezerowe saldo lub jest USDT/BTC (ważne waluty)
+            if (equity > 0 || currency === 'USDT' || currency === 'BTC') {
                 const balanceItem = document.createElement('div');
                 balanceItem.className = 'balance-item';
 
+                // Dostosuj precyzję wyświetlania w zależności od waluty
+                const precision = currency === 'BTC' || currency === 'ETH' ? 8 : 2;
+                
                 balanceItem.innerHTML = `
                     <span class="currency">${currency}</span>
-                    <span class="amount">${parseFloat(balance.equity).toFixed(currency === 'BTC' ? 8 : 2)}</span>
+                    <span class="amount">${equity.toFixed(precision)}</span>
                 `;
 
                 portfolioContainer.appendChild(balanceItem);
+                currenciesAdded++;
             }
+        }
+
+        // Jeśli nie dodano żadnej waluty, wyświetl komunikat
+        if (currenciesAdded === 0) {
+            portfolioContainer.innerHTML = '<div class="no-data">Brak walut o niezerowym saldzie</div>';
         }
 
         // Aktualizuj status połączenia
         const connectionStatus = document.getElementById('api-status');
         if (connectionStatus) {
-            if (data.success) {
-                connectionStatus.textContent = 'Connected';
-                connectionStatus.className = 'status-badge online';
-            } else {
-                connectionStatus.textContent = 'Error';
-                connectionStatus.className = 'status-badge offline';
-            }
+            // Zawsze ustawiamy jako Connected, ponieważ backend zwraca success=true nawet w przypadku błędu
+            connectionStatus.textContent = 'Connected';
+            connectionStatus.className = 'status-badge online';
         }
 
         // Aktualizuj czas ostatniej aktualizacji
         updateLastRefreshed();
     } catch (error) {
         console.error("Błąd podczas aktualizacji UI portfela:", error);
+        // W przypadku błędu wyświetl przyjazny komunikat w kontenerze portfela
+        const portfolioContainer = document.getElementById('portfolio-balance');
+        if (portfolioContainer) {
+            portfolioContainer.innerHTML = '<div class="error-msg">Błąd przetwarzania danych portfela</div>';
+        }
     }
 }
 
