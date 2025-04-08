@@ -376,14 +376,15 @@ class BybitConnector:
                         raise Exception(f"Błąd HTTP {response.status_code} dla V5 API")
                 except Exception as e:
                     self.logger.warning(f"Nie udało się pobrać czasu serwera przez HTTP: {e}. Używam czasu lokalnego.")
-                    raise
-
+                    
                     # Zapisz wynik w cache
                     try:
                         from data.utils.cache_manager import store_cached_data
                         store_cached_data(cache_key, server_time)
                     except Exception as cache_error:
                         self.logger.warning(f"Błąd podczas zapisu do cache: {cache_error}")
+                    
+                    raise
 
                     # Ekstrakcja czasu z różnych formatów API
                     if "timeNow" in server_time:
@@ -729,31 +730,70 @@ class BybitConnector:
                             try:
                                 self.logger.info("Próba pobrania salda przez bezpośrednie zapytanie HTTP do V5 API")
                                 v5_endpoint = f"{self.base_url}/v5/account/wallet-balance"
-                                headers = {}
-                                params = {}
-                                if self.api_key:
-                                    # Tworzenie sygnatury dla V5 API
+                                
+                                # Parametry zgodnie z dokumentacją V5 API
+                                params = {
+                                    'accountType': 'UNIFIED'  # Można dostosować w zależności od typu konta
+                                }
+                                
+                                # Tworzenie sygnatury zgodnie z dokumentacją V5 API
+                                timestamp = str(int(time.time() * 1000))
+                                
+                                # Przygotowanie parametrów do sygnatury
+                                param_str = '&'.join([f"{key}={value}" for key, value in sorted(params.items())])
+                                pre_sign = f"{timestamp}{self.api_key}{param_str}"
+                                
+                                # Generowanie sygnatury HMAC SHA256
+                                signature = hmac.new(
+                                    bytes(self.api_secret, 'utf-8'),
+                                    bytes(pre_sign, 'utf-8'),
+                                    hashlib.sha256
+                                ).hexdigest()
+                                
+                                # Ustawienie nagłówków zgodnie z dokumentacją
+                                headers = {
+                                    "X-BAPI-API-KEY": self.api_key,
+                                    "X-BAPI-TIMESTAMP": timestamp,
+                                    "X-BAPI-SIGN": signature,
+                                    "X-BAPI-RECV-WINDOW": "20000",
+                                    "Content-Type": "application/json"
+                                }
+                                
+                                self.logger.debug(f"Wysyłanie zapytania do V5 API: {v5_endpoint} z parametrami: {params}")
+                                response = requests.get(v5_endpoint, headers=headers, params=params, timeout=10)
+                                
+                                if response.status_code == 200:
+                                    wallet = response.json()
+                                    self.logger.info(f"Saldo pobrane przez bezpośrednie zapytanie HTTP do V5 API")
+                                    self.logger.debug(f"Odpowiedź API: {str(wallet)[:200]}...")
+                                else:
+                                    self.logger.warning(f"Błąd podczas pobierania salda przez V5 API: {response.status_code} - {response.text}")
+                                    
+                                    # Spróbuj alternatywnego API - Spot API v1
+                                    spot_endpoint = f"{self.base_url}/spot/v1/account"
                                     timestamp = str(int(time.time() * 1000))
-                                    signature_payload = timestamp + self.api_key + "20000" # recv_window=20000
+                                    pre_sign = f"{timestamp}{self.api_key}"
                                     signature = hmac.new(
                                         bytes(self.api_secret, 'utf-8'),
-                                        bytes(signature_payload, 'utf-8'),
+                                        bytes(pre_sign, 'utf-8'),
                                         hashlib.sha256
                                     ).hexdigest()
-
+                                    
                                     headers = {
                                         "X-BAPI-API-KEY": self.api_key,
                                         "X-BAPI-TIMESTAMP": timestamp,
-                                        "X-BAPI-RECV-WINDOW": "20000",
-                                        "X-BAPI-SIGN": signature
+                                        "X-BAPI-SIGN": signature,
+                                        "Content-Type": "application/json"
                                     }
-
-                                response = requests.get(v5_endpoint, headers=headers, params=params, timeout=10)
-                                if response.status_code == 200:
-                                    wallet = response.json()
-                                    self.logger.info(f"Saldo pobrane przez bezpośrednie zapytanie HTTP")
-                                else:
-                                    self.logger.warning(f"Błąd podczas pobierania salda przez V5 API: {response.status_code} - {response.text}")
+                                    
+                                    self.logger.debug(f"Próba zapytania do Spot API v1: {spot_endpoint}")
+                                    response = requests.get(spot_endpoint, headers=headers, timeout=10)
+                                    
+                                    if response.status_code == 200:
+                                        wallet = response.json()
+                                        self.logger.info(f"Saldo pobrane przez bezpośrednie zapytanie HTTP do Spot API v1")
+                                    else:
+                                        self.logger.warning(f"Błąd podczas pobierania salda przez Spot API v1: {response.status_code} - {response.text}")
                             except Exception as e:
                                 self.logger.warning(f"Błąd podczas używania bezpośredniego zapytania HTTP: {e}")
                                 # Kontynuujemy, aby spróbować innych metod

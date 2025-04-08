@@ -39,7 +39,29 @@ _cache_lock = threading.RLock()
 # Konfiguracja cache'a - dłuższe czasy życia dla lepszej wydajności
 DEFAULT_TTL = 120      # Domyślny czas życia cache'a w sekundach (2 minuty)
 LONG_TTL = 600         # Długi czas życia dla kosztownych zapytań (10 minut)
-EMERGENCY_TTL = 3600   # Awaryjny czas życia (60 minut) w przypadku przekroczenia limitów API
+EMERGENCY_TTL = 3600   # Awaryjny czas życia (60 minut) w przypadku przekroczenia l"""
+cache_manager.py - Moduł zarządzający buforowaniem danych API i śledzeniem limitów zapytań
+"""
+
+import os
+import json
+import time
+import logging
+from typing import Any, Dict, Tuple, Optional, List, Union
+from datetime import datetime
+
+# Konfiguracja logowania
+logger = logging.getLogger(__name__)
+if not logger.handlers:
+    handler = logging.FileHandler("logs/cache_manager.log")
+    formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    logger.setLevel(logging.INFO)
+
+# Katalog przechowywania cache
+CACHE_DIR = "data/cache"
+os.makedirs(CACHE_DIR, exist_ok=True)
 
 # Parametry dla różnych środowisk
 ENVIRONMENT_CONFIG = {
@@ -60,9 +82,40 @@ ENVIRONMENT_CONFIG = {
 }
 
 # Sprawdź, czy używamy produkcyjnego API na podstawie zmiennych środowiskowych
-import os
 _is_production = os.getenv('BYBIT_USE_TESTNET', 'true').lower() != 'true' or os.getenv('IS_PRODUCTION', 'false').lower() == 'true'
 _env_config = ENVIRONMENT_CONFIG['production'] if _is_production else ENVIRONMENT_CONFIG['development']
+
+# Funkcja do wykrywania błędów CloudFront
+def detect_cloudfront_error(error_message: str) -> bool:
+    """
+    Wykrywa błędy związane z CloudFront i limitami IP w komunikatach błędów.
+    
+    Args:
+        error_message: Wiadomość błędu do analizy
+        
+    Returns:
+        bool: True jeśli wykryto błąd CloudFront/IP limit, False w przeciwnym razie
+    """
+    error_lower = error_message.lower()
+    cloudfront_indicators = [
+        'cloudfront', 
+        'distribution', 
+        '403 forbidden',
+        'rate limit',
+        '429 too many requests',
+        'access denied',
+        'ip address has been blocked',
+        'throttled',
+        'operation too frequent',
+        'too many requests'
+    ]
+    
+    for indicator in cloudfront_indicators:
+        if indicator in error_lower:
+            logger.warning(f"Wykryto błąd CloudFront/IP limit: '{indicator}' w '{error_message}'")
+            return True
+            
+    return FalseNVIRONMENT_CONFIG['development']
 
 # Ratelimiter globalny - z konfiguracją dostosowaną do środowiska
 _rate_limiter = {
