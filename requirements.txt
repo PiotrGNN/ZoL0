@@ -1,16 +1,16 @@
 # Core
-Flask>=2.0.1
-python-dotenv>=0.19.0
-numpy>=1.20.0
-pandas>=1.3.0
-matplotlib>=3.4.0
+Flask==2.0.1
+python-dotenv==0.19.0
+numpy==1.21.2
+pandas==1.3.3
+matplotlib==3.4.3
 scipy>=1.7.0
 
 # API i komunikacja
 requests==2.31.0
 websocket-client==1.7.0
 typing-extensions==4.5.0
-pybit>=2.4.0
+pybit==2.4.1
 ccxt>=4.0.0
 
 # Analiza tekstu
@@ -19,29 +19,33 @@ vaderSentiment>=3.3.2
 
 # Narzędzia pomocnicze
 tqdm>=4.62.0
+uvloop==0.17.0; platform_system != "Windows"
+orjson==3.9.10
+nltk==3.8.1
+
 
 # Opcjonalnie - tylko gdy potrzebne
 # scikit-learn>=1.0.0
 # tensorflow>=2.8.0
 # yfinance>=0.1.70
 
-# Obsługa websocketów (Retaining from original, as not explicitly replaced)
+# Obsługa websocketów 
 #websocket-client==1.7.0
 
-# Dodatki dla bezpieczeństwa (Retaining from original, as not explicitly replaced)
+# Dodatki dla bezpieczeństwa 
 #typing-extensions==4.5.0
 
-# Narzędzia deweloperskie (Retaining from original, as not explicitly replaced)
+# Narzędzia deweloperskie 
 #pytest>=6.2.5
 #flake8>=4.0.0
 #black>=21.12b0
 #isort>=5.10.0
 
-# Monitoring i bezpieczeństwo (Retaining from original, as not explicitly replaced)
+# Monitoring i bezpieczeństwo 
 #ratelimit>=2.2.1
 
-# Bazy danych (Retaining from original, as not explicitly replaced)
+# Bazy danych 
 #SQLAlchemy>=1.4.0
 
-# Obsługa plików (Retaining from original, as not explicitly replaced)
+# Obsługa plików 
 #PyYAML>=6.0.0

@@ -605,27 +605,50 @@ class BybitConnector:
                             error_str = str(time_error)
                             self.logger.error(f"Test połączenia z API nie powiódł się: {time_error}")
 
-                            # Specjalna obsługa limitu żądań API oraz błędów CloudFront
-                            if "rate limit" in error_str.lower() or "429" in error_str or "403" in error_str or "cloudfront" in error_str.lower():
+                            # Importuj funkcje wykrywania i ustawiania blokady CloudFront
+                            from data.utils.cache_manager import detect_cloudfront_error, set_cloudfront_block_status
+                            
+                            # Wykrywanie błędów CloudFront i limitów IP
+                            if detect_cloudfront_error(error_str):
                                 self.rate_limit_exceeded = True
                                 self.last_rate_limit_reset = time.time()
                                 self.remaining_rate_limit = 0
                                 
-                                # Wykryj specyficzny błąd CloudFront i dostosuj czas oczekiwania
+                                # Bardzo agresywny backoff dla problemów z CloudFront i IP rate limit
                                 if "cloudfront" in error_str.lower() or "The Amazon CloudFront distribution" in error_str:
-                                    self.logger.critical(f"Wykryto blokadę CloudFront! Bardzo agresywny backoff zostanie zastosowany.")
-                                    # Bardzo agresywny backoff dla problemu z CloudFront
-                                    self.min_time_between_calls = min(10.0, self.min_time_between_calls * 3.0)  # max 10s między zapytaniami
-                                    self.rate_limit_backoff = min(300.0, self.rate_limit_backoff * 3.0)  # max 5 min backoff
+                                    self.logger.critical(f"Wykryto blokadę CloudFront - przechodzę w tryb pełnego fallback")
+                                    set_cloudfront_block_status(True, error_str)
+                                    
+                                    # Ustaw ekstremalnie długi backoff dla blokady CloudFront
+                                    self.min_time_between_calls = 30.0  # minimum 30s między zapytaniami
+                                    self.rate_limit_backoff = 1800.0    # 30 minut backoff
+                                    
+                                    # Ustaw flagę _backoff_attempt dla eksponencjalnego wzrostu
+                                    self._backoff_attempt = 5  # Wysoka wartość dla długiego czasu oczekiwania
                                 else:
-                                    self.logger.warning(f"Przekroczono limit zapytań API. Używam symulowanych danych i zwiększam czas oczekiwania.")
-                                    # Zwiększ dynamicznie czas oczekiwania przy kolejnych przekroczeniach limitu
-                                    self.min_time_between_calls = min(5.0, self.min_time_between_calls * 2.0)  # max 5s między zapytaniami
-                                    self.rate_limit_backoff = min(120.0, self.rate_limit_backoff * 2.0)  # max 2 min backoff
+                                    self.logger.warning(f"Przekroczono limit zapytań API - używam cache lub danych symulowanych")
+                                    set_cloudfront_block_status(True, f"IP Rate Limit: {error_str}")
+                                    
+                                    # Ustaw parametry backoff dla IP rate limit
+                                    self.min_time_between_calls = 20.0  # 20s zgodnie z wymaganiami
+                                    self.rate_limit_backoff = 600.0     # 10 minut backoff
+                                    self._backoff_attempt = 3
                                 
-                                self.logger.info(f"Nowe parametry: min_interval={self.min_time_between_calls:.1f}s, backoff={self.rate_limit_backoff:.1f}s")
-
-                                # Zwracamy symulowane dane zamiast zgłaszania wyjątku
+                                self.logger.warning(f"[FALLBACK MODE] min_interval={self.min_time_between_calls:.1f}s, backoff={self.rate_limit_backoff:.1f}s")
+                                
+                                # Sprawdź najpierw cache - jeśli są dane w cache
+                                cache_key = f"account_balance_{self.api_key[:8]}_{self.use_testnet}"
+                                cached_data, cache_found = get_cached_data(cache_key)
+                                
+                                if cache_found and cached_data:
+                                    # Użyj danych z cache ale dodaj flagę informacyjną
+                                    cached_data["success"] = True
+                                    cached_data["source"] = "cache_fallback"
+                                    cached_data["warning"] = f"Używam danych z cache z powodu: {error_str}"
+                                    self.logger.info("UŻYWAM DANYCH Z CACHE z powodu blokady CloudFront/IP Rate Limit")
+                                    return cached_data
+                                
+                                # Nie ma danych w cache - wygeneruj symulowane dane
                                 return {
                                     "balances": {
                                         "BTC": {"equity": 0.025, "available_balance": 0.020, "wallet_balance": 0.025},
@@ -633,9 +656,9 @@ class BybitConnector:
                                         "ETH": {"equity": 0.5, "available_balance": 0.5, "wallet_balance": 0.5}
                                     },
                                     "success": True,
-                                    "warning": "Przekroczono limit zapytań API. Dane symulowane.",
-                                    "source": "simulation_rate_limited",
-                                    "note": f"Przekroczono limit zapytań API. Oczekiwanie {self.rate_limit_backoff}s przed kolejnymi zapytaniami."
+                                    "warning": f"CloudFront/IP Rate Limit: {error_str}",
+                                    "source": "simulation_cloudfront_blocked",
+                                    "note": "Dane symulowane - wykryto blokadę CloudFront lub przekroczenie limitów IP"
                                 }
                             else:
                                 # Dla innych błędów zgłaszamy wyjątek
@@ -933,88 +956,96 @@ class BybitConnector:
             return {"success": False, "error": str(e)}
 
     def _apply_rate_limit(self):
-        """Applies rate limiting to API calls with adaptive backoff and integration with cache_manager."""
-        from data.utils.cache_manager import get_api_status, set_rate_limit_parameters, store_cached_data
+        """Applies rate limiting to API calls with exponential backoff for production environment."""
+        from data.utils.cache_manager import (
+            get_api_status, set_rate_limit_parameters, store_cached_data,
+            detect_cloudfront_error, set_cloudfront_block_status, get_cloudfront_status
+        )
+
+        # Sprawdź czy mamy blokadę CloudFront - w takim przypadku korzystamy z cache
+        cloudfront_status = get_cloudfront_status()
+        if cloudfront_status.get("blocked", False):
+            self.logger.warning(f"Wykryto aktywną blokadę CloudFront: {cloudfront_status.get('error', '')}. Używanie danych z cache.")
+            self.rate_limit_exceeded = True
+            return
 
         # Pobierz aktualny status API z cache_manager
         api_status = get_api_status()
         now = time.time()
+        is_production = os.getenv('IS_PRODUCTION', 'false').lower() == 'true' or not self.use_testnet
 
-        # Synchronizuj parametry rate limiter'a z cache_manager
+        # Synchronizuj parametry rate limiter'a z cache_manager (raz na minutę)
         if not hasattr(self, '_rate_limit_synced') or now - getattr(self, '_last_sync_time', 0) > 60:
-            # Bardzo konserwatywne limity aby uniknąć blokad CloudFront i 403
-            max_calls = 6 if not self.use_testnet else 10
-            min_interval = 5.0 if not self.use_testnet else 3.0
+            # Produkcyjne parametry: max 3 wywołania co 20 sekund
+            if is_production:
+                max_calls = 3
+                min_interval = 20.0  # 20 sekund między zapytaniami
+            else:
+                max_calls = 6
+                min_interval = 10.0
             
-            # Sprawdź, czy wystąpiły wcześniej błędy rate limit
+            # Jeśli wystąpiły wcześniej błędy rate limit, zwiększamy jeszcze bardziej restrykcje
             if hasattr(self, 'rate_limit_exceeded') and self.rate_limit_exceeded:
-                # Drastycznie zmniejsz limity po wystąpieniu błędu
-                max_calls = max(3, max_calls // 2)
-                min_interval = min(15.0, min_interval * 2)
-                self.logger.warning(f"Zastosowano bardzo restrykcyjne parametry rate limiting: max_calls={max_calls}, min_interval={min_interval}s")
-                
-                # Dodatkowa pauza po wykryciu przekroczenia limitu
-                time.sleep(2.0)
+                # Eksponencjalne zmniejszenie ruchu
+                min_interval = min(60.0, min_interval * 2)  # max 60s między zapytaniami
+                self.logger.warning(f"Zastosowano eksponencjalne wycofanie: min_interval={min_interval}s")
+                time.sleep(3.0)  # Dodatkowa pauza
 
-            # Synchronizuj parametry tylko raz na minutę dla wydajności
+            # Synchronizuj parametry
             set_rate_limit_parameters(
                 max_calls_per_minute=max_calls,
                 min_interval=min_interval
             )
             self._rate_limit_synced = True
             self._last_sync_time = now
-
-            # Zaktualizuj lokalne zmienne
             self.min_time_between_calls = min_interval
-            self.logger.info(f"Zaktualizowano parametry rate limitera: max_calls={max_calls}, min_interval={min_interval}s")
 
-        # Jeśli przekroczono limit, stosuj znacznie dłuższe opóźnienie dla produkcyjnego API
+        # Jeśli przekroczono limit lub mamy blokadę CloudFront
         if self.rate_limit_exceeded or api_status["rate_limited"]:
-            # Resetuj stan po okresie oczekiwania
-            reset_time = 120.0 if not self.use_testnet else 60.0  # Dłuższy czas resetu dla produkcyjnego API
+            # Resetuj stan po długim okresie oczekiwania
+            reset_time = 600.0 if is_production else 300.0  # 10 minut dla produkcji, 5 dla dev
 
             if now - self.last_rate_limit_reset > reset_time:
-                self.logger.info("Resetowanie stanu limitów API po okresie oczekiwania")
+                self.logger.info("Próba resetu stanu po długim oczekiwaniu")
                 self.rate_limit_exceeded = False
-                self.remaining_rate_limit = 30 if not self.use_testnet else 50  # Bardziej konserwatywne dla produkcji
-
-                # Zapisz również stan w cache_manager
+                self.remaining_rate_limit = 3 if is_production else 10
                 store_cached_data("api_rate_limited", False)
+                set_cloudfront_block_status(False)
             else:
-                # Bardziej agresywne oczekiwanie przy przekroczeniu limitu
-                max_sleep = 120.0 if not self.use_testnet else 60.0  # Dłuższe dla produkcyjnego API
-                sleep_time = min(max_sleep, self.rate_limit_backoff * 1.5)
-
-                # Użyj wyeksponowanego backoffu, aby uniknąć częstych problemów z limitami
-                if not self.use_testnet:
-                    sleep_time = min(max_sleep, sleep_time * 1.5)  # Dodatkowy mnożnik dla produkcyjnego API
-
-                self.logger.info(f"Rate limit przekroczony - oczekiwanie {sleep_time:.1f}s przed próbą")
+                # Eksponencjalny backoff przy powtarzających się błędach
+                base_backoff = 20.0 if is_production else 10.0
+                attempt = getattr(self, '_backoff_attempt', 1)
+                max_sleep = 600.0 if is_production else 300.0
+                
+                # Eksponencjalny wzrost czasu oczekiwania: 20s, 40s, 80s, 160s...
+                sleep_time = min(max_sleep, base_backoff * (2 ** (attempt - 1)))
+                
+                self.logger.warning(f"Eksponencjalne wycofanie: próba {attempt}, oczekiwanie {sleep_time:.1f}s")
                 time.sleep(sleep_time)
+                
+                # Zwiększ licznik próby dla kolejnego eksponencjalnego wzrostu
+                self._backoff_attempt = attempt + 1
 
-                # Zwiększamy backoff przy każdym kolejnym przekroczeniu
-                self.rate_limit_backoff = min(max_sleep, self.rate_limit_backoff * 1.3)
-
-        # Standardowe opóźnienie między wywołaniami z minimalnym buforem
+        # Zachowaj minimalny odstęp między wywołaniami - 20s dla produkcji
         time_since_last_call = now - self.last_api_call
-        # Znacznie dłuższe minimalne opóźnienie dla produkcyjnego API
-        min_time = 3.0 if not self.use_testnet else max(1.5, self.min_time_between_calls)
+        min_time = 20.0 if is_production else 5.0
 
         if time_since_last_call < min_time:
             sleep_time = min_time - time_since_last_call
-            if sleep_time > 0.1:  # Ignoruj bardzo małe opóźnienia
+            if sleep_time > 0.1:
                 time.sleep(sleep_time)
 
         # Aktualizacja czasu ostatniego wywołania
         self.last_api_call = time.time()
-
-        # Po kilku wywołaniach, zmniejszamy trochę backoff, aby system mógł się adaptować
-        if hasattr(self, '_call_count'):
-            self._call_count += 1
-            if self._call_count > 20 and not self.rate_limit_exceeded:
-                self.rate_limit_backoff = max(10.0, self.rate_limit_backoff * 0.9)  # Stopniowe zmniejszanie
-        else:
-            self._call_count = 1
+        
+        # Po wielu pomyślnych wywołaniach, stopniowo zmniejszamy backoff
+        if not self.rate_limit_exceeded and hasattr(self, '_backoff_attempt') and self._backoff_attempt > 1:
+            if getattr(self, '_success_count', 0) > 5:
+                self._backoff_attempt = max(1, self._backoff_attempt - 1)
+                self._success_count = 0
+                self.logger.info(f"Zmniejszono poziom backoff do {self._backoff_attempt} po wielu poprawnych wywołaniach")
+            else:
+                self._success_count = getattr(self, '_success_count', 0) + 1
 
 
     def is_production_api(self):

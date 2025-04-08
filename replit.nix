@@ -20,6 +20,11 @@
     pkgs.python310Packages.numpy
     pkgs.python310Packages.requests
     pkgs.python310Packages.websocket-client
+    pkgs.python310Packages.uvloop
+    pkgs.python310Packages.orjson
+    pkgs.python310Packages.nltk
+    pkgs.python310Packages.setuptools
+    pkgs.python310Packages.wheel
     pkgs.python310Packages.matplotlib
     pkgs.python310Packages.pip
   ];

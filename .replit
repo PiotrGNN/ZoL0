@@ -1,3 +1,4 @@
+
 run = "python main.py"
 modules = ["python-3.10:v18-20230807-322e88b"]
 
@@ -9,6 +10,10 @@ channel = "stable-23_05"
 [env]
 PYTHONPATH = "$PYTHONPATH:${REPL_HOME}"
 PYTHONUNBUFFERED = "1"
+PYTHONOPTIMIZE = "1"
+PYTHONHASHSEED = "42"
+PYTHONTRACEMALLOC = "0"
+PYTHONASYNCIODEBUG = "0"
 
 [unitTest]
 language = "python3"
@@ -20,21 +25,6 @@ requiredFiles = [".replit", "replit.nix"]
 run = ["python", "main.py"]
 deploymentTarget = "cloudrun"
 ignorePorts = false
-
-[packager]
-language = "python3"
-
-[packager.features]
-packageSearch = true
-guessImports = true
-
-[languages]
-
-[languages.python3]
-pattern = "**/*.py"
-
-[languages.python3.languageServer]
-start = "pylsp"
 
 [server]
 host = "0.0.0.0"
@@ -52,21 +42,44 @@ localPort = 8080
 externalPort = 8080
 
 [interpreter]
-command = [
-  "python3"
-]
+command = ["python3"]
 
 [runOnStart]
+command = "python init_project.py"
+
+[packager]
+language = "python3"
+
+[packager.features]
+packageSearch = true
+guessImports = true
+
+[languages]
+[languages.python3]
 pattern = "**/*.py"
-command = "python3"
+[languages.python3.languageServer]
+start = "pylsp"
 
 [workflows]
-runButton = "Run"
+runButton = "Full Setup & Run"
 
 [[workflows.workflow]]
 name = "Run"
 author = 31819671
 mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python main.py"
+
+[[workflows.workflow]]
+name = "Full Setup & Run"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python init_project.py"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"

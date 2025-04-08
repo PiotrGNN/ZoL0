@@ -59,9 +59,9 @@ ENVIRONMENT_CONFIG = {
     }
 }
 
-# Sprawdź, czy używamy produkcyjnego API na podstawie zmiennej środowiskowej
+# Sprawdź, czy używamy produkcyjnego API na podstawie zmiennych środowiskowych
 import os
-_is_production = os.getenv('BYBIT_USE_TESTNET', 'true').lower() != 'true'
+_is_production = os.getenv('BYBIT_USE_TESTNET', 'true').lower() != 'true' or os.getenv('IS_PRODUCTION', 'false').lower() == 'true'
 _env_config = ENVIRONMENT_CONFIG['production'] if _is_production else ENVIRONMENT_CONFIG['development']
 
 # Ratelimiter globalny - z konfiguracją dostosowaną do środowiska
