@@ -1,0 +1,48 @@
+(venv) PS C:\Users\piotr\Desktop\miner\ZoL0-1> python main.py
+Dodano katalog python_libs do ścieżki Pythona.
+2025-04-08 17:37:48,668 [WARNING] Pomijam podpakiet 'execution' z powodu błędu: expected an indented block after 'if' statement on line 1304 (bybit_connector.py, line 1306)
+2025-04-08 17:37:49,459 [INFO] Zainicjalizowano zarządcę ryzyka portfela. Max ryzyko: 0.05, Max rozmiar pozycji: 0.2, Max drawdown: 0.1
+2025-04-08 17:37:49,467 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-08 17:37:49,470 [INFO] Cache zainicjalizowany z domyślnymi parametrami
+2025-04-08 17:37:49,475 [INFO] Zainicjalizowano monitor wydajności z interwałem logowania: 60s
+Traceback (most recent call last):
+  File "C:\Users\piotr\Desktop\miner\ZoL0-1\main.py", line 51, in <module>
+    from data.execution.bybit_connector import BybitConnector
+  File "C:\Users\piotr\Desktop\miner\ZoL0-1\data\execution\__init__.py", line 17, in <module>
+    from .bybit_connector import BybitConnector
+  File "C:\Users\piotr\Desktop\miner\ZoL0-1\data\execution\bybit_connector.py", line 1306
+    try:
+    ^
+IndentationError: expected an indented block after 'if' statement on line 1304
+(venv) PS C:\Users\piotr\Desktop\miner\ZoL0-1> python main.py
+Dodano katalog python_libs do ścieżki Pythona.
+2025-04-08 17:42:05,828 [WARNING] Pomijam podpakiet 'execution' z powodu błędu: expected an indented block after 'if' statement on line 1304 (bybit_connector.py, line 1306)
+2025-04-08 17:42:06,556 [INFO] Zainicjalizowano zarządcę ryzyka portfela. Max ryzyko: 0.05, Max rozmiar pozycji: 0.2, Max drawdown: 0.1
+2025-04-08 17:42:06,566 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-08 17:42:06,566 [INFO] Cache zainicjalizowany z domyślnymi parametrami
+2025-04-08 17:42:06,566 [INFO] Zainicjalizowano monitor wydajności z interwałem logowania: 60s
+Traceback (most recent call last):
+  File "C:\Users\piotr\Desktop\miner\ZoL0-1\main.py", line 51, in <module>
+    from data.execution.bybit_connector import BybitConnector
+  File "C:\Users\piotr\Desktop\miner\ZoL0-1\data\execution\__init__.py", line 17, in <module>
+    from .bybit_connector import BybitConnector
+  File "C:\Users\piotr\Desktop\miner\ZoL0-1\data\execution\bybit_connector.py", line 1306
+    try:
+    ^
+IndentationError: expected an indented block after 'if' statement on line 1304
+(venv) PS C:\Users\piotr\Desktop\miner\ZoL0-1> python main.py
+Dodano katalog python_libs do ścieżki Pythona.
+2025-04-08 17:44:07,895 [WARNING] Pomijam podpakiet 'execution' z powodu błędu: unexpected indent (bybit_connector.py, line 1331)
+2025-04-08 17:44:08,655 [INFO] Zainicjalizowano zarządcę ryzyka portfela. Max ryzyko: 0.05, Max rozmiar pozycji: 0.2, Max drawdown: 0.1
+2025-04-08 17:44:08,655 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-08 17:44:08,667 [INFO] Cache zainicjalizowany z domyślnymi parametrami
+2025-04-08 17:44:08,669 [INFO] Zainicjalizowano monitor wydajności z interwałem logowania: 60s
+Traceback (most recent call last):
+  File "C:\Users\piotr\Desktop\miner\ZoL0-1\main.py", line 51, in <module>
+    from data.execution.bybit_connector import BybitConnector
+  File "C:\Users\piotr\Desktop\miner\ZoL0-1\data\execution\__init__.py", line 17, in <module>
+    from .bybit_connector import BybitConnector
+  File "C:\Users\piotr\Desktop\miner\ZoL0-1\data\execution\bybit_connector.py", line 1331
+    self.logger.debug(f"Dodano saldo dla {coin}: {result['balances'][coin]}")
+IndentationError: unexpected indent
+(venv) PS C:\Users\piotr\Desktop\miner\ZoL0-1>
