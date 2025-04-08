@@ -1988,3 +1988,5 @@
 2025-04-08 01:09:15,408 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
 2025-04-08 01:09:20,989 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
 2025-04-08 01:09:26,659 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-08 01:15:42,842 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-08 01:15:53,714 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
