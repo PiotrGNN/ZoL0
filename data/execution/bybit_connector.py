@@ -19,10 +19,10 @@ import requests
 def is_env_flag_true(env_var_name: str) -> bool:
     """
     Sprawdza, czy zmienna środowiskowa jest ustawiona na wartość prawdziwą.
-    
+
     Args:
         env_var_name: Nazwa zmiennej środowiskowej do sprawdzenia
-        
+
     Returns:
         bool: True jeśli wartość zmiennej to "1", "true" lub "yes" (bez uwzględnienia wielkości liter)
     """
@@ -33,7 +33,7 @@ class BybitConnector:
     Klasa do komunikacji z giełdą Bybit.
     """
 
-    def __init__(self, api_key: str = None, api_secret: str = None, use_testnet: bool = None, lazy_connect: bool = True):
+    def __init__(self, api_key: str = None, api_secret: str = None, use_testnet: bool = None, lazy_connect: bool = True, proxies: Dict[str, str] = None):
         """
         Inicjalizuje połączenie z Bybit.
 
@@ -42,10 +42,12 @@ class BybitConnector:
             api_secret (str): Sekret API Bybit.
             use_testnet (bool): Czy używać środowiska testowego (domyślnie odczytywane ze zmiennych środowiskowych).
             lazy_connect (bool): Czy opóźnić połączenie z API do pierwszego użycia.
+            proxies (Dict[str, str]): Słownik proxy (np. {'http': 'socks5h://127.0.0.1:1080', 'https': 'socks5h://127.0.0.1:1080'})
         """
         self.api_key = api_key
         self.api_secret = api_secret
-        
+        self.proxies = proxies
+
         # Priorytetyzacja parametrów:
         # 1. Przekazany parametr use_testnet
         # 2. BYBIT_TESTNET
@@ -89,6 +91,18 @@ class BybitConnector:
             self.logger.addHandler(file_handler)
             self.logger.setLevel(logging.INFO)
 
+        # Sprawdź czy używamy produkcyjnego API i pokaż ostrzeżenie
+        if self.is_production_api():
+            # Ostrzeżenie jest pokazywane w is_production_api()
+            # Dodatkowe sprawdzenia kluczy produkcyjnych
+            if self.api_key is None or len(self.api_key) < 10 or self.api_secret is None or len(self.api_secret) < 10:
+                self.logger.critical("BŁĄD: Nieprawidłowe klucze API dla środowiska produkcyjnego!")
+                raise ValueError("Nieprawidłowe klucze API dla środowiska produkcyjnego. Sprawdź konfigurację.")
+        else:
+            self.logger.info("Używasz testnet API (środowisko testowe).")
+
+        self.logger.info(f"BybitConnector zainicjalizowany. Testnet: {use_testnet}, Lazy connect: {lazy_connect}")
+
         # Sprawdź, czy już mamy informację o przekroczeniu limitów w cache
         try:
             from data.utils.cache_manager import get_cached_data
@@ -105,17 +119,6 @@ class BybitConnector:
         else:
             self.logger.info(f"BybitConnector w trybie lazy initialization. Testnet: {use_testnet}")
 
-        # Sprawdź czy używamy produkcyjnego API i pokaż ostrzeżenie
-        if self.is_production_api():
-            # Ostrzeżenie jest pokazywane w is_production_api()
-            # Dodatkowe sprawdzenia kluczy produkcyjnych
-            if self.api_key is None or len(self.api_key) < 10 or self.api_secret is None or len(self.api_secret) < 10:
-                self.logger.critical("BŁĄD: Nieprawidłowe klucze API dla środowiska produkcyjnego!")
-                raise ValueError("Nieprawidłowe klucze API dla środowiska produkcyjnego. Sprawdź konfigurację.")
-        else:
-            self.logger.info("Używasz testnet API (środowisko testowe).")
-
-        self.logger.info(f"BybitConnector zainicjalizowany. Testnet: {use_testnet}, Lazy connect: {lazy_connect}")
 
     def _initialize_client(self, force=False):
         """
@@ -215,7 +218,8 @@ class BybitConnector:
                         # Próba z endpointem Unified v5 API - najnowszym i zalecanym
                         v5_endpoint = f"{self.base_url}/v5/market/time"
                         self.logger.debug(f"Próba pobierania czasu z endpointu v5: {v5_endpoint}")
-                        response = requests.get(v5_endpoint, timeout=5)
+                        # Użyj proxy jeśli skonfigurowane
+                        response = requests.get(v5_endpoint, timeout=5, proxies=self.proxies)
                         if response.status_code == 200:
                             data = response.json()
                             if data.get("retCode") == 0 and "result" in data:
@@ -227,7 +231,8 @@ class BybitConnector:
                             # Próba z endpointem Spot API
                             spot_endpoint = f"{self.base_url}/spot/v1/time"
                             self.logger.debug(f"Próba pobierania czasu z endpointu spot: {spot_endpoint}")
-                            response = requests.get(spot_endpoint, timeout=5)
+                            # Użyj proxy jeśli skonfigurowane
+                            response = requests.get(spot_endpoint, timeout=5, proxies=self.proxies)
                             if response.status_code == 200:
                                 data = response.json()
                                 if data.get("ret_code") == 0 and "serverTime" in data:
@@ -350,7 +355,8 @@ class BybitConnector:
                     # Używamy endpointu v5 - najnowszego i preferowanego
                     v5_endpoint = f"{self.base_url}/v5/market/time"
                     self.logger.debug(f"Pobieranie czasu z V5 API: {v5_endpoint}")
-                    response = requests.get(v5_endpoint, timeout=5)
+                    # Użyj proxy jeśli skonfigurowane
+                    response = requests.get(v5_endpoint, timeout=5, proxies=self.proxies)
 
                     if response.status_code == 200:
                         data = response.json()
@@ -361,7 +367,8 @@ class BybitConnector:
                             # Próba z endpointem Spot API jako fallback
                             spot_endpoint = f"{self.base_url}/spot/v1/time"
                             self.logger.debug(f"Pobieranie czasu z Spot API: {spot_endpoint}")
-                            response = requests.get(spot_endpoint, timeout=5)
+                            # Użyj proxy jeśli skonfigurowane
+                            response = requests.get(spot_endpoint, timeout=5, proxies=self.proxies)
 
                             if response.status_code == 200:
                                 data = response.json()
@@ -376,14 +383,15 @@ class BybitConnector:
                         raise Exception(f"Błąd HTTP {response.status_code} dla V5 API")
                 except Exception as e:
                     self.logger.warning(f"Nie udało się pobrać czasu serwera przez HTTP: {e}. Używam czasu lokalnego.")
-                    
+
                     # Zapisz wynik w cache
                     try:
                         from data.utils.cache_manager import store_cached_data
+                        cache_key = f"server_time_{self.use_testnet}"
                         store_cached_data(cache_key, server_time)
                     except Exception as cache_error:
                         self.logger.warning(f"Błąd podczas zapisu do cache: {cache_error}")
-                    
+
                     raise
 
                     # Ekstrakcja czasu z różnych formatów API
@@ -602,20 +610,22 @@ class BybitConnector:
                                 # Próba z endpointem Unified v5 API
                                 v5_endpoint = f"{self.base_url}/v5/market/time"
                                 self.logger.debug(f"Test połączenia z V5 API: {v5_endpoint}")
-                                response = requests.get(v5_endpoint, timeout=5)
+                                # Użyj proxy jeśli skonfigurowane
+                                response = requests.get(v5_endpoint, timeout=5, proxies=self.proxies)
 
                                 if response.status_code == 200:
                                     data = response.json()
                                     if data.get("retCode") == 0 and "result" in data:
                                         time_response = {"timeNow": data["result"]["timeNano"] // 1000000}
-                                        self.logger.debug(f"Czas serwera V5: {time_response}")
+                                        self.logger.debug(f"Czas serweraV5: {time_response}")
                                     else:
                                         raise Exception(f"Nieprawidłowa odpowiedź z V5 API: {data}")
                                 else:
                                     # Fallback do Spot API
                                     spot_endpoint = f"{self.base_url}/spot/v1/time"
                                     self.logger.debug(f"Test połączenia ze Spot API: {spot_endpoint}")
-                                    response = requests.get(spot_endpoint, timeout=5)
+                                    # Użyj proxy jeśli skonfigurowane
+                                    response = requests.get(spot_endpoint, timeout=5, proxies=self.proxies)
 
                                     if response.status_code == 200:
                                         data = response.json()
@@ -644,7 +654,7 @@ class BybitConnector:
                                     self.rate_limit_exceeded = True
                                     self.last_rate_limit_reset = time.time()
                                     self.remaining_rate_limit = 0
-                                    
+
                                     # Ustaw blokadę CloudFront
                                     set_cloudfront_block_status(True, error_str)
                                     self.logger.warning(f"Wykryto blokadę/limit API w komunikacie błędu: {error_str}")
@@ -730,26 +740,26 @@ class BybitConnector:
                             try:
                                 self.logger.info("Próba pobrania salda przez bezpośrednie zapytanie HTTP do V5 API")
                                 v5_endpoint = f"{self.base_url}/v5/account/wallet-balance"
-                                
+
                                 # Parametry zgodnie z dokumentacją V5 API
                                 params = {
                                     'accountType': 'UNIFIED'  # Można dostosować w zależności od typu konta
                                 }
-                                
+
                                 # Tworzenie sygnatury zgodnie z dokumentacją V5 API
                                 timestamp = str(int(time.time() * 1000))
-                                
+
                                 # Przygotowanie parametrów do sygnatury
                                 param_str = '&'.join([f"{key}={value}" for key, value in sorted(params.items())])
                                 pre_sign = f"{timestamp}{self.api_key}{param_str}"
-                                
+
                                 # Generowanie sygnatury HMAC SHA256
                                 signature = hmac.new(
                                     bytes(self.api_secret, 'utf-8'),
                                     bytes(pre_sign, 'utf-8'),
                                     hashlib.sha256
                                 ).hexdigest()
-                                
+
                                 # Ustawienie nagłówków zgodnie z dokumentacją
                                 headers = {
                                     "X-BAPI-API-KEY": self.api_key,
@@ -758,17 +768,18 @@ class BybitConnector:
                                     "X-BAPI-RECV-WINDOW": "20000",
                                     "Content-Type": "application/json"
                                 }
-                                
+
                                 self.logger.debug(f"Wysyłanie zapytania do V5 API: {v5_endpoint} z parametrami: {params}")
-                                response = requests.get(v5_endpoint, headers=headers, params=params, timeout=10)
-                                
+                                # Użyj proxy jeśli skonfigurowane
+                                response = requests.get(v5_endpoint, headers=headers, params=params, timeout=10, proxies=self.proxies)
+
                                 if response.status_code == 200:
                                     wallet = response.json()
                                     self.logger.info(f"Saldo pobrane przez bezpośrednie zapytanie HTTP do V5 API")
                                     self.logger.debug(f"Odpowiedź API: {str(wallet)[:200]}...")
                                 else:
                                     self.logger.warning(f"Błąd podczas pobierania salda przez V5 API: {response.status_code} - {response.text}")
-                                    
+
                                     # Spróbuj alternatywnego API - Spot API v1
                                     spot_endpoint = f"{self.base_url}/spot/v1/account"
                                     timestamp = str(int(time.time() * 1000))
@@ -778,17 +789,18 @@ class BybitConnector:
                                         bytes(pre_sign, 'utf-8'),
                                         hashlib.sha256
                                     ).hexdigest()
-                                    
+
                                     headers = {
                                         "X-BAPI-API-KEY": self.api_key,
                                         "X-BAPI-TIMESTAMP": timestamp,
                                         "X-BAPI-SIGN": signature,
                                         "Content-Type": "application/json"
                                     }
-                                    
+
                                     self.logger.debug(f"Próba zapytania do Spot API v1: {spot_endpoint}")
-                                    response = requests.get(spot_endpoint, headers=headers, timeout=10)
-                                    
+                                    # Użyj proxy jeśli skonfigurowane
+                                    response = requests.get(spot_endpoint, headers=headers, timeout=10, proxies=self.proxies)
+
                                     if response.status_code == 200:
                                         wallet = response.json()
                                         self.logger.info(f"Saldo pobrane przez bezpośrednie zapytanie HTTP do Spot API v1")
@@ -956,19 +968,19 @@ class BybitConnector:
         """
         try:
             self._apply_rate_limit()
-            
+
             # Dodatkowe potwierdzenie dla produkcyjnego API
             if self.is_production_api():
                 self.logger.warning(f"PRODUKCYJNE ZLECENIE: {side} {quantity} {symbol} za {price if order_type == 'Limit' else 'Market'}")
-                
+
                 # Limity wielkości zleceń dla produkcyjnego API
                 max_order_value_usd = 1000.0  # Maksymalna wartość zlecenia w USD dla bezpieczeństwa
                 est_order_value = quantity * price if order_type == "Limit" else quantity * price
-                
+
                 if est_order_value > max_order_value_usd and "BTC" in symbol:
                     self.logger.critical(f"ODRZUCONO ZLECENIE: Przekroczono maksymalną wartość zlecenia ({est_order_value} USD > {max_order_value_usd} USD)")
                     return {"success": False, "error": f"Zlecenie przekracza maksymalną dozwoloną wartość {max_order_value_usd} USD"}
-            
+
             # Sprawdzenie poprawności danych
             if side not in ["Buy", "Sell"]:
                 return {"success": False, "error": "Nieprawidłowa strona zlecenia. Musi być 'Buy' lub 'Sell'."}
@@ -1062,7 +1074,7 @@ class BybitConnector:
         try:
             # Używamy uproszczonego importu, który nie będzie wymagał wszystkich funkcji
             from data.utils.cache_manager import get_api_status
-            
+
             # Jeśli główny import się powiedzie, importujemy resztę
             from data.utils.cache_manager import (
                 store_cached_data,
@@ -1200,7 +1212,11 @@ if __name__ == "__main__":
     connector = BybitConnector(
         api_key="test_key",
         api_secret="test_secret",
-        use_testnet=True
+        use_testnet=True,
+        proxies={
+            'http': 'socks5h://127.0.0.1:1080',
+            'https': 'socks5h://127.0.0.1:1080'
+        }
     )
 
     server_time = connector.get_server_time()

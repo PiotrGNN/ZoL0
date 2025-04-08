@@ -108,3 +108,35 @@ python fix_tests.py
 ## 📄 Licencja
 
 This project is licensed under the MIT License.
+
+## Uruchomienie
+1. Skonfiguruj zmienne środowiskowe w pliku `.env`
+2. Uruchom aplikację: `python main.py`
+
+## Konfiguracja tunelu SSH SOCKS5 Proxy
+
+Jeśli masz problemy z dostępem do API Bybit z Replit, możesz skonfigurować tunel SSH SOCKS5:
+
+1. Edytuj plik `.env` i ustaw poniższe zmienne:
+   ```
+   USE_PROXY=True
+   PROXY_URL=socks5h://127.0.0.1:1080
+   VPS_USER=twój_użytkownik
+   VPS_HOST=adres_ip_vps
+   VPS_PORT=22
+   VPS_KEY_PATH=/ścieżka/do/klucza/ssh  # opcjonalnie
+   ```
+
+2. Uruchom tunel SSH w jednym terminalu:
+   ```
+   python setup_ssh_tunnel.py
+   ```
+
+3. W drugim terminalu uruchom aplikację:
+   ```
+   python main.py
+   ```
+
+4. Aby przetestować tunel, użyj:
+   ```
+   python test_proxy.py

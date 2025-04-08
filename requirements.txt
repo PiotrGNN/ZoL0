@@ -1,6 +1,7 @@
 # Main dependencies
 flask==2.3.3
 requests==2.31.0
+requests[socks]>=2.24.0
 pybit==2.4.1
 pandas==2.0.3
 numpy==1.24.4
@@ -12,6 +13,7 @@ ta==0.10.2
 pydantic==2.5.3
 python-dotenv==1.0.0
 pytest==7.4.3
+PySocks>=1.7.1
 
 # AI/ML dependencies
 tensorflow==2.15.0
