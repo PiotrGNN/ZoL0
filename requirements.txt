@@ -19,16 +19,16 @@ textblob>=0.15.3
 vaderSentiment>=3.3.2
 
 # Obsługa zapytań HTTP
-requests>=2.28.0
+requests==2.31.0
 
 # Narzędzia pomocnicze
 tqdm>=4.62.0
 
 # Obsługa websocketów
-websocket-client>=1.5.1
+websocket-client==1.7.0
 
 # Dodatki dla bezpieczeństwa
-typing-extensions>=4.0.0
+typing-extensions==4.5.0
 
 # Narzędzia deweloperskie
 pytest>=6.2.5

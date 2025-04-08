@@ -1,4 +1,3 @@
-
 // Konfiguracja aplikacji
 const CONFIG = {
     updateInterval: 30000, // ms
@@ -51,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeUI() {
     // Inicjalizacja wykresu portfela
     initializePortfolioChart();
-    
+
     // Pobierz początkowe dane
     updateDashboardData();
     updateComponentStatus();
@@ -67,7 +66,7 @@ function startDataUpdates() {
             updateComponentStatus();
         }
     }, CONFIG.updateInterval);
-    
+
     // Regularne aktualizacje wykresu (rzadziej)
     setInterval(function() {
         if (appState.activeDashboard) {
@@ -80,7 +79,7 @@ function startDataUpdates() {
 function initializePortfolioChart() {
     const ctx = document.getElementById('portfolio-chart');
     if (!ctx) return;
-    
+
     appState.portfolioChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -118,7 +117,7 @@ function initializePortfolioChart() {
 // Aktualizacja danych wykresu
 function updateChartData() {
     if (!appState.portfolioChart) return;
-    
+
     fetch(CONFIG.apiEndpoints.chartData)
         .then(response => response.json())
         .then(data => {
@@ -158,28 +157,28 @@ function updatePortfolioUI(data) {
         if (!data || !data.balances) {
             return;
         }
-        
+
         const portfolioContainer = document.getElementById('portfolio-balance');
         if (!portfolioContainer) return;
-        
+
         // Wyczyść kontener
         portfolioContainer.innerHTML = '';
-        
+
         // Dla każdej waluty w portfelu
         for (const [currency, balance] of Object.entries(data.balances)) {
             if (balance.equity > 0) {
                 const balanceItem = document.createElement('div');
                 balanceItem.className = 'balance-item';
-                
+
                 balanceItem.innerHTML = `
                     <span class="currency">${currency}</span>
                     <span class="amount">${parseFloat(balance.equity).toFixed(currency === 'BTC' ? 8 : 2)}</span>
                 `;
-                
+
                 portfolioContainer.appendChild(balanceItem);
             }
         }
-        
+
         // Aktualizuj status połączenia
         const connectionStatus = document.getElementById('api-status');
         if (connectionStatus) {
@@ -191,7 +190,7 @@ function updatePortfolioUI(data) {
                 connectionStatus.className = 'status-badge offline';
             }
         }
-        
+
         // Aktualizuj czas ostatniej aktualizacji
         updateLastRefreshed();
     } catch (error) {
@@ -218,10 +217,10 @@ function updateDashboardData() {
             console.error("Błąd podczas pobierania danych dashboardu:", error);
             handleApiError('dashboard');
         });
-        
+
     // Pobierz również dane portfela podczas aktualizacji dashboardu
     updatePortfolioData();
-    
+
     // Aktualizuj czas ostatniej aktualizacji
     updateLastRefreshed();
 }
@@ -237,10 +236,10 @@ function updateDashboardUI(data) {
         updateElementValue('win-rate', data.win_rate, true, '%');
         updateElementValue('max-drawdown', data.max_drawdown, true, '%');
         updateElementValue('market-sentiment', data.market_sentiment);
-        
+
         // Obsługa anomalii
         updateAnomalies(data.anomalies);
-        
+
         // Aktualizuj czas ostatniej aktualizacji
         const lastUpdatedElement = document.getElementById('last-updated');
         if (lastUpdatedElement) {
@@ -255,27 +254,27 @@ function updateDashboardUI(data) {
 function updateAnomalies(anomalies) {
     const anomalyContainer = document.getElementById('anomalies-list');
     if (!anomalyContainer) return;
-    
+
     // Wyczyść kontener
     anomalyContainer.innerHTML = '';
-    
+
     if (!anomalies || anomalies.length === 0) {
         anomalyContainer.innerHTML = '<div class="no-data">Brak wykrytych anomalii</div>';
         return;
     }
-    
+
     // Dla każdej anomalii
     anomalies.forEach(anomaly => {
         const anomalyItem = document.createElement('div');
         anomalyItem.className = 'anomaly-item';
-        
+
         anomalyItem.innerHTML = `
             <div class="anomaly-symbol">${anomaly.symbol}</div>
             <div class="anomaly-type">${anomaly.type}</div>
             <div class="anomaly-time">${anomaly.time}</div>
             <div class="anomaly-severity ${getSeverityClass(anomaly.severity)}">${anomaly.severity}</div>
         `;
-        
+
         anomalyContainer.appendChild(anomalyItem);
     });
 }
@@ -284,17 +283,17 @@ function updateAnomalies(anomalies) {
 function updateElementValue(elementId, value, isNumeric = false, prefix = '', suffix = '') {
     const element = document.getElementById(elementId);
     if (!element) return;
-    
+
     if (value === undefined || value === null) {
         element.textContent = 'N/A';
         return;
     }
-    
+
     if (isNumeric) {
         const numValue = parseFloat(value);
         const formattedValue = isNaN(numValue) ? value : numValue.toFixed(2);
         element.textContent = `${prefix}${formattedValue}${suffix}`;
-        
+
         // Dodaj klasę dla wartości dodatnich/ujemnych
         if (numValue > 0) {
             element.classList.add('positive');
@@ -317,7 +316,7 @@ function updateComponentStatus() {
         .then(response => response.json())
         .then(data => {
             appState.lastUpdated.components = Date.now();
-            
+
             if (data.components) {
                 data.components.forEach(component => {
                     const statusElement = document.getElementById(`${component.id}-status`);
@@ -327,7 +326,7 @@ function updateComponentStatus() {
                     }
                 });
             }
-            
+
             // Aktualizacja czasu ostatniej aktualizacji
             updateLastRefreshed();
         })
@@ -475,7 +474,7 @@ function showErrorMessage(message) {
     if (errorContainer) {
         errorContainer.textContent = message;
         errorContainer.style.display = 'block';
-        
+
         // Automatyczne ukrycie po 10 sekundach
         setTimeout(() => {
             errorContainer.style.display = 'none';
@@ -489,12 +488,12 @@ function showNotification(type, message) {
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
     notification.textContent = message;
-    
+
     // Dodaj do kontenera powiadomień
     const container = document.getElementById('notifications-container');
     if (container) {
         container.appendChild(notification);
-        
+
         // Usuń po 5 sekundach
         setTimeout(() => {
             notification.classList.add('fade-out');
@@ -503,4 +502,17 @@ function showNotification(type, message) {
             }, 500);
         }, 5000);
     }
+}
+
+// Konfiguracja dashboardu
+// Sprawdź czy CONFIG już istnieje, aby uniknąć duplikacji
+if (typeof CONFIG === 'undefined') {
+  const CONFIG = {
+    refreshInterval: 5000,  // Odświeżanie co 5 sekund
+    apiEndpoints: {
+      dashboard: '/api/dashboard/data',
+      portfolio: '/api/portfolio',
+      components: '/api/component-status'
+    }
+  };
 }
