@@ -484,17 +484,28 @@ class BybitConnector:
                     time_ms = current_time_ms  # Wartość domyślna
                     if isinstance(server_time, dict):
                         if "timeNow" in server_time:
-                            time_ms = int(server_time["timeNow"])
+                            # Upewnij się, że zawsze konwertujemy na int
+                            try:
+                                time_ms = int(server_time["timeNow"])
+                                self.logger.debug(f"Używam czasu serwera z pola 'timeNow': {time_ms}")
+                            except (ValueError, TypeError) as e:
+                                self.logger.warning(f"Błąd konwersji timeNow={server_time['timeNow']} na int: {e}")
+                                time_ms = current_time_ms
                         elif "time_now" in server_time:
                             try:
+                                # Konwersja na float, a potem na int
                                 time_ms = int(float(server_time["time_now"]) * 1000)
-                            except (ValueError, TypeError):
-                                pass
+                                self.logger.debug(f"Używam czasu serwera z pola 'time_now': {time_ms}")
+                            except (ValueError, TypeError) as e:
+                                self.logger.warning(f"Błąd konwersji time_now={server_time['time_now']} na int: {e}")
+                                time_ms = current_time_ms
                         elif "time" in server_time:
                             try:
                                 time_ms = int(server_time["time"])
-                            except (ValueError, TypeError):
-                                pass
+                                self.logger.debug(f"Używam czasu serwera z pola 'time': {time_ms}")
+                            except (ValueError, TypeError) as e:
+                                self.logger.warning(f"Błąd konwersji time={server_time['time']} na int: {e}")
+                                time_ms = current_time_ms
 
                     return {
                         "success": True,
@@ -630,6 +641,7 @@ class BybitConnector:
         try:
             self._apply_rate_limit()
             if self.client is None:
+                ```python
                 # Próba reinicjalizacji klienta
                 try:
                     import pybit

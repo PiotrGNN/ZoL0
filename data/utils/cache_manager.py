@@ -75,10 +75,10 @@ def _get_cache_path(key: str) -> str:
     """Generuje ścieżkę do pliku cache dla danego klucza."""
     # Upewnij się, że katalog cache istnieje
     os.makedirs(CACHE_DIR, exist_ok=True)
-    
+
     # Upewnij się, że klucz jest bezpieczny i nie zawiera znaków niedozwolonych w ścieżkach
     safe_key = "".join(c if c.isalnum() or c in ('_', '-', '.') else '_' for c in key)
-    
+
     # Użyj os.path.join dla kompatybilności między systemami
     return os.path.join(CACHE_DIR, f"{safe_key}.json")
 
@@ -113,100 +113,59 @@ def store_cached_data(key: str, data: Any) -> bool:
         return False
 
 def get_cached_data(key: str) -> Tuple[Any, bool]:
-    """
-    Pobiera dane z cache.
-
-    Args:
-        key (str): Klucz identyfikujący dane
-
-    Returns:
-        Tuple[Any, bool]: Krotka (dane, znaleziono), gdzie 'znaleziono' to flaga wskazująca czy dane były w cache
-    """
+    """Pobiera dane z cache z poprawną obsługą typów."""
     try:
-        cache_path = _get_cache_path(key)
+        if not os.path.exists(CACHE_DIR):
+            os.makedirs(CACHE_DIR)
 
-        if not os.path.exists(cache_path):
-            return None, False
+        cache_file = os.path.join(CACHE_DIR, f"{key}.json")
+        if os.path.exists(cache_file):
+            with open(cache_file, 'r') as f:
+                data = json.load(f)
 
-        with open(cache_path, 'r') as f:
-            cache_data = json.load(f)
-
-        # Sprawdź czy dane zawierają timestamp
-        if "timestamp" not in cache_data:
-            logger.warning(f"Brak pola 'timestamp' w danych cache dla klucza {key}")
-            return None, False
-
-        # Sprawdź czy dane nie są przeterminowane
-        if time.time() - cache_data["timestamp"] > cache_data.get("ttl", DEFAULT_TTL):
-            logger.debug(f"Dane w cache dla klucza {key} są przeterminowane.")
-            return None, False
-
-        # Pobierz dane z cache
-        data = cache_data.get('data')
-        
-        # Jeśli dane to boolean, konwertuj na słownik dla bezpieczeństwa
-        if isinstance(data, bool):
-            logger.warning(f"Cache zwrócił wartość bool ({data}) dla klucza '{key}'. Konwertuję na słownik.")
-            data = {"value": data}
-        
-        # Jeśli dane są None, zwróć pusty słownik
-        if data is None:
-            data = {}
-            
-        return data, True
+            # Prawidłowa obsługa typów danych
+            if isinstance(data, bool):
+                # Jeśli dane to boolean, zwróć go bezpośrednio
+                return data, True
+            else:
+                # W przeciwnym razie zwróć dane jako są
+                return data, True
+        return None, False
     except Exception as e:
         logger.error(f"Błąd podczas pobierania danych z cache dla klucza {key}: {e}")
-        return {}, False
+        return None, False
 
 def is_cache_valid(key: str, ttl: int = DEFAULT_TTL) -> bool:
-    """
-    Sprawdza czy dane w cache są wciąż ważne.
-
-    Args:
-        key (str): Klucz identyfikujący dane
-        ttl (int): Maksymalny czas życia danych w sekundach
-
-    Returns:
-        bool: True jeśli dane są ważne, False w przeciwnym przypadku
-    """
+    """Sprawdza czy dane w cache są ważne z rozszerzoną obsługą błędów."""
     try:
-        cache_path = _get_cache_path(key)
-
-        if not os.path.exists(cache_path):
+        cache_file = os.path.join(CACHE_DIR, f"{key}.json")
+        if not os.path.exists(cache_file):
+            logger.debug(f"Plik cache {key} nie istnieje")
             return False
 
+        # Sprawdzenie czy plik nie jest pusty
+        if os.path.getsize(cache_file) == 0:
+            logger.warning(f"Plik cache {key} jest pusty")
+            return False
+
+        # Sprawdzenie czy plik można odczytać
         try:
-            with open(cache_path, 'r') as f:
-                cache_entry = json.load(f)
-        except (json.JSONDecodeError, UnicodeDecodeError) as json_err:
-            logger.error(f"Uszkodzony plik cache dla klucza {key}: {json_err}")
+            with open(cache_file, 'r') as f:
+                data = json.load(f)
+        except json.JSONDecodeError:
+            logger.warning(f"Plik cache {key} zawiera nieprawidłowy JSON")
             return False
 
-        # Sprawdź czy dane zawierają wymagane pola
-        if not isinstance(cache_entry, dict):
-            logger.warning(f"Cache dla klucza {key} nie jest słownikiem")
-            return False
-            
-        if "timestamp" not in cache_entry:
-            logger.warning(f"Brakujące pole 'timestamp' w cache dla klucza {key}")
-            return False
+        # Sprawdzenie czasu modyfikacji pliku
+        mod_time = os.path.getmtime(cache_file)
+        current_time = time.time()
 
-        # Sprawdź czy dane nie są przeterminowane
-        try:
-            current_time = time.time()
-            entry_time = float(cache_entry["timestamp"])
-            entry_ttl = float(cache_entry.get("ttl", DEFAULT_TTL))
+        # Jeśli plik jest starszy niż TTL, to cache jest nieważny
+        is_valid = (current_time - mod_time) < ttl
+        if not is_valid:
+            logger.debug(f"Cache {key} wygasł (upłynęło {current_time - mod_time:.1f}s, TTL={ttl}s)")
 
-            # Używamy przekazanego TTL, jeśli jest mniejszy niż TTL zapisany w cache
-            effective_ttl = min(ttl, entry_ttl)
-
-            if current_time - entry_time > effective_ttl:
-                return False
-
-            return True
-        except (ValueError, TypeError) as e:
-            logger.error(f"Błąd konwersji typów w cache dla klucza {key}: {e}")
-            return False
+        return is_valid
     except Exception as e:
         logger.error(f"Błąd podczas sprawdzania ważności cache dla klucza {key}: {e}")
         return False
