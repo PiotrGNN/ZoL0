@@ -47,16 +47,23 @@ def install_dependencies():
     """Instaluje wymagane zależności z kontrolą wersji."""
     logger.info("Instalowanie wymaganych pakietów...")
 
-    # Instalacja pakietów z precyzyjnie określonymi wersjami
-    os.system("pip install --upgrade requests==2.31.0")
-    os.system("pip install --upgrade websocket-client==1.7.0")
-    os.system("pip install --upgrade typing-extensions==4.5.0")
-    os.system("pip install --upgrade pandas") #Example added dependency
-    os.system("pip install --upgrade numpy") #Example added dependency
-
+    # Sprawdź, czy jesteśmy w środowisku Replit
+    is_replit = 'REPL_ID' in os.environ
+    
+    # Określ odpowiednie parametry pip w zależności od środowiska
+    pip_params = "--break-system-packages" if is_replit else ""
+    
+    # Instalacja kluczowych pakietów z precyzyjnie określonymi wersjami
+    os.system(f"pip install {pip_params} --upgrade requests==2.31.0")
+    os.system(f"pip install {pip_params} --upgrade websocket-client==1.7.0")
+    os.system(f"pip install {pip_params} --upgrade typing-extensions==4.5.0")
+    os.system(f"pip install {pip_params} --upgrade pandas")
+    os.system(f"pip install {pip_params} --upgrade numpy")
+    os.system(f"pip install {pip_params} --upgrade flask")
+    os.system(f"pip install {pip_params} --upgrade python-dotenv")
 
     # Instalacja pozostałych zależności z requirements.txt
-    os.system("pip install -r requirements.txt")
+    os.system(f"pip install {pip_params} -r requirements.txt")
 
     logger.info("Instalacja pakietów zakończona.")
 

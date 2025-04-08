@@ -1007,6 +1007,12 @@ if __name__ == "__main__":
     # Tworzenie katalogów - użycie os.path.join dla kompatybilności z Windows
     os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs"), exist_ok=True)
     os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "cache"), exist_ok=True)
+    os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), "python_libs"), exist_ok=True)
+
+    # Sprawdzenie, w jakim środowisku działa aplikacja
+    is_replit = 'REPL_ID' in os.environ
+    env_type = "Replit" if is_replit else "Lokalne"
+    logger.info(f"Wykryto środowisko: {env_type}")
 
     # Sprawdź środowisko - czy na pewno używamy produkcyjnego API
     if is_env_flag_true("BYBIT_TESTNET"):
@@ -1035,12 +1041,17 @@ if __name__ == "__main__":
             f.write("BYBIT_USE_TESTNET=true\n")
         logging.info(f"Utworzono plik .env z domyślnymi ustawieniami w: {env_path}")
 
-    # Uruchomienie aplikacji - używamy localhost dla pracy lokalnej
+    # Uruchomienie aplikacji z odpowiednim hostem w zależności od środowiska
     port = int(os.environ.get("PORT", 5000))
-    host = os.environ.get("HOST", "127.0.0.1")  # Localhost dla pracy lokalnej
-    logging.info(f"Uruchamianie aplikacji Flask na hoście {host} i porcie {port}")
+    
+    # Jeśli jesteśmy w Replit, użyj 0.0.0.0, w przeciwnym razie 127.0.0.1
+    host = "0.0.0.0" if is_replit else "127.0.0.1"
+    
+    debug_mode = os.getenv("DEBUG", "True").lower() in ["true", "1", "yes"]
+    
+    logging.info(f"Uruchamianie aplikacji Flask w środowisku {env_type} na hoście {host} i porcie {port}")
     try:
-        app.run(host=host, port=port, debug=True)
+        app.run(host=host, port=port, debug=debug_mode)
     except Exception as e:
         logging.error(f"Błąd podczas uruchamiania aplikacji Flask: {e}")
         print(f"\nBłąd podczas uruchamiania aplikacji: {e}")

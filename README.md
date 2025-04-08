@@ -1,106 +1,32 @@
-# ZoL0-1 Trading System
+# Inteligentny System Tradingowy
 
-## 🚀 O Projekcie
+Kompleksowy system do analizy rynku, zarządzania ryzykiem i automatycznego tradingu.
 
-Zaawansowany system tradingowy oparty na modułowej architekturze, umożliwiający algorytmiczny handel na rynkach kryptowalut z wykorzystaniem API ByBit. System integruje analizę techniczną, zarządzanie ryzykiem i modele sztucznej inteligencji.
+## 📋 Zawartość projektu
 
-## 📋 Funkcjonalności
-
-- ✅ Łączność z API ByBit (testnet i produkcja)
-- ✅ Zarządzanie ryzykiem portfela 
-- ✅ Wielostrategiowe podejście do handlu
-- ✅ Interfejs graficzny (dashboard)
-- ✅ Analiza sentymentu rynkowego
-- ✅ Backtesting strategii
-- ✅ Wykrywanie anomalii rynkowych
-
-## 🛠️ Architektura Systemu
-
-Projekt ma modułową strukturę, składającą się z:
-
-- `data/` - moduły przetwarzania danych, wskaźników i strategii
-- `python_libs/` - uproszczone biblioteki do szybkiego prototypowania
-- `static/` - pliki statyczne (CSS, JavaScript)
-- `templates/` - szablony HTML
-- `utils/` - narzędzia pomocnicze
-- `main.py` - główny punkt wejścia aplikacji
-
-## 🚀 Uruchomienie
-
-Aby uruchomić system:
-
-1. Zainstaluj zależności:
-```bash
-pip install -r requirements.txt
 ```
-
-2. Skonfiguruj środowisko:
-```bash
-# Skopiuj plik .env.example do .env i dostosuj ustawienia
-cp .env.example .env
-```
-
-3. Uruchom aplikację:
-```bash
-python main.py
-```
-
-## 🔧 Diagnostyka i Rozwiązywanie Problemów
-
-### Trading Engine Warning
-Jeśli otrzymujesz ostrzeżenie "Trading Engine Warning", może to być spowodowane:
-- Brakiem danych rynkowych
-- Niedostępnością instrumentów
-- Błędnymi ustawieniami strategii
-
-Sprawdź logi w `logs/trading_engine.log` dla szczegółowych informacji.
-
-### Risk Manager Warning
-Ostrzeżenia Risk Managera mogą wystąpić w przypadku:
-- Niepoliczonego ryzyka (brak danych cenowych)
-- Pozycji, która nie została otwarta
-- Przekroczenia limitów ryzyka
-
-Sprawdź logi w `logs/portfolio_risk.log` dla diagnostyki.
-
-## 📊 Dashboard
-
-System posiada interfejs graficzny dostępny pod adresem:
-```
-http://127.0.0.1:5000/dashboard
-```
-
-## 🔒 Bezpieczeństwo
-
-Pamiętaj, że używanie API produkcyjnego wiąże się z ryzykiem. Zawsze:
-- Używaj kluczy API z ograniczeniami
-- Testuj na testnet przed wdrożeniem produkcyjnym
-- Monitoruj aktywnie działanie systemu
-
-## 📄 Licencja
-
-Ten projekt jest udostępniany na licencji MIT.
-
-## 📁 Project Structure
-```
-├── ai_models/            # AI and ML models
-├── data/                 # Data processing and strategy implementations
-│   ├── execution/        # Exchange connectors and order execution
-│   ├── indicators/       # Technical and market indicators
-│   ├── optimization/     # Strategy and portfolio optimization
-│   ├── risk_management/  # Risk assessment and position sizing
-│   ├── strategies/       # Trading strategies
-│   └── utils/            # Utility functions and helpers
-├── logs/                 # System logs
-├── python_libs/          # Local library modules
+├── ai_models/            # Modele AI do analizy rynku
+├── data/                 # Komponenty przetwarzania danych
+│   ├── cache/            # Dane cache
+│   ├── execution/        # Moduły wykonywania transakcji
+│   ├── indicators/       # Wskaźniki techniczne
+│   ├── logging/          # Logowanie operacji
+│   ├── optimization/     # Optymalizacja strategii
+│   ├── risk_management/  # Zarządzanie ryzykiem
+│   ├── strategies/       # Strategie tradingowe
+│   ├── tests/            # Testy
+│   └── utils/            # Narzędzia pomocnicze
+├── logs/                 # Pliki logów
+├── python_libs/          # Uproszczone/specjalne biblioteki
 ├── static/               # Web frontend static assets
 ├── templates/            # HTML templates
 ├── main.py               # Main application entry point
 └── requirements.txt      # Project dependencies
 ```
 
-## 🔑 Environment Configuration
-Create a `.env` file in the root directory with the following parameters:
+## 🔑 Konfiguracja środowiska
+
+1. Utwórz plik `.env` w katalogu głównym z następującymi parametrami (lub użyj skryptów inicjalizacyjnych):
 
 ```
 # API Bybit - Configuration
@@ -114,31 +40,72 @@ LOG_LEVEL=INFO
 IS_PRODUCTION=False
 ```
 
-## 🛠️ Development
-### Adding a New Strategy
-Create a new strategy file in `data/strategies/` with the following structure:
+## 🚀 Uruchomienie aplikacji
+
+### W środowisku lokalnym (Windows)
+
+1. Uruchom skrypt `run_local.bat` (dla Windows):
+```
+run_local.bat
+```
+
+### W środowisku lokalnym (Linux/Mac)
+
+1. Uruchom skrypt `run_local.sh` (dla Linux/Mac):
+```bash
+chmod +x run_local.sh
+./run_local.sh
+```
+
+### W środowisku Replit
+
+1. Kliknij przycisk "Run" w środowisku Replit.
+
+## 🛠️ Rozwój projektu
+
+### Dodawanie nowej strategii
+
+Utwórz nowy plik strategii w `data/strategies/` o następującej strukturze:
 
 ```python
 class MyNewStrategy:
     def __init__(self, params):
         self.params = params
-        
+
     def analyze(self, data):
         # Implement strategy logic
         return signals
 ```
 
-### Contributing
-1. Fork the repository
-2. Create a feature branch
-3. Implement your changes
-4. Submit a pull request
+## 📊 Testowanie
 
-## 📊 Performance Metrics
-The system tracks key performance indicators:
+1. Testy jednostkowe można uruchomić za pomocą:
+```
+python -m pytest data/tests/
+```
 
-- Win Rate
-- Profit Factor
-- Maximum Drawdown
-- Sharpe Ratio
-- Sortino Ratio
+2. Testy połączenia z API Bybit:
+```
+python test_bybit_connection.py
+```
+
+## 📈 Funkcje i możliwości
+
+- Handel automatyczny i półautomatyczny
+- Zaawansowane zarządzanie ryzykiem
+- Wielostrategiowe podejście
+- Analiza techniczna i sentymentalna
+- Backtesting i optymalizacja strategii
+- Integracja z API Bybit
+
+## 📚 Dokumentacja API
+
+Dokumentacja API jest dostępna pod adresem http://localhost:5000/docs po uruchomieniu aplikacji.
+
+## 📫 Kontakt i wsparcie
+
+W razie problemów lub pytań, prosimy o zgłaszanie ich w sekcji Issues.
+
+## 📄 Licencja
+
+Ten projekt jest udostępniany na licencji MIT.
