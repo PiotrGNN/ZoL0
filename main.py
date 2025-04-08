@@ -25,12 +25,13 @@ except ImportError:
     from flask import Flask, jsonify, render_template, request
 
 # Konfiguracja logowania
-os.makedirs("logs", exist_ok=True)
+log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
+os.makedirs(log_dir, exist_ok=True)
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[
-        logging.FileHandler("logs/app.log"),
+        logging.FileHandler(os.path.join(log_dir, "app.log")),
         logging.StreamHandler()
     ]
 )

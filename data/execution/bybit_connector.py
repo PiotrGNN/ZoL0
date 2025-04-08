@@ -107,10 +107,10 @@ class BybitConnector:
         try:
             from data.utils.cache_manager import get_cached_data
             rate_limited_data, found = get_cached_data("api_rate_limited")
-            
+
             # Inicjalizujemy flagę jako False
             self.rate_limit_exceeded = False
-            
+
             if found and rate_limited_data is not None:
                 # Bezpieczny dostęp - wartość może być słownikiem lub typem prostym
                 if isinstance(rate_limited_data, dict):
@@ -126,7 +126,7 @@ class BybitConnector:
                         self.rate_limit_exceeded = bool(rate_limited_data)
                     except (ValueError, TypeError):
                         self.logger.warning(f"Nie można skonwertować wartości cache na boolean: {rate_limited_data}")
-                
+
                 if self.rate_limit_exceeded:
                     self.logger.warning("Wykryto zapisaną flagę przekroczenia limitów API. Ustawiam tryb oszczędzania limitów.")
         except Exception as e:
@@ -219,7 +219,7 @@ class BybitConnector:
 
                     server_time_data = None
                     found = False
-                    
+
                     # Bezpieczne sprawdzanie cache z obsługą wyjątków
                     try:
                         if is_cache_valid(cache_key, ttl=300):  # Ważny przez 5 minut
@@ -227,7 +227,7 @@ class BybitConnector:
                     except Exception as cache_valid_error:
                         self.logger.warning(f"Błąd podczas sprawdzania ważności cache: {cache_valid_error}")
                         found = False
-                    
+
                     # Bezpieczne użycie danych z cache
                     if found and server_time_data is not None:
                         # Sprawdź czy dane mają wymagany format
@@ -350,22 +350,22 @@ class BybitConnector:
             "time": datetime.fromtimestamp(current_time_ms / 1000).strftime('%Y-%m-%d %H:%M:%S'),
             "source": "local_default"
         }
-        
+
         try:
             # Sprawdź cache najpierw
             cached_data = None
             found = False
-            
+
             try:
                 from data.utils.cache_manager import get_cached_data, is_cache_valid
                 cache_key = f"server_time_{self.use_testnet}"
-                
+
                 cache_valid = False
                 try:
                     cache_valid = is_cache_valid(cache_key, ttl=60)  # Cache ważny przez minutę
                 except Exception as cache_valid_err:
                     self.logger.warning(f"Błąd podczas sprawdzania ważności cache: {cache_valid_err}")
-                
+
                 if cache_valid:
                     try:
                         cached_data, found = get_cached_data(cache_key)
@@ -374,7 +374,7 @@ class BybitConnector:
                         found = False
             except Exception as cache_import_err:
                 self.logger.warning(f"Błąd podczas importu managera cache: {cache_import_err}")
-            
+
             # Jeśli dane są w cache i mają poprawny format
             if found and cached_data is not None and isinstance(cached_data, dict) and "timeNow" in cached_data:
                 self.logger.debug(f"Używam cache'owanego czasu serwera: {cached_data}")
@@ -406,7 +406,7 @@ class BybitConnector:
                 except Exception as init_err:
                     self.logger.error(f"Błąd podczas inicjalizacji klienta: {init_err}")
                     client_initialized = False
-                
+
                 if not client_initialized:
                     # Jeśli inicjalizacja się nie powiedzie, zwróć lokalny czas
                     default_response["source"] = "local_init_failed"
@@ -415,16 +415,16 @@ class BybitConnector:
             # Próba pobrania prawdziwego czasu serwera bezpośrednio przez HTTP (bez autoryzacji)
             if not getattr(self, "rate_limit_exceeded", False):
                 server_time = {"timeNow": current_time_ms}  # Domyślna wartość jako zabezpieczenie
-                
+
                 try:
                     # Używamy endpointu v5 - najnowszego i preferowanego
                     v5_endpoint = f"{self.base_url}/v5/market/time"
                     self.logger.debug(f"Pobieranie czasu z V5 API: {v5_endpoint}")
-                    
+
                     # Użyj proxy jeśli skonfigurowane
                     try:
                         response = requests.get(v5_endpoint, timeout=5, proxies=self.proxies)
-                        
+
                         if response.status_code == 200:
                             data = response.json()
                             if data.get("retCode") == 0 and "result" in data:
@@ -434,11 +434,11 @@ class BybitConnector:
                                 # Próba z endpointem Spot API jako fallback
                                 spot_endpoint = f"{self.base_url}/spot/v1/time"
                                 self.logger.debug(f"Pobieranie czasu z Spot API: {spot_endpoint}")
-                                
+
                                 try:
                                     # Użyj proxy jeśli skonfigurowane
                                     response = requests.get(spot_endpoint, timeout=5, proxies=self.proxies)
-                                    
+
                                     if response.status_code == 200:
                                         data = response.json()
                                         if data.get("ret_code") == 0 and "serverTime" in data:
@@ -454,7 +454,7 @@ class BybitConnector:
                             self.logger.warning(f"Błąd HTTP {response.status_code} dla V5 API. Używam czasu lokalnego.")
                     except Exception as v5_err:
                         self.logger.warning(f"Błąd podczas pobierania czasu z V5 API: {v5_err}. Używam czasu lokalnego.")
-                        
+
                     # Zapisz wynik w cache - nawet jeśli używamy czasu lokalnego
                     try:
                         from data.utils.cache_manager import store_cached_data
@@ -465,7 +465,7 @@ class BybitConnector:
                         store_cached_data(cache_key, server_time)
                     except Exception as cache_error:
                         self.logger.warning(f"Błąd podczas zapisu do cache: {cache_error}")
-                    
+
                     # Ekstrakcja czasu - z bezpiecznym dostępem do pól
                     time_ms = current_time_ms  # Wartość domyślna
                     if isinstance(server_time, dict):
@@ -481,7 +481,7 @@ class BybitConnector:
                                 time_ms = int(server_time["time"])
                             except (ValueError, TypeError):
                                 pass
-                    
+
                     return {
                         "success": True,
                         "time_ms": time_ms,
@@ -637,7 +637,7 @@ class BybitConnector:
                         }, 
                         "success": False,
                         "error": f"Klient API nie został zainicjalizowany. Błąd: {init_error}",
-                        "note": "Dane przykładowe - błąd inicjalizacji klienta"
+                        "note": "Dane przykładowe -błąd inicjalizacji klienta"
                     }
 
             # Mechanizm ponawiania prób w przypadku przekroczenia limitów API
@@ -1175,11 +1175,11 @@ class BybitConnector:
         try:
             cloudfront_status = get_cloudfront_status()
             is_blocked = False
-            
+
             # Bezpieczne sprawdzenie czy mamy blokadę CloudFront
             if isinstance(cloudfront_status, dict):
                 is_blocked = cloudfront_status.get("blocked", False)
-            
+
             if is_blocked:
                 error_msg = "Unknown error"
                 if isinstance(cloudfront_status, dict):

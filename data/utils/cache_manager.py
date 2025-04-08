@@ -124,30 +124,19 @@ def get_cached_data(key: str) -> Tuple[Any, bool]:
             return None, False
 
         with open(cache_path, 'r') as f:
-            cache_entry = json.load(f)
+            cache_data = json.load(f)
 
         # Sprawdź czy dane nie są przeterminowane
-        if time.time() - cache_entry["timestamp"] > cache_entry.get("ttl", DEFAULT_TTL):
+        if time.time() - cache_data["timestamp"] > cache_data.get("ttl", DEFAULT_TTL):
             logger.debug(f"Dane w cache dla klucza {key} są przeterminowane.")
             return None, False
 
-        # Bezpieczne pobieranie danych - zawsze zwracaj dictionary
-        data = cache_entry.get("data")
-        
-        if data is None:
-            logger.debug(f"Brak danych w cache dla klucza {key}")
-            return None, False
-            
-        # Jeśli dane to boolean, opakuj w słownik
-        if isinstance(data, bool):
-            logger.debug(f"Pobrano boolean z cache dla klucza {key}, opakowanie w słownik")
-            data = {"value": data}
-        # Jeśli dane nie są dictionary, również opakuj w słownik
-        elif not isinstance(data, dict):
-            logger.debug(f"Pobrano niedictionary z cache dla klucza {key}, opakowanie w słownik")
-            data = {"value": data}
-        
-        logger.debug(f"Pobrano dane z cache dla klucza: {key}")
+        # Upewnij się, że zwracamy słownik lub None, nigdy wartość bool
+        data = cache_data.get('data')
+        if data is False:
+            logger.warning(f"Cache zwrócił wartość bool (False) dla klucza '{key}', zamiast słownika. Zwracam None.")
+            return None
+
         return data, True
     except Exception as e:
         logger.error(f"Błąd podczas pobierania danych z cache dla klucza {key}: {e}")

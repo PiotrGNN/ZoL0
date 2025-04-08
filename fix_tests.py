@@ -1,63 +1,90 @@
+
+"""
+Script to fix and run tests in the project.
+This ensures all tests can be correctly executed.
+"""
+
 import os
-import subprocess
 import sys
-import time
+import importlib
+import logging
+import unittest
+import pytest
 
-import psutil
+# Setup logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler("test_errors.log"),
+        logging.StreamHandler()
+    ]
+)
 
-# 📌 Automatyczne naprawienie problemów z testami
+def fix_test_imports():
+    """Fix import issues in test files."""
+    try:
+        # Ensure project root is in path
+        project_root = os.path.dirname(os.path.abspath(__file__))
+        if project_root not in sys.path:
+            sys.path.append(project_root)
+            logging.info(f"Added {project_root} to Python path")
+            
+        # Add data directory to path if it exists
+        data_dir = os.path.join(project_root, "data")
+        if os.path.isdir(data_dir) and data_dir not in sys.path:
+            sys.path.append(data_dir)
+            logging.info(f"Added {data_dir} to Python path")
+            
+        # Find test directories
+        test_dirs = []
+        for root, dirs, files in os.walk(project_root):
+            if "tests" in dirs:
+                test_dir = os.path.join(root, "tests")
+                test_dirs.append(test_dir)
+                
+        if not test_dirs:
+            logging.warning("No test directories found")
+            
+        # Fix each test directory
+        for test_dir in test_dirs:
+            if test_dir not in sys.path:
+                sys.path.append(test_dir)
+                logging.info(f"Added {test_dir} to Python path")
+                
+            # Ensure __init__.py exists
+            init_file = os.path.join(test_dir, "__init__.py")
+            if not os.path.exists(init_file):
+                with open(init_file, "w") as f:
+                    f.write('"""Test package initialization."""\n')
+                logging.info(f"Created {init_file}")
+                
+            # Check test files
+            for file in os.listdir(test_dir):
+                if file.startswith("test_") and file.endswith(".py"):
+                    logging.info(f"Found test file: {file}")
+        
+        logging.info("Test imports fixed successfully")
+    except Exception as e:
+        logging.error(f"Error fixing test imports: {e}")
 
-# 1️⃣ Sprawdzenie wymaganych pakietów
-missing_packages = []
-try:
-    import numpy
-except ImportError:
-    missing_packages.append("numpy")
+def run_tests():
+    """Run all tests using pytest."""
+    try:
+        logging.info("Running tests...")
+        # Add the current directory to the path
+        sys.path.insert(0, os.getcwd())
+        
+        # Run pytest - captures output
+        result = pytest.main(["-v", "data/tests"])
+        return result
+    except Exception as e:
+        logging.error(f"Error running tests: {e}")
+        return 1
 
-try:
-    import requests
-except ImportError:
-    missing_packages.append("requests")
-
-if missing_packages:
-    print(f"🚨 Brakujące pakiety: {', '.join(missing_packages)}. Instalowanie...")
-    subprocess.run(["pip", "install"] + missing_packages)
-
-# 2️⃣ Naprawa `NoneType` w `AI_strategy_generator.py`
-AI_STRATEGY_PATH = os.path.join("data", "strategies", "AI_strategy_generator.py")
-
-if os.path.exists(AI_STRATEGY_PATH):
-    with open(AI_STRATEGY_PATH, "r", encoding="utf-8") as f:
-        content = f.readlines()
-
-    fixed_content = []
-    for line in content:
-        if "self.best_model.fit(X_train, y_train)" in line:
-            fixed_content.append("        if self.best_model is None:\n")
-            fixed_content.append(
-                '            raise ValueError("Nie ustawiono najlepszego modelu przed fitowaniem.")\n'
-            )
-        fixed_content.append(line)
-
-    with open(AI_STRATEGY_PATH, "w", encoding="utf-8") as f:
-        f.writelines(fixed_content)
-    print("🔧 Naprawiono `NoneType` dla `best_model`.")
-
-# 3️⃣ Zamykanie `temp_historical_data.db` przed usunięciem
-db_path = "temp_historical_data.db"
-if os.path.exists(db_path):
-    for proc in psutil.process_iter():
-        try:
-            if "sqlite" in proc.name().lower() or "python" in proc.name().lower():
-                proc.terminate()
-        except (psutil.NoSuchProcess, psutil.AccessDenied):
-            pass
-    time.sleep(1)
-    os.remove(db_path)
-    print("✅ Zamknięto i usunięto `temp_historical_data.db`.")
-
-# 4️⃣ Uruchomienie testów ponownie
-print("🚀 Uruchamiam testy...")
-subprocess.run(["python", "-m", "unittest", "discover", "-s", "data/tests"])
-
-print("\n🎯 **Testy zakończone!** Sprawdź wyniki powyżej.")
+if __name__ == "__main__":
+    logging.info("Starting test fix process")
+    fix_test_imports()
+    exit_code = run_tests()
+    logging.info(f"Test process completed with exit code: {exit_code}")
+    sys.exit(exit_code)
