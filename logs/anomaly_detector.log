@@ -2323,3 +2323,6 @@
 2025-04-08 16:02:03,750 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
 2025-04-08 16:23:43,766 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
 2025-04-08 16:23:51,565 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-08 16:31:00,467 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-08 16:33:27,054 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-08 16:33:29,900 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
