@@ -1,0 +1,82 @@
+Masz dwa główne błędy w logach, które trzeba naprawić, aby system działał poprawnie:
+
+1. Błąd: StrategyManager nie ma atrybutu active_strategy
+Log:
+
+pgsql
+Kopiuj
+Edytuj
+AttributeError: 'StrategyManager' object has no attribute 'active_strategy'
+Przyczyna:
+W pliku simplified_trading_engine.py, linia:
+
+python
+Kopiuj
+Edytuj
+"active_strategy": self.strategy_manager.active_strategy
+odwołuje się do nieistniejącego atrybutu.
+
+Rozwiązanie:
+Upewnij się, że StrategyManager ma:
+
+pole self.active_strategy
+
+lub metodę get_active_strategy() (i wtedy trzeba to zaktualizować w kodzie wywołującym)
+
+Przykładowa poprawka jeśli StrategyManager nie ma tego pola:
+
+python
+Kopiuj
+Edytuj
+self.active_strategy = None  # dodaj to w __init__
+2. Błąd: brak metody activate_strategy
+Log:
+
+pgsql
+Kopiuj
+Edytuj
+AttributeError: 'StrategyManager' object has no attribute 'activate_strategy'
+Rozwiązanie:
+Dodaj metodę activate_strategy() do klasy StrategyManager. Przykład:
+
+python
+Kopiuj
+Edytuj
+class StrategyManager:
+    def __init__(self):
+        self.strategies = {...}
+        self.active_strategy = None
+
+    def activate_strategy(self, name):
+        if name in self.strategies:
+            self.active_strategy = self.strategies[name]
+        else:
+            raise ValueError(f"Strategia '{name}' nie istnieje")
+3. Błąd: SimplifiedTradingEngine nie ma metod reset() i stop()
+Log:
+
+pgsql
+Kopiuj
+Edytuj
+AttributeError: 'SimplifiedTradingEngine' object has no attribute 'reset'
+Rozwiązanie:
+Dodaj brakujące metody do SimplifiedTradingEngine:
+
+python
+Kopiuj
+Edytuj
+class SimplifiedTradingEngine:
+    ...
+    def stop(self):
+        self.running = False
+        # inne czynności porządkowe
+
+    def reset(self):
+        self.stop()
+        self.strategy_manager = StrategyManager()
+        self.strategy_manager.activate_strategy("trend_following")
+Dodatkowe uwagi:
+Logika resetu i stopu jest próbą kontroli stanu silnika — warto zabezpieczyć te metody przed wielokrotnym wywołaniem.
+
+Sprawdź dokładnie, czy StrategyManager jest poprawnie przekazywany do SimplifiedTradingEngine.
+
