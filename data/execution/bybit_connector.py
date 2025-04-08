@@ -308,8 +308,10 @@ class BybitConnector:
                                         else:
                                             time_nano = time_nano_raw
 
+                                        # Dzielimy tylko gdy mamy liczbę
+                                        time_ms = int(time_nano) // 1000000
                                         server_time = {
-                                            "timeNow": time_nano // 1000000
+                                            "timeNow": time_ms
                                         }
                                         self.logger.debug(
                                             f"Czas serwera v5: {server_time}")
@@ -546,9 +548,14 @@ class BybitConnector:
                     if response.status_code == 200:
                         data = response.json()
                         if data.get("retCode") == 0 and "result" in data:
+                            # Bezpieczna konwersja timeNano na milisekundy
+                            time_nano = data["result"]["timeNano"]
+                            if isinstance(time_nano, str):
+                                time_nano = int(time_nano)
+                            time_ms = time_nano // 1000000
+                            
                             server_time = {
-                                "timeNow":
-                                data["result"]["timeNano"] // 1000000
+                                "timeNow": time_ms
                             }
                             self.logger.debug(
                                 f"Pobrano czas serwera z V5 API: {server_time}"

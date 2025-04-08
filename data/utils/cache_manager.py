@@ -127,6 +127,9 @@ def get_cached_data(key: str) -> Tuple[Any, bool]:
             if isinstance(data, bool):
                 # Jeśli dane to boolean, zwróć go bezpośrednio
                 return data, True
+            elif isinstance(data, dict) and 'data' in data:
+                # Jeśli dane są zagnieżdżone w kluczu 'data', wyodrębnij je
+                return data['data'], True
             else:
                 # W przeciwnym razie zwróć dane jako są
                 return data, True
