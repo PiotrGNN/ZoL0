@@ -48,7 +48,7 @@ class BybitConnector:
         self.remaining_rate_limit = 30 if not use_testnet else 50  # Bezpieczniejszy limit początkowy
         self.rate_limit_exceeded = False  # Flaga oznaczająca przekroczenie limitu
         self.last_rate_limit_reset = time.time()  # Czas ostatniego resetu limitu
-        
+
         # Konfiguracja logowania
         log_dir = "logs"
         os.makedirs(log_dir, exist_ok=True)
@@ -77,27 +77,27 @@ class BybitConnector:
             self._initialize_client()
         else:
             self.logger.info(f"BybitConnector w trybie lazy initialization. Testnet: {use_testnet}")
-            
+
         # Sprawdź czy używamy produkcyjnego API i pokaż ostrzeżenie
         if self.is_production_api():
             # Ostrzeżenie jest pokazywane w is_production_api()
             pass
         else:
             self.logger.info("Używasz testnet API (środowisko testowe).")
-            
+
         self.logger.info(f"BybitConnector zainicjalizowany. Testnet: {use_testnet}, Lazy connect: {lazy_connect}")
 
     def _initialize_client(self, force=False):
         """
         Inicjalizuje klienta API. Wywołuje się automatycznie przy pierwszym użyciu API.
-        
+
         Parameters:
             force (bool): Czy wymusić reinicjalizację, nawet jeśli klient już istnieje.
         """
         # Jeśli klient istnieje i nie wymuszamy, to pomijamy
         if self.client is not None and not force and self._connection_initialized:
             return True
-            
+
         # Sprawdź czy minęło wystarczająco dużo czasu od ostatniego testu połączenia
         # aby uniknąć częstego odpytywania API
         current_time = time.time()
@@ -162,7 +162,7 @@ class BybitConnector:
                 try:
                     from data.utils.cache_manager import get_cached_data, is_cache_valid, store_cached_data
                     cache_key = f"server_time_{self.use_testnet}"
-                    
+
                     if is_cache_valid(cache_key, ttl=300):  # Ważny przez 5 minut
                         server_time_data, found = get_cached_data(cache_key)
                         if found:
@@ -173,11 +173,11 @@ class BybitConnector:
                             return True
                 except Exception as cache_error:
                     self.logger.warning(f"Błąd podczas dostępu do cache: {cache_error}")
-                
+
                 # Unikaj zbyt częstego odpytywania API - czekaj na minimum 5 sekund między zapytaniami
                 # Zastosuj rate limiting nawet przy inicjalizacji
                 self._apply_rate_limit()
-                    
+
                 # Testowe pobieranie czasu serwera w celu weryfikacji połączenia
                 try:
                     # Używamy bezpośredniego zapytania HTTP do publicznych endpointów bez autoryzacji
@@ -213,7 +213,7 @@ class BybitConnector:
                         self.logger.warning(f"Brak dostępu do czasu serwera, używam czasu lokalnego. Błąd: {e}")
 
                     self.logger.info(f"Połączenie z ByBit potwierdzone. Czas serwera: {server_time}")
-                    
+
                     # Zapisz wynik testu i czas serwera w cache
                     try:
                         from data.utils.cache_manager import store_cached_data
@@ -221,30 +221,30 @@ class BybitConnector:
                         store_cached_data(cache_key, server_time)
                     except Exception as cache_error:
                         self.logger.warning(f"Błąd podczas zapisu do cache: {cache_error}")
-                    
+
                     self._connection_test_result = True
                 except Exception as st_error:
                     self.logger.warning(f"Połączenie z ByBit nawiązane, ale test czasu serwera nie powiódł się: {st_error}")
-                    
+
                     # Obsługa błędów związanych z przekroczeniem limitów
                     error_str = str(st_error).lower()
                     if "rate limit" in error_str or "429" in error_str or "403" in error_str:
                         self.rate_limit_exceeded = True
                         self.last_rate_limit_reset = time.time()
                         self.logger.warning("Wykryto przekroczenie limitów API podczas inicjalizacji. Zwiększam parametry opóźnień.")
-                        
+
                         # Zapisz informację o przekroczeniu limitów w cache
                         try:
                             from data.utils.cache_manager import store_cached_data
                             store_cached_data("api_rate_limited", True)
                         except Exception as cache_error:
                             self.logger.warning(f"Błąd podczas zapisu do cache: {cache_error}")
-                    
+
                     self._connection_test_result = False
-                
+
                 self._connection_test_time = current_time
                 self._connection_initialized = True
-                
+
                 self.logger.info(f"Zainicjalizowano klienta ByBit API. Wersja: {self.api_version}, Testnet: {self.use_testnet}")
                 return True
             except Exception as e:
@@ -276,7 +276,7 @@ class BybitConnector:
             # Sprawdź cache najpierw
             from data.utils.cache_manager import get_cached_data, is_cache_valid
             cache_key = f"server_time_{self.use_testnet}"
-            
+
             if is_cache_valid(cache_key, ttl=60):  # Cache ważny przez minutę
                 cached_data, found = get_cached_data(cache_key)
                 if found:
@@ -287,10 +287,10 @@ class BybitConnector:
                         "time": datetime.fromtimestamp(cached_data.get("timeNow", time.time() * 1000) / 1000).strftime('%Y-%m-%d %H:%M:%S'),
                         "source": "cache"
                     }
-                
+
             # Jeśli nie ma w cache lub cache nieważny
             self._apply_rate_limit()
-            
+
             # Jeśli przekroczono limity, zwróć lokalny czas
             if self.rate_limit_exceeded:
                 current_time = int(time.time() * 1000)
@@ -301,7 +301,7 @@ class BybitConnector:
                     "time": datetime.fromtimestamp(current_time / 1000).strftime('%Y-%m-%d %H:%M:%S'),
                     "source": "local_rate_limited"
                 }
-            
+
             # Inicjalizacja klienta, jeśli jeszcze nie istnieje
             if not self._connection_initialized or self.client is None:
                 if not self._initialize_client():
@@ -313,7 +313,7 @@ class BybitConnector:
                         "time": datetime.fromtimestamp(current_time / 1000).strftime('%Y-%m-%d %H:%M:%S'),
                         "source": "local_init_failed"
                     }
-            
+
             # Próba pobrania prawdziwego czasu serwera bezpośrednio przez HTTP (bez autoryzacji)
             if not self.rate_limit_exceeded:
                 try:
@@ -321,7 +321,7 @@ class BybitConnector:
                     v5_endpoint = f"{self.base_url}/v5/market/time"
                     self.logger.debug(f"Pobieranie czasu z V5 API: {v5_endpoint}")
                     response = requests.get(v5_endpoint, timeout=5)
-                    
+
                     if response.status_code == 200:
                         data = response.json()
                         if data.get("retCode") == 0 and "result" in data:
@@ -332,7 +332,7 @@ class BybitConnector:
                             spot_endpoint = f"{self.base_url}/spot/v1/time"
                             self.logger.debug(f"Pobieranie czasu z Spot API: {spot_endpoint}")
                             response = requests.get(spot_endpoint, timeout=5)
-                            
+
                             if response.status_code == 200:
                                 data = response.json()
                                 if data.get("ret_code") == 0 and "serverTime" in data:
@@ -347,14 +347,14 @@ class BybitConnector:
                 except Exception as e:
                     self.logger.warning(f"Nie udało się pobrać czasu serwera przez HTTP: {e}. Używam czasu lokalnego.")
                     raise
-                        
+
                     # Zapisz wynik w cache
                     try:
                         from data.utils.cache_manager import store_cached_data
                         store_cached_data(cache_key, server_time)
                     except Exception as cache_error:
                         self.logger.warning(f"Błąd podczas zapisu do cache: {cache_error}")
-                        
+
                     # Ekstrakcja czasu z różnych formatów API
                     if "timeNow" in server_time:
                         time_ms = int(server_time["timeNow"])
@@ -364,7 +364,7 @@ class BybitConnector:
                         time_ms = int(server_time["time"])
                     else:
                         time_ms = int(time.time() * 1000)
-                        
+
                     return {
                         "success": True,
                         "time_ms": time_ms,
@@ -374,7 +374,7 @@ class BybitConnector:
                 except Exception as e:
                     self.logger.warning(f"Nie udało się pobrać czasu serwera: {e}. Używam czasu lokalnego.")
                     # W przypadku błędu zwracamy lokalny czas
-            
+
             # Jako fallback zawsze zwracamy lokalny czas
             current_time = int(time.time() * 1000)
             return {
@@ -572,7 +572,7 @@ class BybitConnector:
                                 v5_endpoint = f"{self.base_url}/v5/market/time"
                                 self.logger.debug(f"Test połączenia z V5 API: {v5_endpoint}")
                                 response = requests.get(v5_endpoint, timeout=5)
-                                
+
                                 if response.status_code == 200:
                                     data = response.json()
                                     if data.get("retCode") == 0 and "result" in data:
@@ -585,7 +585,7 @@ class BybitConnector:
                                     spot_endpoint = f"{self.base_url}/spot/v1/time"
                                     self.logger.debug(f"Test połączenia ze Spot API: {spot_endpoint}")
                                     response = requests.get(spot_endpoint, timeout=5)
-                                    
+
                                     if response.status_code == 200:
                                         data = response.json()
                                         if data.get("ret_code") == 0 and "serverTime" in data:
@@ -618,57 +618,57 @@ class BybitConnector:
                                 if has_cloudfront_error:
                                 self.rate_limit_exceeded = True
                                 self.last_rate_limit_reset = time.time()
-                                self.remaining_rate_limit = 0
-                                
-                                # Bardzo agresywny backoff dla problemów z CloudFront i IP rate limit
-                                if "cloudfront" in error_str.lower() or "The Amazon CloudFront distribution" in error_str:
-                                    self.logger.critical(f"Wykryto blokadę CloudFront - przechodzę w tryb pełnego fallback")
-                                    set_cloudfront_block_status(True, error_str)
-                                    
-                                    # Ustaw ekstremalnie długi backoff dla blokady CloudFront
-                                    self.min_time_between_calls = 30.0  # minimum 30s między zapytaniami
-                                    self.rate_limit_backoff = 1800.0    # 30 minut backoff
-                                    
-                                    # Ustaw flagę _backoff_attempt dla eksponencjalnego wzrostu
-                                    self._backoff_attempt = 5  # Wysoka wartość dla długiego czasu oczekiwania
+                                    self.remaining_rate_limit = 0
+
+                                    # Bardzo agresywny backoff dla problemów z CloudFront i IP rate limit
+                                    if "cloudfront" in error_str.lower() or "The Amazon CloudFront distribution" in error_str:
+                                        self.logger.critical(f"Wykryto blokadę CloudFront - przechodzę w tryb pełnego fallback")
+                                        set_cloudfront_block_status(True, error_str)
+
+                                        # Ustaw ekstremalnie długi backoff dla blokady CloudFront
+                                        self.min_time_between_calls = 30.0  # minimum 30s między zapytaniami
+                                        self.rate_limit_backoff = 1800.0    # 30 minut backoff
+
+                                        # Ustaw flagę _backoff_attempt dla eksponencjalnego wzrostu
+                                        self._backoff_attempt = 5  # Wysoka wartość dla długiego czasu oczekiwania
+                                    else:
+                                        self.logger.warning(f"Przekroczono limit zapytań API - używam cache lub danych symulowanych")
+                                        set_cloudfront_block_status(True, f"IP Rate Limit: {error_str}")
+
+                                        # Ustaw parametry backoff dla IP rate limit
+                                        self.min_time_between_calls = 20.0  # 20s zgodnie z wymaganiami
+                                        self.rate_limit_backoff = 600.0     # 10 minut backoff
+                                        self._backoff_attempt = 3
+
+                                    self.logger.warning(f"[FALLBACK MODE] min_interval={self.min_time_between_calls:.1f}s, backoff={self.rate_limit_backoff:.1f}s")
+
+                                    # Sprawdź najpierw cache - jeśli są dane w cache
+                                    cache_key = f"account_balance_{self.api_key[:8]}_{self.use_testnet}"
+                                    cached_data, cache_found = get_cached_data(cache_key)
+
+                                    if cache_found and cached_data:
+                                        # Użyj danych z cache ale dodaj flagę informacyjną
+                                        cached_data["success"] = True
+                                        cached_data["source"] = "cache_fallback"
+                                        cached_data["warning"] = f"Używam danych z cache z powodu: {error_str}"
+                                        self.logger.info("UŻYWAM DANYCH Z CACHE z powodu blokady CloudFront/IP Rate Limit")
+                                        return cached_data
+
+                                    # Nie ma danych w cache - wygeneruj symulowane dane
+                                    return {
+                                        "balances": {
+                                            "BTC": {"equity": 0.025, "available_balance": 0.020, "wallet_balance": 0.025},
+                                            "USDT": {"equity": 1500, "available_balance": 1450, "wallet_balance": 1500},
+                                            "ETH": {"equity": 0.5, "available_balance": 0.5, "wallet_balance": 0.5}
+                                        },
+                                        "success": True,
+                                        "warning": f"CloudFront/IP Rate Limit: {error_str}",
+                                        "source": "simulation_cloudfront_blocked",
+                                        "note": "Dane symulowane - wykryto blokadę CloudFront lub przekroczenie limitów IP"
+                                    }
                                 else:
-                                    self.logger.warning(f"Przekroczono limit zapytań API - używam cache lub danych symulowanych")
-                                    set_cloudfront_block_status(True, f"IP Rate Limit: {error_str}")
-                                    
-                                    # Ustaw parametry backoff dla IP rate limit
-                                    self.min_time_between_calls = 20.0  # 20s zgodnie z wymaganiami
-                                    self.rate_limit_backoff = 600.0     # 10 minut backoff
-                                    self._backoff_attempt = 3
-                                
-                                self.logger.warning(f"[FALLBACK MODE] min_interval={self.min_time_between_calls:.1f}s, backoff={self.rate_limit_backoff:.1f}s")
-                                
-                                # Sprawdź najpierw cache - jeśli są dane w cache
-                                cache_key = f"account_balance_{self.api_key[:8]}_{self.use_testnet}"
-                                cached_data, cache_found = get_cached_data(cache_key)
-                                
-                                if cache_found and cached_data:
-                                    # Użyj danych z cache ale dodaj flagę informacyjną
-                                    cached_data["success"] = True
-                                    cached_data["source"] = "cache_fallback"
-                                    cached_data["warning"] = f"Używam danych z cache z powodu: {error_str}"
-                                    self.logger.info("UŻYWAM DANYCH Z CACHE z powodu blokady CloudFront/IP Rate Limit")
-                                    return cached_data
-                                
-                                # Nie ma danych w cache - wygeneruj symulowane dane
-                                return {
-                                    "balances": {
-                                        "BTC": {"equity": 0.025, "available_balance": 0.020, "wallet_balance": 0.025},
-                                        "USDT": {"equity": 1500, "available_balance": 1450, "wallet_balance": 1500},
-                                        "ETH": {"equity": 0.5, "available_balance": 0.5, "wallet_balance": 0.5}
-                                    },
-                                    "success": True,
-                                    "warning": f"CloudFront/IP Rate Limit: {error_str}",
-                                    "source": "simulation_cloudfront_blocked",
-                                    "note": "Dane symulowane - wykryto blokadę CloudFront lub przekroczenie limitów IP"
-                                }
-                            else:
-                                # Dla innych błędów zgłaszamy wyjątek
-                                raise Exception(f"Brak dostępu do API Bybit: {time_error}")
+                                    # Dla innych błędów zgłaszamy wyjątek
+                                    raise Exception(f"Brak dostępu do API Bybit: {time_error}")
 
                         # Próba pobrania salda konta z uwzględnieniem różnych API
                         wallet = None
@@ -680,7 +680,7 @@ class BybitConnector:
                             ('get_account_balance', {}),
                             ('get_balances', {})
                         ]
-                        
+
                         # Jeśli powyższe metody nie zadziałały, spróbuj bezpośredniego zapytania HTTP do V5 API
                         if wallet is None:
                             try:
@@ -697,14 +697,14 @@ class BybitConnector:
                                         bytes(signature_payload, 'utf-8'),
                                         hashlib.sha256
                                     ).hexdigest()
-                                    
+
                                     headers = {
                                         "X-BAPI-API-KEY": self.api_key,
                                         "X-BAPI-TIMESTAMP": timestamp,
                                         "X-BAPI-RECV-WINDOW": "20000",
                                         "X-BAPI-SIGN": signature
                                     }
-                                
+
                                 response = requests.get(v5_endpoint, headers=headers, params=params, timeout=10)
                                 if response.status_code == 200:
                                     wallet = response.json()
@@ -974,12 +974,12 @@ class BybitConnector:
             current_time = time.time()
             time_since_last_call = current_time - self.last_api_call
             min_interval = 20.0 if not self.use_testnet else 10.0
-            
+
             if time_since_last_call < min_interval:
                 sleep_time = min_interval - time_since_last_call
                 if sleep_time > 0.1:
                     time.sleep(sleep_time)
-            
+
             self.last_api_call = time.time()
             return
 
@@ -1004,7 +1004,7 @@ class BybitConnector:
             else:
                 max_calls = 6
                 min_interval = 10.0
-            
+
             # Jeśli wystąpiły wcześniej błędy rate limit, zwiększamy jeszcze bardziej restrykcje
             if hasattr(self, 'rate_limit_exceeded') and self.rate_limit_exceeded:
                 # Eksponencjalne zmniejszenie ruchu
@@ -1037,13 +1037,13 @@ class BybitConnector:
                 base_backoff = 20.0 if is_production else 10.0
                 attempt = getattr(self, '_backoff_attempt', 1)
                 max_sleep = 600.0 if is_production else 300.0
-                
+
                 # Eksponencjalny wzrost czasu oczekiwania: 20s, 40s, 80s, 160s...
                 sleep_time = min(max_sleep, base_backoff * (2 ** (attempt - 1)))
-                
+
                 self.logger.warning(f"Eksponencjalne wycofanie: próba {attempt}, oczekiwanie {sleep_time:.1f}s")
                 time.sleep(sleep_time)
-                
+
                 # Zwiększ licznik próby dla kolejnego eksponencjalnego wzrostu
                 self._backoff_attempt = attempt + 1
 
@@ -1058,7 +1058,7 @@ class BybitConnector:
 
         # Aktualizacja czasu ostatniego wywołania
         self.last_api_call = time.time()
-        
+
         # Po wielu pomyślnych wywołaniach, stopniowo zmniejszamy backoff
         if not self.rate_limit_exceeded and hasattr(self, '_backoff_attempt') and self._backoff_attempt > 1:
             if getattr(self, '_success_count', 0) > 5:

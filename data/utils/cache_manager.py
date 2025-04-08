@@ -470,6 +470,36 @@ def detect_cloudfront_error(error_message: str) -> bool:
     
     for indicator in cloudfront_indicators:
         if indicator in error_message:
+            return True
+    return False
+
+
+# Funkcje do obsługi blokady CloudFront
+def detect_cloudfront_error(error_message: str) -> bool:
+    """
+    Wykrywa czy błąd pochodzi z CloudFront (AWS) lub jest związany z limitami IP.
+    
+    Args:
+        error_message (str): Komunikat błędu do przeanalizowania
+        
+    Returns:
+        bool: True jeśli wykryto błąd CloudFront lub limit IP
+    """
+    error_message = error_message.lower()
+    cloudfront_indicators = [
+        'cloudfront', 
+        'distribution is configured', 
+        'request could not be satisfied',
+        '403 forbidden',
+        'access denied',
+        'rate limit',
+        'too many requests',
+        '429',
+        'ip rate limit'
+    ]
+    
+    for indicator in cloudfront_indicators:
+        if indicator in error_message:
             logger.warning(f"Wykryto błąd CloudFront/limit IP: {indicator}")
             return True
             

@@ -1,3 +1,4 @@
+
 { pkgs }: {
   deps = [
     pkgs.libcxx
@@ -27,5 +28,14 @@
     pkgs.python310Packages.wheel
     pkgs.python310Packages.matplotlib
     pkgs.python310Packages.pip
+    pkgs.python310Packages.scikit-learn
+    pkgs.python310Packages.tensorflow
+    pkgs.python310Packages.pyyaml
+    pkgs.python310Packages.cryptography
+    pkgs.python310Packages.apscheduler
+    pkgs.python310Packages.tqdm
+    pkgs.python310Packages.colorama
+    pkgs.python310Packages.joblib
+    pkgs.python310Packages.plotly
   ];
 }

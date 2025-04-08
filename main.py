@@ -4,6 +4,11 @@ import sys
 import json
 from datetime import datetime, timedelta
 
+# Add local packages directory to path
+LOCAL_LIBS_DIR = "python_libs"
+if os.path.exists(LOCAL_LIBS_DIR):
+    sys.path.insert(0, LOCAL_LIBS_DIR)
+
 # Dodanie katalogu głównego do ścieżki Pythona
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
