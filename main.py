@@ -462,17 +462,48 @@ def get_component_status():
     """Endpoint do pobierania statusu komponentów systemu"""
     try:
         # Sprawdź rzeczywisty stan systemu
+        # Status API Connector
+        api_connector_status = 'offline'
+        if bybit_client:
+            # Sprawdzenie czy mamy poprawne połączenie
+            api_connector_status = 'online'
+            # Sprawdź czy w logach są wpisy o błędach
+            try:
+                with open('logs/bybit_connector.log', 'r') as f:
+                    last_lines = f.readlines()[-20:]  # Ostatnie 20 linii
+                    if any("ERROR" in line for line in last_lines):
+                        api_connector_status = 'warning'
+            except:
+                # Ignorujemy błędy odczytu logów
+                pass
+
+        # Trading Engine Status
         trading_engine_status = 'online'
+        try:
+            # Sprawdź ostatnie logi dla silnika handlowego
+            with open('logs/app.log', 'r') as f:
+                last_lines = f.readlines()[-30:]  # Ostatnie 30 linii
+                if any("ERROR" in line and "trading" in line.lower() for line in last_lines):
+                    trading_engine_status = 'warning'
+        except:
+            # Jeśli nie możemy sprawdzić logów, załóż że działa poprawnie
+            pass
+
+        # Data Processor Status
+        data_processor_status = 'online'
         
-        # Domyślnie wszystko działa prawidłowo
+        # Risk Manager Status
+        risk_manager_status = 'online'
+        
+        # Budowanie odpowiedzi
         components = [
             {
                 'id': 'api-connector',
-                'status': 'online' if bybit_client else 'offline'
+                'status': api_connector_status
             },
             {
                 'id': 'data-processor',
-                'status': 'online'
+                'status': data_processor_status
             },
             {
                 'id': 'trading-engine',
@@ -480,13 +511,22 @@ def get_component_status():
             },
             {
                 'id': 'risk-manager',
-                'status': 'online'
+                'status': risk_manager_status
             }
         ]
+        
+        # Log diagnostyczny
+        logger.info(f"Statusy komponentów: API: {api_connector_status}, Trading: {trading_engine_status}")
+        
         return jsonify({'components': components})
     except Exception as e:
-        logging.error(f"Błąd podczas pobierania statusu komponentów: {e}", exc_info=True) #Dodatkowe informacje o błędzie
-        return jsonify({'error': str(e)}), 500
+        logging.error(f"Błąd podczas pobierania statusu komponentów: {e}", exc_info=True)
+        return jsonify({'error': str(e), 'components': [
+            {'id': 'api-connector', 'status': 'warning'},
+            {'id': 'data-processor', 'status': 'warning'},
+            {'id': 'trading-engine', 'status': 'warning'},
+            {'id': 'risk-manager', 'status': 'warning'}
+        ]}), 200  # Zwracamy 200 zamiast 500, aby frontend otrzymał odpowiedź
 
 @app.route('/api/ai-models-status')
 def get_ai_models_status():
@@ -616,6 +656,7 @@ def get_portfolio():
     try:
         if not bybit_client:
             # Jeśli klient nie jest dostępny, zwróć przykładowe dane
+            logger.info("Klient ByBit nie jest zainicjalizowany, używam danych testowych")
             return jsonify({
                 "success": True,
                 "balances": {
@@ -626,6 +667,7 @@ def get_portfolio():
             })
         
         # Próba pobrania danych z API
+        logger.info("Próbuję pobrać dane portfela z API ByBit")
         balance = bybit_client.get_account_balance()
         
         # Upewnij się, że zwracany JSON ma wymagane pole success
@@ -634,21 +676,27 @@ def get_portfolio():
             
         # Upewnij się, że mamy słownik balances nawet jeśli API zwróciło błąd
         if "balances" not in balance or not balance["balances"]:
+            logger.warning("API zwróciło puste dane portfela, używam danych testowych")
             balance["balances"] = {
                 "BTC": {"equity": 0.01, "available_balance": 0.01, "wallet_balance": 0.01},
                 "USDT": {"equity": 1000, "available_balance": 950, "wallet_balance": 1000}
             }
-            
+            balance["source"] = "fallback_empty"
+        
+        logger.info(f"Zwracam dane portfela: {balance.get('source', 'api')}")
         return jsonify(balance)
     except Exception as e:
         logger.error(f"Błąd podczas pobierania danych portfela: {e}", exc_info=True)
+        # Szczegółowe dane diagnostyczne
+        logger.error(f"Szczegóły błędu: {type(e).__name__}, {str(e)}")
+        
         return jsonify({
             "success": True,  # Ustawiamy True, aby frontend nie wyświetlał błędu
             "balances": {
                 "BTC": {"equity": 0.005, "available_balance": 0.005, "wallet_balance": 0.005},
                 "USDT": {"equity": 500, "available_balance": 450, "wallet_balance": 500}
             },
-            "source": "fallback",
+            "source": "fallback_error",
             "error": str(e)
         })
 

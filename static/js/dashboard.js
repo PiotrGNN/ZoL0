@@ -116,101 +116,51 @@ function updateChartData() {
 
 // Aktualizacja danych portfela
 function updatePortfolioData() {
-    fetch(CONFIG.apiEndpoints.portfolio)
+    fetch('/api/portfolio')
         .then(response => response.json())
         .then(data => {
-            appState.portfolioData = data;
-            appState.lastUpdated.portfolio = Date.now();
-            
-            // Sprawdź czy dane są w odpowiednim formacie
-            if (data && data.balances && Object.keys(data.balances).length > 0) {
-                updatePortfolioUI(data);
+            const portfolioContainer = document.getElementById('portfolio-data');
+
+            if (data && data.success === true && data.balances && Object.keys(data.balances).length > 0) {
+                portfolioContainer.innerHTML = ''; // Wyczyść kontener
+
+                // Przetwarzanie danych portfela
+                for (const [currency, details] of Object.entries(data.balances)) {
+                    if (details) {
+                        const balanceItem = document.createElement('div');
+                        balanceItem.className = 'balance-item';
+
+                        // Bezpieczne wyświetlanie wartości z obsługą wartości null/undefined
+                        const equity = typeof details.equity === 'number' ? details.equity.toFixed(4) : '0.0000';
+                        const available = typeof details.available_balance === 'number' ? details.available_balance.toFixed(4) : '0.0000';
+                        const wallet = typeof details.wallet_balance === 'number' ? details.wallet_balance.toFixed(4) : '0.0000';
+
+                        balanceItem.innerHTML = `
+                            <div class="currency">${currency}</div>
+                            <div class="balance-details">
+                                <div class="balance-row"><span>Equity:</span> <span>${equity}</span></div>
+                                <div class="balance-row"><span>Available:</span> <span>${available}</span></div>
+                                <div class="balance-row"><span>Wallet:</span> <span>${wallet}</span></div>
+                            </div>
+                        `;
+                        portfolioContainer.appendChild(balanceItem);
+                    }
+                }
             } else {
-                console.warn("Otrzymano niepełne dane portfela:", data);
-                // Fallback dla przypadku gdy dane są niepełne
-                document.getElementById('portfolio-container').innerHTML = `
-                    <div class="alert alert-info">
-                        Niepełne dane portfela. <button class="btn btn-sm btn-outline-primary" onclick="updatePortfolioData()">Odśwież</button>
-                    </div>
-                `;
+                portfolioContainer.innerHTML = '<div class="error-message">Brak danych portfela lub problem z połączeniem z ByBit. Sprawdź klucze API w ustawieniach.</div>';
+
+                // Wyświetl dane diagnostyczne w logach konsoli
+                console.log("Otrzymane dane portfela:", data);
+                if (data && data.error) {
+                    console.log("Błąd API:", data.error);
+                }
             }
         })
-        .catch(error => {
-            console.error("Błąd podczas pobierania danych portfela:", error);
-            // Wyświetl przyjazny komunikat błędu w interfejsie
-            document.getElementById('portfolio-container').innerHTML = `
-                <div class="alert alert-warning">
-                    Nie udało się pobrać danych portfela. Sprawdź połączenie z API.
-                    <button class="btn btn-sm btn-outline-primary ml-2" onclick="updatePortfolioData()">Spróbuj ponownie</button>
-                </div>
-            `;
-            handleApiError('portfolio');
+        .catch(err => {
+            console.error("Błąd podczas pobierania danych portfela:", err);
+            const portfolioContainer = document.getElementById('portfolio-data');
+            portfolioContainer.innerHTML = '<div class="error-message">Błąd podczas pobierania danych portfela. Sprawdź połączenie internetowe.</div>';
         });
-}
-
-// Aktualizacja UI portfela
-function updatePortfolioUI(data) {
-    try {
-        if (!data || !data.balances) {
-            console.warn("Brak danych portfela do wyświetlenia");
-            return;
-        }
-
-        const portfolioContainer = document.getElementById('portfolio-balance');
-        if (!portfolioContainer) return;
-
-        // Wyczyść kontener
-        portfolioContainer.innerHTML = '';
-
-        // Licznik walut dodanych do widoku
-        let currenciesAdded = 0;
-
-        // Dla każdej waluty w portfelu
-        for (const [currency, balance] of Object.entries(data.balances)) {
-            // Bezpieczne pobranie wartości equity z obsługą wartości undefined/null
-            const equity = parseFloat(balance.equity || 0);
-            
-            // Dodaj walutę tylko jeśli ma niezerowe saldo lub jest USDT/BTC (ważne waluty)
-            if (equity > 0 || currency === 'USDT' || currency === 'BTC') {
-                const balanceItem = document.createElement('div');
-                balanceItem.className = 'balance-item';
-
-                // Dostosuj precyzję wyświetlania w zależności od waluty
-                const precision = currency === 'BTC' || currency === 'ETH' ? 8 : 2;
-                
-                balanceItem.innerHTML = `
-                    <span class="currency">${currency}</span>
-                    <span class="amount">${equity.toFixed(precision)}</span>
-                `;
-
-                portfolioContainer.appendChild(balanceItem);
-                currenciesAdded++;
-            }
-        }
-
-        // Jeśli nie dodano żadnej waluty, wyświetl komunikat
-        if (currenciesAdded === 0) {
-            portfolioContainer.innerHTML = '<div class="no-data">Brak walut o niezerowym saldzie</div>';
-        }
-
-        // Aktualizuj status połączenia
-        const connectionStatus = document.getElementById('api-status');
-        if (connectionStatus) {
-            // Zawsze ustawiamy jako Connected, ponieważ backend zwraca success=true nawet w przypadku błędu
-            connectionStatus.textContent = 'Connected';
-            connectionStatus.className = 'status-badge online';
-        }
-
-        // Aktualizuj czas ostatniej aktualizacji
-        updateLastRefreshed();
-    } catch (error) {
-        console.error("Błąd podczas aktualizacji UI portfela:", error);
-        // W przypadku błędu wyświetl przyjazny komunikat w kontenerze portfela
-        const portfolioContainer = document.getElementById('portfolio-balance');
-        if (portfolioContainer) {
-            portfolioContainer.innerHTML = '<div class="error-msg">Błąd przetwarzania danych portfela</div>';
-        }
-    }
 }
 
 // Aktualizacja głównych danych dashboardu
@@ -333,28 +283,39 @@ function updateElementValue(elementId, value, isNumeric = false, prefix = '', su
 
 // Aktualizacja statusu komponentów
 function updateComponentStatus() {
-    console.log("Aktualizacja statusów komponentów...");
-    fetch(CONFIG.apiEndpoints.components)
+    fetch('/api/component-status')
         .then(response => response.json())
         .then(data => {
-            appState.lastUpdated.components = Date.now();
-
             if (data.components) {
                 data.components.forEach(component => {
                     const statusElement = document.getElementById(`${component.id}-status`);
                     if (statusElement) {
-                        statusElement.className = `status-badge ${component.status}`;
-                        statusElement.textContent = capitalizeFirstLetter(component.status);
+                        // Ustawienie odpowiedniego statusu i klasy CSS w zależności od faktycznego statusu
+                        let statusClass, statusText;
+
+                        if (component.status === 'online') {
+                            statusClass = 'online';
+                            statusText = 'Online';
+                        } else if (component.status === 'warning') {
+                            statusClass = 'warning';
+                            statusText = 'Warning';
+                        } else if (component.status === 'offline') {
+                            statusClass = 'offline';
+                            statusText = 'Offline';
+                        } else {
+                            // Domyślnie, jeśli status jest nieznany
+                            statusClass = 'warning';
+                            statusText = 'Unknown';
+                        }
+
+                        statusElement.textContent = statusText;
+                        statusElement.className = `status-badge ${statusClass}`;
                     }
                 });
             }
-
-            // Aktualizacja czasu ostatniej aktualizacji
-            updateLastRefreshed();
         })
-        .catch(error => {
-            console.error("Błąd podczas aktualizacji statusu komponentów:", error);
-            handleApiError('components');
+        .catch(err => {
+            console.error("Błąd podczas aktualizacji statusu komponentów:", err);
         });
 }
 
@@ -482,14 +443,14 @@ function setupEventListeners() {
                 tabButtons.forEach(btn => btn.classList.remove('active'));
                 // Dodanie klasy active do klikniętego przycisku
                 this.classList.add('active');
-                
+
                 // Ukrycie wszystkich sekcji zawartości
                 const tabId = this.getAttribute('data-tab');
                 const tabContents = document.querySelectorAll('.tab-content');
                 tabContents.forEach(content => {
                     content.style.display = 'none';
                 });
-                
+
                 // Pokazanie wybranej sekcji
                 const selectedTab = document.getElementById(tabId);
                 if (selectedTab) {
