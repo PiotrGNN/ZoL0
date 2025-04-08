@@ -553,7 +553,7 @@ class BybitConnector:
                             if isinstance(time_nano, str):
                                 time_nano = int(time_nano)
                             time_ms = time_nano // 1000000
-                            
+
                             server_time = {
                                 "timeNow": time_ms
                             }
@@ -818,14 +818,33 @@ class BybitConnector:
             if self.client is None:
                 # Próba reinicjalizacji klienta
                 try:
-                    import pybit
+                    # Próba reinicjalizacji klienta PyBit
                     self.logger.info(
                         f"Próba reinicjalizacji klienta API. API key: {self.api_key[:5]}..., Testnet: {self.use_testnet}"
                     )
                     endpoint = "https://api-testnet.bybit.com" if self.use_testnet else "https://api.bybit.com"
-                    self.client = pybit.HTTP(endpoint=endpoint,
-                                             api_key=self.api_key,
-                                             api_secret=self.api_secret)
+
+                    # Używamy bardziej specyficznego importu dla Spot API
+                    try:
+                        from pybit.spot import HTTP
+                        self.client = HTTP(
+                            endpoint=endpoint,
+                            api_key=self.api_key,
+                            api_secret=self.api_secret,
+                            recv_window=20000
+                        )
+                        self.api_version = "spot"
+                    except ImportError:
+                        # Fallback do ogólnego HTTP
+                        import pybit
+                        self.logger.warning(
+                            "Używam przestarzałej klasy HTTP. Zalecana jest aktualizacja biblioteki pybit."
+                        )
+                        self.client = pybit.HTTP(
+                            endpoint=endpoint,
+                            api_key=self.api_key,
+                            api_secret=self.api_secret
+                        )
                     self.logger.info(
                         "Klient API został pomyślnie reinicjalizowany.")
                 except Exception as initerror:
@@ -925,8 +944,7 @@ class BybitConnector:
 
                                 if response.status_code == 200:
                                     data = response.json()
-                                    if data.get("retCode"
-                                                ) == 0 and "result" in data:
+                                    if data.get("retCode") == 0 and "result" in data:
                                         time_response = {
                                             "timeNow":
                                             data["result"]["timeNano"] //
@@ -1108,14 +1126,14 @@ class BybitConnector:
 
                         # Próba pobrania salda konta z uwzględnieniem różnych API
                         wallet = None
-                        
+
                         # Dla kont UNIFIED pomijamy API V2, które zwraca błąd 409
                         # Priorytetyzujemy bezpośrednie zapytanie HTTP do API V5
                         wallet_methods = []
-                        
+
                         # Sprawdzamy czy używamy konta UNIFIED
                         is_unified_account = True  # Domyślnie zakładamy że używamy konta UNIFIED
-                        
+
                         # Jeśli nie używamy konta UNIFIED, dodajemy standardowe metody API V2
                         if not is_unified_account:
                             wallet_methods = [('get_wallet_balance', {}),
@@ -1154,7 +1172,7 @@ class BybitConnector:
                                         f"{key}={value}" for key, value in
                                         sorted(params.items())
                                     ])
-                                
+
                                 self.logger.debug(f"Parametry do podpisu (sorted): {param_str}")
 
                                 # Poprawne tworzenie pre_sign zgodnie z dokumentacją V5
@@ -1164,7 +1182,7 @@ class BybitConnector:
                                     pre_sign = f"{timestamp}{self.api_key}{recv_window}{param_str}"
                                 else:
                                     pre_sign = f"{timestamp}{self.api_key}{recv_window}"
-                                
+
                                 self.logger.debug(f"Generowanie podpisu dla API V5. Pre-sign: [{pre_sign}]")
 
                                 # Generowanie sygnatury HMAC SHA256
@@ -1265,7 +1283,7 @@ class BybitConnector:
 
                         self.logger.info(
                             f"Odpowiedź API Bybit: {str(wallet)[:200]}...")
-                        
+
                         # Dodatkowe logowanie struktury odpowiedzi dla celów diagnostycznych
                         if "result" in wallet:
                             result_keys = list(wallet["result"].keys()) if isinstance(wallet["result"], dict) else "nie jest słownikiem"
@@ -1308,7 +1326,7 @@ class BybitConnector:
                                                     except (ValueError, TypeError):
                                                         self.logger.warning(f"Błędna wartość equity dla {coin}: {coin_data.get('equity')}, ustawiam 0")
                                                         equity = 0.0
-                                                    
+
                                                     # Sprawdź dostępne saldo z różnych możliwych pól
                                                     available_value = coin_data.get("availableBalance") or coin_data.get("availableToWithdraw") or 0
                                                     try:
@@ -1316,13 +1334,13 @@ class BybitConnector:
                                                     except (ValueError, TypeError):
                                                         self.logger.warning(f"Błędna wartość available_balance dla {coin}: {available_value}, ustawiam 0")
                                                         available_balance = 0.0
-                                                    
+
                                                     try:
                                                         wallet_balance = float(coin_data.get("walletBalance", 0) or 0)
                                                     except (ValueError, TypeError):
                                                         self.logger.warning(f"Błędna wartość wallet_balance dla {coin}: {coin_data.get('walletBalance')}, ustawiam 0")
                                                         wallet_balance = 0.0
-                                                    
+
                                                     result["balances"][coin] = {
                                                         "equity": equity,
                                                         "available_balance": available_balance,
