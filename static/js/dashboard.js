@@ -336,35 +336,43 @@ function updateComponentStatus() {
         .then(response => response.json())
         .then(data => {
             if (data.components) {
-                data.components.forEach(component => {
-                    const statusElement = document.getElementById(`${component.id}-status`);
-                    if (statusElement) {
-                        // Ustawienie odpowiedniego statusu i klasy CSS w zależności od faktycznego statusu
-                        let statusClass, statusText;
+                let hasWarnings = false;
+                let hasErrors = false;
 
-                        if (component.status === 'online') {
-                            statusClass = 'online';
-                            statusText = 'Online';
-                        } else if (component.status === 'warning') {
-                            statusClass = 'warning';
-                            statusText = 'Warning';
-                        } else if (component.status === 'offline') {
-                            statusClass = 'offline';
-                            statusText = 'Offline';
-                        } else {
-                            // Domyślnie, jeśli status jest nieznany
-                            statusClass = 'warning';
-                            statusText = 'Unknown';
+                data.components.forEach(component => {
+                    const componentElement = document.getElementById(component.id);
+                    if (componentElement) {
+                        // Usunięcie poprzednich klas statusu
+                        componentElement.classList.remove('online', 'warning', 'offline');
+                        // Dodanie nowej klasy statusu
+                        componentElement.classList.add(component.status);
+
+                        // Aktualizacja tekstu statusu
+                        const statusTextElement = componentElement.querySelector('.status-text');
+                        if (statusTextElement) {
+                            statusTextElement.textContent = component.status.charAt(0).toUpperCase() + component.status.slice(1);
                         }
 
-                        statusElement.textContent = statusText;
-                        statusElement.className = `status-badge ${statusClass}`;
+                        // Sprawdź, czy są ostrzeżenia lub błędy
+                        if (component.status === 'warning') {
+                            hasWarnings = true;
+                        } else if (component.status === 'offline') {
+                            hasErrors = true;
+                        }
                     }
                 });
+
+                // Pokaż powiadomienie, jeśli są problemy
+                if (hasErrors) {
+                    showNotification('error', 'Co najmniej jeden komponent jest offline. Sprawdź status systemu.');
+                } else if (hasWarnings) {
+                    showNotification('warning', 'Niektóre komponenty mają status ostrzeżenia. Sprawdź logi systemu.');
+                }
             }
         })
-        .catch(err => {
-            console.error("Błąd podczas aktualizacji statusu komponentów:", err);
+        .catch(error => {
+            console.error('Błąd podczas aktualizacji statusu komponentów:', error);
+            showNotification('error', 'Nie udało się pobrać statusu komponentów');
         });
 }
 

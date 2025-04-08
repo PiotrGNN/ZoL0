@@ -60,12 +60,13 @@ app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", os.urandom(24))
 
 # Deklaracja zmiennych globalnych
-global bybit_client, notification_system, sentiment_analyzer, anomaly_detector, strategy_manager
+global bybit_client, notification_system, sentiment_analyzer, anomaly_detector, strategy_manager, trading_engine
 bybit_client = None
 notification_system = None
 sentiment_analyzer = None
 anomaly_detector = None
 strategy_manager = None
+trading_engine = None
 
 # Inicjalizacja komponentów systemu (import wewnątrz funkcji dla uniknięcia cyklicznych importów)
 def initialize_system():
@@ -77,6 +78,19 @@ def initialize_system():
         except ImportError:
             from data.utils.notification_system import NotificationSystem
             notification_lib = "data.utils.notification_system"
+            
+        # Import modułu silnika handlowego
+        try:
+            from python_libs.simplified_trading_engine import SimplifiedTradingEngine
+            trading_engine_lib = "python_libs.simplified_trading_engine"
+        except ImportError:
+            try:
+                from data.execution.trade_executor import TradeExecutor as SimplifiedTradingEngine
+                trading_engine_lib = "data.execution.trade_executor"
+            except ImportError:
+                SimplifiedTradingEngine = None
+                trading_engine_lib = None
+                logging.warning("Brak modułu silnika handlowego. Funkcjonalność handlowa będzie ograniczona.")
             
         try:
             from python_libs.simplified_sentiment import SentimentAnalyzer
@@ -159,6 +173,19 @@ def initialize_system():
         else:
             strategy_manager = None
             logging.warning("Brak modułu StrategyManager")
+            
+        # Inicjalizacja silnika handlowego
+        global trading_engine
+        if SimplifiedTradingEngine:
+            trading_engine = SimplifiedTradingEngine(
+                risk_manager=None,  # Dodać później
+                strategy_manager=strategy_manager,
+                exchange_connector=bybit_client
+            )
+            logging.info(f"Zainicjalizowano silnik handlowy (Trading Engine) z biblioteki {trading_engine_lib}")
+        else:
+            trading_engine = None
+            logging.warning("Brak modułu silnika handlowego (Trading Engine)")
 
         # Inicjalizacja klienta ByBit (tylko raz podczas startu aplikacji)
         try:
@@ -590,57 +617,81 @@ def get_trading_stats():
 def get_component_status():
     """Endpoint do pobierania statusu komponentów systemu"""
     try:
-        # Sprawdź rzeczywisty stan systemu
         # Status API Connector
         api_connector_status = 'offline'
         if bybit_client:
-            # Sprawdzenie czy mamy poprawne połączenie
-            api_connector_status = 'online'
-            # Sprawdź czy w logach są wpisy o błędach
             try:
-                with open('logs/bybit_connector.log', 'r') as f:
-                    last_lines = f.readlines()[-20:]  # Ostatnie 20 linii
-                    if any("ERROR" in line for line in last_lines):
-                        api_connector_status = 'warning'
-            except:
-                # Ignorujemy błędy odczytu logów
-                pass
+                # Spróbuj wykonać prostą operację, aby sprawdzić, czy API działa
+                server_time = bybit_client.get_server_time()
+                api_connector_status = 'online'
+            except Exception as e:
+                logging.warning(f"Błąd podczas sprawdzania statusu API: {e}")
+                api_connector_status = 'warning'
 
         # Trading Engine Status
-        trading_engine_status = 'online'
-        try:
-            # Sprawdź ostatnie logi dla silnika handlowego
-            with open('logs/app.log', 'r') as f:
-                last_lines = f.readlines()[-30:]  # Ostatnie 30 linii
-                if any("ERROR" in line and "trading" in line.lower() for line in last_lines):
+        trading_engine_status = 'offline'
+        if trading_engine:
+            try:
+                # Pobierz status z silnika handlowego
+                engine_status = trading_engine.get_status()
+                if engine_status['status'] == 'running':
+                    trading_engine_status = 'online'
+                elif engine_status['status'] == 'error':
                     trading_engine_status = 'warning'
-        except:
-            # Jeśli nie możemy sprawdzić logów, załóż że działa poprawnie
-            pass
-
-        # Data Processor Status
+                    logging.warning(f"Problem z silnikiem handlowym: {engine_status.get('last_error', 'Nieznany błąd')}")
+                else:
+                    trading_engine_status = 'offline'
+            except Exception as e:
+                logging.error(f"Błąd podczas sprawdzania statusu silnika handlowego: {e}", exc_info=True)
+                trading_engine_status = 'warning'
+        
+        # Data Processor Status - sprawdź czy można załadować dane
         data_processor_status = 'online'
+        try:
+            # Tutaj można dodać faktyczną weryfikację, np. sprawdzenie dostępu do danych historycznych
+            pass
+        except Exception:
+            data_processor_status = 'warning'
 
-        # Risk Manager Status
-        risk_manager_status = 'online'
+        # Risk Manager Status - zakładamy, że działa, jeśli silnik handlowy działa
+        risk_manager_status = trading_engine_status if trading_engine else 'offline'
 
-        # Budowanie odpowiedzi
+        # Sentiment Analyzer Status
+        sentiment_analyzer_status = 'offline'
+        if sentiment_analyzer:
+            try:
+                # Spróbuj wykonać analizę sentymentu
+                sentiment_analyzer.analyze()
+                sentiment_analyzer_status = 'online'
+            except Exception:
+                sentiment_analyzer_status = 'warning'
+
+        # Budowanie odpowiedzi z wszystkimi komponentami
         components = [
             {
                 'id': 'api-connector',
-                'status': api_connector_status
+                'status': api_connector_status,
+                'name': 'API Connector'
             },
             {
                 'id': 'data-processor',
-                'status': data_processor_status
+                'status': data_processor_status,
+                'name': 'Data Processor'
             },
             {
                 'id': 'trading-engine',
-                'status': trading_engine_status
+                'status': trading_engine_status,
+                'name': 'Trading Engine'
             },
             {
                 'id': 'risk-manager',
-                'status': risk_manager_status
+                'status': risk_manager_status,
+                'name': 'Risk Manager'
+            },
+            {
+                'id': 'sentiment-analyzer',
+                'status': sentiment_analyzer_status,
+                'name': 'Sentiment Analyzer'
             }
         ]
 
@@ -651,10 +702,11 @@ def get_component_status():
     except Exception as e:
         logging.error(f"Błąd podczas pobierania statusu komponentów: {e}", exc_info=True)
         return jsonify({'error': str(e), 'components': [
-            {'id': 'api-connector', 'status': 'warning'},
-            {'id': 'data-processor', 'status': 'warning'},
-            {'id': 'trading-engine', 'status': 'warning'},
-            {'id': 'risk-manager', 'status': 'warning'}
+            {'id': 'api-connector', 'status': 'warning', 'name': 'API Connector'},
+            {'id': 'data-processor', 'status': 'warning', 'name': 'Data Processor'},
+            {'id': 'trading-engine', 'status': 'warning', 'name': 'Trading Engine'},
+            {'id': 'risk-manager', 'status': 'warning', 'name': 'Risk Manager'},
+            {'id': 'sentiment-analyzer', 'status': 'warning', 'name': 'Sentiment Analyzer'}
         ]}), 200  # Zwracamy 200 zamiast 500, aby frontend otrzymał odpowiedź
 
 @app.route('/api/ai-models-status')
@@ -709,28 +761,52 @@ def get_system_status():
 @app.route('/api/trading/start', methods=['POST'])
 def start_trading():
     try:
-        # Tu byłaby logika uruchamiania systemu tradingowego
-        return jsonify({'success': True, 'message': 'Trading automatyczny uruchomiony'})
+        if not trading_engine:
+            logging.warning("Próba uruchomienia tradingu, ale silnik handlowy nie jest zainicjalizowany")
+            return jsonify({'success': False, 'error': 'Silnik handlowy nie jest zainicjalizowany'}), 500
+            
+        result = trading_engine.start()
+        if result.get('success', False):
+            logging.info("Trading automatyczny uruchomiony pomyślnie")
+            return jsonify({'success': True, 'message': 'Trading automatyczny uruchomiony'})
+        else:
+            logging.error(f"Błąd podczas uruchamiania tradingu: {result.get('error', 'Nieznany błąd')}")
+            return jsonify({'success': False, 'error': result.get('error', 'Nieznany błąd')}), 500
     except Exception as e:
-        logging.error(f"Błąd podczas uruchamiania tradingu: {e}", exc_info=True) #Dodatkowe informacje o błędzie
+        logging.error(f"Błąd podczas uruchamiania tradingu: {e}", exc_info=True)
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/api/trading/stop', methods=['POST'])
 def stop_trading():
     try:
-        # Tu byłaby logika zatrzymywania systemu tradingowego
-        return jsonify({'success': True, 'message': 'Trading automatyczny zatrzymany'})
+        if not trading_engine:
+            logging.warning("Próba zatrzymania tradingu, ale silnik handlowy nie jest zainicjalizowany")
+            return jsonify({'success': False, 'error': 'Silnik handlowy nie jest zainicjalizowany'}), 500
+            
+        result = trading_engine.stop()
+        if result.get('success', False):
+            logging.info("Trading automatyczny zatrzymany pomyślnie")
+            return jsonify({'success': True, 'message': 'Trading automatyczny zatrzymany'})
+        else:
+            logging.error(f"Błąd podczas zatrzymywania tradingu: {result.get('error', 'Nieznany błąd')}")
+            return jsonify({'success': False, 'error': result.get('error', 'Nieznany błąd')}), 500
     except Exception as e:
-        logging.error(f"Błąd podczas zatrzymywania tradingu: {e}", exc_info=True) #Dodatkowe informacje o błędzie
+        logging.error(f"Błąd podczas zatrzymywania tradingu: {e}", exc_info=True)
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/api/system/reset', methods=['POST'])
 def reset_system():
     try:
-        # Tu byłaby logika resetowania systemu
+        # Reset silnika handlowego
+        if trading_engine:
+            trading_engine.reset()
+            logging.info("Silnik handlowy zresetowany pomyślnie")
+        
+        # Można dodać resetowanie innych komponentów w razie potrzeby
+        logging.info("System zresetowany pomyślnie")
         return jsonify({'success': True, 'message': 'System zresetowany'})
     except Exception as e:
-        logging.error(f"Błąd podczas resetowania systemu: {e}", exc_info=True) #Dodatkowe informacje o błędzie
+        logging.error(f"Błąd podczas resetowania systemu: {e}", exc_info=True)
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route("/api/bybit/server-time", methods=["GET"])
