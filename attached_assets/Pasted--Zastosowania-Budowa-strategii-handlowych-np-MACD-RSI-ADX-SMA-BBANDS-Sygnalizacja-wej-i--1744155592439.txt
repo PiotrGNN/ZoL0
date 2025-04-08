@@ -1,0 +1,81 @@
+✅ Zastosowania:
+Budowa strategii handlowych (np. MACD, RSI, ADX, SMA, BBANDS)
+
+Sygnalizacja wejść i wyjść (CDLENGULFING, CDLSHOOTINGSTAR, CDLHARAMI)
+
+Pomiar zmienności i wolumenu (ATR, OBV, ADOSC)
+
+Filtry i predykcja trendu (LINEARREG, TSF, HT_TRENDMODE)
+
+📊 Przykładowe użycie w kodzie:
+python
+Kopiuj
+Edytuj
+import talib
+import pandas as pd
+
+# df = OHLCV DataFrame z kolumnami: ['open', 'high', 'low', 'close', 'volume']
+
+df["rsi"] = talib.RSI(df["close"], timeperiod=14)
+df["macd"], _, _ = talib.MACD(df["close"])
+df["bb_upper"], df["bb_middle"], df["bb_lower"] = talib.BBANDS(df["close"])
+df["engulfing"] = talib.CDLENGULFING(df["open"], df["high"], df["low"], df["close"])
+🧠 Warto wiedzieć:
+Warto przechowywać listę dostępnych funkcji: talib.get_functions()
+
+Dla dokumentacji: help(talib.RSI) działa jak dla każdej funkcji w Pythonie
+
+❓Chcesz:
+przykładową strategię na TA-Lib?
+
+generator wskaźników z listy?
+
+integrację z Twoim systemem?
+
+Wystarczy słowo.
+
+
+
+
+
+
+
+Powiedziałeś(-aś):
+podaj mi te które mi się przydadzą
+
+
+ChatGPT powiedział:
+Na bazie Twojego projektu (AI-agent, handel, risk management) i użycia Bybit, najbardziej przydadzą Ci się poniższe wskaźniki z TA-Lib:
+
+📈 Wskaźniki trendu (Trend Following)
+Kod	Opis
+SMA	Simple Moving Average – podstawa do strategii
+EMA	Exponential Moving Average – bardziej dynamiczna
+MACD	MACD – do detekcji zmian trendu
+ADX	Average Directional Movement Index – siła trendu
+SAR	Parabolic SAR – trailing stop & exit sygnały
+🎯 Momentum / siła rynku
+Kod	Opis
+RSI	Relative Strength Index – wykrywanie overbought/oversold
+MOM	Momentum – prosta siła zmiany ceny
+CCI	Commodity Channel Index – filtrowanie fałszywych ruchów
+STOCHRSI	Stochastic RSI – zaawansowany wskaźnik siły RSI
+📊 Zmienność i wolumen
+Kod	Opis
+ATR	Average True Range – do kalkulacji SL, TP, risk
+OBV	On Balance Volume – potwierdzanie ruchów cenowych
+ADOSC	Chaikin A/D Oscillator – przepływ kapitału (smart money)
+🧠 Cenowe przekształcenia
+Kod	Opis
+TYPPRICE	Typical Price – średnia ważona OHLC
+WCLPRICE	Weighted Close Price – alternatywa dla close
+📏 Wskaźniki statystyczne
+Kod	Opis
+STDDEV	Standard Deviation – miara zmienności
+TSF	Time Series Forecast – predykcja ceny
+CORREL	Korelacja z innym instrumentem / indeksem
+🧨 Pattern Recognition (opcjonalnie, dla sygnałów)
+Kod	Opis
+CDLENGULFING	Engulfing – klasyczny reversal
+CDLHAMMER	Hammer – sygnał dna
+CDLSHOOTINGSTAR	Shooting Star – sygnał szczytu
