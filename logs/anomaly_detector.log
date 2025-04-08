@@ -2019,3 +2019,9 @@
 2025-04-08 01:29:15,737 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
 2025-04-08 01:29:42,494 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
 2025-04-08 01:30:09,616 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-08 01:38:33,604 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-08 01:38:38,443 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-08 01:38:42,328 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-08 01:38:42,601 [INFO] Wywołano informacje o detektorze anomalii (metoda: isolation_forest)
+2025-04-08 01:38:47,764 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
+2025-04-08 01:38:58,180 [INFO] Inicjalizacja detektora anomalii z metodą: isolation_forest
