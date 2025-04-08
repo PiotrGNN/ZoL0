@@ -1,7 +1,8 @@
 // Konfiguracja aplikacji
 const CONFIG = {
-    updateInterval: 30000, // ms
-    chartUpdateInterval: 120000, // ms
+    updateInterval: 15000, // Interwał odświeżania dashboardu (ms)
+    chartUpdateInterval: 60000, // Interwał odświeżania wykresów (ms)
+    statusUpdateInterval: 30000, // Interwał odświeżania statusów (ms)
     maxErrors: 3, // maksymalna liczba błędów przed wyświetleniem komunikatu
     errorRetryDelay: 5000, // ms - opóźnienie przed ponowną próbą po błędzie
     errorBackoff: 1.5, // mnożnik opóźnienia przy kolejnych błędach

@@ -1303,31 +1303,31 @@ class BybitConnector:
                                                 coin = coin_data["coin"]
                                                 if isinstance(coin, str) and coin:
                                                     # Bezpieczne konwertowanie wartości na float z obsługą pustych wartości
-                                                try:
-                                                    equity = float(coin_data.get("equity", 0) or 0)
-                                                except (ValueError, TypeError):
-                                                    self.logger.warning(f"Błędna wartość equity dla {coin}: {coin_data.get('equity')}, ustawiam 0")
-                                                    equity = 0.0
-                                                
-                                                # Sprawdź dostępne saldo z różnych możliwych pól
-                                                available_value = coin_data.get("availableBalance") or coin_data.get("availableToWithdraw") or 0
-                                                try:
-                                                    available_balance = float(available_value)
-                                                except (ValueError, TypeError):
-                                                    self.logger.warning(f"Błędna wartość available_balance dla {coin}: {available_value}, ustawiam 0")
-                                                    available_balance = 0.0
-                                                
-                                                try:
-                                                    wallet_balance = float(coin_data.get("walletBalance", 0) or 0)
-                                                except (ValueError, TypeError):
-                                                    self.logger.warning(f"Błędna wartość wallet_balance dla {coin}: {coin_data.get('walletBalance')}, ustawiam 0")
-                                                    wallet_balance = 0.0
-                                                
-                                                result["balances"][coin] = {
-                                                    "equity": equity,
-                                                    "available_balance": available_balance,
-                                                    "wallet_balance": wallet_balance
-                                                }
+                                                    try:
+                                                        equity = float(coin_data.get("equity", 0) or 0)
+                                                    except (ValueError, TypeError):
+                                                        self.logger.warning(f"Błędna wartość equity dla {coin}: {coin_data.get('equity')}, ustawiam 0")
+                                                        equity = 0.0
+                                                    
+                                                    # Sprawdź dostępne saldo z różnych możliwych pól
+                                                    available_value = coin_data.get("availableBalance") or coin_data.get("availableToWithdraw") or 0
+                                                    try:
+                                                        available_balance = float(available_value)
+                                                    except (ValueError, TypeError):
+                                                        self.logger.warning(f"Błędna wartość available_balance dla {coin}: {available_value}, ustawiam 0")
+                                                        available_balance = 0.0
+                                                    
+                                                    try:
+                                                        wallet_balance = float(coin_data.get("walletBalance", 0) or 0)
+                                                    except (ValueError, TypeError):
+                                                        self.logger.warning(f"Błędna wartość wallet_balance dla {coin}: {coin_data.get('walletBalance')}, ustawiam 0")
+                                                        wallet_balance = 0.0
+                                                    
+                                                    result["balances"][coin] = {
+                                                        "equity": equity,
+                                                        "available_balance": available_balance,
+                                                        "wallet_balance": wallet_balance
+                                                    }
                                                     self.logger.debug(f"Dodano saldo dla {coin}: {result['balances'][coin]}")
                                     # Obsługa przypadku gdy coin jest bezpośrednio w danych konta
                                     elif isinstance(account_data, dict):
