@@ -1159,8 +1159,9 @@ class BybitConnector:
 
                                 # Poprawne tworzenie pre_sign zgodnie z dokumentacją V5
                                 # Format: timestamp + api_key + recv_window + query_string
+                                # W zapytaniach GET, param_str już zawiera posortowane parametry jako 'key=value&key2=value2'
                                 if param_str:
-                                    pre_sign = f"{timestamp}{self.api_key}{recv_window}&{param_str}"
+                                    pre_sign = f"{timestamp}{self.api_key}{recv_window}{param_str}"
                                 else:
                                     pre_sign = f"{timestamp}{self.api_key}{recv_window}"
                                 
