@@ -1,73 +1,53 @@
+
+#!/usr/bin/env python3
+"""
+fix_imports.py
+-------------
+Skrypt testujący poprawność importów i zależności w projekcie.
+"""
+
 import os
 import sys
+import importlib
 import logging
+import time
+from datetime import datetime
 
 # Konfiguracja logowania
+log_file = "fix_imports_log.txt"
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[
-        logging.FileHandler("fix_imports_log.txt"),
+        logging.FileHandler(log_file),
         logging.StreamHandler()
     ]
 )
 
 def fix_imports():
-    """Fix import issues in the project."""
-    # Add project directory to the Python path
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    sys.path.append(base_dir)
-    logging.info(f"Added {base_dir} to sys.path")
-
-    # Create necessary directories
-    for directory in ['logs', 'data/cache']:
-        dir_path = os.path.join(base_dir, directory)
-        if not os.path.exists(dir_path):
-            os.makedirs(dir_path)
-            logging.info(f"Created directory: {dir_path}")
-
-    # Check for common import issues
+    """Sprawdza importy i brakujące moduły"""
+    start_time = time.time()
+    logging.info(f"Rozpoczynam weryfikację importów w {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"Sprawdzam importy, log w pliku: {log_file}")
+    
+    # Lista kluczowych importów do sprawdzenia
+    import_tests = [
+        "import flask",
+        "import requests",
+        "import pandas as pd",
+        "import numpy as np",
+        "import dotenv",
+        "import pybit",
+        "import matplotlib",
+        "import sklearn",
+        "import psutil",
+        "import yaml",
+        "import joblib"
+    ]
+    
+    missing_modules = []
+    
     try:
-        # Test importing key modules
-        import_tests = [
-            "from data.execution.bybit_connector import BybitConnector",
-            "from data.utils.cache_manager import get_cached_data, store_cached_data",
-            "from dotenv import load_dotenv",
-            "import flask",
-
-    # Konwersje ścieżek Unix na Windows
-    for root, dirs, files in os.walk(base_dir):
-        for file in files:
-            if file.endswith('.py'):
-                file_path = os.path.join(root, file)
-                try:
-                    with open(file_path, 'r', encoding='utf-8') as f:
-                        content = f.read()
-                    
-                    # Konwersja ścieżek Unix na Windows
-                    unix_paths = ['logs/', 'data/', 'ai_models/']
-                    windows_conversion = False
-                    
-                    for unix_path in unix_paths:
-                        if unix_path in content:
-                            content = content.replace(unix_path, unix_path.replace('/', '\\'))
-                            windows_conversion = True
-                    
-                    if windows_conversion:
-                        with open(file_path, 'w', encoding='utf-8') as f:
-                            f.write(content)
-                        logging.info(f"Przekonwertowano ścieżki Unix na Windows w pliku: {file_path}")
-                except Exception as e:
-                    logging.error(f"Błąd podczas konwersji ścieżek w pliku {file_path}: {e}")
-
-            "import matplotlib",
-            "import pandas",
-            "import numpy",
-            "import requests"
-        ]
-
-        missing_modules = []
-
         for test in import_tests:
             try:
                 exec(test)
@@ -89,8 +69,39 @@ def fix_imports():
     except Exception as e:
         logging.error(f"Error in import testing: {e}")
         print(f"Error checking imports: {e}")
+    
+    # Sprawdzenie importów modułów projektu
+    modules_to_check = [
+        ("data.execution.bybit_connector", "BybitConnector"),
+        ("data.utils.cache_manager", "init_cache_manager"),
+        ("data.logging.anomaly_detector", "AnomalyDetector"),
+        ("data.logging.trade_logger", "TradeLogger"),
+        ("data.optimization.hyperparameter_tuner", "HyperparameterTuner"),
+        ("data.risk_management.portfolio_risk", "PortfolioRiskManager"),
+        ("data.strategies.AI_strategy_generator", "AIStrategyGenerator"),
+        ("data.utils.performance_monitor", "PerformanceMonitor")
+    ]
+    
+    print("\n==== CHECKING PROJECT MODULES ====")
+    for module_path, class_name in modules_to_check:
+        try:
+            module = importlib.import_module(module_path)
+            if hasattr(module, class_name):
+                print(f"✅ Module {module_path} with {class_name} OK")
+                logging.info(f"Module {module_path} with {class_name} imported successfully")
+            else:
+                print(f"❌ Module {module_path} found but {class_name} missing")
+                logging.error(f"Module {module_path} found but {class_name} missing")
+        except ImportError as e:
+            print(f"❌ Failed to import {module_path}: {e}")
+            logging.error(f"Failed to import {module_path}: {e}")
+    
+    end_time = time.time()
+    duration = end_time - start_time
+    logging.info(f"Import verification completed in {duration:.2f} seconds")
+    print(f"\nVerification completed in {duration:.2f} seconds")
 
 if __name__ == "__main__":
     print("Fixing imports...")
     fix_imports()
-    print("Done! Check fix_imports_log.txt for details.")
+    print(f"Done! Check {log_file} for more details.")

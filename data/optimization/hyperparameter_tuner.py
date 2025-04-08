@@ -2,10 +2,6 @@
 hyperparameter_tuner.py
 -----------------------
 Moduł automatycznie dostrajający hiperparametry modeli predykcyjnych i strategii handlowych.
-Funkcjonalności:
-- Obsługuje różne algorytmy optymalizacji, takie jak Grid Search, Random Search oraz Bayesian Optimization (np. przy użyciu Optuna).
-- Pozwala na optymalizację różnych metryk (np. zysk, drawdown, stability).
-- Zawiera testy jednostkowe oraz szczegółowe logowanie, umożliwiające łatwe powtórzenie procesu tuningu.
 """
 
 import logging
@@ -196,19 +192,15 @@ if __name__ == "__main__":
         from sklearn.ensemble import RandomForestRegressor
 
         param_space = {
-            "n_estimators": {"type": "int", "low": 50, "high": 200, "step": 10},
-            "max_depth": {"type": "int", "low": 3, "high": 10, "step": 1},
-            "min_samples_split": {"type": "int", "low": 2, "high": 10, "step": 1},
+            "n_estimators": list(range(50, 201, 10)),
+            "max_depth": list(range(3, 11)),
+            "min_samples_split": list(range(2, 11))
         }
 
         tuner = HyperparameterTuner(
             optimization_method="random_search",
         )
-        tuner.set_param_space({
-            "n_estimators": list(range(50, 201, 10)),
-            "max_depth": list(range(3, 11)),
-            "min_samples_split": list(range(2, 11))
-        })
+        tuner.set_param_space(param_space)
 
         def objective_function(params):
             model = RandomForestRegressor(**params)
@@ -223,80 +215,6 @@ if __name__ == "__main__":
     except Exception as e:
         logging.error("Błąd w module hyperparameter_tuner.py: %s", e)
         raise
-
-"""
-hyperparameter_tuner.py
-----------------------
-Moduł odpowiedzialny za strojenie hiperparametrów strategii tradingowych.
-"""
-
-import logging
-from typing import Dict, Any, List, Callable, Optional
-
-#This part is now redundant because of the improved logging in the first part
-# Konfiguracja logowania
-#logger = logging.getLogger("hyperparameter_tuner")
-#if not logger.handlers:
-#    log_dir = "logs"
-#    import os
-#    os.makedirs(log_dir, exist_ok=True)
-#    file_handler = logging.FileHandler(os.path.join(log_dir, "hyperparameter_tuner.log"))
-#    formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
-#    file_handler.setFormatter(formatter)
-#    logger.addHandler(file_handler)
-#    logger.setLevel(logging.INFO)
-
-#This class is now redundant due to the superior implementation above
-#class HyperparameterTuner:
-#    """
-#    Klasa do strojenia hiperparametrów strategii tradingowych.
-#    """
-#
-#    def __init__(self, optimization_method: str = "grid_search"):
-#        """
-#        Inicjalizacja tunera hiperparametrów.
-#
-#        Parameters:
-#            optimization_method (str): Metoda optymalizacji parametrów 
-#                                      ('grid_search', 'random_search', 'bayesian')
-#        """
-#        self.optimization_method = optimization_method
-#        self.best_params = {}
-#        logger.info(f"Inicjalizacja tunera hiperparametrów z metodą: {optimization_method}")
-#
-#    def tune(self, 
-#             param_grid: Dict[str, List[Any]], 
-#             evaluation_function: Callable[[Dict[str, Any]], float], 
-#             max_iterations: int = 100) -> Dict[str, Any]:
-#        """
-#        Wykonuje strojenie hiperparametrów.
-#
-#        Parameters:
-#            param_grid (Dict[str, List[Any]]): Siatka parametrów do przeszukania
-#            evaluation_function (Callable): Funkcja oceniająca zestaw parametrów
-#            max_iterations (int): Maksymalna liczba iteracji
-#
-#        Returns:
-#            Dict[str, Any]: Najlepszy znaleziony zestaw parametrów
-#        """
-#        logger.info(f"Rozpoczęcie strojenia parametrów metodą {self.optimization_method}")
-#        # Implementacja stub - zwraca pierwszy zestaw parametrów z siatki
-#        best_params = {}
-#        for param_name, param_values in param_grid.items():
-#            if param_values:
-#                best_params[param_name] = param_values[0]
-#                
-#        self.best_params = best_params
-#        return best_params
-#
-#    def get_best_params(self) -> Dict[str, Any]:
-#        """
-#        Zwraca najlepszy znaleziony zestaw parametrów.
-#
-#        Returns:
-#            Dict[str, Any]: Najlepszy zestaw parametrów
-#        """
-#        return self.best_params
 
 import numpy as np
 from sklearn.metrics import mean_squared_error

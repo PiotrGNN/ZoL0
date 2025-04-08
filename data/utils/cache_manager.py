@@ -148,11 +148,15 @@ def get_cached_data(key: str) -> Tuple[Any, bool]:
         if isinstance(data, bool):
             logger.warning(f"Cache zwrócił wartość bool ({data}) dla klucza '{key}'. Konwertuję na słownik.")
             data = {"value": data}
-
+        
+        # Jeśli dane są None, zwróć pusty słownik
+        if data is None:
+            data = {}
+            
         return data, True
     except Exception as e:
         logger.error(f"Błąd podczas pobierania danych z cache dla klucza {key}: {e}")
-        return None, False
+        return {}, False
 
 def is_cache_valid(key: str, ttl: int = DEFAULT_TTL) -> bool:
     """

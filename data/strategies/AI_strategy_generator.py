@@ -9,14 +9,6 @@ import os
 import random
 import time
 from typing import Dict, List, Any, Optional, Tuple, Union
-import numpy as np
-import pandas as pd
-from sklearn.ensemble import GradientBoostingRegressor, VotingRegressor
-from sklearn.feature_selection import SelectKBest, f_regression
-from sklearn.metrics import mean_squared_error
-from sklearn.model_selection import GridSearchCV, train_test_split
-from sklearn.neural_network import MLPRegressor
-
 
 # Konfiguracja logowania
 logger = logging.getLogger("ai_strategy_generator")
@@ -69,19 +61,19 @@ class AIStrategyGenerator:
             logger.error(f"Błąd podczas ładowania danych: {e}")
             return False
 
-    def preprocess_data(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    def preprocess_data(self) -> Tuple[Any, Any, Any, Any]:
         """
         Przetwarza dane treningowe.
 
         Returns:
-            Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]: Krotka (X_train, X_test, y_train, y_test).
+            Tuple[Any, Any, Any, Any]: Krotka (X_train, X_test, y_train, y_test).
         """
         # Implementacja przetwarzania danych
         # W szablonie zwracamy dummy dane
-        X_train = np.random.rand(100, 10)
-        y_train = np.random.rand(100)
-        X_test = np.random.rand(20, 10)
-        y_test = np.random.rand(20)
+        X_train = []
+        y_train = []
+        X_test = []
+        y_test = []
 
         logger.info("Przetworzono dane treningowe")
         return X_train, X_test, y_train, y_test
@@ -243,6 +235,8 @@ class AIStrategyGenerator:
 # -------------------- Przykładowe użycie --------------------
 if __name__ == "__main__":
     try:
+        import numpy as np
+        import pandas as pd
         np.random.seed(42)
         dates = pd.date_range(start="2022-01-01", periods=500, freq="B")
         data = pd.DataFrame(

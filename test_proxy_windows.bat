@@ -1,11 +1,11 @@
 
 @echo off
-echo Testing Bybit API Connection...
+echo === Test połączenia z Bybit API bez proxy ===
+echo.
 
-REM Upewnij się, że wszystkie katalogi istnieją
-if not exist "logs" mkdir logs
-
-REM Uruchomienie testu połączenia
 python test_bybit_connection.py
+
+echo.
+echo === Test zakończony ===
 
 pause

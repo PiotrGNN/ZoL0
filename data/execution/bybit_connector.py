@@ -266,7 +266,7 @@ class BybitConnector:
                                             time_nano = int(time_nano_raw)
                                         else:
                                             time_nano = time_nano_raw
-                                        
+
                                         server_time = {"timeNow": time_nano // 1000000}
                                         self.logger.debug(f"Czas serwera v5: {server_time}")
                                     else:
@@ -467,7 +467,7 @@ class BybitConnector:
                                 self.logger.warning(f"Błąd podczas pobierania czasu z Spot API: {spot_err}. Używam czasu lokalnego.")
                     else:
                         self.logger.warning(f"Błąd HTTP {response.status_code} dla V5 API. Używam czasu lokalnego.")
-                    
+
 
                     # Zapisz wynik w cache - nawet jeśli używamy czasu lokalnego
                     try:
@@ -641,7 +641,7 @@ class BybitConnector:
                         api_secret=self.api_secret
                     )
                     self.logger.info("Klient API został pomyślnie reinicjalizowany.")
-                except Exception as init_error:
+                except Exception as initerror:
                     self.logger.error(f"Nie udało się zainicjalizować klienta API: {init_error}")
                     logging.error(f"Klient API nie został zainicjalizowany. Błąd: {init_error}")
                     return {
@@ -842,7 +842,7 @@ class BybitConnector:
                                 param_str = ''
                                 if params:
                                     param_str = '&'.join([f"{key}={value}" for key, value in sorted(params.items())])
-                                
+
                                 # Poprawne tworzenie pre_sign zgodnie z dokumentacją V5
                                 if param_str:
                                     pre_sign = f"{timestamp}{self.api_key}{param_str}"

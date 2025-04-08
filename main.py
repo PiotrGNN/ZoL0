@@ -8,10 +8,11 @@ from datetime import datetime, timedelta
 os.makedirs("logs", exist_ok=True)
 os.makedirs("data/cache", exist_ok=True)
 
-# Add local packages directory to path
+# Katalog na lokalne biblioteki (opcjonalny)
 LOCAL_LIBS_DIR = "python_libs"
 if os.path.exists(LOCAL_LIBS_DIR):
     sys.path.insert(0, LOCAL_LIBS_DIR)
+    print(f"Dodano katalog {LOCAL_LIBS_DIR} do ścieżki Pythona.")
 
 # Add base directory to Python path
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -104,7 +105,12 @@ def initialize_system():
             if not use_testnet and (len(api_key) < 10 or len(api_secret) < 10):
                 logging.critical("BŁĄD KRYTYCZNY: Nieprawidłowe klucze produkcyjne API. Wymagane odpowiednie klucze dla środowiska produkcyjnego!")
                 return False
-
+                
+            # Informacja o systemie operacyjnym
+            import platform
+            system_info = f"{platform.system()} {platform.release()}"
+            logging.info(f"System operacyjny: {system_info}")
+            
             # Więcej szczegółów o konfiguracji API dla celów debugowania
             masked_key = f"{api_key[:4]}{'*' * (len(api_key) - 4)}" if api_key else "Brak klucza"
             masked_secret = f"{api_secret[:4]}{'*' * (len(api_secret) - 4)}" if api_secret else "Brak sekretu"
@@ -645,4 +651,11 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     host = os.environ.get("HOST", "127.0.0.1")  # Localhost dla pracy lokalnej
     logging.info(f"Uruchamianie aplikacji Flask na hoście {host} i porcie {port}")
-    app.run(host=host, port=port, debug=True)
+    try:
+        app.run(host=host, port=port, debug=True)
+    except Exception as e:
+        logging.error(f"Błąd podczas uruchamiania aplikacji Flask: {e}")
+        print(f"\nBłąd podczas uruchamiania aplikacji: {e}")
+        print("Sprawdź czy port 5000 nie jest już używany.")
+        import sys
+        sys.exit(1)

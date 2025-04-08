@@ -1,3 +1,4 @@
+
 """
 portfolio_risk.py
 ---------------
@@ -6,7 +7,6 @@ Moduł do zarządzania ryzykiem portfela.
 
 import logging
 import os
-import math
 import random
 from typing import Dict, List, Any, Optional, Tuple
 

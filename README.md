@@ -1,144 +1,94 @@
-# Trading Bot - Wersja Windows
+# Trading Platform
 
-## 📋 Opis Projektu
+## 📌 Opis
 
-Zaawansowany bot tradingowy zintegrowany z giełdą Bybit, wykorzystujący modele AI do generowania sygnałów.  System do automatycznego tradingu na giełdzie Bybit z wykorzystaniem różnych strategii i modeli AI.
+Kompleksowa platforma do automatycznego tradingu, wykorzystująca zaawansowane algorytmy i sztuczną inteligencję do analizy rynków kryptowalut.
 
-## 🔧 Wymagania
+## 🚀 Funkcje
 
-- Windows 10/11
+- Podłączenie do Bybit API z obsługą kont testowych i produkcyjnych
+- Moduły analizy technicznej i sentymentu
+- Wykrywanie anomalii rynkowych
+- Strategie oparte na uczeniu maszynowym
+- Zarządzanie ryzykiem i kapitałem
+- Interfejs webowy do monitorowania i kontroli
+
+## 🛠️ Instalacja
+
+### Wymagania
+
 - Python 3.10+
-- Konto na giełdzie Bybit z kluczami API (opcjonalnie)
-- Dostęp do internetu
+- Windows 11/10, Linux lub macOS
 
-
-## 🚀 Instalacja i Uruchomienie
-
-### 1. Przygotowanie środowiska
+### Kroki instalacji
 
 1. Sklonuj repozytorium:
-```bash
-git clone [adres-repozytorium]
-cd [folder-projektu]
+```
+git clone https://github.com/username/trading-platform.git
+cd trading-platform
 ```
 
-2. Utwórz wirtualne środowisko Python:
-```bash
+2. Utwórz i aktywuj wirtualne środowisko (opcjonalnie, ale zalecane):
+```
+# Windows
 python -m venv venv
 venv\Scripts\activate
+
+# Linux/macOS
+python -m venv venv
+source venv/bin/activate
 ```
 
 3. Zainstaluj zależności:
-```bash
+```
 pip install -r requirements.txt
 ```
 
-### 2. Konfiguracja
+4. Skonfiguruj ustawienia:
+- Skopiuj `.env.example` do `.env`
+- Edytuj plik `.env` i wprowadź swoje klucze API
 
-1. Skopiuj plik `.env.example` do `.env`:
-```bash
-copy .env.example .env
+```
+cp .env.example .env
 ```
 
-2. Edytuj plik `.env` i dodaj swoje klucze API Bybit:
-```
-BYBIT_API_KEY=TwójKluczAPI
-BYBIT_API_SECRET=TwójSekretAPI
-BYBIT_USE_TESTNET=true  # Ustaw na false dla produkcyjnego API (z prawdziwymi środkami)
-```
+## 🚀 Uruchomienie aplikacji
 
-### 3. Uruchomienie
+### Windows
 
-Możesz uruchomić bota na dwa sposoby:
-
-1. Za pomocą pliku wsadowego (zalecane dla Windows):
 ```
 run_windows.bat
 ```
 
-2. Bezpośrednio z Pythona:
+lub
+
 ```
 python main.py
 ```
 
-## 📊 Funkcje
+### Linux/macOS
 
-- Połączenie z API Bybit (z obsługą testnet i produkcji)
-- Zaawansowane zarządzanie ryzykiem
-- System cache z kontrolą limitów zapytań
-- Monitorowanie wydajności
-- Dashboard Flask do kontroli i wizualizacji
-- Technical analysis and algorithmic trading strategies
-- Automatic adjustment to API limits (exponential backoff)
-- AI models for price movement prediction
-- Transaction monitoring and notification system
-- Interactive dashboard (Flask)
-
+```
+python main.py
+```
 
 ## 🧪 Testowanie
 
-1. Test połączenia z API:
-```
-test_proxy_windows.bat
-```
+### Test połączenia z Bybit API
 
-2. Uruchomienie wszystkich testów:
 ```
-python -m pytest
+python test_bybit_connection.py
 ```
 
-## 🔒 Bezpieczeństwo
+## 📚 Dokumentacja
 
-- Wszystkie klucze API i dane wrażliwe przechowywane są w pliku `.env` (lokalnie)
-- Logika obsługi błędów z graceful fallback
-- Limity zabezpieczające przed niekontrolowanymi transakcjami
-
-## 📂 Struktura Katalogów
-
-- `data/` - Komponenty systemu, strategie, API
-- `logs/` - Pliki logów
-- `templates/` - Szablony Flask dla dashboardu
-- `static/` - Statyczne pliki dla dashboardu
-- `ai_models/` - Modele sztucznej inteligencji
-- `main.py` - Główny punkt wejścia aplikacji
-- `data/` - Dane, strategie i narzędzia
-  - `execution/` - Moduły do interakcji z giełdą
-  - `indicators/` - Wskaźniki techniczne
-  - `risk_management/` - Zarządzanie ryzykiem
-  - `strategies/` - Strategie tradingowe
-  - `utils/` - Funkcje narzędziowe
-- `ai_models/` - Modele AI/ML do analizy rynku
-- `static/` - Zasoby front-end
-- `templates/` - Szablony HTML
+Szczegółowa dokumentacja API i modułów dostępna jest w katalogu `docs/`.  Dodatkowo: [Bybit API V5](https://bybit-exchange.github.io/docs/v5/intro)
 
 
-## 📝 Znane problemy
+## ⚠️ Uwagi
 
-- Działająca integracja z Bybit zależy od aktualnej dostępności API
-- Aktualny status API testnet: ✅ Działa
-- Aktualny status API produkcyjnego: ✅ Działa
-
-## 📚 Dokumentacja API
-
-- [Bybit API V5](https://bybit-exchange.github.io/docs/v5/intro)
-
-## 📜 Licencja
-
-Ten projekt jest rozpowszechniany na licencji MIT.
-
-## 📊 Dashboard
-Access the web panel at `http://localhost:5000` to monitor:
-- Current positions
-- Account status
-- Performance metrics
-- Market sentiment and anomalies
-
-## 🧠 AI Models
-The system contains various AI models for market analysis:
-- Anomaly detection
-- Sentiment analysis
-- Price prediction
-- Reinforcement learning for trading strategies
+- Domyślnie system używa trybu TESTNET - aby używać prawdziwego tradingu, zmień `BYBIT_USE_TESTNET=false` w pliku `.env`
+- Zachowaj ostrożność przy korzystaniu z produkcyjnego API - wszystkie transakcje są rzeczywiste i mogą prowadzić do strat finansowych
 
 ## 🔧 Rozwiązywanie problemów
 ### Brak modułu
@@ -155,3 +105,8 @@ pip install nazwa_modułu
 ### Inne problemy
 1. Sprawdź logi w katalogu `logs/`
 2. Uruchom aplikację w trybie debug: `python main.py --debug`
+
+
+## 📝 Licencja
+
+To oprogramowanie jest dostępne na licencji MIT.

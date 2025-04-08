@@ -1,17 +1,19 @@
 
 @echo off
-echo Starting Trading Bot...
+echo === Uruchamianie aplikacji tradingowej ===
+echo Upewnij się, że masz aktywowane środowisko wirtualne
 
-REM Konfiguracja środowiska
-set FLASK_APP=main.py
-set FLASK_ENV=development
-set PORT=5000
-
-REM Upewnij się, że wszystkie katalogi istnieją
+echo Tworzenie katalogów, jeśli nie istnieją...
 if not exist "logs" mkdir logs
 if not exist "data\cache" mkdir data\cache
 
-REM Uruchomienie aplikacji
+echo Sprawdzanie czy jest plik .env...
+if not exist ".env" (
+    echo Tworzenie pliku .env na podstawie .env.example...
+    copy .env.example .env
+)
+
+echo Uruchamianie aplikacji...
 python main.py
 
 pause
