@@ -1,0 +1,78 @@
+Aby naprawić błąd "Trading Engine Warning", który może wynikać z nieprawidłowych ustawień silnika handlowego, poniżej znajduje się poprawiający prompt, który możesz użyć do debugowania i naprawy problemu:
+
+1. Analiza kodu silnika handlowego:
+Sprawdź, czy wszystkie parametry silnika handlowego zostały prawidłowo skonfigurowane, takie jak:
+
+Modele AI
+
+Strategie handlowe
+
+Parametry ryzyka i limity pozycji
+
+2. Zaktualizuj kod, aby zrozumieć źródło ostrzeżenia:
+Dodaj logowanie, aby sprawdzić szczegóły ostrzeżenia:
+
+python
+Kopiuj
+import logging
+
+# Ustawienie poziomu logowania na DEBUG
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+
+# Sprawdzenie, czy Trading Engine działa poprawnie
+def start_trading_engine():
+    try:
+        # Zakładając, że masz funkcję start_trading() w silniku
+        trading_engine.start_trading()
+        logger.info("Silnik handlowy uruchomiony pomyślnie.")
+    except Exception as e:
+        logger.error(f"Problem z uruchomieniem silnika handlowego: {e}")
+        raise
+
+# Sprawdź status połączenia z Bybit API
+def check_connection():
+    try:
+        balance = client.get_wallet_balance()
+        logger.info(f"Saldo: {balance}")
+    except Exception as e:
+        logger.error(f"Problem z połączeniem do API Bybit: {e}")
+        raise
+
+# Przykład uruchomienia
+start_trading_engine()
+check_connection()
+3. Dostosowanie konfiguracji Trading Engine:
+Upewnij się, że masz odpowiednio skonfigurowane wszystkie parametry w silniku handlowym:
+
+python
+Kopiuj
+# Konfiguracja silnika handlowego
+class TradingEngine:
+    def __init__(self, risk_manager, strategy):
+        self.risk_manager = risk_manager
+        self.strategy = strategy
+
+    def start_trading(self):
+        # Inicjalizacja silnika handlowego
+        self.strategy.execute_trade()
+        self.risk_manager.manage_risk()
+
+# Przykład zarządcy ryzyka
+class RiskManager:
+    def __init__(self, max_risk, max_position_size, max_drawdown):
+        self.max_risk = max_risk
+        self.max_position_size = max_position_size
+        self.max_drawdown = max_drawdown
+
+    def manage_risk(self):
+        if self.max_risk > 0.1:
+            raise Exception("Zbyt wysokie ryzyko")
+
+# Ustawienia
+risk_manager = RiskManager(0.05, 0.2, 0.1)
+strategy = TrendFollowingStrategy()
+engine = TradingEngine(risk_manager, strategy)
+engine.start_trading()
+4. Przetestowanie z loggingiem:
+Dzięki dodaniu loggingu w funkcjach, będziesz mógł dokładniej przeanalizować, co powoduje problem w silniku handlowym. Jeśli po uruchomieniu programu pojawią się szczegóły w logach, pozwoli to na precyzyjniejsze rozwiązanie problemu.
