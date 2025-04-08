@@ -147,21 +147,7 @@ def initialize_system():
         return False
 
 # Trasy aplikacji
-@app.route('/api/component-status')
-def get_component_status():
-    try:
-        # W prawdziwej aplikacji można tutaj dodać logikę sprawdzania stanu komponentów
-        # Dla uproszczenia, ustawiamy Trading Engine na Online
-        components = [
-            {"id": "api-connector", "name": "API Connector", "status": "online"},
-            {"id": "data-processor", "name": "Data Processor", "status": "online"},
-            {"id": "trading-engine", "name": "Trading Engine", "status": "online"},  # Zmieniono status z warning na online
-            {"id": "risk-manager", "name": "Risk Manager", "status": "online"}
-        ]
-        return jsonify({"success": True, "components": components})
-    except Exception as e:
-        logging.error(f"Błąd podczas pobierania statusu komponentów: {e}", exc_info=True)
-        return jsonify({"success": False, "error": str(e)})
+# Ta funkcja jest zduplikowana - usunięto ją, ponieważ istnieje druga implementacja poniżej
 
 @app.route('/')
 def dashboard():
