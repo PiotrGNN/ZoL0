@@ -606,10 +606,16 @@ class BybitConnector:
                             self.logger.error(f"Test połączenia z API nie powiódł się: {time_error}")
 
                             # Importuj funkcje wykrywania i ustawiania blokady CloudFront
-                            from data.utils.cache_manager import detect_cloudfront_error, set_cloudfront_block_status
-                            
-                            # Wykrywanie błędów CloudFront i limitów IP
-                            if detect_cloudfront_error(error_str):
+                            try:
+                                from data.utils.cache_manager import detect_cloudfront_error, set_cloudfront_block_status
+                                # Wykrywanie błędów CloudFront i limitów IP
+                                if detect_cloudfront_error(error_str):
+                            except ImportError:
+                                # Jeśli funkcje nie istnieją, implementujemy prostą weryfikację
+                                error_str_lower = error_str.lower()
+                                has_cloudfront_error = any(indicator in error_str_lower for indicator in 
+                                                           ['cloudfront', 'distribution', '403', 'rate limit', '429'])
+                                if has_cloudfront_error:
                                 self.rate_limit_exceeded = True
                                 self.last_rate_limit_reset = time.time()
                                 self.remaining_rate_limit = 0
@@ -957,10 +963,25 @@ class BybitConnector:
 
     def _apply_rate_limit(self):
         """Applies rate limiting to API calls with exponential backoff for production environment."""
-        from data.utils.cache_manager import (
-            get_api_status, set_rate_limit_parameters, store_cached_data,
-            detect_cloudfront_error, set_cloudfront_block_status, get_cloudfront_status
-        )
+        try:
+            from data.utils.cache_manager import (
+                get_api_status, set_rate_limit_parameters, store_cached_data,
+                detect_cloudfront_error, set_cloudfront_block_status, get_cloudfront_status
+            )
+        except ImportError as e:
+            self.logger.warning(f"Cache manager import error: {e}. Using simplified rate limiting.")
+            # Implement simplified rate limiting if imports fail
+            current_time = time.time()
+            time_since_last_call = current_time - self.last_api_call
+            min_interval = 20.0 if not self.use_testnet else 10.0
+            
+            if time_since_last_call < min_interval:
+                sleep_time = min_interval - time_since_last_call
+                if sleep_time > 0.1:
+                    time.sleep(sleep_time)
+            
+            self.last_api_call = time.time()
+            return
 
         # Sprawdź czy mamy blokadę CloudFront - w takim przypadku korzystamy z cache
         cloudfront_status = get_cloudfront_status()

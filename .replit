@@ -61,7 +61,7 @@ pattern = "**/*.py"
 start = "pylsp"
 
 [workflows]
-runButton = "Full Setup & Run"
+runButton = "Trading System"
 
 [[workflows.workflow]]
 name = "Run"
@@ -73,14 +73,28 @@ task = "shell.exec"
 args = "python main.py"
 
 [[workflows.workflow]]
-name = "Full Setup & Run"
+name = "Trading System"
 author = 31819671
 mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python init_project.py"
+args = "python main.py"
+
+[[workflows.workflow]]
+name = "Run Tests"
+author = 31819671
+mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python main.py"
+args = "python -m pytest data/tests"
+
+[[workflows.workflow]]
+name = "Lint Code"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "flake8 --config=.flake8 --exclude=.git,__pycache__,dist"

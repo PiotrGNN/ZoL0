@@ -444,6 +444,73 @@ def init_cache():
     logger.info("Cache zainicjalizowany z domyślnymi parametrami")
 
 
+# Funkcje do obsługi blokady CloudFront
+def detect_cloudfront_error(error_message: str) -> bool:
+    """
+    Wykrywa czy błąd pochodzi z CloudFront (AWS) lub jest związany z limitami IP.
+    
+    Args:
+        error_message (str): Komunikat błędu do przeanalizowania
+        
+    Returns:
+        bool: True jeśli wykryto błąd CloudFront lub limit IP
+    """
+    error_message = error_message.lower()
+    cloudfront_indicators = [
+        'cloudfront', 
+        'distribution is configured', 
+        'request could not be satisfied',
+        '403 forbidden',
+        'access denied',
+        'rate limit',
+        'too many requests',
+        '429',
+        'ip rate limit'
+    ]
+    
+    for indicator in cloudfront_indicators:
+        if indicator in error_message:
+            logger.warning(f"Wykryto błąd CloudFront/limit IP: {indicator}")
+            return True
+            
+    return False
+
+def set_cloudfront_block_status(blocked: bool, error_message: str = ""):
+    """
+    Ustawia status blokady CloudFront w cache.
+    
+    Args:
+        blocked (bool): Czy blokada jest aktywna
+        error_message (str): Opcjonalny komunikat błędu
+    """
+    cloudfront_status = {
+        "blocked": blocked,
+        "timestamp": time.time(),
+        "error": error_message
+    }
+    store_cached_data("cloudfront_status", cloudfront_status)
+    logger.warning(f"Status blokady CloudFront ustawiony na: {blocked}")
+    
+def get_cloudfront_status() -> Dict[str, Any]:
+    """
+    Pobiera aktualny status blokady CloudFront.
+    
+    Returns:
+        Dict[str, Any]: Status blokady CloudFront
+    """
+    status, found = get_cached_data("cloudfront_status")
+    if not found:
+        status = {"blocked": False, "timestamp": 0, "error": ""}
+        
+    # Jeśli blokada trwa dłużej niż 60 minut, automatycznie ją resetujemy
+    if status.get("blocked", False) and time.time() - status.get("timestamp", 0) > 3600:
+        status["blocked"] = False
+        status["error"] = "Automatyczny reset blokady po 60 minutach"
+        store_cached_data("cloudfront_status", status)
+        logger.info("Automatyczny reset blokady CloudFront po 60 minutach")
+        
+    return status
+
 # Automatyczna inicjalizacja przy imporcie
 init_cache()
 

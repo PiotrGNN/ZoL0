@@ -1,152 +1,110 @@
-# System Tradingowy z Dashboardem
+# Trading System with AI Integration
 
-## 📋 Opis projektu
-Zaawansowany system tradingowy z dashboardem do monitorowania i zarządzania strategiami handlu automatycznego na giełdach kryptowalut, ze szczególnym uwzględnieniem integracji z ByBit.
+## 📈 Overview
+A comprehensive trading system with AI-powered market analysis, technical indicators, and automated execution features. The system uses ByBit API for trading operations.  This system includes a dashboard for real-time portfolio monitoring and management of automated trading strategies on cryptocurrency exchanges, with a focus on ByBit integration.
 
-## 🚀 Funkcjonalności
+## 🚀 Quick Start
 
-- **Dashboard analityczny** z wizualizacją danych portfela w czasie rzeczywistym
-- **Integracja z API ByBit** (obsługa zarówno testnet jak i produkcyjnego API)
-- **Zarządzanie ryzykiem** z konfigurowalnymi parametrami
-- **Analiza sentymentu rynku** z wykorzystaniem AI
-- **Wykrywanie anomalii cenowych** w czasie rzeczywistym
-- **System alertów i powiadomień** o ważnych zdarzeniach na rynku
-- **Zarządzanie portfelem** z monitorowaniem sald i historii transakcji
+### Installation
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/username/trading-system.git
+   cd trading-system
+   ```
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Copy the `.env.example` file to `.env` and configure your settings:
+   ```bash
+   cp .env.example .env
+   ```
+4. Run the application:
+   ```bash
+   python main.py
+   ```
+5. Access the application: Open your browser and go to: `http://localhost:5000`
+
+
+## 🔧 Configuration
+Configure the system through the `.env` file or environment variables:
+- `BYBIT_API_KEY`: Your ByBit API key
+- `BYBIT_API_SECRET`: Your ByBit API secret
+- `BYBIT_USE_TESTNET`: Set to "true" to use the testnet environment (recommended for testing)
+- `USE_SIMULATED_DATA`: Set to "true" to use simulated data instead of real API calls
+- `RISK_LEVEL` - Level of risk: `low`, `medium`, `high`
+- `MAX_POSITION_SIZE` - Maximum position size as % of portfolio
+- `API_RATE_LIMIT` - Enable smart API request limiting
+- `API_CACHE_ENABLED` - Enable API response caching
+
+
+## 🧠 AI Models
+The system includes various AI models for market analysis:
+- Anomaly detection
+- Sentiment analysis
+- Price prediction
+- Reinforcement learning for trading strategies
+
+## 📊 Dashboard
+Access the web dashboard at `http://localhost:5000` to monitor:
+- Current positions
+- Account balance
+- Performance metrics
+- Market sentiment and anomalies
+
+## 🔧 Troubleshooting
+
+### Problemy z limitami API (403/429 Errors)
+If you encounter rate limit errors (403/429):
+
+1. Set `BYBIT_USE_TESTNET=true` in your `.env` file
+2. Wait 5-10 minutes before retrying
+3. Set `USE_SIMULATED_DATA=true` for testing without API calls
+4. Consider using a different IP address (e.g., via VPN or proxy).
+5. For testing, use simulation mode - set `USE_SIMULATED_DATA=true` in `.env`
+
+
+### Problemy z zależnościami
+If you have dependency conflicts, try installing without dependencies:
+```bash
+pip install -r requirements.txt --no-deps
+```
+
+Then install missing packages manually.
+
+### Błędy importu
+If you encounter import errors:
+```bash
+python fix_imports.py
+```
+
+### Testy
+To fix and run tests:
+```bash
+python fix_tests.py
+```
+
+
+## 📁 Project Structure
+- `main.py` - Main application entry point
+- `data/` - Data processing and API integration
+  - `execution/` - Exchange interaction modules
+  - `indicators/` - Technical indicators and analysis
+  - `risk_management/` - Risk management modules
+  - `strategies/` - Trading strategies
+  - `utils/` - Utility functions
+- `ai_models/` - AI/ML models for market analysis
+- `static/` - Frontend assets
+- `templates/` - HTML templates
+- `logs/` - Application logs
 
 ## 🔧 Technologie
-
 - **Backend**: Python, Flask
 - **Frontend**: HTML, CSS, JavaScript, Chart.js
 - **Analiza danych**: Pandas, NumPy
 - **Integracja z giełdą**: ByBit API
 - **Przechowywanie danych**: Buforowanie JSON, cache-management
 
-## 🛠️ Instalacja i uruchomienie
-
-### Wymagania wstępne
-- Python 3.10+
-- Pip
-
-### Kroki instalacji
-
-1. **Klonowanie repozytorium**:
-   ```bash
-   git clone https://github.com/username/trading-system.git
-   cd trading-system
-   ```
-
-2. **Instalacja zależności**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. **Konfiguracja środowiska**:
-   - Skopiuj plik `.env.example` do `.env`:
-     ```bash
-     cp .env.example .env
-     ```
-   - Wypełnij zmienne środowiskowe w pliku `.env` swoimi danymi, w tym kluczami API ByBit
-
-4. **Uruchomienie aplikacji**:
-   ```bash
-   python main.py
-   ```
-
-5. **Dostęp do aplikacji**:
-   Otwórz przeglądarkę i przejdź do adresu:
-   ```
-   http://localhost:5000
-   ```
-
-## ⚙️ Konfiguracja
-
-### Zmienne środowiskowe
-
-Główne parametry konfiguracyjne w pliku `.env`:
-
-- `BYBIT_API_KEY` i `BYBIT_API_SECRET` - klucze dostępu do API ByBit
-- `BYBIT_USE_TESTNET` - `true` dla testowej wersji, `false` dla produkcyjnej
-- `RISK_LEVEL` - poziom ryzyka: `low`, `medium`, `high`
-- `MAX_POSITION_SIZE` - maksymalny rozmiar pozycji jako % portfela
-- `API_RATE_LIMIT` - włączenie inteligentnego limitowania zapytań API
-- `API_CACHE_ENABLED` - włączenie cache'owania odpowiedzi API
-
-## 🔧 Rozwiązywanie problemów
-
-### Problemy z limitami API (403/429 Errors)
-Jeśli napotkasz błędy związane z przekroczeniem limitów API:
-
-```
-You have breached the ip rate limit. (ErrCode: 403)
-```
-
-lub błędy CloudFront:
-
-```
-The Amazon CloudFront distribution is configured to block access from your country.
-```
-
-Rozwiązania:
-1. Zmodyfikuj zmienną `BYBIT_USE_TESTNET` w pliku `.env` na `true`
-2. Poczekaj 5-10 minut przed następną próbą połączenia
-3. Zmniejsz częstotliwość odpytywania API w `data/utils/cache_manager.py`
-4. Korzystaj z innego adresu IP (np. przez VPN lub proxy)
-5. Dla testów używaj trybu symulacji - ustaw `USE_SIMULATED_DATA=true` w `.env`
-
-### Problemy z zależnościami
-W przypadku konfliktów zależności, możesz użyć:
-```
-pip install -r requirements.txt --no-dependencies
-```
-Następnie doinstalować brakujące pakiety ręcznie.
-
-### Błędy importu
-Jeśli napotkasz błędy związane z importem modułów, uruchom:
-```
-python fix_imports.py
-```
-
-### Testy
-Aby naprawić i uruchomić testy:
-```
-python fix_tests.py
-```
-
-## 📁 Struktura projektu
-
-- `main.py` - Główny plik aplikacji
-- `data/` - Moduły przetwarzania danych i integracji z API
-  - `execution/` - Moduły wykonywania operacji na giełdzie
-  - `indicators/` - Wskaźniki techniczne i analizy
-  - `risk_management/` - Zarządzanie ryzykiem
-  - `strategies/` - Strategie handlowe
-  - `utils/` - Narzędzia pomocnicze
-- `ai_models/` - Modele AI do analizy rynku
-- `static/` - Pliki statyczne (CSS, JavaScript)
-- `templates/` - Szablony HTML
-- `logs/` - Logi aplikacji
-
-## 📊 Przykłady użycia
-
-### Monitorowanie portfela
-Po uruchomieniu aplikacji, dashboard prezentuje aktualny stan portfela, historyczne wyniki oraz wykres wartości.
-
-### Testowanie API
-Możesz testować połączenie z API ByBit za pomocą endpointu:
-```
-http://localhost:5000/api/bybit/connection-test
-```
-
-### Debugowanie
-Wszystkie logi znajdują się w katalogu `logs/`, co pomaga w diagnozowaniu problemów.
-
-## 🔒 Bezpieczeństwo
-
-- Klucze API są przechowywane tylko lokalnie w pliku `.env` (nie są wersjonowane)
-- System wspiera tryb testnet - zalecany do testów i nauki
-- Wbudowane limity zapytań API zapobiegają przekroczeniu limitów giełdy
-- Moduł cache'owania zmniejsza liczbę zapytań i poprawia wydajność
-
 ## 📄 Licencja
 
-Ten projekt jest dostępny na licencji MIT.
+This project is licensed under the MIT License.
