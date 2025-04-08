@@ -554,7 +554,7 @@ class BybitConnector:
                             time_nano = data["result"]["timeNano"]
                             if isinstance(time_nano, str):
                                 time_nano = int(time_nano)
-                            time_ms = time_nano // 1000000
+                            time_ms = int(time_nano) // 1000000
 
                             server_time = {
                                 "timeNow": time_ms
