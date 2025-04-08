@@ -131,10 +131,20 @@ def get_cached_data(key: str) -> Tuple[Any, bool]:
             logger.debug(f"Dane w cache dla klucza {key} są przeterminowane.")
             return None, False
 
-        # Bezpieczne pobieranie danych - jeśli dane są boolean, opakuj je w słownik
-        data = cache_entry["data"]
+        # Bezpieczne pobieranie danych - zawsze zwracaj dictionary
+        data = cache_entry.get("data")
+        
+        if data is None:
+            logger.debug(f"Brak danych w cache dla klucza {key}")
+            return None, False
+            
+        # Jeśli dane to boolean, opakuj w słownik
         if isinstance(data, bool):
             logger.debug(f"Pobrano boolean z cache dla klucza {key}, opakowanie w słownik")
+            data = {"value": data}
+        # Jeśli dane nie są dictionary, również opakuj w słownik
+        elif not isinstance(data, dict):
+            logger.debug(f"Pobrano niedictionary z cache dla klucza {key}, opakowanie w słownik")
             data = {"value": data}
         
         logger.debug(f"Pobrano dane z cache dla klucza: {key}")
@@ -162,6 +172,13 @@ def is_cache_valid(key: str, ttl: int = DEFAULT_TTL) -> bool:
 
         with open(cache_path, 'r') as f:
             cache_entry = json.load(f)
+
+        # Sprawdź czy dane zawierają wymagane pola
+        required_fields = ["timestamp"]
+        for field in required_fields:
+            if field not in cache_entry:
+                logger.warning(f"Brakujące pole '{field}' w cache dla klucza {key}")
+                return False
 
         # Sprawdź czy dane nie są przeterminowane
         current_time = time.time()

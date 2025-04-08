@@ -65,3 +65,36 @@ if __name__ == "__main__":
     print("Testowanie połączenia przez proxy SOCKS5...")
     result = test_connection()
     print(f"Test zakończony {'pomyślnie' if result else 'niepomyślnie'}")
+
+    # Sprawdź czy cache poprawnie się inicjalizuje
+    try:
+        from data.utils.cache_manager import get_cached_data, store_cached_data, is_cache_valid
+
+        # Test zapisu i odczytu z cache
+        test_key = "test_proxy_key"
+        test_data = {"test": True, "timestamp": time.time()}
+
+        # Test zapisywania boolean w cache
+        bool_key = "test_proxy_bool"
+        store_cached_data(bool_key, True)
+        bool_data, bool_found = get_cached_data(bool_key)
+
+        if bool_found and isinstance(bool_data, dict) and bool_data.get("value") == True:
+            print("✅ Cache poprawnie obsługuje wartości typu bool")
+        else:
+            print(f"❌ Problem z obsługą bool w cache: {bool_data}")
+
+        # Test standardowych danych
+        store_cached_data(test_key, test_data)
+        cached_data, found = get_cached_data(test_key)
+
+        if found and isinstance(cached_data, dict) and cached_data.get("test") == True:
+            print("✅ Cache działa poprawnie")
+        else:
+            print(f"❌ Problem z cache - nie można odczytać zapisanych danych: {cached_data}")
+
+        # Test walidacji ważności cache
+        valid = is_cache_valid(test_key)
+        print(f"✅ Poprawność cache dla {test_key}: {'ważny' if valid else 'nieważny'}")
+    except Exception as e:
+        print(f"❌ Błąd cache: {e}")

@@ -107,17 +107,32 @@ class BybitConnector:
         try:
             from data.utils.cache_manager import get_cached_data
             rate_limited_data, found = get_cached_data("api_rate_limited")
-            if found and rate_limited_data:
+            
+            # Inicjalizujemy flagę jako False
+            self.rate_limit_exceeded = False
+            
+            if found and rate_limited_data is not None:
                 # Bezpieczny dostęp - wartość może być słownikiem lub typem prostym
-                if isinstance(rate_limited_data, dict) and rate_limited_data.get("value", False):
-                    self.rate_limit_exceeded = True
-                elif not isinstance(rate_limited_data, dict) and rate_limited_data:
-                    self.rate_limit_exceeded = True
+                if isinstance(rate_limited_data, dict):
+                    # Jeśli to słownik, sprawdź klucz "value"
+                    if rate_limited_data.get("value", False):
+                        self.rate_limit_exceeded = True
+                elif isinstance(rate_limited_data, bool):
+                    # Jeśli to bezpośrednio boolean
+                    self.rate_limit_exceeded = rate_limited_data
+                else:
+                    # Próba konwersji na boolean
+                    try:
+                        self.rate_limit_exceeded = bool(rate_limited_data)
+                    except (ValueError, TypeError):
+                        self.logger.warning(f"Nie można skonwertować wartości cache na boolean: {rate_limited_data}")
                 
                 if self.rate_limit_exceeded:
                     self.logger.warning("Wykryto zapisaną flagę przekroczenia limitów API. Ustawiam tryb oszczędzania limitów.")
         except Exception as e:
             self.logger.warning(f"Nie można sprawdzić stanu limitów API: {e}")
+            # Bezpiecznie zakładamy False w przypadku błędu
+            self.rate_limit_exceeded = False
 
         # Kontynuuj tylko inicjalizację komponentów, ale nie testuj API jeśli lazy_connect
         if not lazy_connect:
@@ -202,14 +217,28 @@ class BybitConnector:
                     from data.utils.cache_manager import get_cached_data, is_cache_valid, store_cached_data
                     cache_key = f"server_time_{self.use_testnet}"
 
-                    if is_cache_valid(cache_key, ttl=300):  # Ważny przez 5 minut
-                        server_time_data, found = get_cached_data(cache_key)
-                        if found:
+                    server_time_data = None
+                    found = False
+                    
+                    # Bezpieczne sprawdzanie cache z obsługą wyjątków
+                    try:
+                        if is_cache_valid(cache_key, ttl=300):  # Ważny przez 5 minut
+                            server_time_data, found = get_cached_data(cache_key)
+                    except Exception as cache_valid_error:
+                        self.logger.warning(f"Błąd podczas sprawdzania ważności cache: {cache_valid_error}")
+                        found = False
+                    
+                    # Bezpieczne użycie danych z cache
+                    if found and server_time_data is not None:
+                        # Sprawdź czy dane mają wymagany format
+                        if isinstance(server_time_data, dict) and "timeNow" in server_time_data:
                             self.logger.info(f"Używam cache'owanego czasu serwera: {server_time_data}")
                             self._connection_test_result = True
                             self._connection_test_time = current_time
                             self._connection_initialized = True
                             return True
+                        else:
+                            self.logger.warning(f"Cache zawiera dane w nieprawidłowym formacie: {server_time_data}")
                 except Exception as cache_error:
                     self.logger.warning(f"Błąd podczas dostępu do cache: {cache_error}")
 
@@ -313,135 +342,163 @@ class BybitConnector:
         Returns:
             Dict[str, Any]: Czas serwera.
         """
+        # Przygotowanie domyślnego (lokalnego) czasu serwera jako fallback
+        current_time_ms = int(time.time() * 1000)
+        default_response = {
+            "success": True,
+            "time_ms": current_time_ms,
+            "time": datetime.fromtimestamp(current_time_ms / 1000).strftime('%Y-%m-%d %H:%M:%S'),
+            "source": "local_default"
+        }
+        
         try:
             # Sprawdź cache najpierw
-            from data.utils.cache_manager import get_cached_data, is_cache_valid
-            cache_key = f"server_time_{self.use_testnet}"
-
-            if is_cache_valid(cache_key, ttl=60):  # Cache ważny przez minutę
-                cached_data, found = get_cached_data(cache_key)
-                if found:
-                    self.logger.debug(f"Używam cache'owanego czasu serwera: {cached_data}")
-                    return {
-                        "success": True,
-                        "time_ms": cached_data.get("timeNow", int(time.time() * 1000)),
-                        "time": datetime.fromtimestamp(cached_data.get("timeNow", time.time() * 1000) / 1000).strftime('%Y-%m-%d %H:%M:%S'),
-                        "source": "cache"
-                    }
-
-            # Jeśli nie ma w cache lub cache nieważny
-            self._apply_rate_limit()
-
-            # Jeśli przekroczono limity, zwróć lokalny czas
-            if self.rate_limit_exceeded:
-                current_time = int(time.time() * 1000)
-                self.logger.info(f"Używam lokalnego czasu zamiast odpytywania API (przekroczono limity)")
+            cached_data = None
+            found = False
+            
+            try:
+                from data.utils.cache_manager import get_cached_data, is_cache_valid
+                cache_key = f"server_time_{self.use_testnet}"
+                
+                cache_valid = False
+                try:
+                    cache_valid = is_cache_valid(cache_key, ttl=60)  # Cache ważny przez minutę
+                except Exception as cache_valid_err:
+                    self.logger.warning(f"Błąd podczas sprawdzania ważności cache: {cache_valid_err}")
+                
+                if cache_valid:
+                    try:
+                        cached_data, found = get_cached_data(cache_key)
+                    except Exception as cache_get_err:
+                        self.logger.warning(f"Błąd podczas pobierania danych z cache: {cache_get_err}")
+                        found = False
+            except Exception as cache_import_err:
+                self.logger.warning(f"Błąd podczas importu managera cache: {cache_import_err}")
+            
+            # Jeśli dane są w cache i mają poprawny format
+            if found and cached_data is not None and isinstance(cached_data, dict) and "timeNow" in cached_data:
+                self.logger.debug(f"Używam cache'owanego czasu serwera: {cached_data}")
+                time_ms = int(cached_data["timeNow"])
                 return {
                     "success": True,
-                    "time_ms": current_time,
-                    "time": datetime.fromtimestamp(current_time / 1000).strftime('%Y-%m-%d %H:%M:%S'),
-                    "source": "local_rate_limited"
+                    "time_ms": time_ms,
+                    "time": datetime.fromtimestamp(time_ms / 1000).strftime('%Y-%m-%d %H:%M:%S'),
+                    "source": "cache"
                 }
 
+            # Jeśli nie ma w cache lub cache nieważny
+            try:
+                self._apply_rate_limit()
+            except Exception as rate_limit_err:
+                self.logger.warning(f"Błąd podczas stosowania rate limit: {rate_limit_err}")
+
+            # Jeśli przekroczono limity, zwróć lokalny czas
+            if getattr(self, "rate_limit_exceeded", False):
+                self.logger.info(f"Używam lokalnego czasu zamiast odpytywania API (przekroczono limity)")
+                default_response["source"] = "local_rate_limited"
+                return default_response
+
             # Inicjalizacja klienta, jeśli jeszcze nie istnieje
-            if not self._connection_initialized or self.client is None:
-                if not self._initialize_client():
+            client_initialized = False
+            if not getattr(self, "_connection_initialized", False) or self.client is None:
+                try:
+                    client_initialized = self._initialize_client()
+                except Exception as init_err:
+                    self.logger.error(f"Błąd podczas inicjalizacji klienta: {init_err}")
+                    client_initialized = False
+                
+                if not client_initialized:
                     # Jeśli inicjalizacja się nie powiedzie, zwróć lokalny czas
-                    current_time = int(time.time() * 1000)
-                    return {
-                        "success": True,
-                        "time_ms": current_time,
-                        "time": datetime.fromtimestamp(current_time / 1000).strftime('%Y-%m-%d %H:%M:%S'),
-                        "source": "local_init_failed"
-                    }
+                    default_response["source"] = "local_init_failed"
+                    return default_response
 
             # Próba pobrania prawdziwego czasu serwera bezpośrednio przez HTTP (bez autoryzacji)
-            if not self.rate_limit_exceeded:
+            if not getattr(self, "rate_limit_exceeded", False):
+                server_time = {"timeNow": current_time_ms}  # Domyślna wartość jako zabezpieczenie
+                
                 try:
                     # Używamy endpointu v5 - najnowszego i preferowanego
                     v5_endpoint = f"{self.base_url}/v5/market/time"
                     self.logger.debug(f"Pobieranie czasu z V5 API: {v5_endpoint}")
-                    # Użyj proxy jeśli skonfigurowane
-                    response = requests.get(v5_endpoint, timeout=5, proxies=self.proxies)
-
-                    server_time = {"timeNow": int(time.time() * 1000)}  # Domyślna wartość jako zabezpieczenie
                     
-                    if response.status_code == 200:
-                        data = response.json()
-                        if data.get("retCode") == 0 and "result" in data:
-                            server_time = {"timeNow": data["result"]["timeNano"] // 1000000}
-                            self.logger.debug(f"Pobrano czas serwera z V5 API: {server_time}")
-                        else:
-                            # Próba z endpointem Spot API jako fallback
-                            spot_endpoint = f"{self.base_url}/spot/v1/time"
-                            self.logger.debug(f"Pobieranie czasu z Spot API: {spot_endpoint}")
-                            # Użyj proxy jeśli skonfigurowane
-                            response = requests.get(spot_endpoint, timeout=5, proxies=self.proxies)
-
-                            if response.status_code == 200:
-                                data = response.json()
-                                if data.get("ret_code") == 0 and "serverTime" in data:
-                                    server_time = {"timeNow": data["serverTime"]}
-                                    self.logger.debug(f"Pobrano czas serwera z Spot API: {server_time}")
-                                else:
-                                    self.logger.warning(f"Błędna odpowiedź z endpointu Spot: {data}. Używam czasu lokalnego.")
+                    # Użyj proxy jeśli skonfigurowane
+                    try:
+                        response = requests.get(v5_endpoint, timeout=5, proxies=self.proxies)
+                        
+                        if response.status_code == 200:
+                            data = response.json()
+                            if data.get("retCode") == 0 and "result" in data:
+                                server_time = {"timeNow": data["result"]["timeNano"] // 1000000}
+                                self.logger.debug(f"Pobrano czas serwera z V5 API: {server_time}")
                             else:
-                                self.logger.warning(f"Błąd HTTP {response.status_code} dla obu endpointów czasu serwera. Używam czasu lokalnego.")
-                    else:
-                        self.logger.warning(f"Błąd HTTP {response.status_code} dla V5 API. Używam czasu lokalnego.")
+                                # Próba z endpointem Spot API jako fallback
+                                spot_endpoint = f"{self.base_url}/spot/v1/time"
+                                self.logger.debug(f"Pobieranie czasu z Spot API: {spot_endpoint}")
+                                
+                                try:
+                                    # Użyj proxy jeśli skonfigurowane
+                                    response = requests.get(spot_endpoint, timeout=5, proxies=self.proxies)
+                                    
+                                    if response.status_code == 200:
+                                        data = response.json()
+                                        if data.get("ret_code") == 0 and "serverTime" in data:
+                                            server_time = {"timeNow": data["serverTime"]}
+                                            self.logger.debug(f"Pobrano czas serwera z Spot API: {server_time}")
+                                        else:
+                                            self.logger.warning(f"Błędna odpowiedź z endpointu Spot: {data}. Używam czasu lokalnego.")
+                                    else:
+                                        self.logger.warning(f"Błąd HTTP {response.status_code} dla Spot API. Używam czasu lokalnego.")
+                                except Exception as spot_err:
+                                    self.logger.warning(f"Błąd podczas pobierania czasu z Spot API: {spot_err}. Używam czasu lokalnego.")
+                        else:
+                            self.logger.warning(f"Błąd HTTP {response.status_code} dla V5 API. Używam czasu lokalnego.")
+                    except Exception as v5_err:
+                        self.logger.warning(f"Błąd podczas pobierania czasu z V5 API: {v5_err}. Używam czasu lokalnego.")
                         
                     # Zapisz wynik w cache - nawet jeśli używamy czasu lokalnego
                     try:
                         from data.utils.cache_manager import store_cached_data
                         cache_key = f"server_time_{self.use_testnet}"
+                        # Upewnij się, że server_time ma właściwe klucze
+                        if not isinstance(server_time, dict) or "timeNow" not in server_time:
+                            server_time = {"timeNow": current_time_ms}
                         store_cached_data(cache_key, server_time)
                     except Exception as cache_error:
                         self.logger.warning(f"Błąd podczas zapisu do cache: {cache_error}")
-                        
-                    # Kontynuujemy bez rzucania wyjątku, używając lokalnego czasu jeśli nie udało się pobrać czasu serwera
-                except Exception as e:
-                    self.logger.warning(f"Nie udało się pobrać czasu serwera przez HTTP: {e}. Używam czasu lokalnego.")
-                    server_time = {"timeNow": int(time.time() * 1000)}
                     
-                    # Zapisz lokalny czas w cache jako fallback
-                    try:
-                        from data.utils.cache_manager import store_cached_data
-                        cache_key = f"server_time_{self.use_testnet}"
-                        store_cached_data(cache_key, server_time)
-                    except Exception as cache_error:
-                        self.logger.warning(f"Błąd podczas zapisu do cache: {cache_error}")
-
-                    # Ekstrakcja czasu z różnych formatów API
-                    if "timeNow" in server_time:
-                        time_ms = int(server_time["timeNow"])
-                    elif "time_now" in server_time:
-                        time_ms = int(float(server_time["time_now"]) * 1000)
-                    elif "time" in server_time:
-                        time_ms = int(server_time["time"])
-                    else:
-                        time_ms = int(time.time() * 1000)
-
+                    # Ekstrakcja czasu - z bezpiecznym dostępem do pól
+                    time_ms = current_time_ms  # Wartość domyślna
+                    if isinstance(server_time, dict):
+                        if "timeNow" in server_time:
+                            time_ms = int(server_time["timeNow"])
+                        elif "time_now" in server_time:
+                            try:
+                                time_ms = int(float(server_time["time_now"]) * 1000)
+                            except (ValueError, TypeError):
+                                pass
+                        elif "time" in server_time:
+                            try:
+                                time_ms = int(server_time["time"])
+                            except (ValueError, TypeError):
+                                pass
+                    
                     return {
                         "success": True,
                         "time_ms": time_ms,
                         "time": datetime.fromtimestamp(time_ms / 1000).strftime('%Y-%m-%d %H:%M:%S'),
                         "source": "api"
                     }
-                except Exception as e:
-                    self.logger.warning(f"Nie udało się pobrać czasu serwera: {e}. Używam czasu lokalnego.")
-                    # W przypadku błędu zwracamy lokalny czas
+                except Exception as http_err:
+                    self.logger.warning(f"Nie udało się pobrać czasu serwera: {http_err}. Używam czasu lokalnego.")
+                    default_response["source"] = "local_http_error"
+                    return default_response
 
-            # Jako fallback zawsze zwracamy lokalny czas
-            current_time = int(time.time() * 1000)
-            return {
-                "success": True,
-                "time_ms": current_time,
-                "time": datetime.fromtimestamp(current_time / 1000).strftime('%Y-%m-%d %H:%M:%S'),
-                "source": "local_fallback"
-            }
+            # Jako ostateczny fallback zawsze zwracamy lokalny czas
+            default_response["source"] = "local_fallback"
+            return default_response
         except Exception as e:
-            self.logger.error(f"Błąd podczas pobierania czasu serwera: {e}")
-            return {"success": False, "error": str(e)}
+            self.logger.error(f"Krytyczny błąd podczas pobierania czasu serwera: {e}")
+            return default_response
 
     def get_klines(self, symbol: str, interval: str = "15", limit: int = 10) -> List[Dict[str, Any]]:
         """
