@@ -1060,9 +1060,15 @@ class BybitConnector:
     def _apply_rate_limit(self):
         """Applies rate limiting to API calls with exponential backoff for production environment."""
         try:
+            # Używamy uproszczonego importu, który nie będzie wymagał wszystkich funkcji
+            from data.utils.cache_manager import get_api_status
+            
+            # Jeśli główny import się powiedzie, importujemy resztę
             from data.utils.cache_manager import (
-                get_api_status, set_rate_limit_parameters, store_cached_data,
-                detect_cloudfront_error, set_cloudfront_block_status, get_cloudfront_status
+                store_cached_data,
+                detect_cloudfront_error, 
+                set_cloudfront_block_status, 
+                get_cloudfront_status
             )
         except ImportError as e:
             self.logger.warning(f"Cache manager import error: {e}. Using simplified rate limiting.")
