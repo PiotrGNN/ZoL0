@@ -1294,19 +1294,35 @@ class BybitConnector:
                             # Nowsza struktura API ByBit V5
                             # Sprawdź czy result zawiera listę (typowy format V5 API)
                             if "list" in wallet["result"] and isinstance(wallet["result"]["list"], list):
-                                for coin_data in wallet["result"]["list"]:
-                                    # Bezpieczne pobieranie coin z obsługą sytuacji gdy może być listą
-                                    if isinstance(coin_data, dict):
-                                        coin = coin_data.get("coin")
+                                for account_data in wallet["result"]["list"]:
+                                    # Sprawdź czy dane zawierają pole "coin" które jest listą słowników
+                                    if isinstance(account_data, dict) and "coin" in account_data and isinstance(account_data["coin"], list):
+                                        # Iteruj po liście słowników coin
+                                        for coin_data in account_data["coin"]:
+                                            if isinstance(coin_data, dict) and "coin" in coin_data:
+                                                coin = coin_data["coin"]
+                                                if isinstance(coin, str) and coin:
+                                                    result["balances"][coin] = {
+                                                        "equity": float(coin_data.get("equity", 0)),
+                                                        "available_balance": float(
+                                                            coin_data.get("availableBalance", 0) or 
+                                                            coin_data.get("availableToWithdraw", 0)
+                                                        ),
+                                                        "wallet_balance": float(coin_data.get("walletBalance", 0))
+                                                    }
+                                                    self.logger.debug(f"Dodano saldo dla {coin}: {result['balances'][coin]}")
+                                    # Obsługa przypadku gdy coin jest bezpośrednio w danych konta
+                                    elif isinstance(account_data, dict):
+                                        coin = account_data.get("coin")
                                         # Upewnienie się że coin jest stringiem, a nie listą
                                         if isinstance(coin, str) and coin:
                                             result["balances"][coin] = {
-                                                "equity": float(coin_data.get("equity", 0)),
+                                                "equity": float(account_data.get("equity", 0)),
                                                 "available_balance": float(
-                                                    coin_data.get("availableBalance", 0) or 
-                                                    coin_data.get("availableToWithdraw", 0)
+                                                    account_data.get("availableBalance", 0) or 
+                                                    account_data.get("availableToWithdraw", 0)
                                                 ),
-                                                "wallet_balance": float(coin_data.get("walletBalance", 0))
+                                                "wallet_balance": float(account_data.get("walletBalance", 0))
                                             }
                                             self.logger.debug(f"Dodano saldo dla {coin}: {result['balances'][coin]}")
                                         elif isinstance(coin, list) and coin:
@@ -1315,12 +1331,12 @@ class BybitConnector:
                                             for single_coin in coin:
                                                 if isinstance(single_coin, str) and single_coin:
                                                     result["balances"][single_coin] = {
-                                                        "equity": float(coin_data.get("equity", 0)),
+                                                        "equity": float(account_data.get("equity", 0)),
                                                         "available_balance": float(
-                                                            coin_data.get("availableBalance", 0) or 
-                                                            coin_data.get("availableToWithdraw", 0)
+                                                            account_data.get("availableBalance", 0) or 
+                                                            account_data.get("availableToWithdraw", 0)
                                                         ),
-                                                        "wallet_balance": float(coin_data.get("walletBalance", 0))
+                                                        "wallet_balance": float(account_data.get("walletBalance", 0))
                                                     }
                                                     self.logger.debug(f"Dodano saldo dla coin z listy: {single_coin}")
                         elif wallet and "result" in wallet and isinstance(
