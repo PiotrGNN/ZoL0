@@ -1,10 +1,11 @@
 
 @echo off
-echo === Inteligentny System Tradingowy - Test Połączenia Bybit (Windows) ===
-echo.
+echo Testing Bybit API Connection...
 
-echo Sprawdzanie połączenia z serwerem Bybit...
+REM Upewnij się, że wszystkie katalogi istnieją
+if not exist "logs" mkdir logs
+
+REM Uruchomienie testu połączenia
 python test_bybit_connection.py
 
-echo.
 pause

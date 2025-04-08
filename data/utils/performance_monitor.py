@@ -1,103 +1,16 @@
-"""
-performance_monitor.py
-----------------------
-Moduł monitorujący wydajność systemu.
-Funkcjonalności:
-- Mierzy czasy wykonania kluczowych operacji, zużycie pamięci oraz obciążenie CPU.
-- Generuje raporty trendów wydajności w dłuższym okresie.
-- Umożliwia wysyłanie alertów, gdy wydajność spada poniżej ustalonych progów.
-- Integruje się z modułami logowania oraz testami automatycznymi.
-"""
 
-import logging
-import time
-
-import psutil
-
-# Konfiguracja logowania
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
-)
-
-
-def measure_cpu_usage(interval: float = 1.0) -> float:
-    """
-    Mierzy zużycie CPU w procentach w określonym interwale.
-
-    Parameters:
-        interval (float): Czas pomiaru w sekundach.
-
-    Returns:
-        float: Średnie zużycie CPU w procentach.
-    """
-    cpu_usage = psutil.cpu_percent(interval=interval)
-    logging.info("Zużycie CPU: %.2f%%", cpu_usage)
-    return cpu_usage
-
-
-def measure_memory_usage() -> float:
-    """
-    Mierzy zużycie pamięci RAM.
-
-    Returns:
-        float: Procentowe zużycie pamięci.
-    """
-    mem = psutil.virtual_memory()
-    logging.info("Zużycie pamięci: %.2f%%", mem.percent)
-    return mem.percent
-
-
-def monitor_performance(duration: int = 60, check_interval: int = 5) -> dict:
-    """
-    Monitoruje wydajność systemu przez określony czas, mierząc CPU i zużycie pamięci.
-
-    Parameters:
-        duration (int): Całkowity czas monitorowania w sekundach.
-        check_interval (int): Interwał między kolejnymi pomiarami w sekundach.
-
-    Returns:
-        dict: Raport zawierający listy z pomiarami CPU i pamięci oraz ich średnie wartości.
-    """
-    cpu_readings = []
-    memory_readings = []
-    start_time = time.time()
-
-    while time.time() - start_time < duration:
-        cpu = measure_cpu_usage(interval=check_interval)
-        mem = measure_memory_usage()
-        cpu_readings.append(cpu)
-        memory_readings.append(mem)
-
-    avg_cpu = sum(cpu_readings) / len(cpu_readings) if cpu_readings else 0
-    avg_memory = sum(memory_readings) / len(memory_readings) if memory_readings else 0
-
-    report = {
-        "cpu_usage": cpu_readings,
-        "memory_usage": memory_readings,
-        "average_cpu": avg_cpu,
-        "average_memory": avg_memory,
-    }
-    logging.info("Monitoring wydajności zakończony. Raport: %s", report)
-    return report
-
-
-if __name__ == "__main__":
-    try:
-        # Przykładowe monitorowanie wydajności przez 30 sekund z interwałem 5 sekund
-        monitor_performance(duration=30, check_interval=5)
-    except Exception as e:
-        logging.error("Błąd w module performance_monitor.py: %s", e)
-        raise
 """
 performance_monitor.py
 --------------------
-Moduł monitorujący wydajność systemu tradingowego.
+Moduł do monitorowania wydajności systemu i strategii tradingowych.
 """
 
 import logging
-import time
 import os
-from typing import Dict, Any, List, Optional
+import time
+import psutil
+from datetime import datetime
+from typing import Dict, List, Any, Optional, Tuple
 
 # Konfiguracja logowania
 logger = logging.getLogger("performance_monitor")
@@ -110,112 +23,193 @@ if not logger.handlers:
     logger.addHandler(file_handler)
     logger.setLevel(logging.INFO)
 
+
 class PerformanceMonitor:
     """
-    Klasa monitorująca wydajność systemu tradingowego.
+    Klasa do monitorowania wydajności systemu i strategii tradingowych.
     """
 
-    def __init__(self):
-        """Inicjalizacja monitora wydajności."""
-        self.metrics = {}
+    def __init__(self, log_interval: int = 60):
+        """
+        Inicjalizuje monitor wydajności.
+
+        Parameters:
+            log_interval (int): Interwał logowania w sekundach.
+        """
+        self.log_interval = log_interval
+        self.last_log_time = 0
+        self.system_stats = {}
+        self.strategy_performance = {}
         self.start_time = time.time()
-        self.execution_times = {}
-        self.memory_usage = {}
-        self.api_calls = {}
-        logger.info("Inicjalizacja monitora wydajności")
+        logger.info(f"Zainicjalizowano monitor wydajności z interwałem logowania: {log_interval}s")
 
-    def start_timer(self, operation_name: str) -> None:
+    def monitor_system(self) -> Dict[str, Any]:
         """
-        Rozpoczyna pomiar czasu dla danej operacji.
-
-        Parameters:
-            operation_name (str): Nazwa operacji
-        """
-        self.metrics[operation_name] = {"start_time": time.time()}
-        logger.debug(f"Rozpoczęto pomiar czasu dla operacji: {operation_name}")
-
-    def stop_timer(self, operation_name: str) -> float:
-        """
-        Kończy pomiar czasu dla danej operacji i zwraca czas wykonania.
-
-        Parameters:
-            operation_name (str): Nazwa operacji
+        Monitoruje wydajność systemu.
 
         Returns:
-            float: Czas wykonania operacji w sekundach
+            Dict[str, Any]: Statystyki systemu.
         """
-        if operation_name in self.metrics and "start_time" in self.metrics[operation_name]:
-            start_time = self.metrics[operation_name]["start_time"]
-            execution_time = time.time() - start_time
+        try:
+            # Zbieranie statystyk systemu
+            memory = psutil.virtual_memory()
+            cpu_percent = psutil.cpu_percent(interval=0.1)
             
-            if operation_name not in self.execution_times:
-                self.execution_times[operation_name] = []
-                
-            self.execution_times[operation_name].append(execution_time)
-            self.metrics[operation_name]["last_execution_time"] = execution_time
+            disk = psutil.disk_usage('/')
+            disk_usage = {
+                "total": disk.total,
+                "used": disk.used,
+                "free": disk.free,
+                "percent": disk.percent
+            }
             
-            logger.debug(f"Zakończono pomiar czasu dla operacji: {operation_name}, czas: {execution_time:.4f}s")
-            return execution_time
-        else:
-            logger.warning(f"Nie znaleziono rozpoczętego pomiaru czasu dla operacji: {operation_name}")
-            return 0.0
+            self.system_stats = {
+                "memory": {
+                    "total": memory.total,
+                    "available": memory.available,
+                    "percent": memory.percent,
+                    "used": memory.used,
+                    "free": memory.free
+                },
+                "cpu": {
+                    "percent": cpu_percent,
+                    "count": psutil.cpu_count()
+                },
+                "disk": disk_usage,
+                "uptime": time.time() - self.start_time,
+                "timestamp": time.time()
+            }
+            
+            current_time = time.time()
+            if current_time - self.last_log_time >= self.log_interval:
+                logger.info(f"Statystyki systemu: CPU: {cpu_percent}%, RAM: {memory.percent}%, Disk: {disk.percent}%")
+                self.last_log_time = current_time
+            
+            return self.system_stats
+        except Exception as e:
+            logger.error(f"Błąd podczas monitorowania systemu: {e}")
+            return {"error": str(e)}
 
-    def record_api_call(self, endpoint: str, success: bool = True) -> None:
+    def monitor_strategy(self, strategy_name: str, performance_data: Dict[str, Any]) -> None:
         """
-        Rejestruje wywołanie API.
+        Monitoruje wydajność strategii tradingowej.
 
         Parameters:
-            endpoint (str): Nazwa endpointu API
-            success (bool): Czy wywołanie zakończyło się sukcesem
+            strategy_name (str): Nazwa strategii.
+            performance_data (Dict[str, Any]): Dane wydajności.
         """
-        if endpoint not in self.api_calls:
-            self.api_calls[endpoint] = {"success": 0, "failure": 0}
+        try:
+            # Aktualizacja danych wydajności
+            if strategy_name not in self.strategy_performance:
+                self.strategy_performance[strategy_name] = []
             
-        if success:
-            self.api_calls[endpoint]["success"] += 1
-        else:
-            self.api_calls[endpoint]["failure"] += 1
+            # Dodanie aktualnego czasu
+            performance_data["timestamp"] = time.time()
             
-        logger.debug(f"Zarejestrowano wywołanie API: {endpoint}, status: {'sukces' if success else 'błąd'}")
+            self.strategy_performance[strategy_name].append(performance_data)
+            
+            # Ograniczenie liczby przechowywanych rekordów do 1000
+            if len(self.strategy_performance[strategy_name]) > 1000:
+                self.strategy_performance[strategy_name] = self.strategy_performance[strategy_name][-1000:]
+            
+            logger.info(f"Zaaktualizowano wydajność strategii {strategy_name}: {performance_data}")
+        except Exception as e:
+            logger.error(f"Błąd podczas monitorowania strategii {strategy_name}: {e}")
 
-    def get_performance_report(self) -> Dict[str, Any]:
+    def get_strategy_performance(self, strategy_name: str, limit: int = 10) -> List[Dict[str, Any]]:
         """
-        Generuje raport wydajności.
+        Pobiera dane wydajności strategii.
+
+        Parameters:
+            strategy_name (str): Nazwa strategii.
+            limit (int): Maksymalna liczba rekordów.
 
         Returns:
-            Dict[str, Any]: Raport wydajności
+            List[Dict[str, Any]]: Lista danych wydajności.
         """
-        total_runtime = time.time() - self.start_time
+        if strategy_name not in self.strategy_performance:
+            return []
         
-        # Obliczanie średnich czasów wykonania
-        avg_execution_times = {}
-        for operation, times in self.execution_times.items():
-            if times:
-                avg_execution_times[operation] = sum(times) / len(times)
+        return self.strategy_performance[strategy_name][-limit:]
+
+    def get_system_report(self) -> Dict[str, Any]:
+        """
+        Generuje raport wydajności systemu.
+
+        Returns:
+            Dict[str, Any]: Raport wydajności.
+        """
+        # Aktualizacja statystyk
+        self.monitor_system()
         
-        # Obliczanie procentu błędów API
-        api_error_rates = {}
-        for endpoint, counts in self.api_calls.items():
-            total = counts["success"] + counts["failure"]
-            if total > 0:
-                api_error_rates[endpoint] = (counts["failure"] / total) * 100
-        
+        # Przygotowanie raportu
         report = {
-            "total_runtime": total_runtime,
-            "avg_execution_times": avg_execution_times,
-            "api_calls": self.api_calls,
-            "api_error_rates": api_error_rates,
-            "memory_usage": self.memory_usage
+            "system": self.system_stats,
+            "strategies": {},
+            "timestamp": time.time(),
+            "datetime": datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
         }
         
-        logger.info("Wygenerowano raport wydajności")
+        # Dodanie danych wydajności strategii
+        for strategy_name, performance_data in self.strategy_performance.items():
+            if performance_data:
+                report["strategies"][strategy_name] = performance_data[-1]
+        
         return report
 
-    def reset(self) -> None:
-        """Resetuje monitor wydajności."""
-        self.metrics = {}
-        self.start_time = time.time()
-        self.execution_times = {}
-        self.memory_usage = {}
-        self.api_calls = {}
-        logger.info("Zresetowano monitor wydajności")
+    def log_execution_time(self, function_name: str, execution_time: float) -> None:
+        """
+        Loguje czas wykonania funkcji.
+
+        Parameters:
+            function_name (str): Nazwa funkcji.
+            execution_time (float): Czas wykonania w sekundach.
+        """
+        logger.info(f"Czas wykonania {function_name}: {execution_time:.6f}s")
+        
+        # Dodanie do statystyk
+        if "execution_times" not in self.system_stats:
+            self.system_stats["execution_times"] = {}
+        
+        if function_name not in self.system_stats["execution_times"]:
+            self.system_stats["execution_times"][function_name] = []
+        
+        self.system_stats["execution_times"][function_name].append(execution_time)
+        
+        # Ograniczenie liczby przechowywanych czasów do 1000
+        if len(self.system_stats["execution_times"][function_name]) > 1000:
+            self.system_stats["execution_times"][function_name] = self.system_stats["execution_times"][function_name][-1000:]
+
+
+# Singleton instancja dla łatwego dostępu z różnych modułów
+performance_monitor = PerformanceMonitor()
+
+
+# Dekorator do pomiaru czasu wykonania funkcji
+def measure_time(func):
+    """
+    Dekorator do pomiaru czasu wykonania funkcji.
+    
+    Parameters:
+        func: Funkcja do zmierzenia.
+        
+    Returns:
+        Funkcja wrapper.
+    """
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        execution_time = time.time() - start_time
+        performance_monitor.log_execution_time(func.__name__, execution_time)
+        return result
+    return wrapper
+
+
+def get_system_stats() -> Dict[str, Any]:
+    """
+    Funkcja pomocnicza do pobierania statystyk systemu.
+    
+    Returns:
+        Dict[str, Any]: Statystyki systemu.
+    """
+    return performance_monitor.monitor_system()

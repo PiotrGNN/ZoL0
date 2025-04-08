@@ -1,95 +1,105 @@
-# Inteligentny System Tradingowy
+# Trading Bot - Wersja Windows
 
-System do automatycznego tradingu na giełdzie Bybit z wykorzystaniem różnych strategii i modeli AI.
+## 📋 Opis Projektu
 
-## 📝 Project Description
-Advanced trading system with real-time market analysis, risk management, and intelligent order execution. Utilizes machine learning algorithms and market sentiment analysis for automated decision-making.
+Zaawansowany bot tradingowy zintegrowany z giełdą Bybit, wykorzystujący modele AI do generowania sygnałów.  System do automatycznego tradingu na giełdzie Bybit z wykorzystaniem różnych strategii i modeli AI.
 
-## 🚀 Features
-- Connection to Bybit API (testnet and production)
-- Technical analysis and algorithmic trading strategies
-- Automatic adjustment to API limits (exponential backoff)
-- AI models for price movement prediction
-- Transaction monitoring and notification system
-- Interactive dashboard (Flask)
+## 🔧 Wymagania
 
-## 📋 System Requirements
-- Windows 11 (lub 10)
+- Windows 10/11
 - Python 3.10+
+- Konto na giełdzie Bybit z kluczami API (opcjonalnie)
 - Dostęp do internetu
-- Konto na giełdzie Bybit z kluczami API
 
 
-## 🚀 Instrukcja instalacji lokalnej
+## 🚀 Instalacja i Uruchomienie
 
-### 1. Pobierz projekt
+### 1. Przygotowanie środowiska
 
-Pobierz i rozpakuj projekt do wybranego folderu, np. `C:\Users\piotr\Desktop\miner\ZoL0-1`.
+1. Sklonuj repozytorium:
+```bash
+git clone [adres-repozytorium]
+cd [folder-projektu]
+```
 
-### 2. Utwórz plik .env
+2. Utwórz wirtualne środowisko Python:
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
 
-Skopiuj plik `.env.example` do `.env` i wprowadź odpowiednie wartości:
+3. Zainstaluj zależności:
+```bash
+pip install -r requirements.txt
+```
 
+### 2. Konfiguracja
+
+1. Skopiuj plik `.env.example` do `.env`:
+```bash
+copy .env.example .env
+```
+
+2. Edytuj plik `.env` i dodaj swoje klucze API Bybit:
 ```
 BYBIT_API_KEY=TwójKluczAPI
 BYBIT_API_SECRET=TwójSekretAPI
 BYBIT_USE_TESTNET=true  # Ustaw na false dla produkcyjnego API (z prawdziwymi środkami)
 ```
 
-### 3. Zainstaluj zależności
+### 3. Uruchomienie
 
-Otwórz wiersz poleceń (CMD) w folderze projektu i wykonaj:
+Możesz uruchomić bota na dwa sposoby:
 
-```cmd
-pip install -r requirements.txt
+1. Za pomocą pliku wsadowego (zalecane dla Windows):
 ```
-
-### 4. Uruchom aplikację
-
-Metoda 1: Użyj skryptu bat:
-```cmd
 run_windows.bat
 ```
 
-Metoda 2: Uruchom bezpośrednio Pythona:
-```cmd
+2. Bezpośrednio z Pythona:
+```
 python main.py
 ```
 
-Aplikacja będzie dostępna pod adresem: http://localhost:5000
+## 📊 Funkcje
 
-### 5. Test połączenia z Bybit API
+- Połączenie z API Bybit (z obsługą testnet i produkcji)
+- Zaawansowane zarządzanie ryzykiem
+- System cache z kontrolą limitów zapytań
+- Monitorowanie wydajności
+- Dashboard Flask do kontroli i wizualizacji
+- Technical analysis and algorithmic trading strategies
+- Automatic adjustment to API limits (exponential backoff)
+- AI models for price movement prediction
+- Transaction monitoring and notification system
+- Interactive dashboard (Flask)
 
-Aby sprawdzić czy połączenie z Bybit API działa poprawnie, uruchom:
 
-```cmd
-python test_bybit_connection.py
+## 🧪 Testowanie
+
+1. Test połączenia z API:
+```
+test_proxy_windows.bat
 ```
 
-## 🔧 Rozwiązywanie problemów
-
-### Brak modułu
-
-Jeśli pojawi się błąd o brakującym module, zainstaluj go ręcznie:
-
-```cmd
-pip install nazwa_modułu
+2. Uruchomienie wszystkich testów:
+```
+python -m pytest
 ```
 
-### Problemy z połączeniem API
+## 🔒 Bezpieczeństwo
 
-1. Sprawdź poprawność kluczy API w pliku `.env`
-2. Upewnij się, że masz działające połączenie z internetem
-3. Sprawdź czy Twoje klucze API mają odpowiednie uprawnienia na Bybit
+- Wszystkie klucze API i dane wrażliwe przechowywane są w pliku `.env` (lokalnie)
+- Logika obsługi błędów z graceful fallback
+- Limity zabezpieczające przed niekontrolowanymi transakcjami
 
-### Inne problemy
+## 📂 Struktura Katalogów
 
-1. Sprawdź logi w katalogu `logs/`
-2. Uruchom aplikację w trybie debug: `python main.py --debug`
-
-
-## 📁 Struktura projektu
-
+- `data/` - Komponenty systemu, strategie, API
+- `logs/` - Pliki logów
+- `templates/` - Szablony Flask dla dashboardu
+- `static/` - Statyczne pliki dla dashboardu
+- `ai_models/` - Modele sztucznej inteligencji
 - `main.py` - Główny punkt wejścia aplikacji
 - `data/` - Dane, strategie i narzędzia
   - `execution/` - Moduły do interakcji z giełdą
@@ -100,7 +110,17 @@ pip install nazwa_modułu
 - `ai_models/` - Modele AI/ML do analizy rynku
 - `static/` - Zasoby front-end
 - `templates/` - Szablony HTML
-- `logs/` - Logi aplikacji
+
+
+## 📝 Znane problemy
+
+- Działająca integracja z Bybit zależy od aktualnej dostępności API
+- Aktualny status API testnet: ✅ Działa
+- Aktualny status API produkcyjnego: ✅ Działa
+
+## 📚 Dokumentacja API
+
+- [Bybit API V5](https://bybit-exchange.github.io/docs/v5/intro)
 
 ## 📜 Licencja
 
@@ -119,3 +139,19 @@ The system contains various AI models for market analysis:
 - Sentiment analysis
 - Price prediction
 - Reinforcement learning for trading strategies
+
+## 🔧 Rozwiązywanie problemów
+### Brak modułu
+Jeśli pojawi się błąd o brakującym module, zainstaluj go ręcznie:
+```cmd
+pip install nazwa_modułu
+```
+
+### Problemy z połączeniem API
+1. Sprawdź poprawność kluczy API w pliku `.env`
+2. Upewnij się, że masz działające połączenie z internetem
+3. Sprawdź czy Twoje klucze API mają odpowiednie uprawnienia na Bybit
+
+### Inne problemy
+1. Sprawdź logi w katalogu `logs/`
+2. Uruchom aplikację w trybie debug: `python main.py --debug`

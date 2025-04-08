@@ -73,8 +73,13 @@ def set_rate_limit_parameters(max_calls_per_minute: int = 6, min_interval: float
 
 def _get_cache_path(key: str) -> str:
     """Generuje ścieżkę do pliku cache dla danego klucza."""
+    # Upewnij się, że katalog cache istnieje
+    os.makedirs(CACHE_DIR, exist_ok=True)
+    
     # Upewnij się, że klucz jest bezpieczny i nie zawiera znaków niedozwolonych w ścieżkach
     safe_key = "".join(c if c.isalnum() or c in ('_', '-', '.') else '_' for c in key)
+    
+    # Użyj os.path.join dla kompatybilności między systemami
     return os.path.join(CACHE_DIR, f"{safe_key}.json")
 
 def store_cached_data(key: str, data: Any) -> bool:
@@ -136,11 +141,13 @@ def get_cached_data(key: str) -> Tuple[Any, bool]:
             logger.debug(f"Dane w cache dla klucza {key} są przeterminowane.")
             return None, False
 
-        # Upewnij się, że zwracamy słownik lub None, nigdy wartość bool
+        # Pobierz dane z cache
         data = cache_data.get('data')
+        
+        # Jeśli dane to boolean, konwertuj na słownik dla bezpieczeństwa
         if isinstance(data, bool):
-            logger.warning(f"Cache zwrócił wartość bool ({data}) dla klucza '{key}', zamiast słownika. Zwracam {data}.")
-            return data, True
+            logger.warning(f"Cache zwrócił wartość bool ({data}) dla klucza '{key}'. Konwertuję na słownik.")
+            data = {"value": data}
 
         return data, True
     except Exception as e:
@@ -580,6 +587,11 @@ def safe_cache_get(key: str, default_value=None, expected_keys: List[str] = None
         # Check if data was found
         if not found or data is None:
             return default_value
+
+        # Konwersja boolean na dict dla zachowania kompatybilności
+        if isinstance(data, bool):
+            data = {"value": data}
+            logger.warning(f"Konwertowano boolean na dict dla klucza {key}")
 
         # If expected_keys provided, verify all keys exist in data
         if expected_keys and isinstance(data, dict):

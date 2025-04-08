@@ -258,9 +258,20 @@ class BybitConnector:
                             data = response.json()
                             if data.get("retCode") == 0 and "result" in data:
                                 try:
-                                    time_nano = int(data["result"]["timeNano"])
-                                    server_time = {"timeNow": time_nano // 1000000}
-                                    self.logger.debug(f"Czas serwera v5: {server_time}")
+                                    # Bezpieczna konwersja czasu z obsługą typu str
+                                    if "timeNano" in data["result"]:
+                                        time_nano_raw = data["result"]["timeNano"]
+                                        # Konwersja na int jeśli to string
+                                        if isinstance(time_nano_raw, str):
+                                            time_nano = int(time_nano_raw)
+                                        else:
+                                            time_nano = time_nano_raw
+                                        
+                                        server_time = {"timeNow": time_nano // 1000000}
+                                        self.logger.debug(f"Czas serwera v5: {server_time}")
+                                    else:
+                                        server_time = {"timeNow": int(time.time() * 1000)}
+                                        self.logger.warning("Brak pola timeNano w odpowiedzi. Używam czasu lokalnego.")
                                 except (TypeError, ValueError) as e:
                                     # W przypadku błędu konwersji używamy milisekund
                                     server_time = {"timeNow": int(time.time() * 1000)}
@@ -826,9 +837,17 @@ class BybitConnector:
                                 # Tworzenie sygnatury zgodnie z dokumentacją V5 API
                                 timestamp = str(int(time.time() * 1000))
 
-                                # Przygotowanie parametrów do sygnatury
-                                param_str = '&'.join([f"{key}={value}" for key, value in sorted(params.items())])
-                                pre_sign = f"{timestamp}{self.api_key}{param_str}"
+                                # Przygotowanie parametrów do sygnatury 
+                                # Upewnij się, że parametry są posortowane alfabetycznie po kluczach
+                                param_str = ''
+                                if params:
+                                    param_str = '&'.join([f"{key}={value}" for key, value in sorted(params.items())])
+                                
+                                # Poprawne tworzenie pre_sign zgodnie z dokumentacją V5
+                                if param_str:
+                                    pre_sign = f"{timestamp}{self.api_key}{param_str}"
+                                else:
+                                    pre_sign = f"{timestamp}{self.api_key}"
 
                                 # Generowanie sygnatury HMAC SHA256
                                 signature = hmac.new(

@@ -610,8 +610,9 @@ def is_env_flag_true(env_var_name: str) -> bool:
 
 # Uruchomienie aplikacji
 if __name__ == "__main__":
-    # Tworzenie katalogu logs jeśli nie istnieje
-    os.makedirs("logs", exist_ok=True)
+    # Tworzenie katalogów - użycie os.path.join dla kompatybilności z Windows
+    os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs"), exist_ok=True)
+    os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "cache"), exist_ok=True)
 
     # Sprawdź środowisko - czy na pewno używamy produkcyjnego API
     if is_env_flag_true("BYBIT_TESTNET"):
@@ -630,16 +631,18 @@ if __name__ == "__main__":
 
     # Utworzenie pliku .env, jeśli nie istnieje
     if not os.path.exists('.env'):
-        with open('.env', 'w') as f:
+        env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
+        with open(env_path, 'w') as f:
             f.write("FLASK_APP=main.py\n")
             f.write("FLASK_ENV=development\n")
             f.write("PORT=5000\n")
             f.write("BYBIT_API_KEY=YourApiKeyHere\n")
             f.write("BYBIT_API_SECRET=YourApiSecretHere\n")
             f.write("BYBIT_USE_TESTNET=true\n")
-        logging.info("Utworzono plik .env z domyślnymi ustawieniami")
+        logging.info(f"Utworzono plik .env z domyślnymi ustawieniami w: {env_path}")
 
-    # Uruchomienie aplikacji - zawsze używamy 0.0.0.0 i portu 5000 w Replit
+    # Uruchomienie aplikacji - używamy localhost dla pracy lokalnej
     port = int(os.environ.get("PORT", 5000))
-    logging.info(f"Uruchamianie aplikacji Flask na hoście 0.0.0.0 i porcie {port}")
-    app.run(host='0.0.0.0', port=port, debug=True)
+    host = os.environ.get("HOST", "127.0.0.1")  # Localhost dla pracy lokalnej
+    logging.info(f"Uruchamianie aplikacji Flask na hoście {host} i porcie {port}")
+    app.run(host=host, port=port, debug=True)

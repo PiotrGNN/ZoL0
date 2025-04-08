@@ -1,17 +1,17 @@
 
 @echo off
-echo === Inteligentny System Tradingowy - Uruchamianie na Windows ===
-echo.
+echo Starting Trading Bot...
 
-echo Tworzenie wymaganych katalogów...
-mkdir logs 2>nul
-mkdir data\cache 2>nul
+REM Konfiguracja środowiska
+set FLASK_APP=main.py
+set FLASK_ENV=development
+set PORT=5000
 
-echo Sprawdzanie i instalacja wymaganych pakietów...
-pip install -r requirements.txt
+REM Upewnij się, że wszystkie katalogi istnieją
+if not exist "logs" mkdir logs
+if not exist "data\cache" mkdir data\cache
 
-echo Uruchamianie systemu tradingowego...
+REM Uruchomienie aplikacji
 python main.py
 
-echo.
 pause

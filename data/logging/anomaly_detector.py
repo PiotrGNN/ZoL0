@@ -13,11 +13,14 @@ Funkcjonalności:
 
 import logging
 import os
-
+import time
+from typing import List, Dict, Any, Optional
+import random
 import numpy as np
 import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.ensemble import IsolationForest
+
 
 # Konfiguracja logowania
 LOG_DIR = "./logs"
@@ -135,6 +138,88 @@ def early_warning_notification(anomaly_details: dict):
         raise
 
 
+
+class AnomalyDetector:
+    """
+    Klasa do wykrywania anomalii w danych rynkowych i systemowych.
+    """
+
+    def __init__(self, detection_method: str = "isolation_forest"):
+        """
+        Inicjalizuje detektor anomalii.
+
+        Parameters:
+            detection_method (str): Metoda detekcji anomalii ('isolation_forest', 'one_class_svm', 'local_outlier_factor').
+        """
+        self.detection_method = detection_method
+        self.anomalies = []
+        self.last_check = 0
+        self.check_interval = 60  # Co 60 sekund
+
+        logging.info(f"Inicjalizacja detektora anomalii z metodą: {detection_method}")
+
+    def analyze_data(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Analizuje dane pod kątem anomalii.
+
+        Parameters:
+            data (Dict[str, Any]): Dane do analizy.
+
+        Returns:
+            Dict[str, Any]: Wynik analizy.
+        """
+        # Implementacja analizy danych
+        # W szablonie zwracamy dummy dane
+        result = {
+            "anomalies_detected": False,
+            "score": random.uniform(0, 1),
+            "message": "Brak wykrytych anomalii"
+        }
+
+        return result
+
+    def detect_anomalies(self, data: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        Wykrywa anomalie w danych.
+
+        Parameters:
+            data (Dict[str, Any]): Dane do analizy.
+
+        Returns:
+            List[Dict[str, Any]]: Lista wykrytych anomalii.
+        """
+        # Implementacja detekcji anomalii
+        # W szablonie zwracamy pustą listę
+        return []
+
+    def get_detected_anomalies(self) -> List[Dict[str, Any]]:
+        """
+        Zwraca wykryte anomalie z pamięci podręcznej.
+
+        Returns:
+            List[Dict[str, Any]]: Lista wykrytych anomalii.
+        """
+        return self.anomalies
+
+    def log_anomaly(self, anomaly: Dict[str, Any]) -> None:
+        """
+        Loguje wykrytą anomalię.
+
+        Parameters:
+            anomaly (Dict[str, Any]): Dane anomalii.
+        """
+        logging.warning(f"Wykryto anomalię: {anomaly}")
+        self.anomalies.append({
+            **anomaly,
+            "timestamp": time.time(),
+            "detection_method": self.detection_method
+        })
+
+        # Ograniczamy liczbę przechowywanych anomalii do 100
+        if len(self.anomalies) > 100:
+            self.anomalies = self.anomalies[-100:]
+
+
 # -------------------- Testy jednostkowe --------------------
 def unit_test_anomaly_detector():
     """
@@ -190,69 +275,16 @@ if __name__ == "__main__":
     except Exception as e:
         logging.error("Testy jednostkowe nie powiodły się: %s", e)
         raise
+
 """
 anomaly_detector.py
 ------------------
-Moduł wykrywający anomalie w danych tradingowych.
+Moduł do wykrywania anomalii w danych tradingowych.
 """
 
 import logging
 from typing import Dict, List, Any
 
-# Konfiguracja logowania
-logger = logging.getLogger("anomaly_detector")
-if not logger.handlers:
-    log_dir = "logs"
-    import os
-    os.makedirs(log_dir, exist_ok=True)
-    file_handler = logging.FileHandler(os.path.join(log_dir, "anomaly_detector.log"))
-    formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
-    file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
-    logger.setLevel(logging.INFO)
+# Konfiguracja logowania -  This section is redundant as the logging is already configured above.
 
-class AnomalyDetector:
-    """
-    Klasa wykrywająca anomalie w danych tradingowych.
-    """
-
-    def __init__(self, detection_method: str = "statistical"):
-        """
-        Inicjalizacja detektora anomalii.
-
-        Parameters:
-            detection_method (str): Metoda wykrywania anomalii 
-                                   ('statistical', 'ml', 'hybrid')
-        """
-        self.detection_method = detection_method
-        self.anomalies_detected = []
-        logger.info(f"Inicjalizacja detektora anomalii z metodą: {detection_method}")
-
-    def detect(self, data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """
-        Wykrywa anomalie w danych.
-
-        Parameters:
-            data (List[Dict[str, Any]]): Dane do analizy
-
-        Returns:
-            List[Dict[str, Any]]: Lista wykrytych anomalii
-        """
-        # Implementacja stub - zwraca pustą listę
-        logger.debug(f"Wykrywanie anomalii w {len(data)} punktach danych metodą {self.detection_method}")
-        return []
-
-    def get_detected_anomalies(self) -> List[Dict[str, Any]]:
-        """
-        Zwraca listę wykrytych anomalii.
-
-        Returns:
-            List[Dict[str, Any]]: Lista wykrytych anomalii
-        """
-        logger.debug("Pobieranie wykrytych anomalii")
-        return self.anomalies_detected
-
-    def reset(self) -> None:
-        """Resetuje stan detektora anomalii."""
-        self.anomalies_detected = []
-        logger.debug("Reset detektora anomalii")
+#class AnomalyDetector: ... This class is now defined above.
