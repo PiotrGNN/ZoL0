@@ -1,27 +1,4 @@
-// Konfiguracja aplikacji
-const CONFIG = {
-    updateInterval: 15000, // Interwał odświeżania dashboardu (ms)
-    chartUpdateInterval: 60000, // Interwał odświeżania wykresów (ms)
-    statusUpdateInterval: 30000, // Interwał odświeżania statusów (ms)
-    maxErrors: 3, // maksymalna liczba błędów przed wyświetleniem komunikatu
-    errorRetryDelay: 5000, // ms - opóźnienie przed ponowną próbą po błędzie
-    errorBackoff: 1.5, // mnożnik opóźnienia przy kolejnych błędach
-    apiEndpoints: {
-        dashboard: '/api/dashboard/data',
-        portfolio: '/api/portfolio',
-        trades: '/api/recent-trades',
-        alerts: '/api/alerts',
-        tradingStats: '/api/trading-stats',
-        components: '/api/component-status',
-        aiModels: '/api/ai-models-status',
-        system: '/api/system/status',
-        bybitServerTime: 'https://api.bybit.com/v2/public/time', // Updated to production endpoint
-        bybitBalance: 'https://api.bybit.com/v2/private/wallet/balance', // Updated to production endpoint
-        bybitConnectionTest: 'https://api.bybit.com/v2/public/time', // Updated to production endpoint
-        notifications: '/api/notifications',
-        chartData: '/api/chart-data'
-    }
-};
+// Konfiguracja aplikacji zostanie zachowana z pierwszej deklaracji
 
 // Stan aplikacji
 const appState = {
@@ -494,6 +471,32 @@ function setupEventListeners() {
     const resetSystemBtn = document.getElementById('reset-system-btn');
     if (resetSystemBtn) {
         resetSystemBtn.addEventListener('click', resetSystem);
+    }
+
+    // Obsługa zakładek w dashboardzie
+    const tabButtons = document.querySelectorAll('.tab-button');
+    if (tabButtons.length > 0) {
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Usunięcie klasy active ze wszystkich przycisków
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                // Dodanie klasy active do klikniętego przycisku
+                this.classList.add('active');
+                
+                // Ukrycie wszystkich sekcji zawartości
+                const tabId = this.getAttribute('data-tab');
+                const tabContents = document.querySelectorAll('.tab-content');
+                tabContents.forEach(content => {
+                    content.style.display = 'none';
+                });
+                
+                // Pokazanie wybranej sekcji
+                const selectedTab = document.getElementById(tabId);
+                if (selectedTab) {
+                    selectedTab.style.display = 'block';
+                }
+            });
+        });
     }
 
     // Visibility change (to pause updates when tab is not visible)
