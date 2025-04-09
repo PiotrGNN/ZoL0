@@ -180,6 +180,9 @@
                             <div>Ostatnia aktualizacja: {{ sentiment_data.timestamp }}</div>
                         </div>
                     </div>
+                        {% else %}
+                            <div class="no-data">Brak danych sentymentu rynkowego</div>
+                        {% endif %}
                 </div>
 
 
@@ -289,9 +292,6 @@
                                 <div>Zakres czasowy: {{ sentiment_data.time_range }}</div>
                                 <div>Ostatnia aktualizacja: {{ sentiment_data.timestamp }}</div>
                             </div>
-                        </div>
-                        {% else %}
-                            <div class="no-data">Brak danych o sentymencie rynkowym</div>
                         {% endif %}
                     </div>
                 </div>

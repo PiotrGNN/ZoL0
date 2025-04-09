@@ -10,22 +10,45 @@ const CONFIG = {
         chartData: '/api/chart/data',
         aiModelsStatus: '/api/ai-models-status',
         simulationResults: '/api/simulation-results',
-        sentiment: '/api/sentiment' // Added endpoint for sentiment data
+        sentiment: '/api/sentiment', // Added endpoint for sentiment data
+        systemStatus: '/api/system/status' // Added endpoint for system status
     }
 };
 
 // Funkcja do pobierania statusu komponentów
 function fetchComponentStatus() {
-    fetch(CONFIG.apiEndpoints.componentStatus)
+    fetch(CONFIG.apiEndpoints.systemStatus)
         .then(response => response.json())
         .then(data => {
-            updateComponentStatusUI(data);
+            if (data.success) {
+                // Aktualizacja statusu komponentów
+                Object.keys(data.components).forEach(component => {
+                    const element = document.getElementById(component);
+                    if (element) {
+                        element.className = `status-item status-${data.components[component].status.toLowerCase()}`;
+                        element.querySelector('.status-text').innerText = data.components[component].status;
+                    }
+                });
+            } else {
+                console.error('Błąd podczas pobierania statusu komponentów:', data.error);
+            }
         })
-        .catch(error => {
-            console.error("Błąd podczas pobierania statusu komponentów:", error);
-            showNotification('error', 'Nie udało się pobrać statusu komponentów');
-        });
+        .catch(error => console.error('Błąd podczas pobierania statusu komponentów:', error));
 }
+
+
+// Funkcja do pobierania statusu komponentów (original function replaced)
+// function fetchComponentStatus() {
+//     fetch(CONFIG.apiEndpoints.componentStatus)
+//         .then(response => response.json())
+//         .then(data => {
+//             updateComponentStatusUI(data);
+//         })
+//         .catch(error => {
+//             console.error("Błąd podczas pobierania statusu komponentów:", error);
+//             showNotification('error', 'Nie udało się pobrać statusu komponentów');
+//         });
+// }
 
 // Funkcja do aktualizacji UI na podstawie statusu komponentów
 function updateComponentStatusUI(data) {
@@ -111,6 +134,12 @@ function startDataUpdates() {
             updateChartData();
         }
     }, CONFIG.chartUpdateInterval);
+
+    // Inicjalne pobranie statusu komponentów
+    fetchComponentStatus();
+
+    // Ustawienie interwału do aktualizacji statusu
+    setInterval(fetchComponentStatus, 30000); // co 30 sekund
 }
 
 // Aktualizacja statusu modeli AI
@@ -133,18 +162,18 @@ function updateAIModelsStatus() {
                 let modelsHtml = '';
 
                 data.models.forEach(model => {
-                    let statusClass = model.status === 'Active' ? 'positive' : 
-                                     (model.status === 'Inactive' ? 'neutral' : 
+                    let statusClass = model.status === 'Active' ? 'positive' :
+                                     (model.status === 'Inactive' ? 'neutral' :
                                      (model.status === 'Error' ? 'negative' : 'neutral'));
 
-                    let accuracyClass = model.accuracy >= 70 ? 'positive' : 
+                    let accuracyClass = model.accuracy >= 70 ? 'positive' :
                                       (model.accuracy >= 50 ? 'neutral' : 'negative');
 
                     let cardStatusClass = model.status.toLowerCase();
 
                     let testResultHtml = '';
                     if (model.test_result) {
-                        let testClass = model.test_result === 'Passed' ? 'positive' : 
+                        let testClass = model.test_result === 'Passed' ? 'positive' :
                                       (model.test_result === 'Failed' ? 'negative' : 'neutral');
                         testResultHtml = `
                             <div>Test: <span class="${testClass}">${model.test_result}</span></div>`;
@@ -1250,7 +1279,7 @@ function updateComponentStatus(elementId, status) {
 
     // Usuń wszystkie klasy statusu
     element.classList.remove('status-online', 'status-offline', 'status-warning');
-    
+
     // Dodaj odpowiednią klasę na podstawie statusu
     if (status === 'online') {
         element.classList.add('status-online');
