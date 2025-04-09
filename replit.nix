@@ -1,6 +1,8 @@
 
 { pkgs }: {
   deps = [
+    pkgs.libyaml
+    pkgs.gmp
     pkgs.glibcLocales
     pkgs.tk
     pkgs.tcl
