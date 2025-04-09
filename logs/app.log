@@ -6645,3 +6645,412 @@ AttributeError: 'NoneType' object has no attribute 'get_portfolio'
 2025-04-09 16:53:12,588 [INFO] 172.31.128.76 - - [09/Apr/2025 16:53:12] "[36mGET /?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
 2025-04-09 16:53:52,278 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 100.0, 'available_balance': 100.0, 'wallet_balance': 100.0}}, 'timestamp': '2025-04-09T16:53:52.278908', 'source': 'simulated'}
 2025-04-09 16:53:52,302 [INFO] 172.31.128.76 - - [09/Apr/2025 16:53:52] "[35m[1mGET /?risk_level=medium&max_position_size=10&enable_auto_trading=on HTTP/1.1[0m" 500 -
+2025-04-09 16:55:55,775 [INFO] Zainicjalizowano zarządcę ryzyka portfela. Max ryzyko: 0.05, Max rozmiar pozycji: 0.2, Max drawdown: 0.1
+2025-04-09 16:55:55,828 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-09 16:55:55,880 [WARNING] Pomijam podpakiet 'utils' z powodu błędu: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 16:55:55,897 [INFO] Wykryto środowisko: Replit
+2025-04-09 16:55:55,897 [WARNING] ❌ OSTRZEŻENIE: .env wskazuje na testnet (BYBIT_USE_TESTNET=true). Ustaw BYBIT_USE_TESTNET=false, jeśli chcesz realny rynek!
+2025-04-09 16:55:55,924 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-09 16:55:55,925 [INFO] Zainicjalizowano ModelTester z biblioteki python_libs.model_tester
+2025-04-09 16:55:55,925 [INFO] Załadowano konfigurację AI z python_libs/ai_config.json
+2025-04-09 16:55:55,930 [INFO] ai_models: Znaleziono 3 modeli AI
+2025-04-09 16:55:55,930 [INFO]   - sentiment_analyzer: SentimentAnalyzer
+2025-04-09 16:55:55,930 [INFO]   - anomaly_detector: AnomalyDetector
+2025-04-09 16:55:55,930 [INFO]   - model_recognizer: ModelRecognizer
+2025-04-09 16:55:55,930 [INFO] Zainicjalizowano SentimentAnalyzer z 4 źródłami
+2025-04-09 16:55:55,930 [INFO] Załadowano dane sentymentu z pliku cache data/cache/sentiment_data.json
+2025-04-09 16:55:55,930 [INFO] Zainicjalizowano SentimentAnalyzer z biblioteką ai_models.sentiment_ai i źródłami ['twitter', 'news', 'forum', 'reddit']
+2025-04-09 16:55:55,931 [INFO] Zainicjalizowano AnomalyDetector z metodą z_score i progiem 2.5
+2025-04-09 16:55:55,931 [INFO] Zainicjalizowano AnomalyDetector z biblioteki ai_models.anomaly_detection (metoda: z_score, próg: 2.5)
+2025-04-09 16:55:55,931 [INFO] Zainicjalizowano ModelRecognizer
+2025-04-09 16:55:55,931 [INFO] Zainicjalizowano ModelRecognizer
+2025-04-09 16:55:55,931 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-09 16:55:55,931 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-09 16:55:55,931 [INFO] Zainicjalizowano uproszczony system powiadomień z 2 kanałami
+2025-04-09 16:55:55,931 [INFO] Zainicjalizowano system powiadomień z biblioteki python_libs.simplified_notification
+2025-04-09 16:55:55,939 [INFO] Zainicjalizowano StrategyManager z 3 strategiami
+2025-04-09 16:55:55,939 [INFO] Zainicjalizowano StrategyManager z biblioteką python_libs.simplified_strategy i 3 strategiami
+2025-04-09 16:55:55,945 [INFO] Zainicjalizowano SimplifiedRiskManager (max_risk=0.05, max_position_size=0.1, max_drawdown=0.1)
+2025-04-09 16:55:55,945 [INFO] Zainicjalizowano SimplifiedRiskManager (max_risk=0.05, max_position_size=0.1, max_drawdown=0.1)
+2025-04-09 16:55:55,945 [INFO] Używasz testnet API (środowisko testowe).
+2025-04-09 16:55:55,949 [INFO] Używasz testnet API (środowisko testowe).
+2025-04-09 16:55:55,949 [INFO] BybitConnector zainicjalizowany. Testnet: True, Lazy connect: True, Market type: spot
+2025-04-09 16:55:55,951 [WARNING] Nie można sprawdzić stanu limitów API: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 16:55:55,951 [INFO] BybitConnector w trybie lazy initialization. Testnet: True, Market type: spot
+2025-04-09 16:55:55,951 [INFO] Inicjalizacja klienta ByBit - Klucz: aLYR****************************************************, Testnet: True
+2025-04-09 16:55:55,951 [INFO] Zainicjalizowano SimplifiedTradingEngine z konektorem BybitConnector
+2025-04-09 16:55:55,952 [INFO] Zainicjalizowano silnik handlowy (Trading Engine) z biblioteki python_libs.simplified_trading_engine
+2025-04-09 16:55:55,952 [INFO] Aktywowano strategię: trend_following
+2025-04-09 16:55:55,952 [INFO] Aktywowano strategię 'trend_following'
+2025-04-09 16:55:55,952 [INFO] Uruchomiono handel dla symboli: ['BTCUSDT']
+2025-04-09 16:55:55,954 [WARNING] Nie udało się pobrać kapitału: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 16:55:55,954 [INFO] Silnik handlowy uruchomiony dla symboli: ['BTCUSDT']
+2025-04-09 16:55:55,957 [INFO] Zainicjalizowano PortfolioManager z saldem początkowym 100.0 USDT w trybie simulated
+2025-04-09 16:55:55,957 [INFO] Zainicjalizowano menadżera portfela
+2025-04-09 16:55:55,957 [INFO] Rozpoczynam testowanie modeli w katalogu: ai_models
+2025-04-09 16:55:55,957 [INFO] Znaleziono 13 plików modeli.
+2025-04-09 16:55:55,984 [INFO] MarketEnvironment zainicjalizowane w trybie 'simulated' z kapitałem: 10000.000000
+2025-04-09 16:55:55,985 [INFO] Utworzono instancję klasy MarketEnvironment (predict=False, fit=False)
+2025-04-09 16:55:55,985 [INFO] Pomyślnie załadowano 1 instancji z modułu environment
+2025-04-09 16:55:55,986 [WARNING] Brak klas w module feature_engineering
+2025-04-09 16:55:55,988 [INFO] Utworzono instancję klasy MarketDummyEnv (predict=False, fit=False)
+2025-04-09 16:55:55,988 [INFO] Pomyślnie załadowano 1 instancji z modułu market_dummy_env
+2025-04-09 16:55:55,991 [WARNING] Nie można utworzyć instancji klasy ModelTrainer: wymaga parametrów
+2025-04-09 16:55:55,991 [WARNING] Nie udało się utworzyć żadnej instancji z modułu model_training
+2025-04-09 16:55:55,994 [ERROR] Błąd podczas testowania modułu model_tuner: No module named 'optuna'
+2025-04-09 16:55:55,995 [WARNING] Nie można utworzyć instancji klasy RealExchangeEnv: wymaga parametrów
+2025-04-09 16:55:55,995 [WARNING] Nie udało się utworzyć żadnej instancji z modułu real_exchange_env
+2025-04-09 16:55:55,997 [ERROR] Błąd podczas testowania modułu reinforcement_learning: No module named 'tensorflow'
+2025-04-09 16:55:56,006 [INFO] ExperimentManager zainicjalizowany. save_dir: 'saved_models', enable_experiments: True
+2025-04-09 16:55:56,007 [INFO] Utworzono instancję klasy ExperimentManager (predict=False, fit=False)
+2025-04-09 16:55:56,007 [INFO] Pomyślnie załadowano 1 instancji z modułu ropmer_temp
+2025-04-09 16:55:56,011 [INFO] Inicjalizacja DataScaler z metodą: standard
+2025-04-09 16:55:56,011 [INFO] Utworzono instancję klasy DataScaler (predict=False, fit=True)
+2025-04-09 16:55:56,011 [INFO] Pomyślnie załadowano 1 instancji z modułu scalar
+2025-04-09 16:55:56,015 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-09 16:55:56,025 [INFO] Inicjalizacja ModelLoader dla ścieżki: ai_models
+2025-04-09 16:55:56,025 [INFO] Rozpoczęcie ładowania modeli...
+2025-04-09 16:55:56,026 [INFO] Rozpoczynam testowanie modeli w katalogu: ai_models
+2025-04-09 16:55:56,026 [INFO] Znaleziono 13 plików modeli.
+2025-04-09 16:55:56,052 [INFO] MarketEnvironment zainicjalizowane w trybie 'simulated' z kapitałem: 10000.000000
+2025-04-09 16:55:56,053 [INFO] Utworzono instancję klasy MarketEnvironment (predict=False, fit=False)
+2025-04-09 16:55:56,053 [INFO] Pomyślnie załadowano 1 instancji z modułu environment
+2025-04-09 16:55:56,053 [WARNING] Brak klas w module feature_engineering
+2025-04-09 16:55:56,054 [INFO] Utworzono instancję klasy MarketDummyEnv (predict=False, fit=False)
+2025-04-09 16:55:56,054 [INFO] Pomyślnie załadowano 1 instancji z modułu market_dummy_env
+2025-04-09 16:55:56,054 [WARNING] Nie można utworzyć instancji klasy ModelTrainer: wymaga parametrów
+2025-04-09 16:55:56,054 [WARNING] Nie udało się utworzyć żadnej instancji z modułu model_training
+2025-04-09 16:55:56,056 [ERROR] Błąd podczas testowania modułu model_tuner: No module named 'optuna'
+2025-04-09 16:55:56,056 [WARNING] Nie można utworzyć instancji klasy RealExchangeEnv: wymaga parametrów
+2025-04-09 16:55:56,056 [WARNING] Nie udało się utworzyć żadnej instancji z modułu real_exchange_env
+2025-04-09 16:55:56,058 [ERROR] Błąd podczas testowania modułu reinforcement_learning: No module named 'tensorflow'
+2025-04-09 16:55:56,058 [INFO] ExperimentManager zainicjalizowany. save_dir: 'saved_models', enable_experiments: True
+2025-04-09 16:55:56,058 [INFO] Utworzono instancję klasy ExperimentManager (predict=False, fit=False)
+2025-04-09 16:55:56,059 [INFO] Pomyślnie załadowano 1 instancji z modułu ropmer_temp
+2025-04-09 16:55:56,059 [INFO] Inicjalizacja DataScaler z metodą: standard
+2025-04-09 16:55:56,059 [INFO] Utworzono instancję klasy DataScaler (predict=False, fit=True)
+2025-04-09 16:55:56,059 [INFO] Pomyślnie załadowano 1 instancji z modułu scalar
+2025-04-09 16:55:56,059 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-09 16:55:56,060 [INFO] Inicjalizacja ModelLoader dla ścieżki: ai_models
+2025-04-09 16:55:56,060 [INFO] Utworzono instancję klasy ModelLoader (predict=False, fit=False)
+2025-04-09 16:55:56,060 [INFO] Pomyślnie załadowano 1 instancji z modułu model_loader
+2025-04-09 16:55:56,061 [INFO] Zainicjalizowano AnomalyDetector z metodą z_score i progiem 2.5
+2025-04-09 16:55:56,061 [INFO] Utworzono instancję klasy AnomalyDetector (predict=False, fit=False)
+2025-04-09 16:55:56,061 [INFO] Pomyślnie załadowano 1 instancji z modułu anomaly_detection
+2025-04-09 16:55:56,061 [INFO] Zainicjalizowano ModelRecognizer
+2025-04-09 16:55:56,061 [INFO] Utworzono instancję klasy ModelRecognizer (predict=False, fit=False)
+2025-04-09 16:55:56,061 [INFO] Pomyślnie załadowano 1 instancji z modułu model_recognition
+2025-04-09 16:55:56,062 [INFO] Zainicjalizowano SentimentAnalyzer z 4 źródłami
+2025-04-09 16:55:56,062 [INFO] Załadowano dane sentymentu z pliku cache data/cache/sentiment_data.json
+2025-04-09 16:55:56,062 [INFO] Utworzono instancję klasy SentimentAnalyzer (predict=False, fit=False)
+2025-04-09 16:55:56,062 [INFO] Pomyślnie załadowano 1 instancji z modułu sentiment_ai
+2025-04-09 16:55:56,063 [INFO] Załadowano model: MarketEnvironment
+2025-04-09 16:55:56,063 [INFO] Załadowano model: MarketDummyEnv
+2025-04-09 16:55:56,063 [INFO] Załadowano model: ExperimentManager
+2025-04-09 16:55:56,063 [INFO] Załadowano model: DataScaler
+2025-04-09 16:55:56,063 [INFO] Załadowano model: ModelLoader
+2025-04-09 16:55:56,063 [INFO] Załadowano model: AnomalyDetector
+2025-04-09 16:55:56,063 [INFO] Załadowano model: ModelRecognizer
+2025-04-09 16:55:56,063 [INFO] Załadowano model: SentimentAnalyzer
+2025-04-09 16:55:56,063 [INFO] Załadowano 8 modeli
+2025-04-09 16:55:56,064 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-09 16:55:56,064 [INFO] Inicjalizacja ModelLoader dla ścieżki: ai_models
+2025-04-09 16:55:56,064 [INFO] Utworzono instancję klasy ModelLoader (predict=False, fit=False)
+2025-04-09 16:55:56,064 [INFO] Pomyślnie załadowano 1 instancji z modułu model_loader
+2025-04-09 16:55:56,065 [INFO] Zainicjalizowano AnomalyDetector z metodą z_score i progiem 2.5
+2025-04-09 16:55:56,065 [INFO] Utworzono instancję klasy AnomalyDetector (predict=False, fit=False)
+2025-04-09 16:55:56,065 [INFO] Pomyślnie załadowano 1 instancji z modułu anomaly_detection
+2025-04-09 16:55:56,066 [INFO] Zainicjalizowano ModelRecognizer
+2025-04-09 16:55:56,066 [INFO] Utworzono instancję klasy ModelRecognizer (predict=False, fit=False)
+2025-04-09 16:55:56,066 [INFO] Pomyślnie załadowano 1 instancji z modułu model_recognition
+2025-04-09 16:55:56,066 [INFO] Zainicjalizowano SentimentAnalyzer z 4 źródłami
+2025-04-09 16:55:56,066 [INFO] Załadowano dane sentymentu z pliku cache data/cache/sentiment_data.json
+2025-04-09 16:55:56,066 [INFO] Utworzono instancję klasy SentimentAnalyzer (predict=False, fit=False)
+2025-04-09 16:55:56,067 [INFO] Pomyślnie załadowano 1 instancji z modułu sentiment_ai
+2025-04-09 16:55:56,067 [INFO] Przetestowano modele AI: znaleziono 8 działających modeli
+2025-04-09 16:55:56,067 [INFO] System zainicjalizowany poprawnie
+2025-04-09 16:55:56,067 [INFO] Uruchamianie aplikacji Flask w środowisku Replit na hoście 0.0.0.0 i porcie 5000
+2025-04-09 16:55:56,103 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.76:5000
+2025-04-09 16:55:56,104 [INFO] [33mPress CTRL+C to quit[0m
+2025-04-09 16:55:56,137 [INFO]  * Restarting with watchdog (inotify)
+2025-04-09 16:55:58,704 [INFO] Zainicjalizowano zarządcę ryzyka portfela. Max ryzyko: 0.05, Max rozmiar pozycji: 0.2, Max drawdown: 0.1
+2025-04-09 16:55:58,706 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-09 16:55:58,709 [WARNING] Pomijam podpakiet 'utils' z powodu błędu: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 16:55:58,725 [INFO] Wykryto środowisko: Replit
+2025-04-09 16:55:58,725 [WARNING] ❌ OSTRZEŻENIE: .env wskazuje na testnet (BYBIT_USE_TESTNET=true). Ustaw BYBIT_USE_TESTNET=false, jeśli chcesz realny rynek!
+2025-04-09 16:55:58,726 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-09 16:55:58,726 [INFO] Zainicjalizowano ModelTester z biblioteki python_libs.model_tester
+2025-04-09 16:55:58,727 [INFO] Załadowano konfigurację AI z python_libs/ai_config.json
+2025-04-09 16:55:58,728 [INFO] ai_models: Znaleziono 3 modeli AI
+2025-04-09 16:55:58,728 [INFO]   - sentiment_analyzer: SentimentAnalyzer
+2025-04-09 16:55:58,728 [INFO]   - anomaly_detector: AnomalyDetector
+2025-04-09 16:55:58,728 [INFO]   - model_recognizer: ModelRecognizer
+2025-04-09 16:55:58,728 [INFO] Zainicjalizowano SentimentAnalyzer z 4 źródłami
+2025-04-09 16:55:58,728 [INFO] Załadowano dane sentymentu z pliku cache data/cache/sentiment_data.json
+2025-04-09 16:55:58,728 [INFO] Zainicjalizowano SentimentAnalyzer z biblioteką ai_models.sentiment_ai i źródłami ['twitter', 'news', 'forum', 'reddit']
+2025-04-09 16:55:58,729 [INFO] Zainicjalizowano AnomalyDetector z metodą z_score i progiem 2.5
+2025-04-09 16:55:58,729 [INFO] Zainicjalizowano AnomalyDetector z biblioteki ai_models.anomaly_detection (metoda: z_score, próg: 2.5)
+2025-04-09 16:55:58,729 [INFO] Zainicjalizowano ModelRecognizer
+2025-04-09 16:55:58,729 [INFO] Zainicjalizowano ModelRecognizer
+2025-04-09 16:55:58,729 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-09 16:55:58,729 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-09 16:55:58,729 [INFO] Zainicjalizowano uproszczony system powiadomień z 2 kanałami
+2025-04-09 16:55:58,729 [INFO] Zainicjalizowano system powiadomień z biblioteki python_libs.simplified_notification
+2025-04-09 16:55:58,730 [INFO] Zainicjalizowano StrategyManager z 3 strategiami
+2025-04-09 16:55:58,730 [INFO] Zainicjalizowano StrategyManager z biblioteką python_libs.simplified_strategy i 3 strategiami
+2025-04-09 16:55:58,730 [INFO] Zainicjalizowano SimplifiedRiskManager (max_risk=0.05, max_position_size=0.1, max_drawdown=0.1)
+2025-04-09 16:55:58,730 [INFO] Zainicjalizowano SimplifiedRiskManager (max_risk=0.05, max_position_size=0.1, max_drawdown=0.1)
+2025-04-09 16:55:58,731 [INFO] Używasz testnet API (środowisko testowe).
+2025-04-09 16:55:58,731 [INFO] Używasz testnet API (środowisko testowe).
+2025-04-09 16:55:58,731 [INFO] BybitConnector zainicjalizowany. Testnet: True, Lazy connect: True, Market type: spot
+2025-04-09 16:55:58,732 [WARNING] Nie można sprawdzić stanu limitów API: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 16:55:58,733 [INFO] BybitConnector w trybie lazy initialization. Testnet: True, Market type: spot
+2025-04-09 16:55:58,733 [INFO] Inicjalizacja klienta ByBit - Klucz: aLYR****************************************************, Testnet: True
+2025-04-09 16:55:58,733 [INFO] Zainicjalizowano SimplifiedTradingEngine z konektorem BybitConnector
+2025-04-09 16:55:58,733 [INFO] Zainicjalizowano silnik handlowy (Trading Engine) z biblioteki python_libs.simplified_trading_engine
+2025-04-09 16:55:58,733 [INFO] Aktywowano strategię: trend_following
+2025-04-09 16:55:58,733 [INFO] Aktywowano strategię 'trend_following'
+2025-04-09 16:55:58,733 [INFO] Uruchomiono handel dla symboli: ['BTCUSDT']
+2025-04-09 16:55:58,734 [WARNING] Nie udało się pobrać kapitału: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 16:55:58,734 [INFO] Silnik handlowy uruchomiony dla symboli: ['BTCUSDT']
+2025-04-09 16:55:58,735 [INFO] Zainicjalizowano PortfolioManager z saldem początkowym 100.0 USDT w trybie simulated
+2025-04-09 16:55:58,735 [INFO] Zainicjalizowano menadżera portfela
+2025-04-09 16:55:58,735 [INFO] Rozpoczynam testowanie modeli w katalogu: ai_models
+2025-04-09 16:55:58,735 [INFO] Znaleziono 13 plików modeli.
+2025-04-09 16:55:58,758 [INFO] MarketEnvironment zainicjalizowane w trybie 'simulated' z kapitałem: 10000.000000
+2025-04-09 16:55:58,758 [INFO] Utworzono instancję klasy MarketEnvironment (predict=False, fit=False)
+2025-04-09 16:55:58,758 [INFO] Pomyślnie załadowano 1 instancji z modułu environment
+2025-04-09 16:55:58,759 [WARNING] Brak klas w module feature_engineering
+2025-04-09 16:55:58,759 [INFO] Utworzono instancję klasy MarketDummyEnv (predict=False, fit=False)
+2025-04-09 16:55:58,760 [INFO] Pomyślnie załadowano 1 instancji z modułu market_dummy_env
+2025-04-09 16:55:58,761 [WARNING] Nie można utworzyć instancji klasy ModelTrainer: wymaga parametrów
+2025-04-09 16:55:58,761 [WARNING] Nie udało się utworzyć żadnej instancji z modułu model_training
+2025-04-09 16:55:58,762 [ERROR] Błąd podczas testowania modułu model_tuner: No module named 'optuna'
+2025-04-09 16:55:58,763 [WARNING] Nie można utworzyć instancji klasy RealExchangeEnv: wymaga parametrów
+2025-04-09 16:55:58,763 [WARNING] Nie udało się utworzyć żadnej instancji z modułu real_exchange_env
+2025-04-09 16:55:58,764 [ERROR] Błąd podczas testowania modułu reinforcement_learning: No module named 'tensorflow'
+2025-04-09 16:55:58,765 [INFO] ExperimentManager zainicjalizowany. save_dir: 'saved_models', enable_experiments: True
+2025-04-09 16:55:58,765 [INFO] Utworzono instancję klasy ExperimentManager (predict=False, fit=False)
+2025-04-09 16:55:58,765 [INFO] Pomyślnie załadowano 1 instancji z modułu ropmer_temp
+2025-04-09 16:55:58,765 [INFO] Inicjalizacja DataScaler z metodą: standard
+2025-04-09 16:55:58,765 [INFO] Utworzono instancję klasy DataScaler (predict=False, fit=True)
+2025-04-09 16:55:58,765 [INFO] Pomyślnie załadowano 1 instancji z modułu scalar
+2025-04-09 16:55:58,766 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-09 16:55:58,766 [INFO] Inicjalizacja ModelLoader dla ścieżki: ai_models
+2025-04-09 16:55:58,766 [INFO] Rozpoczęcie ładowania modeli...
+2025-04-09 16:55:58,766 [INFO] Rozpoczynam testowanie modeli w katalogu: ai_models
+2025-04-09 16:55:58,766 [INFO] Znaleziono 13 plików modeli.
+2025-04-09 16:55:58,787 [INFO] MarketEnvironment zainicjalizowane w trybie 'simulated' z kapitałem: 10000.000000
+2025-04-09 16:55:58,787 [INFO] Utworzono instancję klasy MarketEnvironment (predict=False, fit=False)
+2025-04-09 16:55:58,787 [INFO] Pomyślnie załadowano 1 instancji z modułu environment
+2025-04-09 16:55:58,787 [WARNING] Brak klas w module feature_engineering
+2025-04-09 16:55:58,788 [INFO] Utworzono instancję klasy MarketDummyEnv (predict=False, fit=False)
+2025-04-09 16:55:58,788 [INFO] Pomyślnie załadowano 1 instancji z modułu market_dummy_env
+2025-04-09 16:55:58,788 [WARNING] Nie można utworzyć instancji klasy ModelTrainer: wymaga parametrów
+2025-04-09 16:55:58,788 [WARNING] Nie udało się utworzyć żadnej instancji z modułu model_training
+2025-04-09 16:55:58,790 [ERROR] Błąd podczas testowania modułu model_tuner: No module named 'optuna'
+2025-04-09 16:55:58,790 [WARNING] Nie można utworzyć instancji klasy RealExchangeEnv: wymaga parametrów
+2025-04-09 16:55:58,790 [WARNING] Nie udało się utworzyć żadnej instancji z modułu real_exchange_env
+2025-04-09 16:55:58,791 [ERROR] Błąd podczas testowania modułu reinforcement_learning: No module named 'tensorflow'
+2025-04-09 16:55:58,791 [INFO] ExperimentManager zainicjalizowany. save_dir: 'saved_models', enable_experiments: True
+2025-04-09 16:55:58,791 [INFO] Utworzono instancję klasy ExperimentManager (predict=False, fit=False)
+2025-04-09 16:55:58,791 [INFO] Pomyślnie załadowano 1 instancji z modułu ropmer_temp
+2025-04-09 16:55:58,792 [INFO] Inicjalizacja DataScaler z metodą: standard
+2025-04-09 16:55:58,792 [INFO] Utworzono instancję klasy DataScaler (predict=False, fit=True)
+2025-04-09 16:55:58,792 [INFO] Pomyślnie załadowano 1 instancji z modułu scalar
+2025-04-09 16:55:58,792 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-09 16:55:58,792 [INFO] Inicjalizacja ModelLoader dla ścieżki: ai_models
+2025-04-09 16:55:58,792 [INFO] Utworzono instancję klasy ModelLoader (predict=False, fit=False)
+2025-04-09 16:55:58,793 [INFO] Pomyślnie załadowano 1 instancji z modułu model_loader
+2025-04-09 16:55:58,793 [INFO] Zainicjalizowano AnomalyDetector z metodą z_score i progiem 2.5
+2025-04-09 16:55:58,793 [INFO] Utworzono instancję klasy AnomalyDetector (predict=False, fit=False)
+2025-04-09 16:55:58,793 [INFO] Pomyślnie załadowano 1 instancji z modułu anomaly_detection
+2025-04-09 16:55:58,794 [INFO] Zainicjalizowano ModelRecognizer
+2025-04-09 16:55:58,794 [INFO] Utworzono instancję klasy ModelRecognizer (predict=False, fit=False)
+2025-04-09 16:55:58,794 [INFO] Pomyślnie załadowano 1 instancji z modułu model_recognition
+2025-04-09 16:55:58,794 [INFO] Zainicjalizowano SentimentAnalyzer z 4 źródłami
+2025-04-09 16:55:58,794 [INFO] Załadowano dane sentymentu z pliku cache data/cache/sentiment_data.json
+2025-04-09 16:55:58,794 [INFO] Utworzono instancję klasy SentimentAnalyzer (predict=False, fit=False)
+2025-04-09 16:55:58,795 [INFO] Pomyślnie załadowano 1 instancji z modułu sentiment_ai
+2025-04-09 16:55:58,795 [INFO] Załadowano model: MarketEnvironment
+2025-04-09 16:55:58,795 [INFO] Załadowano model: MarketDummyEnv
+2025-04-09 16:55:58,795 [INFO] Załadowano model: ExperimentManager
+2025-04-09 16:55:58,795 [INFO] Załadowano model: DataScaler
+2025-04-09 16:55:58,795 [INFO] Załadowano model: ModelLoader
+2025-04-09 16:55:58,795 [INFO] Załadowano model: AnomalyDetector
+2025-04-09 16:55:58,796 [INFO] Załadowano model: ModelRecognizer
+2025-04-09 16:55:58,796 [INFO] Załadowano model: SentimentAnalyzer
+2025-04-09 16:55:58,796 [INFO] Załadowano 8 modeli
+2025-04-09 16:55:58,796 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-09 16:55:58,796 [INFO] Inicjalizacja ModelLoader dla ścieżki: ai_models
+2025-04-09 16:55:58,796 [INFO] Utworzono instancję klasy ModelLoader (predict=False, fit=False)
+2025-04-09 16:55:58,797 [INFO] Pomyślnie załadowano 1 instancji z modułu model_loader
+2025-04-09 16:55:58,797 [INFO] Zainicjalizowano AnomalyDetector z metodą z_score i progiem 2.5
+2025-04-09 16:55:58,797 [INFO] Utworzono instancję klasy AnomalyDetector (predict=False, fit=False)
+2025-04-09 16:55:58,797 [INFO] Pomyślnie załadowano 1 instancji z modułu anomaly_detection
+2025-04-09 16:55:58,797 [INFO] Zainicjalizowano ModelRecognizer
+2025-04-09 16:55:58,797 [INFO] Utworzono instancję klasy ModelRecognizer (predict=False, fit=False)
+2025-04-09 16:55:58,798 [INFO] Pomyślnie załadowano 1 instancji z modułu model_recognition
+2025-04-09 16:55:58,798 [INFO] Zainicjalizowano SentimentAnalyzer z 4 źródłami
+2025-04-09 16:55:58,798 [INFO] Załadowano dane sentymentu z pliku cache data/cache/sentiment_data.json
+2025-04-09 16:55:58,798 [INFO] Utworzono instancję klasy SentimentAnalyzer (predict=False, fit=False)
+2025-04-09 16:55:58,798 [INFO] Pomyślnie załadowano 1 instancji z modułu sentiment_ai
+2025-04-09 16:55:58,799 [INFO] Przetestowano modele AI: znaleziono 8 działających modeli
+2025-04-09 16:55:58,799 [INFO] System zainicjalizowany poprawnie
+2025-04-09 16:55:58,799 [INFO] Uruchamianie aplikacji Flask w środowisku Replit na hoście 0.0.0.0 i porcie 5000
+2025-04-09 16:55:58,820 [WARNING]  * Debugger is active!
+2025-04-09 16:55:58,828 [INFO]  * Debugger PIN: 325-956-532
+2025-04-09 16:56:00,233 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 100.0, 'available_balance': 100.0, 'wallet_balance': 100.0}}, 'timestamp': '2025-04-09T16:56:00.233612', 'source': 'simulated'}
+2025-04-09 16:56:00,268 [INFO] 172.31.128.76 - - [09/Apr/2025 16:56:00] "[35m[1mGET / HTTP/1.1[0m" 500 -
+2025-04-09 16:56:00,454 [INFO] 172.31.128.76 - - [09/Apr/2025 16:56:00] "[36mGET /?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-04-09 16:56:00,609 [INFO] 172.31.128.76 - - [09/Apr/2025 16:56:00] "[36mGET /?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-04-09 16:56:00,826 [INFO] 172.31.128.76 - - [09/Apr/2025 16:56:00] "[36mGET /?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-04-09 16:56:01,025 [INFO] 172.31.128.76 - - [09/Apr/2025 16:56:01] "[36mGET /?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-04-09 16:56:04,978 [INFO]  * Detected change in '/home/runner/workspace/.pythonlibs/bin/pwiz.py', reloading
+2025-04-09 16:56:05,795 [INFO]  * Restarting with watchdog (inotify)
+2025-04-09 16:56:08,350 [INFO] Zainicjalizowano zarządcę ryzyka portfela. Max ryzyko: 0.05, Max rozmiar pozycji: 0.2, Max drawdown: 0.1
+2025-04-09 16:56:08,352 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-09 16:56:08,355 [WARNING] Pomijam podpakiet 'utils' z powodu błędu: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 16:56:08,369 [INFO] Wykryto środowisko: Replit
+2025-04-09 16:56:08,369 [WARNING] ❌ OSTRZEŻENIE: .env wskazuje na testnet (BYBIT_USE_TESTNET=true). Ustaw BYBIT_USE_TESTNET=false, jeśli chcesz realny rynek!
+2025-04-09 16:56:08,370 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-09 16:56:08,370 [INFO] Zainicjalizowano ModelTester z biblioteki python_libs.model_tester
+2025-04-09 16:56:08,370 [INFO] Załadowano konfigurację AI z python_libs/ai_config.json
+2025-04-09 16:56:08,371 [INFO] ai_models: Znaleziono 3 modeli AI
+2025-04-09 16:56:08,371 [INFO]   - sentiment_analyzer: SentimentAnalyzer
+2025-04-09 16:56:08,372 [INFO]   - anomaly_detector: AnomalyDetector
+2025-04-09 16:56:08,372 [INFO]   - model_recognizer: ModelRecognizer
+2025-04-09 16:56:08,372 [INFO] Zainicjalizowano SentimentAnalyzer z 4 źródłami
+2025-04-09 16:56:08,372 [INFO] Załadowano dane sentymentu z pliku cache data/cache/sentiment_data.json
+2025-04-09 16:56:08,372 [INFO] Zainicjalizowano SentimentAnalyzer z biblioteką ai_models.sentiment_ai i źródłami ['twitter', 'news', 'forum', 'reddit']
+2025-04-09 16:56:08,372 [INFO] Zainicjalizowano AnomalyDetector z metodą z_score i progiem 2.5
+2025-04-09 16:56:08,372 [INFO] Zainicjalizowano AnomalyDetector z biblioteki ai_models.anomaly_detection (metoda: z_score, próg: 2.5)
+2025-04-09 16:56:08,372 [INFO] Zainicjalizowano ModelRecognizer
+2025-04-09 16:56:08,373 [INFO] Zainicjalizowano ModelRecognizer
+2025-04-09 16:56:08,373 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-09 16:56:08,373 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-09 16:56:08,373 [INFO] Zainicjalizowano uproszczony system powiadomień z 2 kanałami
+2025-04-09 16:56:08,373 [INFO] Zainicjalizowano system powiadomień z biblioteki python_libs.simplified_notification
+2025-04-09 16:56:08,373 [INFO] Zainicjalizowano StrategyManager z 3 strategiami
+2025-04-09 16:56:08,374 [INFO] Zainicjalizowano StrategyManager z biblioteką python_libs.simplified_strategy i 3 strategiami
+2025-04-09 16:56:08,374 [INFO] Zainicjalizowano SimplifiedRiskManager (max_risk=0.05, max_position_size=0.1, max_drawdown=0.1)
+2025-04-09 16:56:08,374 [INFO] Zainicjalizowano SimplifiedRiskManager (max_risk=0.05, max_position_size=0.1, max_drawdown=0.1)
+2025-04-09 16:56:08,374 [INFO] Używasz testnet API (środowisko testowe).
+2025-04-09 16:56:08,374 [INFO] Używasz testnet API (środowisko testowe).
+2025-04-09 16:56:08,375 [INFO] BybitConnector zainicjalizowany. Testnet: True, Lazy connect: True, Market type: spot
+2025-04-09 16:56:08,376 [WARNING] Nie można sprawdzić stanu limitów API: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 16:56:08,376 [INFO] BybitConnector w trybie lazy initialization. Testnet: True, Market type: spot
+2025-04-09 16:56:08,376 [INFO] Inicjalizacja klienta ByBit - Klucz: aLYR****************************************************, Testnet: True
+2025-04-09 16:56:08,376 [INFO] Zainicjalizowano SimplifiedTradingEngine z konektorem BybitConnector
+2025-04-09 16:56:08,377 [INFO] Zainicjalizowano silnik handlowy (Trading Engine) z biblioteki python_libs.simplified_trading_engine
+2025-04-09 16:56:08,377 [INFO] Aktywowano strategię: trend_following
+2025-04-09 16:56:08,377 [INFO] Aktywowano strategię 'trend_following'
+2025-04-09 16:56:08,377 [INFO] Uruchomiono handel dla symboli: ['BTCUSDT']
+2025-04-09 16:56:08,378 [WARNING] Nie udało się pobrać kapitału: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 16:56:08,378 [INFO] Silnik handlowy uruchomiony dla symboli: ['BTCUSDT']
+2025-04-09 16:56:08,379 [INFO] Zainicjalizowano PortfolioManager z saldem początkowym 100.0 USDT w trybie simulated
+2025-04-09 16:56:08,379 [INFO] Zainicjalizowano menadżera portfela
+2025-04-09 16:56:08,379 [INFO] Rozpoczynam testowanie modeli w katalogu: ai_models
+2025-04-09 16:56:08,379 [INFO] Znaleziono 13 plików modeli.
+2025-04-09 16:56:08,402 [INFO] MarketEnvironment zainicjalizowane w trybie 'simulated' z kapitałem: 10000.000000
+2025-04-09 16:56:08,402 [INFO] Utworzono instancję klasy MarketEnvironment (predict=False, fit=False)
+2025-04-09 16:56:08,402 [INFO] Pomyślnie załadowano 1 instancji z modułu environment
+2025-04-09 16:56:08,403 [WARNING] Brak klas w module feature_engineering
+2025-04-09 16:56:08,403 [INFO] Utworzono instancję klasy MarketDummyEnv (predict=False, fit=False)
+2025-04-09 16:56:08,403 [INFO] Pomyślnie załadowano 1 instancji z modułu market_dummy_env
+2025-04-09 16:56:08,405 [WARNING] Nie można utworzyć instancji klasy ModelTrainer: wymaga parametrów
+2025-04-09 16:56:08,405 [WARNING] Nie udało się utworzyć żadnej instancji z modułu model_training
+2025-04-09 16:56:08,406 [ERROR] Błąd podczas testowania modułu model_tuner: No module named 'optuna'
+2025-04-09 16:56:08,406 [WARNING] Nie można utworzyć instancji klasy RealExchangeEnv: wymaga parametrów
+2025-04-09 16:56:08,407 [WARNING] Nie udało się utworzyć żadnej instancji z modułu real_exchange_env
+2025-04-09 16:56:08,408 [ERROR] Błąd podczas testowania modułu reinforcement_learning: No module named 'tensorflow'
+2025-04-09 16:56:08,408 [INFO] ExperimentManager zainicjalizowany. save_dir: 'saved_models', enable_experiments: True
+2025-04-09 16:56:08,408 [INFO] Utworzono instancję klasy ExperimentManager (predict=False, fit=False)
+2025-04-09 16:56:08,408 [INFO] Pomyślnie załadowano 1 instancji z modułu ropmer_temp
+2025-04-09 16:56:08,409 [INFO] Inicjalizacja DataScaler z metodą: standard
+2025-04-09 16:56:08,409 [INFO] Utworzono instancję klasy DataScaler (predict=False, fit=True)
+2025-04-09 16:56:08,409 [INFO] Pomyślnie załadowano 1 instancji z modułu scalar
+2025-04-09 16:56:08,410 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-09 16:56:08,410 [INFO] Inicjalizacja ModelLoader dla ścieżki: ai_models
+2025-04-09 16:56:08,410 [INFO] Rozpoczęcie ładowania modeli...
+2025-04-09 16:56:08,410 [INFO] Rozpoczynam testowanie modeli w katalogu: ai_models
+2025-04-09 16:56:08,410 [INFO] Znaleziono 13 plików modeli.
+2025-04-09 16:56:08,432 [INFO] MarketEnvironment zainicjalizowane w trybie 'simulated' z kapitałem: 10000.000000
+2025-04-09 16:56:08,432 [INFO] Utworzono instancję klasy MarketEnvironment (predict=False, fit=False)
+2025-04-09 16:56:08,432 [INFO] Pomyślnie załadowano 1 instancji z modułu environment
+2025-04-09 16:56:08,432 [WARNING] Brak klas w module feature_engineering
+2025-04-09 16:56:08,433 [INFO] Utworzono instancję klasy MarketDummyEnv (predict=False, fit=False)
+2025-04-09 16:56:08,433 [INFO] Pomyślnie załadowano 1 instancji z modułu market_dummy_env
+2025-04-09 16:56:08,433 [WARNING] Nie można utworzyć instancji klasy ModelTrainer: wymaga parametrów
+2025-04-09 16:56:08,433 [WARNING] Nie udało się utworzyć żadnej instancji z modułu model_training
+2025-04-09 16:56:08,435 [ERROR] Błąd podczas testowania modułu model_tuner: No module named 'optuna'
+2025-04-09 16:56:08,435 [WARNING] Nie można utworzyć instancji klasy RealExchangeEnv: wymaga parametrów
+2025-04-09 16:56:08,435 [WARNING] Nie udało się utworzyć żadnej instancji z modułu real_exchange_env
+2025-04-09 16:56:08,437 [ERROR] Błąd podczas testowania modułu reinforcement_learning: No module named 'tensorflow'
+2025-04-09 16:56:08,437 [INFO] ExperimentManager zainicjalizowany. save_dir: 'saved_models', enable_experiments: True
+2025-04-09 16:56:08,437 [INFO] Utworzono instancję klasy ExperimentManager (predict=False, fit=False)
+2025-04-09 16:56:08,437 [INFO] Pomyślnie załadowano 1 instancji z modułu ropmer_temp
+2025-04-09 16:56:08,438 [INFO] Inicjalizacja DataScaler z metodą: standard
+2025-04-09 16:56:08,438 [INFO] Utworzono instancję klasy DataScaler (predict=False, fit=True)
+2025-04-09 16:56:08,438 [INFO] Pomyślnie załadowano 1 instancji z modułu scalar
+2025-04-09 16:56:08,438 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-09 16:56:08,439 [INFO] Inicjalizacja ModelLoader dla ścieżki: ai_models
+2025-04-09 16:56:08,439 [INFO] Utworzono instancję klasy ModelLoader (predict=False, fit=False)
+2025-04-09 16:56:08,439 [INFO] Pomyślnie załadowano 1 instancji z modułu model_loader
+2025-04-09 16:56:08,439 [INFO] Zainicjalizowano AnomalyDetector z metodą z_score i progiem 2.5
+2025-04-09 16:56:08,439 [INFO] Utworzono instancję klasy AnomalyDetector (predict=False, fit=False)
+2025-04-09 16:56:08,440 [INFO] Pomyślnie załadowano 1 instancji z modułu anomaly_detection
+2025-04-09 16:56:08,440 [INFO] Zainicjalizowano ModelRecognizer
+2025-04-09 16:56:08,440 [INFO] Utworzono instancję klasy ModelRecognizer (predict=False, fit=False)
+2025-04-09 16:56:08,440 [INFO] Pomyślnie załadowano 1 instancji z modułu model_recognition
+2025-04-09 16:56:08,440 [INFO] Zainicjalizowano SentimentAnalyzer z 4 źródłami
+2025-04-09 16:56:08,441 [INFO] Załadowano dane sentymentu z pliku cache data/cache/sentiment_data.json
+2025-04-09 16:56:08,441 [INFO] Utworzono instancję klasy SentimentAnalyzer (predict=False, fit=False)
+2025-04-09 16:56:08,441 [INFO] Pomyślnie załadowano 1 instancji z modułu sentiment_ai
+2025-04-09 16:56:08,441 [INFO] Załadowano model: MarketEnvironment
+2025-04-09 16:56:08,441 [INFO] Załadowano model: MarketDummyEnv
+2025-04-09 16:56:08,441 [INFO] Załadowano model: ExperimentManager
+2025-04-09 16:56:08,441 [INFO] Załadowano model: DataScaler
+2025-04-09 16:56:08,441 [INFO] Załadowano model: ModelLoader
+2025-04-09 16:56:08,442 [INFO] Załadowano model: AnomalyDetector
+2025-04-09 16:56:08,442 [INFO] Załadowano model: ModelRecognizer
+2025-04-09 16:56:08,442 [INFO] Załadowano model: SentimentAnalyzer
+2025-04-09 16:56:08,442 [INFO] Załadowano 8 modeli
+2025-04-09 16:56:08,442 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-09 16:56:08,442 [INFO] Inicjalizacja ModelLoader dla ścieżki: ai_models
+2025-04-09 16:56:08,443 [INFO] Utworzono instancję klasy ModelLoader (predict=False, fit=False)
+2025-04-09 16:56:08,443 [INFO] Pomyślnie załadowano 1 instancji z modułu model_loader
+2025-04-09 16:56:08,443 [INFO] Zainicjalizowano AnomalyDetector z metodą z_score i progiem 2.5
+2025-04-09 16:56:08,443 [INFO] Utworzono instancję klasy AnomalyDetector (predict=False, fit=False)
+2025-04-09 16:56:08,443 [INFO] Pomyślnie załadowano 1 instancji z modułu anomaly_detection
+2025-04-09 16:56:08,444 [INFO] Zainicjalizowano ModelRecognizer
+2025-04-09 16:56:08,444 [INFO] Utworzono instancję klasy ModelRecognizer (predict=False, fit=False)
+2025-04-09 16:56:08,444 [INFO] Pomyślnie załadowano 1 instancji z modułu model_recognition
+2025-04-09 16:56:08,444 [INFO] Zainicjalizowano SentimentAnalyzer z 4 źródłami
+2025-04-09 16:56:08,445 [INFO] Załadowano dane sentymentu z pliku cache data/cache/sentiment_data.json
+2025-04-09 16:56:08,445 [INFO] Utworzono instancję klasy SentimentAnalyzer (predict=False, fit=False)
+2025-04-09 16:56:08,445 [INFO] Pomyślnie załadowano 1 instancji z modułu sentiment_ai
+2025-04-09 16:56:08,445 [INFO] Przetestowano modele AI: znaleziono 8 działających modeli
+2025-04-09 16:56:08,445 [INFO] System zainicjalizowany poprawnie
+2025-04-09 16:56:08,446 [INFO] Uruchamianie aplikacji Flask w środowisku Replit na hoście 0.0.0.0 i porcie 5000
+2025-04-09 16:56:08,465 [WARNING]  * Debugger is active!
+2025-04-09 16:56:08,467 [INFO]  * Debugger PIN: 136-615-334
+2025-04-09 16:56:09,783 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 100.0, 'available_balance': 100.0, 'wallet_balance': 100.0}}, 'timestamp': '2025-04-09T16:56:09.783006', 'source': 'simulated'}
+2025-04-09 16:56:09,830 [INFO] 172.31.128.76 - - [09/Apr/2025 16:56:09] "[35m[1mGET / HTTP/1.1[0m" 500 -
+2025-04-09 16:56:10,034 [INFO] 172.31.128.76 - - [09/Apr/2025 16:56:10] "[36mGET /?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-04-09 16:56:10,056 [INFO] 172.31.128.76 - - [09/Apr/2025 16:56:10] "[36mGET /?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-04-09 16:56:10,266 [INFO] 172.31.128.76 - - [09/Apr/2025 16:56:10] "[36mGET /?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-04-09 16:56:10,486 [INFO] 172.31.128.76 - - [09/Apr/2025 16:56:10] "[36mGET /?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-04-09 16:56:15,906 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 100.0, 'available_balance': 100.0, 'wallet_balance': 100.0}}, 'timestamp': '2025-04-09T16:56:15.906272', 'source': 'simulated'}
+2025-04-09 16:56:15,936 [INFO] 172.31.128.76 - - [09/Apr/2025 16:56:15] "[35m[1mGET / HTTP/1.1[0m" 500 -
+2025-04-09 16:56:16,247 [INFO] 172.31.128.76 - - [09/Apr/2025 16:56:16] "[36mGET /?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-04-09 16:56:16,275 [INFO] 172.31.128.76 - - [09/Apr/2025 16:56:16] "[36mGET /?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-04-09 16:56:16,969 [INFO] 172.31.128.76 - - [09/Apr/2025 16:56:16] "[36mGET /?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-04-09 16:56:20,149 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 100.0, 'available_balance': 100.0, 'wallet_balance': 100.0}}, 'timestamp': '2025-04-09T16:56:20.149527', 'source': 'simulated'}
+2025-04-09 16:56:20,171 [INFO] 172.31.128.76 - - [09/Apr/2025 16:56:20] "[35m[1mGET / HTTP/1.1[0m" 500 -
+2025-04-09 16:56:20,378 [INFO] 172.31.128.76 - - [09/Apr/2025 16:56:20] "[36mGET /?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-04-09 16:56:20,493 [INFO] 172.31.128.76 - - [09/Apr/2025 16:56:20] "[36mGET /?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-04-09 16:56:21,181 [INFO] 172.31.128.76 - - [09/Apr/2025 16:56:21] "[36mGET /?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
