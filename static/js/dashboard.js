@@ -1,4 +1,16 @@
-// Konfiguracja aplikacji zostanie zachowana z pierwszej deklaracji
+
+// Konfiguracja aplikacji
+const CONFIG = {
+    updateInterval: 30000, // 30 sekund
+    chartUpdateInterval: 60000, // 1 minuta
+    maxErrors: 3,
+    apiEndpoints: {
+        portfolio: '/api/portfolio',
+        dashboard: '/api/dashboard/data',
+        componentStatus: '/api/component-status',
+        chartData: '/api/chart/data'
+    }
+};
 
 // Stan aplikacji
 const appState = {
@@ -55,8 +67,11 @@ function startDataUpdates() {
 
 // Inicjalizacja wykresu portfela
 function initializePortfolioChart() {
-    const ctx = document.getElementById('portfolio-chart');
-    if (!ctx) return;
+    const ctx = document.getElementById('main-chart');
+    if (!ctx) {
+        console.log("Element 'main-chart' nie został znaleziony");
+        return;
+    }
 
     appState.portfolioChart = new Chart(ctx, {
         type: 'line',
@@ -97,7 +112,12 @@ function updateChartData() {
     if (!appState.portfolioChart) return;
 
     fetch(CONFIG.apiEndpoints.chartData)
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Błąd HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 appState.portfolioChart.data.labels = data.data.labels;
@@ -117,9 +137,19 @@ function updateChartData() {
 // Aktualizacja danych portfela
 function updatePortfolioData() {
     fetch('/api/portfolio')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Błąd HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             const portfolioContainer = document.getElementById('portfolio-data');
+            
+            if (!portfolioContainer) {
+                console.error("Element 'portfolio-data' nie istnieje");
+                return;
+            }
 
             if (data && data.success === true && data.balances && Object.keys(data.balances).length > 0) {
                 portfolioContainer.innerHTML = ''; // Wyczyść kontener
@@ -159,7 +189,9 @@ function updatePortfolioData() {
         .catch(err => {
             console.error("Błąd podczas pobierania danych portfela:", err);
             const portfolioContainer = document.getElementById('portfolio-data');
-            portfolioContainer.innerHTML = '<div class="error-message">Błąd podczas pobierania danych portfela. Sprawdź połączenie internetowe.</div>';
+            if (portfolioContainer) {
+                portfolioContainer.innerHTML = '<div class="error-message">Błąd podczas pobierania danych portfela. Sprawdź połączenie internetowe.</div>';
+            }
         });
 }
 
@@ -167,20 +199,28 @@ function updatePortfolioData() {
 function updateDashboardData() {
     console.log("Aktualizacja danych dashboardu...");
     fetch('/api/dashboard/data')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Błąd HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
-                document.getElementById('balance-value').textContent = `${data.balance.toFixed(2)} USDT`;
-                document.getElementById('profit-loss-value').textContent = `${data.profit_loss > 0 ? '+' : ''}${data.profit_loss.toFixed(2)} USDT`;
-                document.getElementById('open-positions-value').textContent = data.open_positions;
-                document.getElementById('total-trades-value').textContent = data.total_trades;
-                document.getElementById('win-rate-value').textContent = `${data.win_rate.toFixed(1)}%`;
-                document.getElementById('max-drawdown-value').textContent = `${data.max_drawdown.toFixed(1)}%`;
-                document.getElementById('market-sentiment-value').textContent = data.market_sentiment;
-                document.getElementById('last-updated').textContent = `Ostatnia aktualizacja: ${data.last_updated}`;
+                // Bezpieczne aktualizowanie elementów z kontrolą istnienia
+                updateElementById('balance-value', `${data.balance.toFixed(2)} USDT`);
+                updateElementById('profit-loss-value', `${data.profit_loss > 0 ? '+' : ''}${data.profit_loss.toFixed(2)} USDT`);
+                updateElementById('open-positions-value', data.open_positions);
+                updateElementById('total-trades-value', data.total_trades);
+                updateElementById('win-rate-value', `${data.win_rate.toFixed(1)}%`);
+                updateElementById('max-drawdown-value', `${data.max_drawdown.toFixed(1)}%`);
+                updateElementById('market-sentiment-value', data.market_sentiment);
+                updateElementById('last-updated', `Ostatnia aktualizacja: ${data.last_updated}`);
 
                 // Aktualizacja sekcji sentymentu w zakładce analityki
-                updateSentimentSection(data.sentiment_data);
+                if (data.sentiment_data) {
+                    updateSentimentSection(data.sentiment_data);
+                }
             } else {
                 console.error("Błąd podczas pobierania danych dashboardu:", data.error);
             }
@@ -190,8 +230,22 @@ function updateDashboardData() {
         });
 }
 
+// Bezpieczna aktualizacja elementu po ID
+function updateElementById(elementId, value) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.textContent = value;
+    } else {
+        console.log(`Element o ID '${elementId}' nie istnieje`);
+    }
+}
+
 function updateSentimentSection(sentimentData) {
     const sentimentContainer = document.getElementById('sentiment-container');
+    if (!sentimentContainer) {
+        console.log("Element 'sentiment-container' nie istnieje");
+        return;
+    }
 
     if (!sentimentData) {
         sentimentContainer.innerHTML = '<div class="no-data">Brak danych o sentymencie rynkowym</div>';
@@ -244,31 +298,6 @@ function updateSentimentSection(sentimentData) {
             <div>Ostatnia aktualizacja: ${sentimentData.timestamp}</div>
         </div>
     `;
-}
-
-// Aktualizacja UI dashboardu
-function updateDashboardUI(data) {
-    try {
-        // Aktualizacja podstawowych statystyk
-        updateElementValue('current-balance', data.balance, true, '$');
-        updateElementValue('profit-loss', data.profit_loss, true, '$');
-        updateElementValue('open-positions', data.open_positions);
-        updateElementValue('total-trades', data.total_trades);
-        updateElementValue('win-rate', data.win_rate, true, '%');
-        updateElementValue('max-drawdown', data.max_drawdown, true, '%');
-        updateElementValue('market-sentiment', data.market_sentiment);
-
-        // Obsługa anomalii
-        updateAnomalies(data.anomalies);
-
-        // Aktualizuj czas ostatniej aktualizacji
-        const lastUpdatedElement = document.getElementById('last-updated');
-        if (lastUpdatedElement) {
-            lastUpdatedElement.textContent = data.last_updated || new Date().toLocaleString();
-        }
-    } catch (error) {
-        console.error("Błąd podczas aktualizacji UI dashboardu:", error);
-    }
 }
 
 // Aktualizacja wykrytych anomalii
@@ -333,7 +362,12 @@ function updateElementValue(elementId, value, isNumeric = false, prefix = '', su
 // Aktualizacja statusu komponentów
 function updateComponentStatus() {
     fetch('/api/component-status')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Błąd HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.components) {
                 let hasWarnings = false;
@@ -393,7 +427,7 @@ function capitalizeFirstLetter(string) {
 }
 
 function getSeverityClass(severity) {
-    switch(severity.toLowerCase()) {
+    switch(severity?.toLowerCase()) {
         case 'high':
             return 'high-severity';
         case 'medium':
@@ -405,6 +439,63 @@ function getSeverityClass(severity) {
     }
 }
 
+// Obsługa błędów API
+function handleApiError(endpoint) {
+    // Zwiększ licznik błędów dla danego endpointu
+    appState.errorCounts[endpoint] = (appState.errorCounts[endpoint] || 0) + 1;
+
+    // Jeśli przekroczono limit błędów, pokaż komunikat
+    if (appState.errorCounts[endpoint] >= CONFIG.maxErrors) {
+        showErrorMessage(`Zbyt wiele błędów podczas komunikacji z API (${endpoint}). Sprawdź logi.`);
+    }
+}
+
+// Wyświetlanie komunikatu o błędzie
+function showErrorMessage(message) {
+    const errorContainer = document.getElementById('error-container');
+    if (errorContainer) {
+        errorContainer.textContent = message;
+        errorContainer.style.display = 'block';
+
+        // Automatyczne ukrycie po 10 sekundach
+        setTimeout(() => {
+            errorContainer.style.display = 'none';
+        }, 10000);
+    }
+}
+
+// Wyświetlanie powiadomień
+function showNotification(type, message) {
+    // Sprawdź, czy kontener istnieje
+    let container = document.getElementById('notifications-container');
+    
+    // Jeśli nie istnieje, utwórz go
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'notifications-container';
+        container.className = 'notifications-container';
+        document.body.appendChild(container);
+    }
+    
+    // Stwórz element powiadomienia
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+
+    // Dodaj do kontenera powiadomień
+    container.appendChild(notification);
+
+    // Usuń po 5 sekundach
+    setTimeout(() => {
+        notification.classList.add('fade-out');
+        setTimeout(() => {
+            if (container.contains(notification)) {
+                container.removeChild(notification);
+            }
+        }, 500);
+    }, 5000);
+}
+
 // Funkcje zarządzania stanem tradingu
 function startTrading() {
     fetch('/api/trading/start', {
@@ -413,7 +504,12 @@ function startTrading() {
             'Content-Type': 'application/json',
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Błąd HTTP: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
             showNotification('success', data.message || 'Trading automatyczny uruchomiony');
@@ -435,7 +531,12 @@ function stopTrading() {
             'Content-Type': 'application/json',
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Błąd HTTP: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
             showNotification('success', data.message || 'Trading automatyczny zatrzymany');
@@ -457,7 +558,12 @@ function resetSystem() {
             'Content-Type': 'application/json',
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Błąd HTTP: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
             showNotification('success', data.message || 'System zresetowany');
@@ -521,51 +627,4 @@ function setupEventListeners() {
     document.addEventListener('visibilitychange', function() {
         appState.activeDashboard = !document.hidden;
     });
-}
-
-// Obsługa błędów API
-function handleApiError(endpoint) {
-    // Zwiększ licznik błędów dla danego endpointu
-    appState.errorCounts[endpoint] = (appState.errorCounts[endpoint] || 0) + 1;
-
-    // Jeśli przekroczono limit błędów, pokaż komunikat
-    if (appState.errorCounts[endpoint] >= CONFIG.maxErrors) {
-        showErrorMessage(`Zbyt wiele błędów podczas komunikacji z API (${endpoint}). Sprawdź logi.`);
-    }
-}
-
-// Wyświetlanie komunikatu o błędzie
-function showErrorMessage(message) {
-    const errorContainer = document.getElementById('error-container');
-    if (errorContainer) {
-        errorContainer.textContent = message;
-        errorContainer.style.display = 'block';
-
-        // Automatyczne ukrycie po 10 sekundach
-        setTimeout(() => {
-            errorContainer.style.display = 'none';
-        }, 10000);
-    }
-}
-
-// Wyświetlanie powiadomień
-function showNotification(type, message) {
-    // Stwórz element powiadomienia
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.textContent = message;
-
-    // Dodaj do kontenera powiadomień
-    const container = document.getElementById('notifications-container');
-    if (container) {
-        container.appendChild(notification);
-
-        // Usuń po 5 sekundach
-        setTimeout(() => {
-            notification.classList.add('fade-out');
-            setTimeout(() => {
-                container.removeChild(notification);
-            }, 500);
-        }, 5000);
-    }
 }
