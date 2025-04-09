@@ -77,15 +77,7 @@ function updateAIModelsStatus() {
             }
             return response.json();
         })
-        .catch(error => {
-            console.error("Błąd podczas pobierania statusu modeli AI:", error);
-            // Próbujemy ponownie po 5 sekundach
-            setTimeout(updateAIModelsStatus, 5000);
-            return { models: [], error: error.message };
-        })
         .then(data => {
-            if (!data) return; // Obsługa sytuacji, gdy catch zwrócił undefined
-
             const aiModelsContainer = document.getElementById('ai-models-container');
             if (!aiModelsContainer) {
                 console.error("Element 'ai-models-container' nie istnieje");
@@ -166,8 +158,10 @@ function updateAIModelsStatus() {
             console.error("Błąd podczas pobierania statusu modeli AI:", error);
             const aiModelsContainer = document.getElementById('ai-models-container');
             if (aiModelsContainer) {
-                aiModelsContainer.innerHTML = '<div class="error-message">Błąd podczas pobierania statusu modeli AI: ' + error.message + '</div>';
+                aiModelsContainer.innerHTML = '<div class="error-message">Błąd podczas pobierania statusu modeli AI</div>';
             }
+            // Próbujemy ponownie po 15 sekundach zamiast 5 dla zmniejszenia obciążenia serwera
+            setTimeout(updateAIModelsStatus, 15000);
         });
 }
 

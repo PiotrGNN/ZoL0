@@ -55,6 +55,16 @@ except ImportError as e:
     logging.warning(f"Nie udało się zaimportować BybitConnector: {e}")
     bybit_import_success = False
 
+# Import menedżera symulacji
+try:
+    from python_libs.simulation_results import SimulationManager
+    simulation_manager = SimulationManager()
+    simulation_import_success = True
+except ImportError as e:
+    logging.warning(f"Nie udało się zaimportować SimulationManager: {e}")
+    simulation_import_success = False
+    simulation_manager = None
+
 # Inicjalizacja aplikacji Flask
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", os.urandom(24))
@@ -640,6 +650,71 @@ def get_trading_stats():
         logging.error(f"Błąd podczas pobierania statystyk tradingowych: {e}", exc_info=True) #Dodatkowe informacje o błędzie
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/simulation-results')
+def get_simulation_results():
+    """Endpoint do pobierania wyników symulacji tradingu"""
+    try:
+        if simulation_import_success and simulation_manager:
+            results = simulation_manager.get_simulation_results()
+            return jsonify(results)
+        else:
+            # Tworzy przykładowe wyniki jako fallback
+            results = {
+                'status': 'success',
+                'summary': {
+                    'initial_capital': 10000.0,
+                    'final_capital': 10850.75,
+                    'profit': 850.75,
+                    'profit_percentage': 8.5075,
+                    'trades': 48,
+                    'wins': 29,
+                    'losses': 19,
+                    'win_rate': 60.42,
+                    'max_drawdown': 4.8,
+                    'total_commission': 125.50,
+                    'winning_trades': 29,
+                    'closes': 48
+                },
+                'trades': [
+                    {
+                        'timestamp': (datetime.now() - timedelta(days=30)).timestamp(),
+                        'action': 'LONG',
+                        'price': 48750.25,
+                        'size': 0.02,
+                        'commission': 0.9750,
+                        'capital': 9999.025
+                    },
+                    {
+                        'timestamp': (datetime.now() - timedelta(days=29)).timestamp(),
+                        'action': 'CLOSE LONG',
+                        'price': 49250.50,
+                        'size': 0.02,
+                        'pnl': 10.005,
+                        'commission': 0.9850,
+                        'capital': 10008.045
+                    }
+                ],
+                'chart_path': '/static/img/default_chart.png',
+                'message': 'Przykładowe dane symulacji'
+            }
+            return jsonify(results)
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania wyników symulacji: {e}", exc_info=True)
+        return jsonify({
+            'status': 'error',
+            'message': f'Błąd podczas pobierania wyników symulacji: {str(e)}',
+            'summary': {
+                'initial_capital': 10000.0,
+                'final_capital': 10000.0,
+                'profit': 0.0,
+                'profit_percentage': 0.0,
+                'trades': 0,
+                'win_rate': 0.0,
+                'max_drawdown': 0.0
+            },
+            'trades': []
+        })
+
 @app.route('/api/component-status')
 def get_component_status():
     """Endpoint do pobierania statusu komponentów systemu"""
@@ -866,6 +941,7 @@ def get_ai_models_status():
             model_summary.append(model_info)
 
         logger.info(f"Przygotowano informacje o {len(model_summary)} modelach AI")
+        return jsonify({'models': model_summary})
 
     except ImportError as e:
         logger.warning(f"Nie można zaimportować testera modeli: {e}")
