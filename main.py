@@ -772,7 +772,7 @@ def get_ai_models_status():
             # Najpierw sprawdź, czy model_tester jest dostępny
             from python_libs.model_tester import ModelTester
             tester = ModelTester(models_path='ai_models')
-            tester.run_tests(verbose=False)  # Uruchom testy bez szczegółowego logowania
+            tester.run_tests()  # Uruchom testy modeli
             test_results = tester.get_test_results()
             loaded_models = tester.get_loaded_models()
             
