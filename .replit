@@ -97,3 +97,12 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python test_models.py"
+
+[[workflows.workflow]]
+name = "Reset Environment"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "bash reset_environment.sh"
