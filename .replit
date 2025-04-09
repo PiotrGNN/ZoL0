@@ -78,7 +78,7 @@ pageEnabled = false
 buttonEnabled = false
 
 [workflows]
-runButton = "Run"
+runButton = "Run App"
 
 [[workflows.workflow]]
 name = "Run"
@@ -124,6 +124,15 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python3 test_environment.py"
+
+[[workflows.workflow]]
+name = "Run App"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python main.py"
 
 [[ports]]
 localPort = 5000

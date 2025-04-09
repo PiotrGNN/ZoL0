@@ -152,12 +152,11 @@
                 <div class="card">
                     <h2>Sentyment Rynkowy</h2>
                     <div id="sentiment-container">
-                        {% if sentiment_data %}
-                            <div class="sentiment-score">
-                                <div class="sentiment-label">Ogólny sentyment:</div>
-                                <div class="sentiment-value {% if sentiment_data.overall_score > 0.1 %}positive{% elif sentiment_data.overall_score < -0.1 %}negative{% else %}neutral{% endif %}">
-                                    {{ sentiment_data.analysis }}
-                                </div>
+                        <div class="sentiment-score">
+                            <div class="sentiment-label">Ogólny sentyment:</div>
+                            <div id="sentiment-value" class="sentiment-value neutral">
+                                Ładowanie...
+                            </div>
                             </div>
 
                             <div class="sentiment-details">

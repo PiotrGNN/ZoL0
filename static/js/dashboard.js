@@ -343,6 +343,74 @@ function updateDashboardData() {
         .catch(error => {
             console.error("Błąd podczas pobierania wyników symulacji:", error);
         });
+    updateSentimentData(); //Dodano aktualizację danych sentymentu
+}
+
+// Funkcja do aktualizacji danych sentymentu
+function updateSentimentData() {
+    fetch('/api/sentiment')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Błąd HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const sentimentContainer = document.getElementById('sentiment-container');
+            const sentimentValue = document.getElementById('sentiment-value');
+
+            if (sentimentValue) {
+                // Usuń poprzednie klasy
+                sentimentValue.classList.remove('positive', 'negative', 'neutral');
+
+                // Dodaj odpowiednią klasę na podstawie wartości
+                let sentimentClass = 'neutral';
+                if (data.value > 0.1) {
+                    sentimentClass = 'positive';
+                } else if (data.value < -0.1) {
+                    sentimentClass = 'negative';
+                }
+
+                sentimentValue.textContent = data.analysis;
+                sentimentValue.classList.add(sentimentClass);
+            }
+
+            // Dodaj szczegółowe dane źródeł, jeśli istnieją
+            if (data.sources && Object.keys(data.sources).length > 0) {
+                let sourcesHtml = '<div class="sentiment-sources">';
+                sourcesHtml += '<h3>Źródła danych:</h3><ul>';
+
+                for (const [source, value] of Object.entries(data.sources)) {
+                    let sourceClass = 'neutral';
+                    if (value > 0.1) {
+                        sourceClass = 'positive';
+                    } else if (value < -0.1) {
+                        sourceClass = 'negative';
+                    }
+
+                    sourcesHtml += `<li><span class="source-name">${source}:</span> <span class="source-value ${sourceClass}">${value.toFixed(2)}</span></li>`;
+                }
+
+                sourcesHtml += '</ul></div>';
+
+                // Dodaj lub zaktualizuj element z danymi źródeł
+                const sourcesElement = document.querySelector('.sentiment-sources');
+                if (sourcesElement) {
+                    sourcesElement.outerHTML = sourcesHtml;
+                } else {
+                    sentimentContainer.innerHTML += sourcesHtml;
+                }
+            }
+        })
+        .catch(error => {
+            console.error("Błąd podczas pobierania danych sentymentu:", error);
+            const sentimentValue = document.getElementById('sentiment-value');
+            if (sentimentValue) {
+                sentimentValue.textContent = "Brak danych o sentymencie";
+                sentimentValue.classList.remove('positive', 'negative');
+                sentimentValue.classList.add('neutral');
+            }
+        });
 }
 
 // Funkcja do aktualizacji wyników symulacji
