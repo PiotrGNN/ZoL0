@@ -12,7 +12,7 @@ import os
 import importlib
 import logging
 import sys
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 
 # Konfiguracja logowania
 logging.basicConfig(
@@ -21,28 +21,42 @@ logging.basicConfig(
 )
 logger = logging.getLogger("ai_models")
 
-# Eksportujemy konkretne modele
-from .anomaly_detection import AnomalyDetector
-from .sentiment_ai import SentimentAnalyzer
-from .model_recognition import ModelRecognizer
-from .feature_engineering import add_rsi, add_macd, feature_pipeline
-
-# Lista dostępnych modeli
-__all__ = [
-    'AnomalyDetector',
-    'SentimentAnalyzer',
-    'ModelRecognizer',
-    'add_rsi',
-    'add_macd', 
-    'feature_pipeline'
-]
-
 # Słownik dostępnych klas modeli
-available_models = {
-    'anomaly_detector': AnomalyDetector,
-    'sentiment_analyzer': SentimentAnalyzer,
-    'model_recognizer': ModelRecognizer
-}
+available_models = {}
+
+# Próba importu konkretnych modeli
+try:
+    from .anomaly_detection import AnomalyDetector
+    available_models['anomaly_detector'] = AnomalyDetector
+except ImportError as e:
+    logger.warning(f"Nie można zaimportować AnomalyDetector: {e}")
+
+try:
+    from .sentiment_ai import SentimentAnalyzer 
+    available_models['sentiment_analyzer'] = SentimentAnalyzer
+except ImportError as e:
+    logger.warning(f"Nie można zaimportować SentimentAnalyzer: {e}")
+
+try:
+    from .model_recognition import ModelRecognizer
+    available_models['model_recognizer'] = ModelRecognizer
+except ImportError as e:
+    logger.warning(f"Nie można zaimportować ModelRecognizer: {e}")
+
+try:
+    from .feature_engineering import add_rsi, add_macd, feature_pipeline
+    # Funkcje, nie klasy, więc nie dodajemy do available_models
+except ImportError as e:
+    logger.warning(f"Nie można zaimportować modułów feature_engineering: {e}")
+
+try:
+    from .reinforcement_learning import RLAgent
+    available_models['rl_agent'] = RLAgent
+except ImportError as e:
+    logger.warning(f"Nie można zaimportować RLAgent: {e}")
+
+# Lista dostępnych modeli do eksportu
+__all__ = list(available_models.keys())
 
 def get_available_models() -> Dict[str, Any]:
     """

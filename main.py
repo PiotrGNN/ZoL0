@@ -771,10 +771,14 @@ def get_ai_models_status():
         try:
             # Najpierw sprawdź, czy model_tester jest dostępny
             from python_libs.model_tester import ModelTester
+            
+            logger.info("Inicjalizuję ModelTester dla modeli AI")
             tester = ModelTester(models_path='ai_models')
+            logger.info("Uruchamiam testy modeli")
             tester.run_tests()  # Uruchom testy modeli
             test_results = tester.get_test_results()
             loaded_models = tester.get_loaded_models()
+            logger.info(f"Testy modeli zakończone. Znaleziono {len(loaded_models)} modeli.")
             
             # Pobranie wszystkich dostępnych modeli z ai_models/__init__.py
             available_models = {}

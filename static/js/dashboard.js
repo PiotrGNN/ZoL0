@@ -77,7 +77,15 @@ function updateAIModelsStatus() {
             }
             return response.json();
         })
+        .catch(error => {
+            console.error("Błąd podczas pobierania statusu modeli AI:", error);
+            // Próbujemy ponownie po 5 sekundach
+            setTimeout(updateAIModelsStatus, 5000);
+            return { models: [], error: error.message };
+        })
         .then(data => {
+            if (!data) return; // Obsługa sytuacji, gdy catch zwrócił undefined
+            
             const aiModelsContainer = document.getElementById('ai-models-container');
             if (!aiModelsContainer) {
                 console.error("Element 'ai-models-container' nie istnieje");
