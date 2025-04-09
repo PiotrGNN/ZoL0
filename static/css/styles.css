@@ -87,12 +87,23 @@ body {
   font-size: 1.2rem;
   display: flex;
   align-items: center;
+  justify-content: space-between; /* Added to align models-count */
 }
 
 .card h2 i {
   margin-right: 10px;
   color: var(--primary);
 }
+
+.card h2 .models-count {
+    font-size: 0.85rem;
+    color: #6c757d;
+    font-weight: normal;
+    background-color: #f8f9fa;
+    padding: 4px 8px;
+    border-radius: 12px;
+}
+
 
 .status {
   padding: 5px 10px;
@@ -645,4 +656,98 @@ footer {
     background-color: #FFEBEE;
     border-radius: 4px;
     margin: 10px 0;
+}
+
+/* Karty modeli AI */
+.ai-models-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.ai-models-grid .no-data,
+.ai-models-grid .error-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 20px;
+}
+
+.ai-model-card {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-left: 4px solid #ccc;
+}
+
+.ai-model-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.ai-model-card h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #343a40;
+    font-size: 1.1rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+}
+
+.model-details {
+    font-size: 0.9em;
+    line-height: 1.6;
+}
+
+.model-details div {
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.model-details div span.positive {
+    color: #28a745;
+    font-weight: 500;
+}
+
+.model-details div span.negative {
+    color: #dc3545;
+    font-weight: 500;
+}
+
+.model-details div span.neutral {
+    color: #ffc107;
+    font-weight: 500;
+}
+
+.model-details .error-message {
+    color: #dc3545;
+    font-size: 0.85em;
+    margin-top: 8px;
+    background-color: rgba(220, 53, 69, 0.1);
+    padding: 6px;
+    border-radius: 4px;
+    text-align: left;
+}
+
+/* Kolorowanie kart na podstawie statusu */
+.ai-model-card.active {
+    border-left-color: #28a745;
+}
+
+.ai-model-card.inactive {
+    border-left-color: #6c757d;
+}
+
+.ai-model-card.error {
+    border-left-color: #dc3545;
+}
+
+.ai-model-card.unknown {
+    border-left-color: #ffc107;
+}
+
+.ai-model-card.detected {
+    border-left-color: #17a2b8;
 }

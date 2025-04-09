@@ -8,7 +8,8 @@ const CONFIG = {
         portfolio: '/api/portfolio',
         dashboard: '/api/dashboard/data',
         componentStatus: '/api/component-status',
-        chartData: '/api/chart/data'
+        chartData: '/api/chart/data',
+        aiModelsStatus: '/api/ai-models-status'
     }
 };
 
@@ -45,6 +46,7 @@ function initializeUI() {
     updateDashboardData();
     updateComponentStatus();
     updatePortfolioData();
+    updateAIModelsStatus();
 }
 
 // Rozpoczęcie automatycznych aktualizacji danych
@@ -54,6 +56,7 @@ function startDataUpdates() {
         if (appState.activeDashboard) {
             updateDashboardData();
             updateComponentStatus();
+            updateAIModelsStatus();
         }
     }, CONFIG.updateInterval);
 
@@ -63,6 +66,101 @@ function startDataUpdates() {
             updateChartData();
         }
     }, CONFIG.chartUpdateInterval);
+}
+
+// Aktualizacja statusu modeli AI
+function updateAIModelsStatus() {
+    fetch('/api/ai-models-status')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Błąd HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const aiModelsContainer = document.getElementById('ai-models-container');
+            if (!aiModelsContainer) {
+                console.error("Element 'ai-models-container' nie istnieje");
+                return;
+            }
+
+            if (data.models && data.models.length > 0) {
+                let modelsHtml = '';
+                
+                data.models.forEach(model => {
+                    let statusClass = model.status === 'Active' ? 'positive' : 
+                                     (model.status === 'Inactive' ? 'neutral' : 
+                                     (model.status === 'Error' ? 'negative' : 'neutral'));
+                    
+                    let accuracyClass = model.accuracy >= 70 ? 'positive' : 
+                                      (model.accuracy >= 50 ? 'neutral' : 'negative');
+                    
+                    let cardStatusClass = model.status.toLowerCase();
+                    
+                    let testResultHtml = '';
+                    if (model.test_result) {
+                        let testClass = model.test_result === 'Passed' ? 'positive' : 
+                                      (model.test_result === 'Failed' ? 'negative' : 'neutral');
+                        testResultHtml = `
+                            <div>Test: <span class="${testClass}">${model.test_result}</span></div>`;
+                    }
+                    
+                    let moduleHtml = '';
+                    if (model.module) {
+                        moduleHtml = `<div>Moduł: <span>${model.module}</span></div>`;
+                    }
+                    
+                    let errorHtml = '';
+                    if (model.error) {
+                        errorHtml = `<div class="error-message">${model.error}</div>`;
+                    }
+                    
+                    modelsHtml += `
+                    <div class="ai-model-card ${cardStatusClass}">
+                        <h4>${model.name}</h4>
+                        <div class="model-details">
+                            <div>Typ: <span>${model.type}</span></div>
+                            <div>Dokładność: <span class="${accuracyClass}">${model.accuracy.toFixed(1)}%</span></div>
+                            <div>Status: <span class="${statusClass}">${model.status}</span></div>
+                            <div>Ostatnie użycie: <span>${model.last_used || 'Nieznane'}</span></div>
+                            <div>Metody: 
+                                <div>
+                                    <span class="${model.has_predict ? 'positive' : 'negative'}">predict ${model.has_predict ? '✓' : '✗'}</span>, 
+                                    <span class="${model.has_fit ? 'positive' : 'negative'}">fit ${model.has_fit ? '✓' : '✗'}</span>
+                                </div>
+                            </div>
+                            ${testResultHtml}
+                            ${moduleHtml}
+                            ${errorHtml}
+                        </div>
+                    </div>`;
+                });
+                
+                aiModelsContainer.innerHTML = modelsHtml;
+                
+                // Dodaj podsumowanie
+                const aiModelsSection = document.getElementById('ai-models-section');
+                if (aiModelsSection) {
+                    const activeModels = data.models.filter(m => m.status === 'Active').length;
+                    const totalModels = data.models.length;
+                    
+                    // Zaktualizuj nagłówek
+                    const header = aiModelsSection.querySelector('h2');
+                    if (header) {
+                        header.innerHTML = `Modele AI <span class="models-count">(${activeModels}/${totalModels} aktywnych)</span>`;
+                    }
+                }
+            } else {
+                aiModelsContainer.innerHTML = '<div class="no-data">Brak dostępnych modeli AI</div>';
+            }
+        })
+        .catch(error => {
+            console.error("Błąd podczas pobierania statusu modeli AI:", error);
+            const aiModelsContainer = document.getElementById('ai-models-container');
+            if (aiModelsContainer) {
+                aiModelsContainer.innerHTML = '<div class="error-message">Błąd podczas pobierania statusu modeli AI: ' + error.message + '</div>';
+            }
+        });
 }
 
 // Inicjalizacja wykresu portfela

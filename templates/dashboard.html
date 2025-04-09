@@ -113,17 +113,36 @@
                 <div id="ai-models-section" class="card">
                     <h2>Modele AI</h2>
                     <div id="ai-models-container" class="ai-models-grid">
-                        {% for model in ai_models %}
-                        <div class="ai-model-card">
-                            <h4>{{ model.name }}</h4>
-                            <div class="model-details">
-                                <div>Typ: {{ model.type }}</div>
-                                <div>Dokładność: <span class="{% if model.accuracy >= 70 %}positive{% elif model.accuracy >= 50 %}neutral{% else %}negative{% endif %}">{{ model.accuracy }}%</span></div>
-                                <div>Status: <span class="status-{{ model.status|lower }}">{{ model.status }}</span></div>
-                                <div>Ostatnie użycie: {{ model.last_used }}</div>
+                        {% if ai_models %}
+                            {% for model in ai_models %}
+                            <div class="ai-model-card">
+                                <h4>{{ model.name }}</h4>
+                                <div class="model-details">
+                                    <div>Typ: {{ model.type }}</div>
+                                    <div>Dokładność: <span class="{% if model.accuracy >= 70 %}positive{% elif model.accuracy >= 50 %}neutral{% else %}negative{% endif %}">{{ model.accuracy }}%</span></div>
+                                    <div>Status: <span class="status-{{ model.status|lower }}">{{ model.status }}</span></div>
+                                    <div>Ostatnie użycie: {{ model.last_used }}</div>
+                                    {% if model.has_predict is defined or model.has_fit is defined %}
+                                    <div>Metody: 
+                                        <span class="{% if model.has_predict %}positive{% else %}negative{% endif %}">predict {% if model.has_predict %}✓{% else %}✗{% endif %}</span>, 
+                                        <span class="{% if model.has_fit %}positive{% else %}negative{% endif %}">fit {% if model.has_fit %}✓{% else %}✗{% endif %}</span>
+                                    </div>
+                                    {% endif %}
+                                    {% if model.test_result is defined %}
+                                    <div>Test: <span class="{% if model.test_result == 'Passed' %}positive{% elif model.test_result == 'Failed' %}negative{% else %}neutral{% endif %}">{{ model.test_result }}</span></div>
+                                    {% endif %}
+                                    {% if model.module is defined %}
+                                    <div>Moduł: {{ model.module }}</div>
+                                    {% endif %}
+                                    {% if model.error is defined and model.error %}
+                                    <div class="error-message">Błąd: {{ model.error }}</div>
+                                    {% endif %}
+                                </div>
                             </div>
-                        </div>
-                        {% endfor %}
+                            {% endfor %}
+                        {% else %}
+                            <div class="no-data">Ładowanie danych modeli AI...</div>
+                        {% endif %}
                     </div>
                 </div>
 

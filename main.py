@@ -767,78 +767,227 @@ def get_component_status():
 def get_ai_models_status():
     """Endpoint do pobierania statusu modeli AI"""
     try:
-        # Import loader modeli
+        # Import tester modeli
         try:
-            from ai_models.model_loader import model_loader
-            # Upewniamy się, że modele są załadowane
-            model_loader.load_models()
-            model_summary = model_loader.get_models_summary()
+            # Najpierw sprawdź, czy model_tester jest dostępny
+            from python_libs.model_tester import ModelTester
+            tester = ModelTester(models_path='ai_models')
+            tester.run_tests(verbose=False)  # Uruchom testy bez szczegółowego logowania
+            test_results = tester.get_test_results()
+            loaded_models = tester.get_loaded_models()
             
-            # Dodanie dodatkowych informacji
-            for model in model_summary:
-                model['accuracy'] = round(75.0 + 10.0 * random.random(), 1)  # Przykładowa dokładność
-                model['last_used'] = (datetime.now() - timedelta(minutes=random.randint(5, 60))).strftime('%Y-%m-%d %H:%M:%S')
+            # Pobranie wszystkich dostępnych modeli z ai_models/__init__.py
+            available_models = {}
+            try:
+                import ai_models
+                if hasattr(ai_models, 'get_available_models'):
+                    available_models = ai_models.get_available_models()
+                    logger.info(f"Pobrano {len(available_models)} modeli z ai_models.get_available_models()")
+            except Exception as e:
+                logger.warning(f"Nie można pobrać listy modeli z ai_models: {e}")
+                
+            # Baza modeli - połącz loaded_models i available_models
+            model_base = {}
             
-            logger.info(f"Załadowano {len(model_summary)} modeli AI")
+            # Dodaj modele z testera
+            for model_info in loaded_models:
+                model_name = model_info['name']
+                model_base[model_name] = {
+                    'name': model_name,
+                    'type': model_info['instance'].__class__.__name__,
+                    'instance': model_info['instance'],
+                    'status': 'Active',
+                    'has_predict': hasattr(model_info['instance'], 'predict'),
+                    'has_fit': hasattr(model_info['instance'], 'fit'),
+                    'test_result': 'Passed'
+                }
             
-            # Jeśli nie ma modeli, dodajemy przykładowe
-            if not model_summary:
+            # Dodaj modele z available_models, które nie są jeszcze w bazie
+            for name, model_class in available_models.items():
+                if name not in model_base:
+                    # Sprawdź, czy ta klasa jest już w test_results
+                    test_result = 'Unknown'
+                    for module_name, result in test_results.items():
+                        if result.get('success') and model_class.__name__ in str(result.get('found_classes', [])):
+                            test_result = 'Passed'
+                            break
+                        elif not result.get('success') and model_class.__name__ in str(result.get('found_classes', [])):
+                            test_result = 'Failed'
+                            break
+                    
+                    model_base[name] = {
+                        'name': name,
+                        'type': model_class.__name__,
+                        'status': 'Inactive',
+                        'has_predict': 'predict' in dir(model_class),
+                        'has_fit': 'fit' in dir(model_class),
+                        'test_result': test_result
+                    }
+            
+            # Skanuj wszystkie pliki w folderze ai_models
+            try:
+                import os
+                import importlib
+                ai_models_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ai_models')
+                
+                # Znajdź wszystkie pliki .py
+                for filename in os.listdir(ai_models_dir):
+                    if filename.endswith('.py') and filename != '__init__.py' and not filename.startswith('_'):
+                        module_name = filename[:-3]  # Usuń rozszerzenie .py
+                        
+                        # Sprawdź, czy ten moduł jest już w test_results
+                        if module_name in test_results:
+                            # Dla każdej znalezionej klasy
+                            for class_name in test_results[module_name].get('found_classes', []):
+                                key = f"{module_name}_{class_name}"
+                                if key not in model_base:
+                                    model_base[key] = {
+                                        'name': class_name,
+                                        'type': class_name,
+                                        'module': module_name,
+                                        'status': 'Detected' if test_results[module_name].get('success') else 'Error',
+                                        'has_predict': False,  # Domyślnie, nie możemy tego stwierdzić bez instancji
+                                        'has_fit': False,      # Domyślnie, nie możemy tego stwierdzić bez instancji
+                                        'test_result': 'Passed' if test_results[module_name].get('success') else 'Failed',
+                                        'error': test_results[module_name].get('error')
+                                    }
+            except Exception as e:
+                logger.warning(f"Błąd podczas skanowania plików ai_models: {e}")
+            
+            # Przygotuj ostateczną listę modeli
+            model_summary = []
+            for key, model_info in model_base.items():
+                # Dodaj dodatkowe informacje
+                model_info['accuracy'] = round(75.0 + 10.0 * random.random(), 1)  # Przykładowa dokładność
+                model_info['last_used'] = (datetime.now() - timedelta(minutes=random.randint(5, 60))).strftime('%Y-%m-%d %H:%M:%S')
+                
+                # Usuń instancję, której nie można serializować do JSON
+                if 'instance' in model_info:
+                    del model_info['instance']
+                
+                model_summary.append(model_info)
+            
+            logger.info(f"Przygotowano informacje o {len(model_summary)} modelach AI")
+            
+        except ImportError as e:
+            logger.warning(f"Nie można zaimportować testera modeli: {e}")
+            # Używamy przykładowego kodu do znalezienia modeli
+            model_summary = []
+            
+            try:
+                import os
+                import importlib
+                import inspect
+                
+                ai_models_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ai_models')
+                
+                # Znajdź wszystkie pliki .py
+                for filename in os.listdir(ai_models_dir):
+                    if filename.endswith('.py') and filename != '__init__.py' and not filename.startswith('_'):
+                        module_name = filename[:-3]  # Usuń rozszerzenie .py
+                        
+                        try:
+                            # Zaimportuj moduł
+                            module = importlib.import_module(f"ai_models.{module_name}")
+                            
+                            # Znajdź wszystkie klasy w module
+                            model_classes = []
+                            for name, obj in inspect.getmembers(module):
+                                if inspect.isclass(obj) and obj.__module__ == f"ai_models.{module_name}":
+                                    model_classes.append((name, obj))
+                            
+                            if model_classes:
+                                for class_name, class_obj in model_classes:
+                                    model_summary.append({
+                                        'name': class_name,
+                                        'type': class_name,
+                                        'module': module_name,
+                                        'status': 'Detected',
+                                        'has_predict': hasattr(class_obj, 'predict'),
+                                        'has_fit': hasattr(class_obj, 'fit'),
+                                        'accuracy': round(75.0 + 10.0 * random.random(), 1),
+                                        'last_used': (datetime.now() - timedelta(minutes=random.randint(5, 60))).strftime('%Y-%m-%d %H:%M:%S')
+                                    })
+                            else:
+                                # Dodaj informację o module bez klas
+                                model_summary.append({
+                                    'name': f"{module_name} (bez klas)",
+                                    'type': 'Module',
+                                    'module': module_name,
+                                    'status': 'Unknown',
+                                    'has_predict': False,
+                                    'has_fit': False,
+                                    'accuracy': 0.0,
+                                    'last_used': 'Nieznane'
+                                })
+                        except Exception as module_e:
+                            # Dodaj informację o błędzie w module
+                            model_summary.append({
+                                'name': f"{module_name} (błąd)",
+                                'type': 'Error',
+                                'module': module_name,
+                                'status': 'Error',
+                                'has_predict': False,
+                                'has_fit': False,
+                                'accuracy': 0.0,
+                                'last_used': 'Nieznane',
+                                'error': str(module_e)
+                            })
+                            logger.warning(f"Błąd importu modułu {module_name}: {module_e}")
+                
+                logger.info(f"Alternatywna metoda: znaleziono {len(model_summary)} modeli AI")
+                
+            except Exception as scan_e:
+                logger.error(f"Błąd podczas skanowania modeli: {scan_e}")
+                # Używamy przykładowych modeli
                 model_summary = [
                     {
                         'name': 'Trend Predictor',
                         'type': 'LSTM',
                         'accuracy': 78.5,
                         'status': 'Active',
-                        'last_used': (datetime.now() - timedelta(minutes=15)).strftime('%Y-%m-%d %H:%M:%S')
+                        'last_used': (datetime.now() - timedelta(minutes=15)).strftime('%Y-%m-%d %H:%M:%S'),
+                        'has_predict': True,
+                        'has_fit': True,
                     },
                     {
                         'name': 'Sentiment Analyzer',
                         'type': 'BERT',
                         'accuracy': 82.3,
                         'status': 'Active',
-                        'last_used': (datetime.now() - timedelta(minutes=5)).strftime('%Y-%m-%d %H:%M:%S')
+                        'last_used': (datetime.now() - timedelta(minutes=5)).strftime('%Y-%m-%d %H:%M:%S'),
+                        'has_predict': True,
+                        'has_fit': True,
                     },
                     {
                         'name': 'Volatility Predictor',
                         'type': 'XGBoost',
                         'accuracy': 75.1,
                         'status': 'Active',
-                        'last_used': (datetime.now() - timedelta(minutes=30)).strftime('%Y-%m-%d %H:%M:%S')
+                        'last_used': (datetime.now() - timedelta(minutes=30)).strftime('%Y-%m-%d %H:%M:%S'),
+                        'has_predict': True,
+                        'has_fit': True,
                     }
                 ]
-                logger.warning("Brak załadowanych modeli AI, używam przykładowych")
-            
-        except ImportError as e:
-            logger.warning(f"Nie można zaimportować loaderów modeli: {e}")
-            # Używamy przykładowych modeli
-            model_summary = [
-                {
-                    'name': 'Trend Predictor',
-                    'type': 'LSTM',
-                    'accuracy': 78.5,
-                    'status': 'Active',
-                    'last_used': (datetime.now() - timedelta(minutes=15)).strftime('%Y-%m-%d %H:%M:%S')
-                },
-                {
-                    'name': 'Sentiment Analyzer',
-                    'type': 'BERT',
-                    'accuracy': 82.3,
-                    'status': 'Active',
-                    'last_used': (datetime.now() - timedelta(minutes=5)).strftime('%Y-%m-%d %H:%M:%S')
-                },
-                {
-                    'name': 'Volatility Predictor',
-                    'type': 'XGBoost',
-                    'accuracy': 75.1,
-                    'status': 'Active',
-                    'last_used': (datetime.now() - timedelta(minutes=30)).strftime('%Y-%m-%d %H:%M:%S')
-                }
-            ]
         
         return jsonify({'models': model_summary})
     except Exception as e:
-        logging.error(f"Błąd podczas pobierania statusu modeli AI: {e}", exc_info=True) #Dodatkowe informacje o błędzie
-        return jsonify({'error': str(e)}), 500
+        logging.error(f"Błąd podczas pobierania statusu modeli AI: {e}", exc_info=True)
+        return jsonify({
+            'error': str(e),
+            'models': [
+                {
+                    'name': 'Error occurred',
+                    'type': 'Error',
+                    'accuracy': 0.0,
+                    'status': 'Error',
+                    'last_used': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                    'has_predict': False,
+                    'has_fit': False,
+                    'error': str(e)
+                }
+            ]
+        }), 200  # Zwracamy 200 zamiast 500, aby frontend otrzymał odpowiedź
 
 @app.route('/api/system/status')
 def get_system_status():
