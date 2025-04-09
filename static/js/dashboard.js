@@ -1136,6 +1136,90 @@ function fetchSentimentData() {
         });
 }
 
+// Pobieranie statusu komponentów
+function fetchComponentStatus() {
+    fetch('/api/component-status')
+        .then(response => response.json())
+        .then(data => {
+            // Aktualizacja statusu API
+            updateComponentStatus('api-connector', data.api);
+            // Aktualizacja statusu silnika handlowego
+            updateComponentStatus('trading-engine', data.trading_engine);
+            // Aktualizacja statusu managera ryzyka
+            updateComponentStatus('risk-manager', data.portfolio || 'unknown');
+            // Aktualizacja statusu procesora danych
+            updateComponentStatus('data-processor', data.api === 'online' ? 'online' : 'warning');
+        })
+        .catch(error => {
+            console.error('Błąd podczas pobierania statusu komponentów:', error);
+            // Ustaw wszystkie komponenty jako offline w przypadku błędu
+            updateComponentStatus('api-connector', 'offline');
+            updateComponentStatus('trading-engine', 'offline');
+            updateComponentStatus('risk-manager', 'offline');
+            updateComponentStatus('data-processor', 'offline');
+        });
+}
+
+// Pobieranie danych portfela
+function fetchPortfolioData() {
+    fetch('/api/portfolio')
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('portfolio-container');
+            if (!container) {
+                console.warn("Element 'portfolio-data' nie istnieje");
+                return;
+            }
+
+            if (data.success && data.balances) {
+                let html = '';
+                for (const [currency, balance] of Object.entries(data.balances)) {
+                    html += `
+                    <div class="portfolio-item">
+                        <div class="coin-name">${currency}</div>
+                        <div class="coin-balance">Balans: ${balance.wallet_balance}</div>
+                        <div class="coin-value">Dostępne: ${balance.available_balance}</div>
+                    </div>`;
+                }
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = `
+                <div class="no-data">Brak danych portfela lub problem z połączeniem z ByBit.</div>
+                <div class="error-details">${data.error || ''}</div>`;
+            }
+        })
+        .catch(error => {
+            console.error('Błąd podczas pobierania danych portfela:', error);
+            const container = document.getElementById('portfolio-container');
+            if (container) {
+                container.innerHTML = `
+                <div class="no-data">Błąd podczas ładowania danych portfela.</div>
+                <div class="error-details">${error.message}</div>`;
+            }
+        });
+}
+
+// Funkcja pomocnicza do aktualizacji statusu komponentu
+function updateComponentStatus(elementId, status) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+
+    // Usuń wszystkie klasy statusu
+    element.classList.remove('status-online', 'status-offline', 'status-warning');
+    
+    // Dodaj odpowiednią klasę na podstawie statusu
+    if (status === 'online') {
+        element.classList.add('status-online');
+        element.querySelector('.status-text').textContent = 'Online';
+    } else if (status === 'offline') {
+        element.classList.add('status-offline');
+        element.querySelector('.status-text').textContent = 'Offline';
+    } else {
+        element.classList.add('status-warning');
+        element.querySelector('.status-text').textContent = 'Warning';
+    }
+}
+
 // Funkcja inicjalizująca, wywoływana po załadowaniu strony
 function initDashboard() {
     console.log("Aktualizacja danych dashboardu...");
