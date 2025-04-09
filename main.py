@@ -1310,11 +1310,40 @@ if __name__ == "__main__":
             f.write("BYBIT_USE_TESTNET=true\n")
         logging.info(f"Utworzono plik .env z domyślnymi ustawieniami w: {env_path}")
 
+    # Utwórz katalog dla symulacji
+    os.makedirs("static/img", exist_ok=True)
+
+    # Sprawdź czy jest obrazek symulacji
+    simulation_chart_path = "static/img/simulation_chart.png"
+    if not os.path.exists(simulation_chart_path):
+        try:
+            # Próba utworzenia prostego obrazu wykresu
+            import matplotlib.pyplot as plt
+            import numpy as np
+            
+            plt.figure(figsize=(10, 6))
+            days = 30
+            x = np.arange(days)
+            y = np.cumsum(np.random.normal(0.5, 1, days))
+            plt.plot(x, y, 'g-')
+            plt.title("Symulacja wyników tradingu")
+            plt.xlabel("Dni")
+            plt.ylabel("Zysk/Strata")
+            plt.grid(True)
+            plt.savefig(simulation_chart_path)
+            plt.close()
+            logging.info(f"Utworzono przykładowy wykres symulacji: {simulation_chart_path}")
+        except Exception as chart_err:
+            logging.warning(f"Nie można utworzyć przykładowego wykresu: {chart_err}")
+            # Utwórz pusty plik jako placeholder
+            with open(simulation_chart_path, 'w') as f:
+                f.write('')
+
     # Uruchomienie aplikacji z odpowiednim hostem w zależności od środowiska
     port = int(os.environ.get("PORT", 5000))
 
-    # Jeśli jesteśmy w Replit, użyj 0.0.0.0, w przeciwnym razie 127.0.0.1
-    host = "0.0.0.0" if is_replit else "127.0.0.1"
+    # W środowisku Replit zawsze używaj 0.0.0.0
+    host = "0.0.0.0"
 
     debug_mode = os.getenv("DEBUG", "True").lower() in ["true", "1", "yes"]
 
