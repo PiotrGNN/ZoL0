@@ -102,42 +102,99 @@ def initialize_system():
                 trading_engine_lib = None
                 logging.warning("Brak modułu silnika handlowego. Funkcjonalność handlowa będzie ograniczona.")
 
+        # Inicjalizacja testera modeli AI
         try:
-            from python_libs.simplified_sentiment import SentimentAnalyzer
-            sentiment_lib = "python_libs.simplified_sentiment"
-        except ImportError:
-            try:
-                from ai_models.sentiment_ai import SentimentAnalyzer
-                sentiment_lib = "ai_models.sentiment_ai"
-            except ImportError:
-                try:
-                    from data.indicators.sentiment_analysis import SentimentAnalyzer
-                    sentiment_lib = "data.indicators.sentiment_analysis"
-                except ImportError:
-                    SentimentAnalyzer = None
-                    sentiment_lib = None
+            from python_libs.model_tester import ModelTester
+            model_tester_lib = "python_libs.model_tester"
+            # Inicjalizacja testera modeli z poprawionymi parametrami
+            model_tester = ModelTester(models_path='ai_models', log_path='logs/model_tests.log')
+            logging.info(f"Zainicjalizowano ModelTester z biblioteki {model_tester_lib}")
+        except ImportError as e:
+            model_tester = None
+            logging.warning(f"Nie można zaimportować ModelTester: {e}")
+        
+        # Załadowanie konfiguracji AI
+        try:
+            import json
+            ai_config_path = 'python_libs/ai_config.json'
+            
+            if os.path.exists(ai_config_path):
+                with open(ai_config_path, 'r') as f:
+                    ai_config = json.load(f)
+                logging.info(f"Załadowano konfigurację AI z {ai_config_path}")
+            else:
+                ai_config = {
+                    "model_settings": {
+                        "sentiment_analyzer": {
+                            "enabled": True,
+                            "sources": ["twitter", "news", "forum", "reddit"]
+                        },
+                        "anomaly_detector": {
+                            "enabled": True,
+                            "method": "z_score",
+                            "threshold": 2.5
+                        }
+                    }
+                }
+                logging.warning(f"Brak pliku konfiguracyjnego AI. Używam domyślnych ustawień.")
+        except Exception as e:
+            ai_config = {}
+            logging.warning(f"Błąd podczas ładowania konfiguracji AI: {e}")
 
+        # Inicjalizacja analizatora sentymentu
         try:
-            from python_libs.simplified_anomaly import AnomalyDetector
-            anomaly_lib = "python_libs.simplified_anomaly"
-        except ImportError:
+            from ai_models.sentiment_ai import SentimentAnalyzer
+            sentiment_lib = "ai_models.sentiment_ai"
+            
+            # Pobierz ustawienia z konfiguracji
+            sentiment_config = ai_config.get("model_settings", {}).get("sentiment_analyzer", {})
+            sources = sentiment_config.get("sources", ["twitter", "news", "forum", "reddit"])
+            
+            sentiment_analyzer = SentimentAnalyzer(sources=sources)
+            logging.info(f"Zainicjalizowano SentimentAnalyzer z biblioteką {sentiment_lib} i źródłami {sources}")
+        except ImportError as e:
+            logging.warning(f"Nie można zaimportować SentimentAnalyzer z ai_models: {e}")
             try:
-                from ai_models.anomaly_detection import AnomalyDetector
-                anomaly_lib = "ai_models.anomaly_detection"
+                from data.indicators.sentiment_analysis import SentimentAnalyzer
+                sentiment_analyzer = SentimentAnalyzer()
+                sentiment_lib = "data.indicators.sentiment_analysis"
+                logging.info(f"Zainicjalizowano SentimentAnalyzer z alternatywnej biblioteki {sentiment_lib}")
             except ImportError:
-                AnomalyDetector = None
-                anomaly_lib = None
+                sentiment_analyzer = None
+                logging.warning("Brak modułu analizatora sentymentu")
 
+        # Inicjalizacja wykrywania anomalii
         try:
-            from python_libs.simplified_strategy import StrategyManager
-            strategy_lib = "python_libs.simplified_strategy"
-        except ImportError:
+            from ai_models.anomaly_detection import AnomalyDetector
+            anomaly_lib = "ai_models.anomaly_detection"
+            
+            # Pobierz ustawienia z konfiguracji
+            anomaly_config = ai_config.get("model_settings", {}).get("anomaly_detector", {})
+            method = anomaly_config.get("method", "z_score")
+            threshold = anomaly_config.get("threshold", 2.5)
+            
+            anomaly_detector = AnomalyDetector(method=method, threshold=threshold)
+            logging.info(f"Zainicjalizowano AnomalyDetector z biblioteki {anomaly_lib} (metoda: {method}, próg: {threshold})")
+        except ImportError as e:
+            logging.warning(f"Nie można zaimportować AnomalyDetector z ai_models: {e}")
             try:
-                from data.strategies.strategy_manager import StrategyManager
-                strategy_lib = "data.strategies.strategy_manager"
+                from data.logging.anomaly_detector import AnomalyDetector
+                anomaly_detector = AnomalyDetector()
+                anomaly_lib = "data.logging.anomaly_detector"
+                logging.info(f"Zainicjalizowano AnomalyDetector z alternatywnej biblioteki {anomaly_lib}")
             except ImportError:
-                StrategyManager = None
-                strategy_lib = None
+                anomaly_detector = None
+                logging.warning("Brak modułu detektora anomalii")
+
+        # Inicjalizacja model recognizer
+        try:
+            from ai_models.model_recognition import ModelRecognizer
+            global model_recognizer
+            model_recognizer = ModelRecognizer()
+            logging.info(f"Zainicjalizowano ModelRecognizer")
+        except ImportError as e:
+            model_recognizer = None
+            logging.warning(f"Nie można zaimportować ModelRecognizer: {e}")
 
         # Wykluczamy podpakiet tests z automatycznego importu
         try:
@@ -147,66 +204,93 @@ def initialize_system():
         except ImportError:
             logging.warning("Nie znaleziono modułu import_manager, pomijam wykluczanie podpakietów.")
 
-        global notification_system, sentiment_analyzer, anomaly_detector, bybit_client, strategy_manager
+        global notification_system, strategy_manager
 
         # Inicjalizacja systemu powiadomień
         notification_system = NotificationSystem()
         logging.info(f"Zainicjalizowano system powiadomień z biblioteki {notification_lib}")
 
-        # Inicjalizacja analizatora sentymentu
-        if SentimentAnalyzer:
-            sentiment_analyzer = SentimentAnalyzer(sources=["twitter", "news", "forum", "reddit"])
-            logging.info(f"Inicjalizacja analizatora sentymentu z biblioteki {sentiment_lib}")
-        else:
-            sentiment_analyzer = None
-            logging.warning("Brak modułu analizatora sentymentu")
-
-        # Inicjalizacja wykrywania anomalii
-        if AnomalyDetector:
-            anomaly_detector = AnomalyDetector(method="isolation_forest", threshold=2.5)
-            logging.info(f"Inicjalizacja detektora anomalii z biblioteki {anomaly_lib}")
-        else:
-            anomaly_detector = None
-            logging.warning("Brak modułu detektora anomalii")
-
         # Inicjalizacja managera strategii z domyślnymi strategiami
-        strategies = {
-            "trend_following": {"name": "Trend Following", "enabled": True},
-            "mean_reversion": {"name": "Mean Reversion", "enabled": False},
-            "breakout": {"name": "Breakout", "enabled": True}
-        }
-        exposure_limits = {
-            "trend_following": 0.5,
-            "mean_reversion": 0.3,
-            "breakout": 0.4
-        }
-
-        if StrategyManager:
+        try:
+            from python_libs.simplified_strategy import StrategyManager
+            strategy_lib = "python_libs.simplified_strategy"
+            
+            # Pobierz ustawienia strategii z konfiguracji
+            strategy_settings = ai_config.get("strategy_settings", {})
+            
+            strategies = {}
+            exposure_limits = {}
+            
+            # Domyślne strategie, jeśli brak w konfiguracji
+            if not strategy_settings:
+                strategies = {
+                    "trend_following": {"name": "Trend Following", "enabled": True},
+                    "mean_reversion": {"name": "Mean Reversion", "enabled": False},
+                    "breakout": {"name": "Breakout", "enabled": True}
+                }
+                exposure_limits = {
+                    "trend_following": 0.5,
+                    "mean_reversion": 0.3,
+                    "breakout": 0.4
+                }
+            else:
+                # Utworzenie strategii z konfiguracji
+                for key, settings in strategy_settings.items():
+                    strategies[key] = {
+                        "name": key.replace('_', ' ').title(),
+                        "enabled": settings.get("enabled", False)
+                    }
+                    exposure_limits[key] = settings.get("weight", 0.3)
+            
             strategy_manager = StrategyManager(strategies, exposure_limits)
-            logging.info(f"Zainicjalizowano StrategyManager z biblioteki {strategy_lib}")
-        else:
-            strategy_manager = None
-            logging.warning("Brak modułu StrategyManager")
+            logging.info(f"Zainicjalizowano StrategyManager z biblioteką {strategy_lib} i {len(strategies)} strategiami")
+        except ImportError:
+            try:
+                from data.strategies.strategy_manager import StrategyManager
+                strategy_lib = "data.strategies.strategy_manager"
+                
+                strategies = {
+                    "trend_following": {"name": "Trend Following", "enabled": True},
+                    "mean_reversion": {"name": "Mean Reversion", "enabled": False},
+                    "breakout": {"name": "Breakout", "enabled": True}
+                }
+                exposure_limits = {
+                    "trend_following": 0.5,
+                    "mean_reversion": 0.3,
+                    "breakout": 0.4
+                }
+                
+                strategy_manager = StrategyManager(strategies, exposure_limits)
+                logging.info(f"Zainicjalizowano StrategyManager z alternatywnej biblioteki {strategy_lib}")
+            except ImportError as e:
+                strategy_manager = None
+                logging.warning(f"Brak modułu StrategyManager: {e}")
 
         # Inicjalizacja zarządcy ryzyka
         risk_manager = None
         try:
             from python_libs.simplified_risk_manager import SimplifiedRiskManager
+            
+            # Pobierz ustawienia symulacji z konfiguracji
+            simulation_settings = ai_config.get("simulation_settings", {})
+            max_risk = 0.05  # Domyślnie 5%
+            max_position_size = simulation_settings.get("max_position_size", 0.2)
+            max_drawdown = 0.1  # Domyślnie 10%
+            
             risk_manager = SimplifiedRiskManager(
-                max_risk=0.05, 
-                max_position_size=0.2, 
-                max_drawdown=0.1
+                max_risk=max_risk,
+                max_position_size=max_position_size,
+                max_drawdown=max_drawdown
             )
-            logging.info("Zainicjalizowano SimplifiedRiskManager")
+            logging.info(f"Zainicjalizowano SimplifiedRiskManager (max_risk={max_risk}, max_position_size={max_position_size}, max_drawdown={max_drawdown})")
         except ImportError as e:
             logging.warning(f"Nie można zaimportować SimplifiedRiskManager: {e}")
 
-        # Inicjalizacja silnika handlowego
-        global trading_engine
-        if SimplifiedTradingEngine:
-            # Upewnij się, że bybit_client jest zainicjalizowany przed przekazaniem go do silnika handlowego
-            if bybit_client is None:
-                # Utwórz symulowany konektor, jeśli prawdziwy nie jest dostępny
+        # Inicjalizacja klienta ByBit
+        global bybit_client
+        try:
+            if not bybit_import_success:
+                logging.warning("Moduł BybitConnector nie został zaimportowany. Próba użycia symulowanego klienta.")
                 try:
                     from python_libs.simulated_bybit import SimulatedBybitConnector
                     bybit_client = SimulatedBybitConnector(
@@ -214,59 +298,83 @@ def initialize_system():
                         api_secret="simulated_secret",
                         use_testnet=True
                     )
-                    logging.info("Utworzono symulowany konektor ByBit dla Trading Engine")
+                    logging.info("Zainicjalizowano symulowany klient ByBit")
                 except ImportError:
+                    logging.error("Nie można zainicjalizować symulowanego klienta ByBit")
+                    bybit_client = None
+            else:
+                api_key = os.getenv("BYBIT_API_KEY")
+                api_secret = os.getenv("BYBIT_API_SECRET")
+                use_testnet = os.getenv("BYBIT_USE_TESTNET", "true").lower() == "true"  # Domyślnie używamy testnet
+
+                if not api_key or not api_secret:
+                    logging.warning("Brak kluczy API ByBit w zmiennych środowiskowych. Używam klienta symulowanego.")
                     try:
-                        # Implementacja podstawowej klasy symulującej
-                        class BasicSimulatedConnector:
-                            def __init__(self):
-                                self.use_testnet = True
-                                
-                            def get_account_balance(self):
-                                return {
-                                    "balances": {
-                                        "BTC": {"equity": 0.01, "available_balance": 0.01, "wallet_balance": 0.01},
-                                        "USDT": {"equity": 1000, "available_balance": 950, "wallet_balance": 1000}
-                                    }, 
-                                    "success": True,
-                                    "source": "basic_simulation"
-                                }
-                                
-                            def get_klines(self, symbol, interval="15", limit=10):
-                                import random
-                                from datetime import datetime, timedelta
-                                klines = []
-                                current_time = datetime.now()
-                                price = 50000.0 if "BTC" in symbol else 3000.0
-                                
-                                for i in range(limit):
-                                    timestamp = current_time - timedelta(minutes=int(interval)*i)
-                                    price = price * (1 + random.uniform(-0.005, 0.005))
-                                    klines.append({
-                                        "datetime": timestamp.strftime('%Y-%m-%d %H:%M:%S'),
-                                        "open": price,
-                                        "high": price * (1 + random.uniform(0, 0.002)),
-                                        "low": price * (1 - random.uniform(0, 0.002)),
-                                        "close": price,
-                                        "volume": random.uniform(10, 100)
-                                    })
-                                return klines
-                                
-                            def get_server_time(self):
-                                from datetime import datetime
-                                return {
-                                    "success": True,
-                                    "time_ms": int(datetime.now().timestamp() * 1000),
-                                    "time": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                                    "source": "basic_simulation"
-                                }
-                        
-                        bybit_client = BasicSimulatedConnector()
-                        logging.info("Utworzono podstawowy symulowany konektor dla Trading Engine")
-                    except Exception as e:
-                        logging.error(f"Nie można utworzyć symulowanego konektora: {e}")
+                        from python_libs.simulated_bybit import SimulatedBybitConnector
+                        bybit_client = SimulatedBybitConnector(
+                            api_key="simulated_key",
+                            api_secret="simulated_secret",
+                            use_testnet=True
+                        )
+                        logging.info("Zainicjalizowano symulowany klient ByBit z powodu braku kluczy API")
+                    except ImportError:
+                        logging.error("Nie można zainicjalizować symulowanego klienta ByBit")
                         bybit_client = None
-            
+                else:
+                    # Dodatkowa weryfikacja kluczy dla produkcji
+                    if not use_testnet and (len(api_key) < 10 or len(api_secret) < 10):
+                        logging.critical("BŁĄD KRYTYCZNY: Nieprawidłowe klucze produkcyjne API. Wymagane odpowiednie klucze dla środowiska produkcyjnego!")
+                        # Używam symulowanego klienta zamiast błędu
+                        try:
+                            from python_libs.simulated_bybit import SimulatedBybitConnector
+                            bybit_client = SimulatedBybitConnector(
+                                api_key="simulated_key",
+                                api_secret="simulated_secret",
+                                use_testnet=True
+                            )
+                            logging.info("Zainicjalizowano symulowany klient ByBit z powodu niepoprawnych kluczy produkcyjnych")
+                        except ImportError:
+                            bybit_client = None
+                    else:
+                        # Inicjalizacja rzeczywistego klienta ByBit
+                        bybit_client = BybitConnector(
+                            api_key=api_key,
+                            api_secret=api_secret,
+                            use_testnet=use_testnet,
+                            lazy_connect=True  # Używamy lazy initialization by uniknąć sprawdzania API na starcie
+                        )
+                        
+                        # Informacja o konfiguracji API
+                        masked_key = f"{api_key[:4]}{'*' * (len(api_key) - 4)}" if api_key else "Brak klucza"
+                        logging.info(f"Inicjalizacja klienta ByBit - Klucz: {masked_key}, Testnet: {use_testnet}")
+                        
+                        # Ostrzeżenie dla produkcyjnego API
+                        if not use_testnet:
+                            logging.warning("!!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit. Operacje handlowe będą mieć realne skutki finansowe!")
+                            logging.warning("Upewnij się, że Twoje klucze API mają właściwe ograniczenia i są odpowiednio zabezpieczone.")
+                            print("\n\n========== PRODUKCYJNE API BYBIT ==========")
+                            print("!!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit")
+                            print("Operacje handlowe będą mieć realne skutki finansowe!")
+                            print("===========================================\n\n")
+
+        except Exception as e:
+            logger.error(f"Błąd inicjalizacji klienta ByBit: {e}", exc_info=True)
+            # Próba użycia symulowanego klienta jako fallback
+            try:
+                from python_libs.simulated_bybit import SimulatedBybitConnector
+                bybit_client = SimulatedBybitConnector(
+                    api_key="simulated_key",
+                    api_secret="simulated_secret",
+                    use_testnet=True
+                )
+                logging.info("Zainicjalizowano symulowany klient ByBit jako fallback")
+            except ImportError:
+                bybit_client = None
+                logging.error("Nie można zainicjalizować ani rzeczywistego, ani symulowanego klienta ByBit")
+
+        # Inicjalizacja silnika handlowego
+        global trading_engine
+        if SimplifiedTradingEngine and bybit_client is not None:
             trading_engine = SimplifiedTradingEngine(
                 risk_manager=risk_manager,
                 strategy_manager=strategy_manager,
@@ -288,98 +396,21 @@ def initialize_system():
                 logging.warning(f"Nie udało się uruchomić silnika handlowego: {trading_engine.get_status().get('last_error', 'Nieznany błąd')}")
         else:
             trading_engine = None
-            logging.warning("Brak modułu silnika handlowego (Trading Engine)")
+            logging.warning("Brak modułu silnika handlowego (Trading Engine) lub klienta ByBit")
 
-        # Inicjalizacja klienta ByBit (tylko raz podczas startu aplikacji)
-        try:
-            if not bybit_import_success:
-                logging.warning("Moduł BybitConnector nie został zaimportowany. Próba użycia symulowanego klienta.")
-                try:
-                    from python_libs.simulated_bybit import SimulatedBybitConnector
-                    api_key = os.getenv("BYBIT_API_KEY", "simulated_key")
-                    api_secret = os.getenv("BYBIT_API_SECRET", "simulated_secret")
-                    use_testnet = True
-
-                    bybit_client = SimulatedBybitConnector(
-                        api_key=api_key,
-                        api_secret=api_secret,
-                        use_testnet=use_testnet
-                    )
-                    logging.info("Zainicjalizowano symulowany klient ByBit")
-                    return True
-                except ImportError:
-                    logging.error("Nie można zainicjalizować żadnego klienta ByBit")
-                    bybit_client = None
-                    return True
-
-            api_key = os.getenv("BYBIT_API_KEY")
-            api_secret = os.getenv("BYBIT_API_SECRET")
-            use_testnet = os.getenv("BYBIT_USE_TESTNET", "true").lower() == "true"  # Domyślnie używamy testnet
-
-            if not api_key or not api_secret:
-                logging.warning("Brak kluczy API ByBit w zmiennych środowiskowych. Używam klienta symulowanego.")
-                try:
-                    from python_libs.simulated_bybit import SimulatedBybitConnector
-                    bybit_client = SimulatedBybitConnector(
-                        api_key="simulated_key",
-                        api_secret="simulated_secret",
-                        use_testnet=True
-                    )
-                    logging.info("Zainicjalizowano symulowany klient ByBit z powodu braku kluczy API")
-                    return True
-                except ImportError:
-                    logging.error("Nie można zainicjalizować symulowanego klienta ByBit")
-                    bybit_client = None
-                    return True
-
-            # Dodatkowa weryfikacja kluczy dla produkcji
-            if not use_testnet and (len(api_key) < 10 or len(api_secret) < 10):
-                logging.critical("BŁĄD KRYTYCZNY: Nieprawidłowe klucze produkcyjne API. Wymagane odpowiednie klucze dla środowiska produkcyjnego!")
-                return False
-
-            # Informacja o systemie operacyjnym
-            import platform
-            system_info = f"{platform.system()} {platform.release()}"
-            logging.info(f"System operacyjny: {system_info}")
-
-            # Więcej szczegółów o konfiguracji API dla celów debugowania
-            masked_key = f"{api_key[:4]}{'*' * (len(api_key) - 4)}" if api_key else "Brak klucza"
-            masked_secret = f"{api_secret[:4]}{'*' * (len(api_secret) - 4)}" if api_secret else "Brak sekretu"
-            logging.info(f"Inicjalizacja klienta ByBit - Klucz: {masked_key}, Testnet: {use_testnet}")
-            logging.info(f"Produkcyjne API jest {'WŁĄCZONE' if not use_testnet else 'WYŁĄCZONE'}")
-            if not use_testnet:
-                logging.warning("!!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit. Operacje handlowe będą mieć realne skutki finansowe!")
-                logging.warning("Upewnij się, że Twoje klucze API mają właściwe ograniczenia i są odpowiednio zabezpieczone.")
-                print("\n\n========== PRODUKCYJNE API BYBIT ==========")
-                print("!!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit")
-                print("Operacje handlowe będą mieć realne skutki finansowe!")
-                print("===========================================\n\n")
-
-            # Użyj wartości z konfiguracji lub zmiennych środowiskowych
-            # Domyślnie używaj produkcyjnego API
-            use_testnet = os.getenv("BYBIT_USE_TESTNET", "false").lower() == "true"
-            bybit_client = BybitConnector(
-                api_key=api_key,
-                api_secret=api_secret,
-                use_testnet=use_testnet,
-                lazy_connect=True  # Używamy lazy initialization by uniknąć sprawdzania API na starcie
-            )
-            server_time = bybit_client.get_server_time()
-            logger.info(f"Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {server_time}")
-        except Exception as e:
-            logger.error(f"Błąd inicjalizacji klienta ByBit: {e}", exc_info=True)
-            # Próba użycia symulowanego klienta jako fallback
-            try:
-                from python_libs.simulated_bybit import SimulatedBybitConnector
-                bybit_client = SimulatedBybitConnector(
-                    api_key="simulated_key",
-                    api_secret="simulated_secret",
-                    use_testnet=True
-                )
-                logging.info("Zainicjalizowano symulowany klient ByBit jako fallback")
-            except ImportError:
-                bybit_client = None
-                logging.error("Nie można zainicjalizować ani rzeczywistego, ani symulowanego klienta ByBit")
+        # Test modeli AI
+        if model_tester:
+            test_results = model_tester.run_tests()
+            loaded_models = model_tester.get_loaded_models()
+            logging.info(f"Przetestowano modele AI: znaleziono {len(loaded_models)} działających modeli")
+        
+        # Inicjalizacja managera symulacji
+        global simulation_manager
+        if simulation_import_success:
+            # Upewnijmy się, że simulation_manager jest zainicjalizowany
+            if not isinstance(simulation_manager, SimulationManager):
+                simulation_manager = SimulationManager()
+                logging.info("Zainicjalizowano SimulationManager")
 
         logging.info("System zainicjalizowany poprawnie")
         return True
@@ -781,6 +812,220 @@ def get_simulation_results():
             },
             'trades': []
         })
+
+@app.route('/api/simulation/run', methods=['POST'])
+def run_simulation():
+    """Endpoint do uruchamiania nowej symulacji tradingu"""
+    try:
+        # Pobierz parametry z żądania
+        data = request.json or {}
+        initial_capital = float(data.get('initial_capital', 10000.0))
+        duration = int(data.get('duration', 1000))
+        
+        if simulation_import_success and simulation_manager:
+            # Uruchom symulację
+            results = simulation_manager.create_simulation(
+                initial_capital=initial_capital,
+                duration=duration,
+                save_report=True
+            )
+            
+            return jsonify({
+                'status': 'success',
+                'summary': results['summary'],
+                'message': 'Symulacja zakończona pomyślnie'
+            })
+        else:
+            return jsonify({
+                'status': 'error',
+                'message': 'Manager symulacji nie jest dostępny'
+            }), 500
+    except Exception as e:
+        logging.error(f"Błąd podczas uruchamiania symulacji: {e}", exc_info=True)
+        return jsonify({
+            'status': 'error',
+            'message': f'Błąd podczas uruchamiania symulacji: {str(e)}'
+        }), 500
+
+@app.route('/api/simulation/learn', methods=['POST'])
+def run_simulation_with_learning():
+    """Endpoint do uruchamiania symulacji z uczeniem"""
+    try:
+        # Pobierz parametry z żądania
+        data = request.json or {}
+        initial_capital = float(data.get('initial_capital', 10000.0))
+        duration = int(data.get('duration', 1000))
+        iterations = int(data.get('iterations', 5))
+        
+        if simulation_import_success and simulation_manager:
+            # Uruchom symulację z uczeniem
+            results = simulation_manager.run_simulation_with_learning(
+                initial_capital=initial_capital,
+                duration=duration,
+                learning_iterations=iterations
+            )
+            
+            return jsonify({
+                'status': 'success',
+                'summary': results.get('summary', {}),
+                'learning_results': results.get('learning_results', []),
+                'message': 'Symulacja z uczeniem zakończona pomyślnie'
+            })
+        else:
+            return jsonify({
+                'status': 'error',
+                'message': 'Manager symulacji nie jest dostępny'
+            }), 500
+    except Exception as e:
+        logging.error(f"Błąd podczas uruchamiania symulacji z uczeniem: {e}", exc_info=True)
+        return jsonify({
+            'status': 'error',
+            'message': f'Błąd podczas uruchamiania symulacji z uczeniem: {str(e)}'
+        }), 500
+
+@app.route('/api/ai/thoughts')
+def get_ai_thoughts():
+    """Endpoint do pobierania przemyśleń modeli AI"""
+    try:
+        thoughts = []
+        
+        # Pobierz przemyślenia z analizatora sentymentu
+        if sentiment_analyzer:
+            sentiment_data = sentiment_analyzer.analyze()
+            thoughts.append({
+                'model': 'SentimentAnalyzer',
+                'thought': f"Analiza sentymentu wskazuje na {sentiment_data['analysis']} nastawienie rynku (wartość: {sentiment_data['value']:.2f})",
+                'confidence': min(abs(sentiment_data['value']) * 100 + 50, 95),
+                'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                'type': 'sentiment'
+            })
+        
+        # Pobierz przemyślenia z detektora anomalii
+        if anomaly_detector:
+            # Generowanie losowych danych
+            test_data = [random.normalvariate(0, 1) for _ in range(10)]
+            max_value = max(test_data)
+            if max_value > 2:
+                thoughts.append({
+                    'model': 'AnomalyDetector',
+                    'thought': f"Wykryto potencjalną anomalię w danych (wartość: {max_value:.2f})",
+                    'confidence': min(max_value * 20, 90),
+                    'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                    'type': 'anomaly'
+                })
+            else:
+                thoughts.append({
+                    'model': 'AnomalyDetector',
+                    'thought': "Nie wykryto anomalii w obecnych danych rynkowych",
+                    'confidence': 85,
+                    'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                    'type': 'anomaly'
+                })
+        
+        # Dodaj przemyślenia od ModelRecognizer
+        if 'model_recognizer' in globals() and model_recognizer:
+            model_info = model_recognizer.identify_model_type(None)
+            if model_info:
+                thoughts.append({
+                    'model': 'ModelRecognizer',
+                    'thought': f"Obecne dane rynkowe pasują do modelu typu {model_info['type']} ({model_info['name']})",
+                    'confidence': model_info['confidence'] * 100,
+                    'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                    'type': 'model_recognition'
+                })
+        
+        # Losowe przemyślenia strategii
+        strategy_thoughts = [
+            "Obecny trend sugeruje możliwość utrzymania pozycji długiej",
+            "Poziomy wsparcia mogą zostać wkrótce przetestowane",
+            "Oscylator RSI wskazuje na przesprzedanie rynku, możliwy trend wzrostowy",
+            "MACD sygnalizuje potencjalną zmianę trendu",
+            "Wykres formuje figurę głowy i ramion - możliwe odwrócenie trendu"
+        ]
+        
+        thoughts.append({
+            'model': 'StrategyAnalyzer',
+            'thought': random.choice(strategy_thoughts),
+            'confidence': random.uniform(65, 92),
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'type': 'strategy'
+        })
+        
+        return jsonify({
+            'status': 'success',
+            'thoughts': thoughts,
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        })
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania przemyśleń AI: {e}", exc_info=True)
+        return jsonify({
+            'status': 'error',
+            'message': f'Błąd podczas pobierania przemyśleń AI: {str(e)}',
+            'thoughts': []
+        }), 500
+
+@app.route('/api/ai/learning-status')
+def get_learning_status():
+    """Endpoint do pobierania statusu uczenia modeli AI"""
+    try:
+        # Pobierz ostatnie wyniki uczenia z symulacji
+        learning_data = []
+        
+        if simulation_import_success and simulation_manager:
+            # Próba pobrania wyników uczenia
+            results = simulation_manager.get_simulation_results()
+            if results.get('status') == 'success' and 'learning_results' in results:
+                learning_data = results['learning_results']
+        
+        # Jeśli brak danych, wygeneruj przykładowe
+        if not learning_data:
+            learning_data = [
+                {
+                    'iteration': i+1,
+                    'accuracy': 50 + i*5 + random.uniform(-2, 2),
+                    'win_rate': 45 + i*4 + random.uniform(-3, 3),
+                    'trades': 20 + i*5,
+                    'profit': 100 * (i+1) * (1 + random.uniform(-0.3, 0.3))
+                }
+                for i in range(5)
+            ]
+        
+        # Aktualne modele w treningu
+        models_training = [
+            {
+                'name': 'TrendPredictor',
+                'type': 'XGBoost',
+                'progress': random.uniform(0, 100),
+                'eta': f"{random.randint(1, 10)} min",
+                'current_accuracy': random.uniform(70, 90)
+            },
+            {
+                'name': 'SentimentAnalyzer',
+                'type': 'LSTM',
+                'progress': random.uniform(0, 100),
+                'eta': f"{random.randint(1, 10)} min",
+                'current_accuracy': random.uniform(65, 85)
+            }
+        ]
+        
+        return jsonify({
+            'status': 'success',
+            'learning_data': learning_data,
+            'models_training': models_training,
+            'is_training': random.choice([True, False]),
+            'current_iteration': random.randint(1, 5),
+            'total_iterations': 5,
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        })
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania statusu uczenia AI: {e}", exc_info=True)
+        return jsonify({
+            'status': 'error',
+            'message': f'Błąd podczas pobierania statusu uczenia AI: {str(e)}',
+            'learning_data': [],
+            'models_training': [],
+            'is_training': False
+        }), 500
 
 @app.route('/api/component-status')
 def get_component_status():

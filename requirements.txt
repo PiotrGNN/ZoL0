@@ -1,10 +1,11 @@
 # Główne biblioteki
-flask>=2.0.0,<3.0.0
-python-dotenv>=0.15.0,<2.0.0
-numpy>=1.20.0,<2.0.0
-pandas>=1.3.0,<2.2.0
-scikit-learn>=1.0.0,<2.0.0
-matplotlib>=3.5.0,<4.0.0
+flask==2.3.3
+python-dotenv==1.0.0
+numpy==1.24.3
+pandas==1.5.3
+scikit-learn==1.2.2
+matplotlib==3.7.2
+requests==2.31.0
 
 # Trading i API
 pybit==5.0.0
@@ -12,16 +13,25 @@ ccxt==3.0.0
 
 # Analiza danych i AI
 joblib>=1.0.0
-# xgboost==1.7.3  Removed due to simplification
-# tensorflow==2.12.0 Removed due to simplification
-# torch==2.0.0 Removed due to simplification
-# optuna==3.1.0 Removed due to simplification
+# Wykomentowane zależności, które mogą powodować problemy z GLIBC
+# tensorflow>=2.12.0
+# xgboost>=1.7.6
+# optuna>=3.2.0
+# transformers>=4.30.2
 
 # Narzędzia i pomocnicze
 psutil==5.9.0
 pyyaml==6.0
-requests>=2.25.0,<3.0.0
 tqdm==4.64.1
+pytz==2023.3
+faker==18.13.0
+colorama==0.4.6
+aiohttp==3.8.5
+websockets==11.0.3
+pyOpenSSL==23.2.0
+urllib3==2.0.4
+pycryptodome==3.18.0
+
 
 # Integracje i monitorowanie
 sentry-sdk==1.14.0

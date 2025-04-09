@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trading Bot - Dashboard</title>
     <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="/static/css/ai_monitor.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -26,6 +27,7 @@
             <button class="tab-button active" data-tab="dashboard-tab">Dashboard</button>
             <button class="tab-button" data-tab="trades-tab">Transakcje</button>
             <button class="tab-button" data-tab="analytics-tab">Analityka</button>
+            <button class="tab-button" data-tab="ai-monitor-tab">AI Monitor</button>
             <button class="tab-button" data-tab="settings-tab">Ustawienia</button>
             <button class="tab-button" data-tab="notifications-tab">
                 Powiadomienia
@@ -382,6 +384,63 @@
             </div>
         </div>
 
+        <!-- AI Monitor -->
+        <div id="ai-monitor-tab" class="tab-content">
+            <div class="ai-monitor-grid">
+                <!-- Panel przemyśleń AI -->
+                <div class="card">
+                    <h2>Przemyślenia AI</h2>
+                    <div id="ai-thoughts-container" class="ai-thoughts-panel">
+                        <div class="no-data">Ładowanie przemyśleń AI...</div>
+                    </div>
+                </div>
+
+                <!-- Panel statusu uczenia -->
+                <div class="card">
+                    <h2>Status Uczenia AI</h2>
+                    <div id="learning-status-container" class="learning-status-panel">
+                        <div class="no-data">Ładowanie statusu uczenia...</div>
+                    </div>
+                </div>
+                
+                <!-- Panel kontroli symulacji -->
+                <div class="card">
+                    <h2>Kontrola Symulacji i Uczenia</h2>
+                    <div class="simulation-controls">
+                        <form id="simulation-form" class="simulation-form">
+                            <div class="form-row">
+                                <label class="form-label" for="initial-capital">Kapitał początkowy:</label>
+                                <input type="number" id="initial-capital" name="initial_capital" value="10000" min="1000" step="1000" class="form-input">
+                            </div>
+                            <div class="form-row">
+                                <label class="form-label" for="duration">Czas symulacji:</label>
+                                <input type="number" id="duration" name="duration" value="1000" min="100" step="100" class="form-input">
+                            </div>
+                            <div class="form-row">
+                                <label class="form-label">Typ symulacji:</label>
+                                <label class="form-checkbox-label">
+                                    <input type="checkbox" id="with-learning" name="with_learning" class="form-checkbox">
+                                    Z uczeniem modeli AI
+                                </label>
+                            </div>
+                            <div class="form-row" id="iterations-row" style="display: none;">
+                                <label class="form-label" for="iterations">Liczba iteracji:</label>
+                                <input type="number" id="iterations" name="iterations" value="5" min="1" max="20" class="form-input">
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="form-submit">Uruchom symulację</button>
+                            </div>
+                        </form>
+                        
+                        <div class="button-group" style="margin-top: 20px;">
+                            <button id="run-simulation-btn" class="btn btn-primary">Szybka symulacja</button>
+                            <button id="run-learning-btn" class="btn btn-info">Symulacja z uczeniem</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <!-- Powiadomienia -->
         <div id="notifications-tab" class="tab-content">
             <div class="card full-width">
@@ -492,5 +551,20 @@
     </div>
 
     <script src="/static/js/dashboard.js"></script>
+    <script src="/static/js/ai_monitor.js"></script>
+    <script>
+        // Skrypt do obsługi zakładki AI Monitor
+        document.addEventListener('DOMContentLoaded', function() {
+            // Pokazywanie/ukrywanie pola iteracji w zależności od zaznaczenia checkboxa
+            const withLearningCheckbox = document.getElementById('with-learning');
+            const iterationsRow = document.getElementById('iterations-row');
+            
+            if (withLearningCheckbox && iterationsRow) {
+                withLearningCheckbox.addEventListener('change', function() {
+                    iterationsRow.style.display = this.checked ? 'flex' : 'none';
+                });
+            }
+        });
+    </script>
 </body>
 </html>

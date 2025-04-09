@@ -1,32 +1,43 @@
 
 #!/bin/bash
 
-# Kolory dla lepszej czytelności
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-RED='\033[0;31m'
-NC='\033[0m' # No Color
+# Skrypt do resetowania środowiska aplikacji
 
-echo -e "${BLUE}🧹 Czyszczę cache pakietów...${NC}"
-rm -rf __pycache__ */__pycache__ */*/__pycache__ */*/*/__pycache__
+echo "🧹 Czyszczę cache pakietów..."
+rm -rf __pycache__ */__pycache__ */*/__pycache__
 
-echo -e "${BLUE}📦 Instaluję zależności z requirements.txt...${NC}"
-pip install -r requirements.txt
+echo "📦 Instaluję zależności z requirements.txt..."
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
 
-# Sprawdź czy python_libs zawiera wszystkie potrzebne pliki
-echo -e "${BLUE}🔍 Sprawdzam czy wszystkie wymagane moduły są zainstalowane...${NC}"
-python -c "import os; required_files = ['simplified_trading_engine.py', 'simplified_risk_manager.py', 'simplified_strategy.py', 'model_tester.py', 'simulated_bybit.py', 'simulation_results.py']; missing = [f for f in required_files if not os.path.exists(os.path.join('python_libs', f))]; print('Brakujące pliki:', missing) if missing else print('Wszystkie wymagane pliki są obecne')"
+echo "🔍 Sprawdzam czy wszystkie modele AI są poprawnie ładowane..."
+python test_models.py
 
-# Test czy AI modele można załadować
-echo -e "${BLUE}🔍 Sprawdzam czy wszystkie modele AI są poprawnie ładowane...${NC}"
-python -c "import sys; sys.path.insert(0, '.'); import ai_models"
+echo "🧠 Przygotowuję katalogi do działania symulacji..."
+mkdir -p logs
+mkdir -p data/cache
+mkdir -p reports
+mkdir -p static/img
+mkdir -p saved_models
 
-# Tworzenie struktury katalogów
-echo -e "${BLUE}📁 Tworzę strukturę katalogów...${NC}"
-mkdir -p logs data/cache reports static/img
+# Zapisz wersję modeli do celów diagnostycznych
+echo "📝 Zapisuję listę dostępnych modeli..."
+python -c "
+try:
+    import os, importlib
+    models_dir = 'ai_models'
+    if os.path.exists(models_dir):
+        files = [f[:-3] for f in os.listdir(models_dir) if f.endswith('.py') and not f.startswith('__')]
+        print(f'Dostępne modele: {files}')
+        
+        for model_file in files:
+            try:
+                module = importlib.import_module(f'{models_dir}.{model_file}')
+                print(f'✅ Moduł {model_file} załadowany pomyślnie')
+            except Exception as e:
+                print(f'❌ Błąd ładowania modułu {model_file}: {e}')
+except Exception as e:
+    print(f'Błąd: {e}')
+" > logs/models_status.log
 
-# Czyszczenie logów
-echo -e "${BLUE}🧹 Czyszczę stare logi...${NC}"
-rm -f logs/*.log
-
-echo -e "${GREEN}🎉 Gotowe! Środowisko jest zaktualizowane i gotowe do pracy.${NC}"
+echo "🎉 Gotowe! Środowisko jest zaktualizowane i gotowe do pracy."
