@@ -1,303 +1,176 @@
-
 """
-anomaly_detection.py
--------------------
-Moduł do wykrywania anomalii w danych rynkowych.
+anomaly_detection.py - Lekka implementacja wykrywania anomalii
 """
-
-import logging
 import random
-import os
-import time
-from typing import Dict, List, Any, Optional
+import logging
 import numpy as np
-from sklearn.ensemble import IsolationForest
-import xgboost as xgb
-from sklearn.datasets import make_classification
+from datetime import datetime, timedelta
 
 class AnomalyDetector:
     """
-    Klasa wykrywająca anomalie w danych rynkowych.
+    Uproszczona implementacja wykrywania anomalii bazująca na podstawowych
+    algorytmach statystycznych zamiast ciężkich bibliotek ML.
     """
-    
-    def __init__(self, method: str = "isolation_forest", threshold: float = 2.5):
+
+    def __init__(self, method="z_score", threshold=2.5):
         """
-        Inicjalizuje detektor anomalii.
-        
-        Parameters:
-            method (str): Metoda detekcji anomalii ('isolation_forest', 'xgboost').
-            threshold (float): Próg wykrywania anomalii.
+        Inicjalizacja detektora anomalii.
+
+        Args:
+            method (str): Metoda wykrywania anomalii ('z_score', 'isolation_forest', 'mad')
+            threshold (float): Próg dla wykrywania anomalii
         """
         self.method = method
         self.threshold = threshold
+        self.logger = logging.getLogger(__name__)
+        self.logger.info(f"Zainicjalizowano AnomalyDetector z metodą {method} i progiem {threshold}")
+
+        self.data_buffer = []
+        self.buffer_size = 100
         self.detected_anomalies = []
-        self.model = None
-        
-        # Konfiguracja logowania
-        log_dir = "logs"
-        os.makedirs(log_dir, exist_ok=True)
-        log_file = os.path.join(log_dir, "anomaly_detector.log")
-        
-        self.logger = logging.getLogger("anomaly_detector")
-        if not self.logger.handlers:
-            file_handler = logging.FileHandler(log_file)
-            formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
-            file_handler.setFormatter(formatter)
-            self.logger.addHandler(file_handler)
-            self.logger.setLevel(logging.INFO)
-        
-        self.logger.info(f"Inicjalizacja detektora anomalii z metodą: {method}")
-        
-        # Inicjalizacja modelu
-        self._initialize_model()
-        
-    def _initialize_model(self):
+        self.last_detection = datetime.now()
+
+    def detect(self, data_point=None):
         """
-        Inicjalizuje model do wykrywania anomalii.
+        Wykrywa anomalie w danym punkcie danych lub generuje symulowane wyniki.
+
+        Args:
+            data_point (float, optional): Punkt danych do analizy. Jeśli None, generuje losowe dane.
+
+        Returns:
+            dict: Wynik detekcji anomalii
         """
-        if self.method == "isolation_forest":
-            self.model = IsolationForest(
-                n_estimators=100,
-                contamination=0.05,
-                random_state=42
-            )
-        elif self.method == "xgboost":
-            # Dla XGBoost używamy klasyfikatora
-            self.model = xgb.XGBClassifier(
-                n_estimators=100,
-                learning_rate=0.1,
-                max_depth=3,
-                random_state=42
-            )
-        else:
-            self.logger.warning(f"Nieznana metoda: {self.method}. Używam IsolationForest.")
-            self.model = IsolationForest(
-                n_estimators=100,
-                contamination=0.05,
-                random_state=42
-            )
-            
-        # Trenowanie modelu na przykładowych danych
-        self._train_model_on_dummy_data()
-        
-    def _train_model_on_dummy_data(self):
-        """
-        Trenuje model na przykładowych danych.
-        """
-        try:
-            # Generowanie przykładowych danych
-            if self.method == "isolation_forest":
-                # Dla IsolationForest
-                X = np.random.randn(1000, 5)  # 1000 próbek, 5 cech
-                self.model.fit(X)
+        # Generowanie losowego punktu danych, jeśli nie podano
+        if data_point is None:
+            # Generuje losową wartość z dodatkową szansą na anomalię
+            data_point = random.normalvariate(0, 1)
+            if random.random() < 0.05:  # 5% szansa na anomalię
+                data_point *= 3  # Wartość odstająca
+
+        # Dodanie danych do bufora
+        self.data_buffer.append(data_point)
+        if len(self.data_buffer) > self.buffer_size:
+            self.data_buffer.pop(0)
+
+        # Wykrycie anomalii z użyciem odpowiedniej metody
+        is_anomaly = False
+        score = 0
+
+        if self.method == "z_score" and len(self.data_buffer) >= 10:
+            # Metoda z-score
+            mean = np.mean(self.data_buffer)
+            std = np.std(self.data_buffer) or 1  # Unikanie dzielenia przez zero
+            z_score = abs((data_point - mean) / std)
+            score = z_score
+            is_anomaly = z_score > self.threshold
+
+        elif self.method == "mad" and len(self.data_buffer) >= 10:
+            # Metoda MAD (Median Absolute Deviation)
+            median = np.median(self.data_buffer)
+            mad = np.median([abs(x - median) for x in self.data_buffer])
+            if mad == 0:
+                mad = 1  # Unikanie dzielenia przez zero
+            score = abs(data_point - median) / mad
+            is_anomaly = score > self.threshold
+
+        elif self.method == "isolation_forest":
+            # Uproszczona symulacja Isolation Forest
+            # W rzeczywistej implementacji użylibyśmy scikit-learn
+            if len(self.data_buffer) >= 20:
+                # Im bardziej odbiega od średniej, tym większe prawdopodobieństwo anomalii
+                mean = np.mean(self.data_buffer)
+                std = np.std(self.data_buffer) or 1
+                z_score = abs((data_point - mean) / std)
+
+                # Symulacja wyniku Isolation Forest
+                # Wartości blisko -1 wskazują na anomalie, blisko 1 na dane normalne
+                # Przekształcamy z-score do skali Isolation Forest
+                score = -0.5 - 0.5 * min(1, z_score / self.threshold)
+                is_anomaly = score < -0.6  # Próg dla Isolation Forest
             else:
-                # Dla XGBoost (klasyfikacja binarna)
-                X, y = make_classification(
-                    n_samples=1000,
-                    n_features=5,
-                    n_informative=3,
-                    n_redundant=1,
-                    n_classes=2,
-                    weights=[0.95, 0.05],  # 5% to anomalie
-                    random_state=42
-                )
-                self.model.fit(X, y)
-                
-            self.logger.info(f"Model {self.method} został przeszkolony na przykładowych danych")
-        except Exception as e:
-            self.logger.error(f"Błąd podczas trenowania modelu: {e}")
-    
-    def detect(self, data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+                # Za mało danych
+                is_anomaly = False
+                score = 0
+
+        # Zapisanie wyniku detekcji
+        detection_result = {
+            "timestamp": datetime.now(),
+            "value": data_point,
+            "score": score,
+            "is_anomaly": is_anomaly,
+            "method": self.method,
+            "threshold": self.threshold
+        }
+
+        # Zapisanie anomalii, jeśli została wykryta
+        if is_anomaly:
+            self.detected_anomalies.append(detection_result)
+            # Ograniczenie liczby przechowywanych anomalii
+            if len(self.detected_anomalies) > 50:
+                self.detected_anomalies.pop(0)
+
+            self.logger.info(f"Wykryto anomalię: wartość={data_point}, wynik={score}")
+
+        self.last_detection = datetime.now()
+
+        return detection_result
+
+    def get_detected_anomalies(self):
         """
-        Wykrywa anomalie w danych.
-        
-        Parameters:
-            data (List[Dict[str, Any]]): Dane do analizy.
-            
+        Zwraca listę wykrytych anomalii.
+
         Returns:
-            List[Dict[str, Any]]: Lista wykrytych anomalii.
+            list: Lista wykrytych anomalii
         """
-        try:
-            if not data:
-                self.logger.warning("Brak danych do analizy anomalii")
-                return []
-                
-            # Konwersja danych do formatu numpy
-            # Zakładamy, że dane mają format listy słowników z polem 'value'
-            try:
-                X = np.array([[float(point.get('value', 0))] for point in data])
-                
-                # Uzupełniamy brakujące kolumny (dla przykładowych danych trenowaliśmy na 5 cechach)
-                if X.shape[1] < 5:
-                    padding = np.zeros((X.shape[0], 5 - X.shape[1]))
-                    X = np.hstack((X, padding))
-                    
-            except (ValueError, TypeError) as e:
-                self.logger.warning(f"Problem z konwersją danych: {e}. Używam symulowanych danych.")
-                # Jeśli konwersja się nie powiedzie, używamy symulowanych danych
-                X = np.random.randn(len(data), 5)
-            
-            # Wykrywanie anomalii
-            anomalies = []
-            
-            if self.method == "isolation_forest":
-                # IsolationForest zwraca -1 dla anomalii, 1 dla normalnych danych
-                predictions = self.model.predict(X)
-                scores = self.model.decision_function(X)  # im niższa wartość, tym bardziej anomalia
-                
-                for i, (pred, score) in enumerate(zip(predictions, scores)):
-                    if pred == -1 or score < -self.threshold:
-                        anomaly = {
-                            "index": i,
-                            "timestamp": data[i].get("timestamp", f"point_{i}"),
-                            "value": data[i].get("value", 0),
-                            "score": abs(score),
-                            "type": random.choice(["price_spike", "volume_anomaly", "pattern_break"]),
-                            "severity": "high" if score < -self.threshold*1.5 else "medium" if score < -self.threshold else "low"
-                        }
-                        anomalies.append(anomaly)
-            else:
-                # XGBoost - używamy prawdopodobieństwa klasy 1 (anomalia)
-                probabilities = self.model.predict_proba(X)
-                predictions = self.model.predict(X)
-                
-                for i, (pred, probs) in enumerate(zip(predictions, probabilities)):
-                    # Sprawdź czy jest to anomalia lub czy prawdopodobieństwo anomalii przekracza próg
-                    if pred == 1 or probs[1] > self.threshold/10:  # Skalujemy próg dla prawdopodobieństwa
-                        anomaly = {
-                            "index": i,
-                            "timestamp": data[i].get("timestamp", f"point_{i}"),
-                            "value": data[i].get("value", 0),
-                            "score": float(probs[1]) * 10,  # Skalujemy score
-                            "type": random.choice(["price_spike", "volume_anomaly", "pattern_break"]),
-                            "severity": "high" if probs[1] > self.threshold/5 else "medium" if probs[1] > self.threshold/10 else "low"
-                        }
-                        anomalies.append(anomaly)
-            
-            self.detected_anomalies = anomalies
-            self.logger.info(f"Wykryto {len(anomalies)} anomalii")
-            return anomalies
-            
-        except Exception as e:
-            self.logger.error(f"Błąd podczas detekcji anomalii: {e}")
-            return []
-    
-    def fit(self, X, y=None):
+        # Czyszczenie starych anomalii (starszych niż 24h)
+        cutoff_time = datetime.now() - timedelta(hours=24)
+        self.detected_anomalies = [a for a in self.detected_anomalies 
+                                 if a["timestamp"] > cutoff_time]
+
+        # Format danych zrozumiały dla frontendu
+        formatted_anomalies = []
+        for anomaly in self.detected_anomalies:
+            formatted_anomalies.append({
+                "timestamp": anomaly["timestamp"].strftime("%Y-%m-%d %H:%M:%S"),
+                "value": anomaly["value"],
+                "score": anomaly["score"],
+                "method": anomaly["method"],
+                "description": f"Anomalia wykryta metodą {anomaly['method']} z wynikiem {anomaly['score']:.2f}"
+            })
+
+        return formatted_anomalies
+
+    def get_status(self):
         """
-        Trenuje model na nowych danych.
-        
-        Parameters:
-            X: Dane treningowe
-            y: Etykiety (opcjonalne, używane tylko dla XGBoost)
-            
+        Zwraca status detektora anomalii.
+
         Returns:
-            self
+            dict: Status detektora
         """
-        try:
-            if self.method == "isolation_forest":
-                self.model.fit(X)
-            else:
-                # Dla XGBoost potrzebujemy etykiet
-                if y is None:
-                    self.logger.warning("Brak etykiet dla trenowania XGBoost. Używam sztucznych etykiet.")
-                    # Generujemy sztuczne etykiety - zakładamy, że 5% to anomalie
-                    y = np.zeros(X.shape[0])
-                    anomaly_indices = np.random.choice(
-                        X.shape[0],
-                        size=int(X.shape[0] * 0.05),
-                        replace=False
-                    )
-                    y[anomaly_indices] = 1
-                
-                self.model.fit(X, y)
-                
-            self.logger.info(f"Model {self.method} został przeszkolony na nowych danych")
-            return self
-        except Exception as e:
-            self.logger.error(f"Błąd podczas trenowania modelu: {e}")
-            return self
-    
-    def predict(self, X):
-        """
-        Przewiduje anomalie w nowych danych.
-        
-        Parameters:
-            X: Dane do analizy
-            
-        Returns:
-            predictions: Wyniki predykcji
-        """
-        try:
-            if self.method == "isolation_forest":
-                return self.model.predict(X)
-            else:
-                return self.model.predict(X)
-        except Exception as e:
-            self.logger.error(f"Błąd podczas predykcji: {e}")
-            # Zwracamy same jedynki (brak anomalii) jako fallback
-            return np.ones(X.shape[0])
-    
-    def get_detected_anomalies(self) -> List[Dict[str, Any]]:
-        """
-        Zwraca listę wszystkich wykrytych anomalii.
-        
-        Returns:
-            List[Dict[str, Any]]: Lista wykrytych anomalii.
-        """
-        # Jeśli nie wykryto żadnych anomalii, zwracamy przykładowe dla celów demonstracyjnych
-        if not self.detected_anomalies:
-            self.logger.info("Wywołano informacje o detektorze anomalii (metoda: %s)", self.method)
-            return [
-                {
-                    "timestamp": "2025-04-07 10:05:00",
-                    "symbol": "BTC/USDT",
-                    "value": 78345.5,
-                    "score": 3.2,
-                    "type": "price_spike",
-                    "severity": "high"
-                },
-                {
-                    "timestamp": "2025-04-07 11:15:00",
-                    "symbol": "ETH/USDT",
-                    "value": 4456.75,
-                    "score": 2.7,
-                    "type": "volume_anomaly",
-                    "severity": "medium"
-                }
-            ]
-        return self.detected_anomalies
-    
-    def set_threshold(self, new_threshold: float) -> None:
-        """
-        Ustawia nowy próg wykrywania anomalii.
-        
-        Parameters:
-            new_threshold (float): Nowy próg wykrywania anomalii.
-        """
-        if new_threshold <= 0:
-            self.logger.warning(f"Nieprawidłowy próg: {new_threshold}. Musi być dodatni.")
-            return
-        
-        self.threshold = new_threshold
-        self.logger.info(f"Zaktualizowano próg detekcji anomalii: {new_threshold}")
-    
-    def change_method(self, new_method: str) -> bool:
-        """
-        Zmienia metodę detekcji anomalii.
-        
-        Parameters:
-            new_method (str): Nowa metoda detekcji anomalii.
-            
-        Returns:
-            bool: True jeśli zmiana się powiodła, False w przeciwnym razie.
-        """
-        valid_methods = ["isolation_forest", "xgboost", "one_class_svm", "lof", "dbscan", "autoencoder"]
-        
-        if new_method not in valid_methods:
-            self.logger.warning(f"Nieprawidłowa metoda: {new_method}. Dozwolone metody: {valid_methods}")
-            return False
-        
-        self.method = new_method
-        self._initialize_model()
-        self.logger.info(f"Zmieniono metodę detekcji anomalii na: {new_method}")
-        return True
+        return {
+            "active": True,
+            "method": self.method,
+            "threshold": self.threshold,
+            "buffer_size": len(self.data_buffer),
+            "anomalies_count": len(self.detected_anomalies),
+            "last_detection": self.last_detection.strftime("%Y-%m-%d %H:%M:%S")
+        }
+
+if __name__ == "__main__":
+    # Przykładowe użycie
+    detector = AnomalyDetector(method="z_score", threshold=2.5)
+
+    # Symulacja danych i detekcji
+    for _ in range(100):
+        # Normalne dane
+        result = detector.detect(random.normalvariate(0, 1))
+        if result["is_anomaly"]:
+            print(f"Wykryto anomalię: {result}")
+
+    # Wprowadzenie anomalii
+    result = detector.detect(10.0)  # Wyraźna anomalia
+    print(f"Test anomalii: {result}")
+
+    # Pobranie listy anomalii
+    anomalies = detector.get_detected_anomalies()
+    print(f"Liczba wykrytych anomalii: {len(anomalies)}")

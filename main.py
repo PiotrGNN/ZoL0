@@ -107,11 +107,15 @@ def initialize_system():
             sentiment_lib = "python_libs.simplified_sentiment"
         except ImportError:
             try:
-                from data.indicators.sentiment_analysis import SentimentAnalyzer
-                sentiment_lib = "data.indicators.sentiment_analysis"
+                from ai_models.sentiment_ai import SentimentAnalyzer
+                sentiment_lib = "ai_models.sentiment_ai"
             except ImportError:
-                SentimentAnalyzer = None
-                sentiment_lib = None
+                try:
+                    from data.indicators.sentiment_analysis import SentimentAnalyzer
+                    sentiment_lib = "data.indicators.sentiment_analysis"
+                except ImportError:
+                    SentimentAnalyzer = None
+                    sentiment_lib = None
 
         try:
             from python_libs.simplified_anomaly import AnomalyDetector

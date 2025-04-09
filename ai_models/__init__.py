@@ -1,16 +1,10 @@
 """
-ai_models/__init__.py
----------------------
-Inicjalizacja pakietu modeli AI.
-
-Ten moduł importuje i eksportuje wszystkie dostępne modele AI
-z folderu ai_models, ułatwiając ich wykrywanie i ładowanie.
+Pakiet ai_models - zawiera modele AI używane w systemie tradingowym.
 """
 
 import os
 import importlib
 import logging
-import sys
 from typing import Dict, List, Any, Optional
 
 # Konfiguracja logowania
@@ -20,39 +14,33 @@ logging.basicConfig(
 )
 logger = logging.getLogger("ai_models")
 
-# Słownik dostępnych klas modeli
-available_models = {}
-
-# Próba importu konkretnych modeli
-try:
-    from .anomaly_detection import AnomalyDetector
-    available_models['anomaly_detector'] = AnomalyDetector
-    logger.info("Zaimportowano AnomalyDetector")
-except ImportError as e:
-    logger.warning(f"Nie można zaimportować AnomalyDetector: {e}")
-
-try:
-    from .sentiment_ai import SentimentAnalyzer 
-    available_models['sentiment_analyzer'] = SentimentAnalyzer
-    logger.info("Zaimportowano SentimentAnalyzer")
-except ImportError as e:
-    logger.warning(f"Nie można zaimportować SentimentAnalyzer: {e}")
-
-try:
-    from .model_recognition import ModelRecognizer
-    available_models['model_recognizer'] = ModelRecognizer
-    logger.info("Zaimportowano ModelRecognizer")
-except ImportError as e:
-    logger.warning(f"Nie można zaimportować ModelRecognizer: {e}")
-
-def get_available_models() -> Dict[str, Any]:
+def get_available_models():
     """
     Zwraca słownik dostępnych modeli AI.
 
     Returns:
-        Dict[str, Any]: Słownik nazw modeli i ich klas
+        dict: Słownik z nazwami modeli i ich klasami
     """
-    return available_models
+    from .sentiment_ai import SentimentAnalyzer
+    from .anomaly_detection import AnomalyDetector
+    from .model_recognition import ModelRecognizer
+
+    return {
+        "sentiment_analyzer": SentimentAnalyzer,
+        "anomaly_detector": AnomalyDetector,
+        "model_recognizer": ModelRecognizer
+    }
+
+# Eksportuj nazwy klas do przestrzeni nazw pakietu
+try:
+    from .sentiment_ai import SentimentAnalyzer
+    from .anomaly_detection import AnomalyDetector
+    from .model_recognition import ModelRecognizer
+except ImportError as e:
+    # Wydrukuj ostrzeżenie, ale nie przerywaj importu pakietu
+    import logging
+    logging.warning(f"Ostrzeżenie podczas importowania modeli AI: {e}")
+
 
 def list_model_files() -> List[str]:
     """
@@ -71,6 +59,7 @@ def list_model_files() -> List[str]:
     return model_files
 
 # Inicjalizacja - wypisanie znalezionych modeli
+available_models = get_available_models()
 logger.info(f"ai_models: Znaleziono {len(available_models)} modeli AI")
 for name, model_class in available_models.items():
     logger.info(f"  - {name}: {model_class.__name__}")
