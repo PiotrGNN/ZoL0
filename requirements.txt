@@ -1,4 +1,3 @@
-
 # Główne biblioteki
 flask==2.2.3
 python-dotenv==0.21.0

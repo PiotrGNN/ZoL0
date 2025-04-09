@@ -200,6 +200,69 @@ def initialize_system():
         # Inicjalizacja silnika handlowego
         global trading_engine
         if SimplifiedTradingEngine:
+            # Upewnij się, że bybit_client jest zainicjalizowany przed przekazaniem go do silnika handlowego
+            if bybit_client is None:
+                # Utwórz symulowany konektor, jeśli prawdziwy nie jest dostępny
+                try:
+                    from python_libs.simulated_bybit import SimulatedBybitConnector
+                    bybit_client = SimulatedBybitConnector(
+                        api_key="simulated_key",
+                        api_secret="simulated_secret",
+                        use_testnet=True
+                    )
+                    logging.info("Utworzono symulowany konektor ByBit dla Trading Engine")
+                except ImportError:
+                    try:
+                        # Implementacja podstawowej klasy symulującej
+                        class BasicSimulatedConnector:
+                            def __init__(self):
+                                self.use_testnet = True
+                                
+                            def get_account_balance(self):
+                                return {
+                                    "balances": {
+                                        "BTC": {"equity": 0.01, "available_balance": 0.01, "wallet_balance": 0.01},
+                                        "USDT": {"equity": 1000, "available_balance": 950, "wallet_balance": 1000}
+                                    }, 
+                                    "success": True,
+                                    "source": "basic_simulation"
+                                }
+                                
+                            def get_klines(self, symbol, interval="15", limit=10):
+                                import random
+                                from datetime import datetime, timedelta
+                                klines = []
+                                current_time = datetime.now()
+                                price = 50000.0 if "BTC" in symbol else 3000.0
+                                
+                                for i in range(limit):
+                                    timestamp = current_time - timedelta(minutes=int(interval)*i)
+                                    price = price * (1 + random.uniform(-0.005, 0.005))
+                                    klines.append({
+                                        "datetime": timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+                                        "open": price,
+                                        "high": price * (1 + random.uniform(0, 0.002)),
+                                        "low": price * (1 - random.uniform(0, 0.002)),
+                                        "close": price,
+                                        "volume": random.uniform(10, 100)
+                                    })
+                                return klines
+                                
+                            def get_server_time(self):
+                                from datetime import datetime
+                                return {
+                                    "success": True,
+                                    "time_ms": int(datetime.now().timestamp() * 1000),
+                                    "time": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                                    "source": "basic_simulation"
+                                }
+                        
+                        bybit_client = BasicSimulatedConnector()
+                        logging.info("Utworzono podstawowy symulowany konektor dla Trading Engine")
+                    except Exception as e:
+                        logging.error(f"Nie można utworzyć symulowanego konektora: {e}")
+                        bybit_client = None
+            
             trading_engine = SimplifiedTradingEngine(
                 risk_manager=risk_manager,
                 strategy_manager=strategy_manager,

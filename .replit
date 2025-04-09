@@ -96,7 +96,7 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python test_models.py"
+args = "python3 test_models.py"
 
 [[workflows.workflow]]
 name = "Reset Environment"
