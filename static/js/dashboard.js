@@ -57,7 +57,6 @@ function startDataUpdates() {
             updateDashboardData();
             updateComponentStatus();
             updateAIModelsStatus();
-            updatePortfolioData(); // Added portfolio update
         }
     }, CONFIG.updateInterval);
 
@@ -235,10 +234,9 @@ function updateChartData() {
         });
 }
 
-
 // Aktualizacja danych portfela
 function updatePortfolioData() {
-    fetch(CONFIG.apiEndpoints.portfolio)
+    fetch('/api/portfolio')
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Błąd HTTP: ${response.status}`);
@@ -247,91 +245,52 @@ function updatePortfolioData() {
         })
         .then(data => {
             const portfolioContainer = document.getElementById('portfolio-data');
+
             if (!portfolioContainer) {
                 console.error("Element 'portfolio-data' nie istnieje");
                 return;
             }
 
-            if (data && data.success) {
-                let portfolioHtml = `
-                    <div class="portfolio-summary-data">
-                        <div class="portfolio-item">
-                            <span class="label">Początkowy balans:</span>
-                            <span class="value">${data.portfolio.initial_balance.toFixed(2)} ${data.portfolio.currency}</span>
-                        </div>
-                        <div class="portfolio-item">
-                            <span class="label">Aktualny balans:</span>
-                            <span class="value">${data.portfolio.current_balance.toFixed(2)} ${data.portfolio.currency}</span>
-                        </div>
-                        <div class="portfolio-item">
-                            <span class="label">Wartość pozycji:</span>
-                            <span class="value">${data.portfolio.total_positions_value.toFixed(2)} ${data.portfolio.currency}</span>
-                        </div>
-                        <div class="portfolio-item">
-                            <span class="label">Całkowita wartość:</span>
-                            <span class="value">${data.portfolio.total_value.toFixed(2)} ${data.portfolio.currency}</span>
-                        </div>
-                        <div class="portfolio-item">
-                            <span class="label">Zmiana (%):</span>
-                            <span class="value ${data.portfolio.pct_change >= 0 ? 'positive' : 'negative'}">${data.portfolio.pct_change.toFixed(2)}%</span>
-                        </div>
-                        <div class="portfolio-item">
-                            <span class="label">Zrealizowany P/L:</span>
-                            <span class="value ${data.portfolio.realized_pnl >= 0 ? 'positive' : 'negative'}">${data.portfolio.realized_pnl.toFixed(2)} ${data.portfolio.currency}</span>
-                        </div>
-                        <div class="portfolio-item">
-                            <span class="label">Niezrealizowany P/L:</span>
-                            <span class="value ${data.portfolio.unrealized_pnl >= 0 ? 'positive' : 'negative'}">${data.portfolio.unrealized_pnl.toFixed(2)} ${data.portfolio.currency}</span>
-                        </div>
-                        <div class="portfolio-item">
-                            <span class="label">Ostatnia aktualizacja:</span>
-                            <span class="value">${data.portfolio.last_update}</span>
-                        </div>
-                    </div>
-                `;
-                portfolioContainer.innerHTML = portfolioHtml;
+            if (data && data.success === true && data.balances && Object.keys(data.balances).length > 0) {
+                portfolioContainer.innerHTML = ''; // Wyczyść kontener
 
+                // Przetwarzanie danych portfela
+                for (const [currency, details] of Object.entries(data.balances)) {
+                    if (details) {
+                        const balanceItem = document.createElement('div');
+                        balanceItem.className = 'balance-item';
 
-                // Aktualizacja otwartych pozycji
-                let positionsHtml = '';
-                const positions = data.positions;
-                const positionKeys = Object.keys(positions);
+                        // Bezpieczne wyświetlanie wartości z obsługą wartości null/undefined
+                        const equity = typeof details.equity === 'number' ? details.equity.toFixed(4) : '0.0000';
+                        const available = typeof details.available_balance === 'number' ? details.available_balance.toFixed(4) : '0.0000';
+                        const wallet = typeof details.wallet_balance === 'number' ? details.wallet_balance.toFixed(4) : '0.0000';
 
-                if (positionKeys.length > 0) {
-                    positionsHtml = '<table class="table table-striped table-sm"><thead><tr>' +
-                        '<th>Symbol</th><th>Ilość</th><th>Cena wejścia</th><th>Aktualna cena</th><th>Wartość</th><th>P/L</th>' +
-                        '</tr></thead><tbody>';
-
-                    positionKeys.forEach(symbol => {
-                        const position = positions[symbol];
-                        const pnl = position.unrealized_pnl || 0;
-
-                        positionsHtml += `<tr>
-                            <td>${symbol}</td>
-                            <td>${position.quantity}</td>
-                            <td>${position.entry_price.toFixed(2)}</td>
-                            <td>${position.current_price.toFixed(2)}</td>
-                            <td>${position.market_value.toFixed(2)} ${data.portfolio.currency}</td>
-                            <td class="${pnl >= 0 ? 'positive' : 'negative'}">${pnl.toFixed(2)} ${data.portfolio.currency}</td>
-                        </tr>`;
-                    });
-
-                    positionsHtml += '</tbody></table>';
-                } else {
-                    positionsHtml = '<p>Brak otwartych pozycji</p>';
+                        balanceItem.innerHTML = `
+                            <div class="currency">${currency}</div>
+                            <div class="balance-details">
+                                <div class="balance-row"><span>Equity:</span> <span>${equity}</span></div>
+                                <div class="balance-row"><span>Available:</span> <span>${available}</span></div>
+                                <div class="balance-row"><span>Wallet:</span> <span>${wallet}</span></div>
+                            </div>
+                        `;
+                        portfolioContainer.appendChild(balanceItem);
+                    }
                 }
-
-                const positionsContainer = document.getElementById('portfolio-positions');
-                if(positionsContainer) positionsContainer.innerHTML = positionsHtml;
             } else {
-                portfolioContainer.innerHTML = '<div class="error-message">Błąd podczas pobierania danych portfela</div>';
+                portfolioContainer.innerHTML = '<div class="error-message">Brak danych portfela lub problem z połączeniem z ByBit. Sprawdź klucze API w ustawieniach.</div>';
+
+                // Wyświetl dane diagnostyczne w logach konsoli
+                console.log("Otrzymane dane portfela:", data);
+                if (data && data.error) {
+                    console.log("Błąd API:", data.error);
+                }
             }
         })
         .catch(err => {
             console.error("Błąd podczas pobierania danych portfela:", err);
             const portfolioContainer = document.getElementById('portfolio-data');
             if (portfolioContainer) {
-                portfolioContainer.innerHTML = '<div class="error-message">Błąd podczas pobierania danych portfela</div>';
+                portfolioContainer.innerHTML = '<div class="error-message">Błąd podczas pobierania danych portfela. Sprawdź połączenie internetowe.</div>';
             }
         });
 }

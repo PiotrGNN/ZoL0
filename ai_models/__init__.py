@@ -24,31 +24,12 @@ def get_available_models():
     from .sentiment_ai import SentimentAnalyzer
     from .anomaly_detection import AnomalyDetector
     from .model_recognition import ModelRecognizer
-    from .model_training import ModelTrainer
-    from .real_exchange_env import RealExchangeEnv
-    
-    try:
-        # Importuj fabrykę modeli
-        from .model_factory import get_model_instance
-        
-        # Dodaj instancje wymagające parametrów
-        model_trainer = get_model_instance("ModelTrainer")
-        real_exchange_env = get_model_instance("RealExchangeEnv")
-        
-        return {
-            "sentiment_analyzer": SentimentAnalyzer,
-            "anomaly_detector": AnomalyDetector,
-            "model_recognizer": ModelRecognizer,
-            "model_trainer": ModelTrainer,
-            "real_exchange_env": RealExchangeEnv
-        }
-    except Exception as e:
-        logger.warning(f"Błąd podczas ładowania niektórych modeli: {e}")
-        return {
-            "sentiment_analyzer": SentimentAnalyzer,
-            "anomaly_detector": AnomalyDetector,
-            "model_recognizer": ModelRecognizer
-        }
+
+    return {
+        "sentiment_analyzer": SentimentAnalyzer,
+        "anomaly_detector": AnomalyDetector,
+        "model_recognizer": ModelRecognizer
+    }
 
 # Eksportuj nazwy klas do przestrzeni nazw pakietu
 try:
