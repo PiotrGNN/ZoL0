@@ -184,9 +184,17 @@ def main():
             if not available:
                 print(f"  - {model}")
     
+    # Wypisanie statystyk, jeśli istnieją
+    if 'stats' in locals():
+        print("\n📊 Statystyki:")
+        if 'py_files_scanned' in stats:
+            print(f"- Przeskanowano plików .py: {stats['py_files_scanned']}")
+        else:
+            print("- Brak danych o liczbie przeskanowanych plików .py")
+    
     if libs_ok and models_ok:
         print("\n🎉 Środowisko jest gotowe do pracy!")
-        return 0
+        returnn 0
     else:
         print("\n⚠️ Środowisko wymaga konfiguracji!")
         return 1

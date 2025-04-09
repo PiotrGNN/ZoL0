@@ -162,3 +162,146 @@ if __name__ == "__main__":
         sys.exit(1)
     else:
         print("\n✅ Wszystkie modele AI są prawidłowo ładowane!")
+#!/usr/bin/env python3
+"""
+test_models.py - Skrypt do testowania modeli AI.
+
+Ten skrypt testuje wszystkie modele AI w projekcie, sprawdzając ich
+poprawność i działanie.
+"""
+
+import os
+import sys
+import logging
+import numpy as np
+import pandas as pd
+from sklearn.datasets import make_classification
+from typing import Dict, List, Any
+
+# Dodaj katalog główny do ścieżki Pythona
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(current_dir)
+
+# Importuj tester modeli
+try:
+    from python_libs.model_tester import ModelTester
+except ImportError:
+    print("❌ Nie znaleziono modułu model_tester w python_libs")
+    print("Uruchom najpierw setup_local_packages.py aby zainstalować wymagane pakiety")
+    sys.exit(1)
+
+# Konfiguracja logowania
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler("test_models.log"),
+        logging.StreamHandler()
+    ]
+)
+
+def generate_test_data() -> tuple:
+    """
+    Generuje dane do testowania modeli.
+    
+    Returns:
+        tuple: (X_train, X_test, y_train, y_test)
+    """
+    # Generuj dane do klasyfikacji
+    X, y = make_classification(
+        n_samples=1000, 
+        n_features=20, 
+        n_informative=10, 
+        n_classes=2, 
+        random_state=42
+    )
+    
+    # Podziel na zestaw treningowy i testowy
+    split_idx = int(0.8 * len(X))
+    X_train, X_test = X[:split_idx], X[split_idx:]
+    y_train, y_test = y[:split_idx], y[split_idx:]
+    
+    return X_train, X_test, y_train, y_test
+
+def test_models() -> Dict[str, Any]:
+    """
+    Testuje wszystkie modele w projekcie.
+    
+    Returns:
+        Dict[str, Any]: Wyniki testów
+    """
+    print("🔍 Rozpoczęcie testowania modeli AI...")
+    
+    # Inicjalizuj tester modeli
+    model_tester = ModelTester(models_path='ai_models', log_path='logs/model_tests.log')
+    
+    # Uruchom testy
+    results = model_tester.run_tests()
+    
+    # Pobierz załadowane modele
+    models = model_tester.get_loaded_models()
+    
+    # Wygeneruj dane testowe
+    X_train, X_test, y_train, y_test = generate_test_data()
+    
+    # Testuj modele typu ML z metodami fit/predict
+    ml_results = {}
+    for model_info in models:
+        model_name = model_info['name']
+        instance = model_info['instance']
+        
+        # Sprawdź czy model ma metody fit i predict
+        if model_info['has_fit'] and model_info['has_predict']:
+            print(f"⏳ Testowanie modelu ML: {model_name}...")
+            
+            try:
+                # Trenuj model
+                instance.fit(X_train, y_train)
+                
+                # Ocena modelu
+                evaluation = model_tester.evaluate_model(model_name, X_test, y_test)
+                ml_results[model_name] = evaluation
+                
+                # Zapisz accuracy w informacjach o modelu
+                if 'accuracy' in evaluation:
+                    print(f"✅ Model {model_name}: accuracy = {evaluation['accuracy']:.4f}")
+                else:
+                    print(f"⚠️ Model {model_name}: brak metryki accuracy")
+            except Exception as e:
+                print(f"❌ Błąd podczas testowania modelu {model_name}: {e}")
+                ml_results[model_name] = {"error": str(e)}
+    
+    # Zapisz metadane modeli
+    model_tester.save_model_metadata("model_metadata.json")
+    
+    print("\n📋 Podsumowanie testów modeli:")
+    print(f"- Wykryto {results.get('models_detected', 0)} modeli")
+    print(f"- Załadowano {results.get('models_loaded', 0)} modeli")
+    print(f"- Przetestowano {len(ml_results)} modeli ML")
+    
+    if results.get('errors', []):
+        print("\n⚠️ Problemy podczas testów:")
+        for error in results.get('errors', []):
+            print(f"- {error}")
+            
+    return {
+        "results": results,
+        "ml_results": ml_results,
+        "models": [model['name'] for model in models]
+    }
+
+def main():
+    """
+    Funkcja główna.
+    """
+    try:
+        results = test_models()
+        
+        print("\n✅ Testowanie modeli zakończone pomyślnie!")
+        return 0
+    except Exception as e:
+        print(f"\n❌ Błąd podczas testowania modeli: {e}")
+        return 1
+
+if __name__ == "__main__":
+    sys.exit(main())

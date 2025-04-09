@@ -1,79 +1,174 @@
 
 #!/usr/bin/env python3
 """
-Script to install pip packages locally in a Replit environment
+setup_local_packages.py - Skrypt do instalacji lokalnych pakietów niezbędnych do działania systemu.
+
+Ten skrypt instaluje wszystkie brakujące pakiety z requirements.txt,
+ignorując błędy i próbując zainstalować pakiety z flagą --user, jeśli instalacja
+bez tej flagi nie powiedzie się.
 """
+
 import os
-import subprocess
 import sys
-from pathlib import Path
+import time
+import subprocess
+import importlib.util
+import logging
+from typing import List, Dict, Tuple, Set
 
-# Directory to install packages to
-LOCAL_LIBS_DIR = "python_libs"
+# Konfiguracja logowania
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler("setup_packages.log"),
+        logging.StreamHandler()
+    ]
+)
 
-# Packages that need to be installed locally (not available in nixpkgs)
-PACKAGES = [
-    "pybit==2.4.1",
-]
-
-def create_libs_dir():
-    """Create the local libs directory if it doesn't exist"""
-    Path(LOCAL_LIBS_DIR).mkdir(exist_ok=True)
-    # Create an empty __init__.py to make the directory a package
-    Path(f"{LOCAL_LIBS_DIR}/__init__.py").touch(exist_ok=True)
+def check_package(package_name: str) -> bool:
+    """
+    Sprawdza, czy pakiet jest zainstalowany.
     
-def install_package(package):
-    """Install a package to the local directory"""
-    print(f"Installing {package} to {LOCAL_LIBS_DIR}...")
-    result = subprocess.run(
-        [
-            sys.executable, 
-            "-m", 
-            "pip", 
-            "install", 
-            "--target", 
-            LOCAL_LIBS_DIR, 
-            "--break-system-packages",
-            package
-        ],
-        check=False,
-        capture_output=True,
-        text=True
-    )
+    Args:
+        package_name: Nazwa pakietu do sprawdzenia
+        
+    Returns:
+        bool: True jeśli pakiet jest zainstalowany, False w przeciwnym razie
+    """
+    # Usuń wersję z nazwy pakietu (np. 'flask>=2.0.0' -> 'flask')
+    base_package = package_name.split('==')[0].split('>=')[0].split('<=')[0].split('>')[0].split('<')[0].strip()
     
-    if result.returncode != 0:
-        print(f"Error installing {package}:")
-        print(result.stderr)
+    try:
+        return importlib.util.find_spec(base_package) is not None
+    except (ModuleNotFoundError, ValueError):
         return False
-    
-    print(f"Successfully installed {package}")
-    return True
 
-def main():
-    """Main function to set up the environment"""
-    print("Setting up local packages environment...")
-    create_libs_dir()
+def install_package(package_name: str, use_user: bool = False) -> bool:
+    """
+    Instaluje pakiet za pomocą pip.
     
-    # Create .gitignore for python_libs if it doesn't exist
-    gitignore_path = Path(".gitignore")
-    if gitignore_path.exists():
-        with open(gitignore_path, "r") as f:
-            content = f.read()
-        if LOCAL_LIBS_DIR not in content:
-            with open(gitignore_path, "a") as f:
-                f.write(f"\n# Local packages directory\n{LOCAL_LIBS_DIR}/\n")
-    else:
-        with open(gitignore_path, "w") as f:
-            f.write(f"# Local packages directory\n{LOCAL_LIBS_DIR}/\n")
+    Args:
+        package_name: Nazwa pakietu do zainstalowania
+        use_user: Czy użyć flagi --user
+        
+    Returns:
+        bool: True jeśli instalacja się powiodła, False w przeciwnym razie
+    """
+    cmd = [sys.executable, "-m", "pip", "install"]
     
-    # Install each package
-    for package in PACKAGES:
-        install_package(package)
+    if use_user:
+        cmd.append("--user")
+        
+    cmd.append(package_name)
     
-    print("\nLocal packages setup complete!")
-    print(f"To use these packages, add this to the beginning of your scripts:")
-    print("import sys")
-    print(f"sys.path.insert(0, \"{LOCAL_LIBS_DIR}\")")
+    try:
+        subprocess.check_call(cmd)
+        return True
+    except subprocess.CalledProcessError:
+        return False
+
+def parse_requirements(requirements_file: str) -> List[str]:
+    """
+    Parsuje plik requirements.txt.
+    
+    Args:
+        requirements_file: Ścieżka do pliku requirements.txt
+        
+    Returns:
+        List[str]: Lista nazw pakietów
+    """
+    if not os.path.exists(requirements_file):
+        logging.error(f"Plik {requirements_file} nie istnieje")
+        return []
+        
+    packages = []
+    with open(requirements_file, 'r') as f:
+        for line in f:
+            line = line.strip()
+            # Ignoruj komentarze i puste linie
+            if line and not line.startswith('#'):
+                packages.append(line)
+                
+    return packages
+
+def get_missing_packages(packages: List[str]) -> List[str]:
+    """
+    Zwraca listę brakujących pakietów.
+    
+    Args:
+        packages: Lista nazw pakietów do sprawdzenia
+        
+    Returns:
+        List[str]: Lista brakujących pakietów
+    """
+    missing = []
+    for package in packages:
+        if not check_package(package):
+            missing.append(package)
+            
+    return missing
+
+def main() -> None:
+    """
+    Funkcja główna.
+    """
+    print("🔧 Rozpoczęcie instalacji pakietów...")
+    
+    # Sprawdź, czy requirements.txt istnieje
+    requirements_file = "requirements.txt"
+    if not os.path.exists(requirements_file):
+        logging.error(f"Plik {requirements_file} nie istnieje")
+        sys.exit(1)
+        
+    # Parsuj requirements.txt
+    packages = parse_requirements(requirements_file)
+    logging.info(f"Znaleziono {len(packages)} pakietów w {requirements_file}")
+    
+    # Znajdź brakujące pakiety
+    missing = get_missing_packages(packages)
+    
+    if not missing:
+        logging.info("Wszystkie pakiety są już zainstalowane ✅")
+        return
+        
+    logging.info(f"Znaleziono {len(missing)} brakujących pakietów")
+    
+    # Zainstaluj brakujące pakiety
+    installation_results = {
+        "success": [],
+        "failed": []
+    }
+    
+    for i, package in enumerate(missing):
+        print(f"📦 Instalacja pakietu {i+1}/{len(missing)}: {package}")
+        
+        # Próbuj zainstalować bez flagi --user
+        if install_package(package):
+            installation_results["success"].append(package)
+            logging.info(f"Zainstalowano pakiet {package} ✅")
+        else:
+            # Jeśli nie powiodło się, spróbuj z flagą --user
+            logging.warning(f"Instalacja pakietu {package} nie powiodła się, próbuję z flagą --user")
+            
+            if install_package(package, use_user=True):
+                installation_results["success"].append(package)
+                logging.info(f"Zainstalowano pakiet {package} z flagą --user ✅")
+            else:
+                installation_results["failed"].append(package)
+                logging.error(f"Nie udało się zainstalować pakietu {package} ❌")
+                
+    # Podsumowanie
+    print("\n📋 Podsumowanie instalacji:")
+    print(f"- Zainstalowano {len(installation_results['success'])} pakietów")
+    print(f"- Nie udało się zainstalować {len(installation_results['failed'])} pakietów")
+    
+    if installation_results["failed"]:
+        print("\n❌ Pakiety, których nie udało się zainstalować:")
+        for package in installation_results["failed"]:
+            print(f"- {package}")
+            
+    print("\n✅ Zakończono instalację pakietów")
 
 if __name__ == "__main__":
     main()

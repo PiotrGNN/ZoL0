@@ -96,7 +96,7 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python3 test_models.py"
+args = "python test_models.py"
 
 [[workflows.workflow]]
 name = "Reset Environment"
@@ -133,6 +133,15 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python main.py"
+
+[[workflows.workflow]]
+name = "Setup Packages"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python setup_local_packages.py"
 
 [[ports]]
 localPort = 5000
