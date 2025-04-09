@@ -14,6 +14,50 @@ const CONFIG = {
     }
 };
 
+// Funkcja do pobierania statusu komponentów
+function fetchComponentStatus() {
+    fetch(CONFIG.apiEndpoints.componentStatus)
+        .then(response => response.json())
+        .then(data => {
+            updateComponentStatusUI(data);
+        })
+        .catch(error => {
+            console.error("Błąd podczas pobierania statusu komponentów:", error);
+            showNotification('error', 'Nie udało się pobrać statusu komponentów');
+        });
+}
+
+// Funkcja do aktualizacji UI na podstawie statusu komponentów
+function updateComponentStatusUI(data) {
+    // Aktualizacja statusu API Connector
+    const apiConnector = document.getElementById('api-connector');
+    if (apiConnector) {
+        apiConnector.className = `status-item status-${data.api || 'offline'}`;
+        apiConnector.querySelector('.status-text').textContent = capitalizeFirstLetter(data.api || 'offline');
+    }
+
+    // Aktualizacja statusu Trading Engine
+    const tradingEngine = document.getElementById('trading-engine');
+    if (tradingEngine) {
+        tradingEngine.className = `status-item status-${data.trading_engine || 'offline'}`;
+        tradingEngine.querySelector('.status-text').textContent = capitalizeFirstLetter(data.trading_engine || 'offline');
+    }
+
+    // Aktualizacja statusu Data Processor
+    const dataProcessor = document.getElementById('data-processor');
+    if (dataProcessor) {
+        dataProcessor.className = `status-item status-${data.api || 'offline'}`;
+        dataProcessor.querySelector('.status-text').textContent = capitalizeFirstLetter(data.api || 'offline');
+    }
+
+    // Aktualizacja statusu Risk Manager
+    const riskManager = document.getElementById('risk-manager');
+    if (riskManager) {
+        riskManager.className = `status-item status-${data.trading_engine || 'offline'}`;
+        riskManager.querySelector('.status-text').textContent = capitalizeFirstLetter(data.trading_engine || 'offline');
+    }
+}
+
 // Stan aplikacji
 const appState = {
     activeDashboard: true,

@@ -157,31 +157,31 @@
                             <div id="sentiment-value" class="sentiment-value neutral">
                                 Ładowanie...
                             </div>
-                            </div>
+                        </div>
 
-                            <div class="sentiment-details">
-                                <h4>Źródła danych:</h4>
-                                <ul>
-                                    {% for source, data in sentiment_data.sources.items() %}
-                                    <li>
-                                        <strong>{{ source }}</strong>: 
-                                        <span class="{% if data.score > 0.1 %}positive{% elif data.score < -0.1 %}negative{% else %}neutral{% endif %}">
-                                            {{ data.score|round(2) }}
-                                        </span>
-                                        ({{ data.volume }} wzmianek)
-                                    </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
+                        <div class="sentiment-details">
+                            <h4>Źródła danych:</h4>
+                            <ul>
+                                {% for source, data in sentiment_data.sources.items() %}
+                                <li>
+                                    <strong>{{ source }}</strong>: 
+                                    <span class="{% if data.score > 0.1 %}positive{% elif data.score < -0.1 %}negative{% else %}neutral{% endif %}">
+                                        {{ data.score|round(2) }}
+                                    </span>
+                                    ({{ data.volume }} wzmianek)
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
 
-                            <div class="sentiment-footer">
-                                <div>Zakres czasowy: {{ sentiment_data.time_range }}</div>
-                                <div>Ostatnia aktualizacja: {{ sentiment_data.timestamp }}</div>
-                            </div>
-                        {% else %}
-                            <div class="no-data">Brak danych o sentymencie rynkowym</div>
-                        {% endif %}
+                        <div class="sentiment-footer">
+                            <div>Zakres czasowy: {{ sentiment_data.time_range }}</div>
+                            <div>Ostatnia aktualizacja: {{ sentiment_data.timestamp }}</div>
+                        </div>
                     </div>
+                    {% else %}
+                        <div class="no-data">Brak danych o sentymencie rynkowym</div>
+                    {% endif %}
                 </div>
 
 
@@ -291,6 +291,7 @@
                                 <div>Zakres czasowy: {{ sentiment_data.time_range }}</div>
                                 <div>Ostatnia aktualizacja: {{ sentiment_data.timestamp }}</div>
                             </div>
+                        </div>
                         {% else %}
                             <div class="no-data">Brak danych o sentymencie rynkowym</div>
                         {% endif %}
