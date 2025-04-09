@@ -31,9 +31,7 @@ def install_package(package):
             "-m", 
             "pip", 
             "install", 
-            "--target", 
-            LOCAL_LIBS_DIR, 
-            "--break-system-packages",
+            "--user",
             package
         ],
         check=False,

@@ -7,8 +7,8 @@ echo "🧹 Czyszczę cache pakietów..."
 rm -rf __pycache__ */__pycache__ */*/__pycache__
 
 echo "📦 Instaluję zależności z requirements.txt..."
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
+python -m pip install --upgrade pip --user
+python -m pip install -r requirements.txt --user
 
 echo "🔍 Sprawdzam czy wszystkie modele AI są poprawnie ładowane..."
 python test_models.py
