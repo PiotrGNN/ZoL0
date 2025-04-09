@@ -152,6 +152,7 @@
                 <div class="card">
                     <h2>Sentyment Rynkowy</h2>
                     <div id="sentiment-container">
+                        {% if sentiment_data and sentiment_data.sources %}
                         <div class="sentiment-score">
                             <div class="sentiment-label">Ogólny sentyment:</div>
                             <div id="sentiment-value" class="sentiment-value neutral">
@@ -179,9 +180,6 @@
                             <div>Ostatnia aktualizacja: {{ sentiment_data.timestamp }}</div>
                         </div>
                     </div>
-                    {% else %}
-                        <div class="no-data">Brak danych o sentymencie rynkowym</div>
-                    {% endif %}
                 </div>
 
 
