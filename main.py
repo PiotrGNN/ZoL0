@@ -70,13 +70,14 @@ app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", os.urandom(24))
 
 # Deklaracja zmiennych globalnych
-global bybit_client, notification_system, sentiment_analyzer, anomaly_detector, strategy_manager, trading_engine
+global bybit_client, notification_system, sentiment_analyzer, anomaly_detector, strategy_manager, trading_engine, portfolio_manager
 bybit_client = None
 notification_system = None
 sentiment_analyzer = None
 anomaly_detector = None
 strategy_manager = None
 trading_engine = None
+portfolio_manager = None
 
 # Inicjalizacja komponentów systemu (import wewnątrz funkcji dla uniknięcia cyklicznych importów)
 def initialize_system():
@@ -112,12 +113,12 @@ def initialize_system():
         except ImportError as e:
             model_tester = None
             logging.warning(f"Nie można zaimportować ModelTester: {e}")
-        
+
         # Załadowanie konfiguracji AI
         try:
             import json
             ai_config_path = 'python_libs/ai_config.json'
-            
+
             if os.path.exists(ai_config_path):
                 with open(ai_config_path, 'r') as f:
                     ai_config = json.load(f)
@@ -145,11 +146,11 @@ def initialize_system():
         try:
             from ai_models.sentiment_ai import SentimentAnalyzer
             sentiment_lib = "ai_models.sentiment_ai"
-            
+
             # Pobierz ustawienia z konfiguracji
             sentiment_config = ai_config.get("model_settings", {}).get("sentiment_analyzer", {})
             sources = sentiment_config.get("sources", ["twitter", "news", "forum", "reddit"])
-            
+
             sentiment_analyzer = SentimentAnalyzer(sources=sources)
             logging.info(f"Zainicjalizowano SentimentAnalyzer z biblioteką {sentiment_lib} i źródłami {sources}")
         except ImportError as e:
@@ -167,12 +168,12 @@ def initialize_system():
         try:
             from ai_models.anomaly_detection import AnomalyDetector
             anomaly_lib = "ai_models.anomaly_detection"
-            
+
             # Pobierz ustawienia z konfiguracji
             anomaly_config = ai_config.get("model_settings", {}).get("anomaly_detector", {})
             method = anomaly_config.get("method", "z_score")
             threshold = anomaly_config.get("threshold", 2.5)
-            
+
             anomaly_detector = AnomalyDetector(method=method, threshold=threshold)
             logging.info(f"Zainicjalizowano AnomalyDetector z biblioteki {anomaly_lib} (metoda: {method}, próg: {threshold})")
         except ImportError as e:
@@ -214,13 +215,13 @@ def initialize_system():
         try:
             from python_libs.simplified_strategy import StrategyManager
             strategy_lib = "python_libs.simplified_strategy"
-            
+
             # Pobierz ustawienia strategii z konfiguracji
             strategy_settings = ai_config.get("strategy_settings", {})
-            
+
             strategies = {}
             exposure_limits = {}
-            
+
             # Domyślne strategie, jeśli brak w konfiguracji
             if not strategy_settings:
                 strategies = {
@@ -241,14 +242,14 @@ def initialize_system():
                         "enabled": settings.get("enabled", False)
                     }
                     exposure_limits[key] = settings.get("weight", 0.3)
-            
+
             strategy_manager = StrategyManager(strategies, exposure_limits)
             logging.info(f"Zainicjalizowano StrategyManager z biblioteką {strategy_lib} i {len(strategies)} strategiami")
         except ImportError:
             try:
                 from data.strategies.strategy_manager import StrategyManager
                 strategy_lib = "data.strategies.strategy_manager"
-                
+
                 strategies = {
                     "trend_following": {"name": "Trend Following", "enabled": True},
                     "mean_reversion": {"name": "Mean Reversion", "enabled": False},
@@ -259,7 +260,7 @@ def initialize_system():
                     "mean_reversion": 0.3,
                     "breakout": 0.4
                 }
-                
+
                 strategy_manager = StrategyManager(strategies, exposure_limits)
                 logging.info(f"Zainicjalizowano StrategyManager z alternatywnej biblioteki {strategy_lib}")
             except ImportError as e:
@@ -270,13 +271,13 @@ def initialize_system():
         risk_manager = None
         try:
             from python_libs.simplified_risk_manager import SimplifiedRiskManager
-            
+
             # Pobierz ustawienia symulacji z konfiguracji
             simulation_settings = ai_config.get("simulation_settings", {})
             max_risk = 0.05  # Domyślnie 5%
             max_position_size = simulation_settings.get("max_position_size", 0.2)
             max_drawdown = 0.1  # Domyślnie 10%
-            
+
             risk_manager = SimplifiedRiskManager(
                 max_risk=max_risk,
                 max_position_size=max_position_size,
@@ -343,11 +344,11 @@ def initialize_system():
                             use_testnet=use_testnet,
                             lazy_connect=True  # Używamy lazy initialization by uniknąć sprawdzania API na starcie
                         )
-                        
+
                         # Informacja o konfiguracji API
                         masked_key = f"{api_key[:4]}{'*' * (len(api_key) - 4)}" if api_key else "Brak klucza"
                         logging.info(f"Inicjalizacja klienta ByBit - Klucz: {masked_key}, Testnet: {use_testnet}")
-                        
+
                         # Ostrzeżenie dla produkcyjnego API
                         if not use_testnet:
                             logging.warning("!!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit. Operacje handlowe będą mieć realne skutki finansowe!")
@@ -398,12 +399,23 @@ def initialize_system():
             trading_engine = None
             logging.warning("Brak modułu silnika handlowego (Trading Engine) lub klienta ByBit")
 
+        # Inicjalizacja menadżera portfela
+        global portfolio_manager
+        try:
+            from python_libs.portfolio_manager import PortfolioManager
+            portfolio_manager = PortfolioManager(initial_balance=100.0, currency="USDT", mode="simulated") # Ustawienie początkowego salda na 100 USDT
+            logging.info("Zainicjalizowano menadżera portfela")
+        except ImportError as e:
+            logging.error(f"Nie można zaimportować PortfolioManager: {e}")
+            portfolio_manager = None
+
+
         # Test modeli AI
         if model_tester:
             test_results = model_tester.run_tests()
             loaded_models = model_tester.get_loaded_models()
             logging.info(f"Przetestowano modele AI: znaleziono {len(loaded_models)} działających modeli")
-        
+
         # Inicjalizacja managera symulacji
         global simulation_manager
         if simulation_import_success:
@@ -485,9 +497,9 @@ def dashboard():
 
     # Pobieranie stanu portfela
     portfolio = None
-    if bybit_client:
+    if portfolio_manager:
         try:
-            portfolio = bybit_client.get_account_balance()
+            portfolio = portfolio_manager.get_portfolio()
             logging.info(f"Pobrano portfolio: {portfolio}")
         except Exception as e:
             logging.error(f"Błąd podczas pobierania portfolio: {e}", exc_info=True) #Dodatkowe informacje o błędzie
@@ -501,14 +513,14 @@ def dashboard():
                 "note": "Dane przykładowe - wystąpił błąd"
             }
     else:
-        logging.warning("Klient ByBit nie jest zainicjalizowany, używam danych testowych")
+        logging.warning("Menadżer portfela nie jest zainicjalizowany, używam danych testowych")
         portfolio = {
             "balances": {
                 "BTC": {"equity": 0.01, "available_balance": 0.01, "wallet_balance": 0.01},
                 "USDT": {"equity": 1000, "available_balance": 950, "wallet_balance": 1000}
             }, 
             "success": True,
-            "note": "Dane testowe - klient ByBit nie jest zainicjalizowany"
+            "note": "Dane testowe - menadżer portfela nie jest zainicjalizowany"
         }
 
     return render_template(
@@ -518,7 +530,7 @@ def dashboard():
         strategies=strategies,
         trades=[],
         alerts=[],
-        sentiment_data=None,
+        sentiment_data=None, # Dodano zmienną dla danych sentymentu
         anomalies=[],
         portfolio=portfolio
     )
@@ -526,41 +538,34 @@ def dashboard():
 # API endpoints
 @app.route('/api/portfolio')
 def get_portfolio_data():
+    """Endpoint API do pobierania danych portfela."""
     try:
-        # Pobierz dane portfela
-        if bybit_client:
-            try:
-                portfolio_data = bybit_client.get_account_balance()
-                return jsonify({
-                    'success': True,
-                    'balances': portfolio_data['balances'] if 'balances' in portfolio_data else {}
-                })
-            except Exception as e:
-                logging.error(f"Błąd podczas pobierania danych portfela: {e}", exc_info=True)
-                # Zwróć testowe dane w przypadku błędu z poprawną strukturą
-                return jsonify({
-                    'success': True,
-                    'balances': {
-                        "BTC": {"equity": 0.005, "available_balance": 0.005, "wallet_balance": 0.005},
-                        "USDT": {"equity": 500, "available_balance": 450, "wallet_balance": 500}
-                    }
-                })
-        else:
-            # Dane testowe gdy klient nie jest zainicjalizowany
-            return jsonify({
-                'success': True,
-                'balances': {
-                    "BTC": {"equity": 0.01, "available_balance": 0.01, "wallet_balance": 0.01},
-                    "USDT": {"equity": 1000, "available_balance": 950, "wallet_balance": 1000}
-                }
-            })
+        # Używanie portfolio_manager zamiast bezpośredniego pobierania danych z Bybit
+        portfolio_data = portfolio_manager.get_portfolio()
+        return jsonify(portfolio_data)
     except Exception as e:
-        logging.error(f"Błąd podczas przetwarzania danych portfela: {e}", exc_info=True)
-        return jsonify({
-            'success': False,
-            'error': str(e),
-            'balances': {}
-        })
+        logging.error(f"Błąd podczas pobierania danych portfela: {e}", exc_info=True)
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/portfolio/set-balance', methods=['POST'])
+def set_portfolio_balance():
+    """Endpoint API do ustawiania początkowego salda portfela."""
+    try:
+        data = request.json
+        if not data or "amount" not in data:
+            return jsonify({"error": "Brak wymaganego parametru 'amount'"}), 400
+
+        amount = float(data["amount"])
+        currency = data.get("currency", "USDT")
+
+        success = portfolio_manager.set_initial_balance(amount, currency)
+        if success:
+            return jsonify({"success": True, "message": f"Ustawiono początkowe saldo na {amount} {currency}"})
+        else:
+            return jsonify({"error": "Nie udało się ustawić początkowego salda"}), 500
+    except Exception as e:
+        logging.error(f"Błąd podczas ustawiania początkowego salda: {e}", exc_info=True)
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/dashboard/data')
 def get_dashboard_data():
@@ -821,7 +826,7 @@ def run_simulation():
         data = request.json or {}
         initial_capital = float(data.get('initial_capital', 10000.0))
         duration = int(data.get('duration', 1000))
-        
+
         if simulation_import_success and simulation_manager:
             # Uruchom symulację
             results = simulation_manager.create_simulation(
@@ -829,7 +834,7 @@ def run_simulation():
                 duration=duration,
                 save_report=True
             )
-            
+
             return jsonify({
                 'status': 'success',
                 'summary': results['summary'],
@@ -856,7 +861,7 @@ def run_simulation_with_learning():
         initial_capital = float(data.get('initial_capital', 10000.0))
         duration = int(data.get('duration', 1000))
         iterations = int(data.get('iterations', 5))
-        
+
         if simulation_import_success and simulation_manager:
             # Uruchom symulację z uczeniem
             results = simulation_manager.run_simulation_with_learning(
@@ -864,7 +869,7 @@ def run_simulation_with_learning():
                 duration=duration,
                 learning_iterations=iterations
             )
-            
+
             return jsonify({
                 'status': 'success',
                 'summary': results.get('summary', {}),
@@ -888,7 +893,7 @@ def get_ai_thoughts():
     """Endpoint do pobierania przemyśleń modeli AI"""
     try:
         thoughts = []
-        
+
         # Pobierz przemyślenia z analizatora sentymentu
         if sentiment_analyzer:
             sentiment_data = sentiment_analyzer.analyze()
@@ -899,7 +904,7 @@ def get_ai_thoughts():
                 'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                 'type': 'sentiment'
             })
-        
+
         # Pobierz przemyślenia z detektora anomalii
         if anomaly_detector:
             # Generowanie losowych danych
@@ -921,7 +926,7 @@ def get_ai_thoughts():
                     'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                     'type': 'anomaly'
                 })
-        
+
         # Dodaj przemyślenia od ModelRecognizer
         if 'model_recognizer' in globals() and model_recognizer:
             model_info = model_recognizer.identify_model_type(None)
@@ -933,7 +938,7 @@ def get_ai_thoughts():
                     'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                     'type': 'model_recognition'
                 })
-        
+
         # Losowe przemyślenia strategii
         strategy_thoughts = [
             "Obecny trend sugeruje możliwość utrzymania pozycji długiej",
@@ -942,7 +947,7 @@ def get_ai_thoughts():
             "MACD sygnalizuje potencjalną zmianę trendu",
             "Wykres formuje figurę głowy i ramion - możliwe odwrócenie trendu"
         ]
-        
+
         thoughts.append({
             'model': 'StrategyAnalyzer',
             'thought': random.choice(strategy_thoughts),
@@ -950,7 +955,7 @@ def get_ai_thoughts():
             'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             'type': 'strategy'
         })
-        
+
         return jsonify({
             'status': 'success',
             'thoughts': thoughts,
@@ -970,13 +975,13 @@ def get_learning_status():
     try:
         # Pobierz ostatnie wyniki uczenia z symulacji
         learning_data = []
-        
+
         if simulation_import_success and simulation_manager:
             # Próba pobrania wyników uczenia
             results = simulation_manager.get_simulation_results()
             if results.get('status') == 'success' and 'learning_results' in results:
                 learning_data = results['learning_results']
-        
+
         # Jeśli brak danych, wygeneruj przykładowe
         if not learning_data:
             learning_data = [
@@ -989,7 +994,7 @@ def get_learning_status():
                 }
                 for i in range(5)
             ]
-        
+
         # Aktualne modele w treningu
         models_training = [
             {
@@ -1007,7 +1012,7 @@ def get_learning_status():
                 'current_accuracy': random.uniform(65, 85)
             }
         ]
-        
+
         return jsonify({
             'status': 'success',
             'learning_data': learning_data,
@@ -1029,368 +1034,54 @@ def get_learning_status():
 
 @app.route('/api/component-status')
 def get_component_status():
-    """Endpoint do pobierania statusu komponentów systemu"""
+    """Endpoint API zwracający status komponentów systemu."""
     try:
-        # Status API Connector
-        api_connector_status = 'offline'
-        if bybit_client:
+        # Sprawdzenie statusu komponentów
+        api_status = "online" if bybit_client is not None else "offline"
+        trading_status = "online" if trading_engine is not None else "offline"
+        portfolio_status = "online" if portfolio_manager is not None else "offline"
+        sentiment_status = "online" if sentiment_analyzer is not None else "offline"
+
+        # Pobieranie testowych danych rynkowych, aby sprawdzić status API
+        if api_status == "online":
             try:
-                # Spróbuj wykonać prostą operację, aby sprawdzić, czy API działa
-                server_time = bybit_client.get_server_time()
-                api_connector_status = 'online'
-            except Exception as e:
-                logging.warning(f"Błąd podczas sprawdzania statusu API: {e}")
-                api_connector_status = 'warning'
-
-        # Trading Engine Status
-        trading_engine_status = 'offline'
-        trading_engine_details = {}
-        if trading_engine:
-            try:
-                # Pobierz status z silnika handlowego
-                engine_status = trading_engine.get_status()
-
-                # Dodatkowe szczegóły dla diagnostyki
-                trading_engine_details = {
-                    'active_symbols': engine_status.get('active_symbols', []),
-                    'active_strategies': engine_status.get('active_strategies', []),
-                    'last_error': engine_status.get('last_error', None)
-                }
-
-                if engine_status['status'] == 'running':
-                    trading_engine_status = 'online'
-
-                    # Sprawdź ryzyko dla aktywnych symboli
-                    if hasattr(trading_engine, 'calculate_positions_risk'):
-                        try:
-                            risk_levels = trading_engine.calculate_positions_risk()
-                            trading_engine_details['risk_levels'] = risk_levels
-                            logging.info(f"Poziomy ryzyka: {risk_levels}")
-                        except Exception as risk_e:
-                            logging.warning(f"Nie można obliczyć ryzyka: {risk_e}")
-
-                elif engine_status['status'] == 'error':
-                    trading_engine_status = 'warning'
-                    logging.warning(f"Problem z silnikiem handlowym: {engine_status.get('last_error', 'Nieznany błąd')}")
+                # Pobierz testowe dane
+                test_data = bybit_client.get_klines(symbol="BTCUSDT", interval="15", limit=1)
+                if test_data and len(test_data) > 0:
+                    latest_price = test_data[0].get("close", 0)
+                    logging.info(f"Data Processor: pobrano dane testowe dla BTCUSDT (cena: {latest_price})")
                 else:
-                    trading_engine_status = 'offline'
-                    logging.info("Silnik handlowy jest wyłączony")
-            except Exception as e:
-                logging.error(f"Błąd podczas sprawdzania statusu silnika handlowego: {e}", exc_info=True)
-                trading_engine_status = 'warning'
+                    api_status = "degraded"
+                    logging.warning("Data Processor: brak danych dla BTCUSDT")
+            except Exception as data_error:
+                api_status = "degraded"
+                logging.error(f"Data Processor: błąd podczas pobierania danych testowych: {data_error}")
 
-        # Data Processor Status - sprawdź czy można załadować dane
-        data_processor_status = 'online'
-        try:
-            # Pobierz przykładowe dane z silnika handlowego dla diagnostyki
-            if trading_engine and hasattr(trading_engine, 'get_market_data'):
-                test_data = trading_engine.get_market_data('BTCUSDT')
-                if test_data is None or not test_data:
-                    logging.warning("Data Processor Warning: nie można pobrać danych testowych")
-                    data_processor_status = 'warning'
-                else:
-                    logging.info(f"Data Processor: pobrano dane testowe dla BTCUSDT (cena: {test_data.get('price', 'N/A')})")
-        except Exception as e:
-            logging.error(f"Błąd w Data Processor: {e}")
-            data_processor_status = 'warning'
+        logging.info(f"Statusy komponentów: API: {api_status}, Trading: {trading_status}")
 
-        # Risk Manager Status - zakładamy, że działa, jeśli silnik handlowy działa
-        risk_manager_status = trading_engine_status if trading_engine else 'offline'
-
-        # Sentiment Analyzer Status
-        sentiment_analyzer_status = 'offline'
-        if sentiment_analyzer:
-            try:
-                # Spróbuj wykonać analizę sentymentu
-                sentiment_analyzer.analyze()
-                sentiment_analyzer_status = 'online'
-            except Exception:
-                sentiment_analyzer_status = 'warning'
-
-        # Budowanie odpowiedzi z wszystkimi komponentami
-        components = [
-            {
-                'id': 'api-connector',
-                'status': api_connector_status,
-                'name': 'API Connector'
-            },
-            {
-                'id': 'data-processor',
-                'status': data_processor_status,
-                'name': 'Data Processor'
-            },
-            {
-                'id': 'trading-engine',
-                'status': trading_engine_status,
-                'name': 'Trading Engine'
-            },
-            {
-                'id': 'risk-manager',
-                'status': risk_manager_status,
-                'name': 'Risk Manager'
-            },
-            {
-                'id': 'sentiment-analyzer',
-                'status': sentiment_analyzer_status,
-                'name': 'Sentiment Analyzer'
-            }
-        ]
-
-        # Log diagnostyczny
-        logger.info(f"Statusy komponentów: API: {api_connector_status}, Trading: {trading_engine_status}")
-
-        return jsonify({'components': components})
-    except Exception as e:
-        logging.error(f"Błąd podczas pobierania statusu komponentów: {e}", exc_info=True)
-        return jsonify({'error': str(e), 'components': [
-            {'id': 'api-connector', 'status': 'warning', 'name': 'API Connector'},
-            {'id': 'data-processor', 'status': 'warning', 'name': 'Data Processor'},
-            {'id': 'trading-engine', 'status': 'warning', 'name': 'Trading Engine'},
-            {'id': 'risk-manager', 'status': 'warning', 'name': 'Risk Manager'},
-            {'id': 'sentiment-analyzer', 'status': 'warning', 'name': 'Sentiment Analyzer'}
-        ]}), 200  # Zwracamy 200 zamiast 500, aby frontend otrzymał odpowiedź
-
-@app.route('/api/ai-models-status')
-def get_ai_models_status():
-    """Zwraca status wszystkich modeli AI"""
-    try:
-        # Najpierw sprawdź, czy model_tester jest dostępny
-        from python_libs.model_tester import ModelTester
-        tester = ModelTester(models_path='ai_models')
-        tester.run_tests()  # Uruchom testy modeli
-        test_results = tester.get_test_results()
-        loaded_models = tester.get_loaded_models()
-
-        # Pobranie wszystkich dostępnych modeli z ai_models/__init__.py
-        available_models = {}
-        try:
-            import ai_models
-            if hasattr(ai_models, 'get_available_models'):
-                available_models = ai_models.get_available_models()
-                logger.info(f"Pobrano {len(available_models)} modeli z ai_models.get_available_models()")
-        except Exception as e:
-            logger.warning(f"Nie można pobrać listy modeli z ai_models: {e}")
-
-        # Baza modeli - połącz loaded_models i available_models
-        model_base = {}
-
-        # Dodaj modele z testera
-        for model_info in loaded_models:
-            model_name = model_info['name']
-            model_base[model_name] = {
-                'name': model_name,
-                'type': model_info['instance'].__class__.__name__,
-                'instance': model_info['instance'],
-                'status': 'Active',
-                'has_predict': hasattr(model_info['instance'], 'predict'),
-                'has_fit': hasattr(model_info['instance'], 'fit'),
-                'test_result': 'Passed'
-            }
-
-        # Dodaj modele z available_models, które nie są jeszcze w bazie
-        for name, model_class in available_models.items():
-            if name not in model_base:
-                # Sprawdź, czy ta klasa jest już w test_results
-                test_result = 'Unknown'
-                for module_name, result in test_results.items():
-                    if result.get('success') and model_class.__name__ in str(result.get('found_classes', [])):
-                        test_result = 'Passed'
-                        break
-                    elif not result.get('success') and model_class.__name__ in str(result.get('found_classes', [])):
-                        test_result = 'Failed'
-                        break
-
-                model_base[name] = {
-                    'name': name,
-                    'type': model_class.__name__,
-                    'status': 'Inactive',
-                    'has_predict': 'predict' in dir(model_class),
-                    'has_fit': 'fit' in dir(model_class),
-                    'test_result': test_result
-                }
-
-        # Skanuj wszystkie pliki w folderze ai_models
-        try:
-            import os
-            import importlib
-            ai_models_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ai_models')
-
-            # Znajdź wszystkie pliki .py
-            for filename in os.listdir(ai_models_dir):
-                if filename.endswith('.py') and filename != '__init__.py' and not filename.startswith('_'):
-                    module_name = filename[:-3]  # Usuń rozszerzenie .py
-
-                    # Sprawdź, czy ten moduł jest już w test_results
-                    if module_name in test_results:
-                        # Dla każdej znalezionej klasy
-                        for class_name in test_results[module_name].get('found_classes', []):
-                            key = f"{module_name}_{class_name}"
-                            if key not in model_base:
-                                model_base[key] = {
-                                    'name': class_name,
-                                    'type': class_name,
-                                    'module': module_name,
-                                    'status': 'Detected' if test_results[module_name].get('success') else 'Error',
-                                    'has_predict': False,  # Domyślnie, nie możemy tego stwierdzić bez instancji
-                                    'has_fit': False,      # Domyślnie, nie możemy tego stwierdzić bez instancji
-                                    'test_result': 'Passed' if test_results[module_name].get('success') else 'Failed',
-                                    'error': test_results[module_name].get('error')
-                                }
-        except Exception as e:
-            logger.warning(f"Błąd podczas skanowania plików ai_models: {e}")
-
-        # Przygotuj ostateczną listę modeli
-        model_summary = []
-        for key, model_info in model_base.items():
-            # Dodaj dodatkowe informacje
-            model_info['accuracy'] = round(75.0 + 10.0 * random.random(), 1)  # Przykładowa dokładność
-            model_info['last_used'] = (datetime.now() - timedelta(minutes=random.randint(5, 60))).strftime('%Y-%m-%d %H:%M:%S')
-
-            # Usuń instancję, której nie można serializować do JSON
-            if 'instance' in model_info:
-                del model_info['instance']
-
-            model_summary.append(model_info)
-
-        logger.info(f"Przygotowano informacje o {len(model_summary)} modelach AI")
-        return jsonify({'models': model_summary})
-
-    except ImportError as e:
-        logger.warning(f"Nie można zaimportować testera modeli: {e}")
-        # Używamy przykładowego kodu do znalezienia modeli
-        model_summary = []
-
-        try:
-            import os
-            import importlib
-            import inspect
-
-            ai_models_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ai_models')
-
-            # Znajdź wszystkie pliki .py
-            for filename in os.listdir(ai_models_dir):
-                if filename.endswith('.py') and filename != '__init__.py' and not filename.startswith('_'):
-                    module_name = filename[:-3]  # Usuń rozszerzenie .py
-
-                    try:
-                        # Zaimportuj moduł
-                        module = importlib.import_module(f"ai_models.{module_name}")
-
-                        # Znajdź wszystkie klasy w module
-                        model_classes = []
-                        for name, obj in inspect.getmembers(module):
-                            if inspect.isclass(obj) and obj.__module__ == f"ai_models.{module_name}":
-                                model_classes.append((name, obj))
-
-                        if model_classes:
-                            for class_name, class_obj in model_classes:
-                                model_summary.append({
-                                    'name': class_name,
-                                    'type': class_name,
-                                    'module': module_name,
-                                    'status': 'Detected',
-                                    'has_predict': hasattr(class_obj, 'predict'),
-                                    'has_fit': hasattr(class_obj, 'fit'),
-                                    'accuracy': round(75.0 + 10.0 * random.random(), 1),
-                                    'last_used': (datetime.now() - timedelta(minutes=random.randint(5, 60))).strftime('%Y-%m-%d %H:%M:%S')
-                                })
-                        else:
-                            # Dodaj informację o module bez klas
-                            model_summary.append({
-                                'name': f"{module_name} (bez klas)",
-                                'type': 'Module',
-                                'module': module_name,
-                                'status': 'Unknown',
-                                'has_predict': False,
-                                'has_fit': False,
-                                'accuracy': 0.0,
-                                'last_used': 'Nieznane'
-                            })
-                    except Exception as module_e:
-                        # Dodaj informację o błędzie w module
-                        model_summary.append({
-                            'name': f"{module_name} (błąd)",
-                            'type': 'Error',
-                            'module': module_name,
-                            'status': 'Error',
-                            'has_predict': False,
-                            'has_fit': False,
-                            'accuracy': 0.0,
-                            'last_used': 'Nieznane',
-                            'error': str(module_e)
-                        })
-                        logger.warning(f"Błąd importu modułu {module_name}: {module_e}")
-
-            logger.info(f"Alternatywna metoda: znaleziono {len(model_summary)} modeli AI")
-
-        except Exception as scan_e:
-            logger.error(f"Błąd podczas skanowania modeli: {scan_e}")
-            # Używamy przykładowych modeli
-            model_summary = [
-                {
-                    'name': 'Trend Predictor',
-                    'type': 'LSTM',
-                    'accuracy': 78.5,
-                    'status': 'Active',
-                    'last_used': (datetime.now() - timedelta(minutes=15)).strftime('%Y-%m-%d %H:%M:%S'),
-                    'has_predict': True,
-                    'has_fit': True,
-                },
-                {
-                    'name': 'Sentiment Analyzer',
-                    'type': 'BERT',
-                    'accuracy': 82.3,
-                    'status': 'Active',
-                    'last_used': (datetime.now() - timedelta(minutes=5)).strftime('%Y-%m-%d %H:%M:%S'),
-                    'has_predict': True,
-                    'has_fit': True,
-                },
-                {
-                    'name': 'Volatility Predictor',
-                    'type': 'XGBoost',
-                    'accuracy': 75.1,
-                    'status': 'Active',
-                    'last_used': (datetime.now() - timedelta(minutes=30)).strftime('%Y-%m-%d %H:%M:%S'),
-                    'has_predict': True,
-                    'has_fit': True,
-                }
-            ]
-
-        return jsonify({'models': model_summary})
-    except Exception as e:
-        logging.error(f"Błąd podczas pobierania statusu modeli AI: {e}", exc_info=True)
         return jsonify({
-            'error': str(e),
-            'models': [
-                {
-                    'name': 'Error occurred',
-                    'type': 'Error',
-                    'accuracy': 0.0,
-                    'status': 'Error',
-                    'last_used': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                    'has_predict': False,
-                    'has_fit': False,
-                    'error': str(e)
-                }
-            ]
-        }), 200  # Zwracamy 200 zamiast 500, aby frontend otrzymał odpowiedź
+            "api": api_status,
+            "trading_engine": trading_status,
+            "portfolio": portfolio_status,
+            "sentiment": sentiment_status,
+            "timestamp": datetime.now().isoformat()
+        })
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania statusu komponentów: {e}")
+        return jsonify({"error": str(e)}), 500
 
-@app.route('/api/system/status')
-def get_system_status():
-    return jsonify({
-        'success': True,
-        'components': {
-            'trading_engine': 'active',
-            'data_fetcher': 'active',
-            'risk_management': 'active',
-            'ml_prediction': 'active',
-            'order_execution': 'active',
-            'notification_system': 'active' if 'notification_system' in globals() else 'inactive',
-            'bybit_api':'active' if bybit_client else 'inactive',
-            'strategy_manager': 'active' if strategy_manager else 'inactive'
-        },
-        'last_updated': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    })
+@app.route('/api/sentiment', methods=['GET'])
+def get_sentiment_data():
+    """Endpoint API do pobierania danych sentymentu rynkowego."""
+    try:
+        if sentiment_analyzer is None:
+            return jsonify({"error": "Analizator sentymentu nie jest zainicjalizowany"}), 503
+
+        sentiment_data = sentiment_analyzer.analyze()
+        return jsonify(sentiment_data)
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania danych sentymentu: {e}", exc_info=True)
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/trading/start', methods=['POST'])
 def start_trading():
@@ -1494,9 +1185,9 @@ def get_bybit_account_balance():
 def get_portfolio():
     """Endpoint zwracający dane portfela."""
     try:
-        if not bybit_client:
+        if not portfolio_manager:
             # Jeśli klient nie jest dostępny, zwróć przykładowe dane
-            logger.info("Klient ByBit nie jest zainicjalizowany, używam danych testowych")
+            logger.info("Menadżer portfela nie jest zainicjalizowany, używam danych testowych")
             return jsonify({
                 "success": True,
                 "balances": {
@@ -1507,8 +1198,8 @@ def get_portfolio():
             })
 
         # Próba pobrania danych z API
-        logger.info("Próbuję pobrać dane portfela z API ByBit")
-        balance = bybit_client.get_account_balance()
+        logger.info("Próbuję pobrać dane portfela z menadżera portfela")
+        balance = portfolio_manager.get_portfolio()
 
         # Upewnij się, że zwracany JSON ma wymagane pole success
         if "success" not in balance:
@@ -1516,14 +1207,14 @@ def get_portfolio():
 
         # Upewnij się, że mamy słownik balances nawet jeśli API zwróciło błąd
         if "balances" not in balance or not balance["balances"]:
-            logger.warning("API zwróciło puste dane portfela, używam danych testowych")
+            logger.warning("Menadżer portfela zwrócił puste dane portfela, używam danych testowych")
             balance["balances"] = {
                 "BTC": {"equity": 0.01, "available_balance": 0.01, "wallet_balance": 0.01},
                 "USDT": {"equity": 1000, "available_balance": 950, "wallet_balance": 1000}
             }
             balance["source"] = "fallback_empty"
 
-        logger.info(f"Zwracam dane portfela: {balance.get('source', 'api')}")
+        logger.info(f"Zwracam dane portfela: {balance.get('source', 'portfolio_manager')}")
         return jsonify(balance)
     except Exception as e:
         logger.error(f"Błąd podczas pobierania danych portfela: {e}", exc_info=True)
@@ -1632,7 +1323,7 @@ if __name__ == "__main__":
             # Próba utworzenia prostego obrazu wykresu
             import matplotlib.pyplot as plt
             import numpy as np
-            
+
             plt.figure(figsize=(10, 6))
             days = 30
             x = np.arange(days)

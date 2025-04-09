@@ -148,6 +148,44 @@
                     </div>
                 </div>
 
+                <!-- Sentyment rynkowy -->
+                <div class="card">
+                    <h2>Sentyment Rynkowy</h2>
+                    <div id="sentiment-container">
+                        {% if sentiment_data %}
+                            <div class="sentiment-score">
+                                <div class="sentiment-label">Ogólny sentyment:</div>
+                                <div class="sentiment-value {% if sentiment_data.overall_score > 0.1 %}positive{% elif sentiment_data.overall_score < -0.1 %}negative{% else %}neutral{% endif %}">
+                                    {{ sentiment_data.analysis }}
+                                </div>
+                            </div>
+
+                            <div class="sentiment-details">
+                                <h4>Źródła danych:</h4>
+                                <ul>
+                                    {% for source, data in sentiment_data.sources.items() %}
+                                    <li>
+                                        <strong>{{ source }}</strong>: 
+                                        <span class="{% if data.score > 0.1 %}positive{% elif data.score < -0.1 %}negative{% else %}neutral{% endif %}">
+                                            {{ data.score|round(2) }}
+                                        </span>
+                                        ({{ data.volume }} wzmianek)
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+
+                            <div class="sentiment-footer">
+                                <div>Zakres czasowy: {{ sentiment_data.timeframe }}</div>
+                                <div>Ostatnia aktualizacja: {{ sentiment_data.timestamp }}</div>
+                            </div>
+                        {% else %}
+                            <div class="no-data">Brak danych o sentymencie rynkowym</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+
                 <!-- Ostatnie transakcje -->
                 <div class="card">
                     <h2>Recent Trades</h2>
@@ -402,7 +440,7 @@
                         <div class="no-data">Ładowanie statusu uczenia...</div>
                     </div>
                 </div>
-                
+
                 <!-- Panel kontroli symulacji -->
                 <div class="card">
                     <h2>Kontrola Symulacji i Uczenia</h2>
@@ -431,7 +469,7 @@
                                 <button type="submit" class="form-submit">Uruchom symulację</button>
                             </div>
                         </form>
-                        
+
                         <div class="button-group" style="margin-top: 20px;">
                             <button id="run-simulation-btn" class="btn btn-primary">Szybka symulacja</button>
                             <button id="run-learning-btn" class="btn btn-info">Symulacja z uczeniem</button>
@@ -440,7 +478,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Powiadomienia -->
         <div id="notifications-tab" class="tab-content">
             <div class="card full-width">
@@ -558,7 +596,7 @@
             // Pokazywanie/ukrywanie pola iteracji w zależności od zaznaczenia checkboxa
             const withLearningCheckbox = document.getElementById('with-learning');
             const iterationsRow = document.getElementById('iterations-row');
-            
+
             if (withLearningCheckbox && iterationsRow) {
                 withLearningCheckbox.addEventListener('change', function() {
                     iterationsRow.style.display = this.checked ? 'flex' : 'none';

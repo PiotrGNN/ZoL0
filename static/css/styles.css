@@ -751,3 +751,107 @@ footer {
 .ai-model-card.detected {
     border-left-color: #17a2b8;
 }
+
+/* Stylizacja dla sekcji portfolio */
+.portfolio-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.portfolio-table th, .portfolio-table td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.portfolio-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.portfolio-table tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* Stylizacja dla sekcji sentymentu */
+.sentiment-value {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.sentiment-label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.sentiment-score {
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.sentiment-score.positive {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.sentiment-score.negative {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.sentiment-score.neutral {
+    background-color: #e2e3e5;
+    color: #383d41;
+}
+
+.sentiment-analysis {
+    margin-left: 10px;
+    font-style: italic;
+}
+
+.sources-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sources-list li {
+    padding: 5px 0;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted #eee;
+}
+
+.source-name {
+    font-weight: 500;
+}
+
+.source-value {
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+.source-value.positive {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.source-value.negative {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.source-value.neutral {
+    background-color: #e2e3e5;
+    color: #383d41;
+}
+
+#set-balance-form {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}

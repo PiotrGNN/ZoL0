@@ -9,7 +9,8 @@ const CONFIG = {
         componentStatus: '/api/component-status',
         chartData: '/api/chart/data',
         aiModelsStatus: '/api/ai-models-status',
-        simulationResults: '/api/simulation-results'
+        simulationResults: '/api/simulation-results',
+        sentiment: '/api/sentiment' // Added endpoint for sentiment data
     }
 };
 
@@ -850,3 +851,245 @@ function setupEventListeners() {
         appState.activeDashboard = !document.hidden;
     });
 }
+
+// Funkcja do pobierania danych portfela
+function fetchPortfolioData() {
+    fetch('/api/portfolio')
+        .then(response => response.json())
+        .then(data => {
+            // Pobierz element, który ma być aktualizowany
+            const portfolioElement = document.getElementById('portfolio-data');
+            if (!portfolioElement) {
+                console.error("Element 'portfolio-data' nie istnieje");
+                return;
+            }
+
+            // Sprawdź czy dane są dostępne
+            if (data && data.balances) {
+                // Wyczyść obecną zawartość
+                portfolioElement.innerHTML = '';
+
+                // Utwórz nagłówek tabeli
+                const table = document.createElement('table');
+                table.className = 'portfolio-table';
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Waluta</th>
+                            <th>Kapitał</th>
+                            <th>Dostępne</th>
+                            <th>Akcje</th>
+                        </tr>
+                    </thead>
+                    <tbody id="portfolio-body"></tbody>
+                `;
+                portfolioElement.appendChild(table);
+
+                const tbody = document.getElementById('portfolio-body');
+
+                // Dodaj wiersze dla każdej waluty
+                Object.keys(data.balances).forEach(currency => {
+                    const balance = data.balances[currency];
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${currency}</td>
+                        <td>${parseFloat(balance.equity).toFixed(6)}</td>
+                        <td>${parseFloat(balance.available_balance).toFixed(6)}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" 
+                                    onclick="setBalance(${parseFloat(balance.equity).toFixed(6)}, '${currency}')">
+                                Ustaw
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+                // Dodaj formularz do ustawienia nowego salda
+                const formRow = document.createElement('div');
+                formRow.className = 'mt-3';
+                formRow.innerHTML = `
+                    <form id="set-balance-form" class="row g-3 align-items-center">
+                        <div class="col-auto">
+                            <input type="number" step="0.01" min="0" class="form-control" id="balance-amount" placeholder="Kwota" required>
+                        </div>
+                        <div class="col-auto">
+                            <input type="text" class="form-control" id="balance-currency" placeholder="USDT" value="USDT" required>
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary">Ustaw nowe saldo</button>
+                        </div>
+                    </form>
+                `;
+                portfolioElement.appendChild(formRow);
+
+                // Dodaj obsługę formularza
+                document.getElementById('set-balance-form').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const amount = document.getElementById('balance-amount').value;
+                    const currency = document.getElementById('balance-currency').value;
+                    setBalance(amount, currency);
+                });
+
+            } else {
+                portfolioElement.innerHTML = '<p>Nie można pobrać danych portfela.</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Błąd podczas pobierania danych portfela:', error);
+            const portfolioElement = document.getElementById('portfolio-data');
+            if (portfolioElement) {
+                portfolioElement.innerHTML = '<p>Wystąpił błąd podczas pobierania danych portfela.</p>';
+            }
+        });
+}
+
+// Funkcja do ustawiania nowego saldo
+function setBalance(amount, currency) {
+    fetch('/api/portfolio/set-balance', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            amount: amount,
+            currency: currency
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(`Saldo zostało zaktualizowane na ${amount} ${currency}`);
+            fetchPortfolioData(); // Odśwież dane portfela
+        } else {
+            alert(`Błąd: ${data.error || 'Nie udało się zaktualizować salda'}`);
+        }
+    })
+    .catch(error => {
+        console.error('Błąd podczas ustawiania salda:', error);
+        alert('Wystąpił błąd podczas ustawiania salda');
+    });
+}
+
+// Funkcja do pobierania danych sentymentu
+function fetchSentimentData() {
+    fetch('/api/sentiment')
+        .then(response => response.json())
+        .then(data => {
+            // Pobierz element, który ma być aktualizowany
+            const sentimentElement = document.getElementById('sentiment-data');
+            if (!sentimentElement) {
+                return; // Element może nie istnieć w niektórych widokach
+            }
+
+            // Wyczyść obecną zawartość
+            sentimentElement.innerHTML = '';
+
+            if (data) {
+                // Dodaj nagłówek
+                const header = document.createElement('h4');
+                header.textContent = 'Sentyment rynkowy';
+                header.className = 'mb-3';
+                sentimentElement.appendChild(header);
+
+                // Dodaj wartość sentymentu
+                const sentimentValue = document.createElement('div');
+                sentimentValue.className = 'sentiment-value mb-2';
+
+                // Określ klasę na podstawie wartości
+                let sentimentClass = 'neutral';
+                if (data.value > 0.2) sentimentClass = 'positive';
+                if (data.value < -0.2) sentimentClass = 'negative';
+
+                sentimentValue.innerHTML = `
+                    <span class="sentiment-label">Wartość sentymentu:</span>
+                    <span class="sentiment-score ${sentimentClass}">${data.value.toFixed(2)}</span>
+                    <span class="sentiment-analysis">(${data.analysis})</span>
+                `;
+                sentimentElement.appendChild(sentimentValue);
+
+                // Dodaj źródła sentymentu
+                if (data.sources) {
+                    const sourcesContainer = document.createElement('div');
+                    sourcesContainer.className = 'sources-container';
+
+                    const sourcesHeader = document.createElement('h5');
+                    sourcesHeader.textContent = 'Źródła danych';
+                    sourcesHeader.className = 'mt-3 mb-2';
+                    sourcesContainer.appendChild(sourcesHeader);
+
+                    const sourcesList = document.createElement('ul');
+                    sourcesList.className = 'sources-list';
+
+                    Object.keys(data.sources).forEach(source => {
+                        const value = data.sources[source];
+                        const sourceItem = document.createElement('li');
+
+                        // Określ klasę na podstawie wartości
+                        let sourceClass = 'neutral';
+                        if (value > 0.2) sourceClass = 'positive';
+                        if (value < -0.2) sourceClass = 'negative';
+
+                        sourceItem.innerHTML = `
+                            <span class="source-name">${source}:</span>
+                            <span class="source-value ${sourceClass}">${value.toFixed(2)}</span>
+                        `;
+                        sourcesList.appendChild(sourceItem);
+                    });
+
+                    sourcesContainer.appendChild(sourcesList);
+                    sentimentElement.appendChild(sourcesContainer);
+                }
+
+                // Dodaj datę aktualizacji
+                if (data.timestamp) {
+                    const timestampElem = document.createElement('div');
+                    timestampElem.className = 'timestamp mt-3 text-muted';
+                    timestampElem.textContent = `Ostatnia aktualizacja: ${data.timestamp}`;
+                    sentimentElement.appendChild(timestampElem);
+                }
+
+                // Dodaj przycisk odświeżania
+                const refreshButton = document.createElement('button');
+                refreshButton.className = 'btn btn-sm btn-outline-secondary mt-3';
+                refreshButton.textContent = 'Odśwież dane sentymentu';
+                refreshButton.onclick = fetchSentimentData;
+                sentimentElement.appendChild(refreshButton);
+            } else {
+                sentimentElement.innerHTML = '<p>Nie można pobrać danych sentymentu.</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Błąd podczas pobierania danych sentymentu:', error);
+            const sentimentElement = document.getElementById('sentiment-data');
+            if (sentimentElement) {
+                sentimentElement.innerHTML = '<p>Wystąpił błąd podczas pobierania danych sentymentu.</p>';
+            }
+        });
+}
+
+// Funkcja inicjalizująca, wywoływana po załadowaniu strony
+function initDashboard() {
+    console.log("Aktualizacja danych dashboardu...");
+
+    // Pobierz dane startowe
+    fetchComponentStatus();
+    fetchPortfolioData();
+    fetchSentimentData();
+    fetchAIStatus();
+    fetchSimulationResults();
+    fetchAIThoughts();
+    updateChartData();
+
+    // Ustaw interwały dla automatycznego odświeżania
+    setInterval(fetchComponentStatus, 10000); // Co 10 sekund
+    setInterval(fetchPortfolioData, 30000);   // Co 30 sekund
+    setInterval(fetchSentimentData, 30000);   // Co 30 sekund
+    setInterval(fetchAIStatus, 30000);        // Co 30 sekund
+    setInterval(fetchSimulationResults, 60000); // Co 60 sekund
+
+    console.log("Dashboard załadowany");
+}
+
+// Wywołaj funkcję inicjalizującą po załadowaniu strony
+document.addEventListener('DOMContentLoaded', initDashboard);
