@@ -1280,7 +1280,8 @@ function initDashboard() {
     // Ustaw interwały dla automatycznego odświeżania
     setInterval(fetchComponentStatus, 10000); // Co 10 sekund
     setInterval(fetchPortfolioData, 30000);   // Co 30 sekund
-    setInterval(fetchSentimentData, 30000);   // Co 30 sekund
+    setInterval(fetchSentimentData, 60000);   // Co 60 sekund
+    setInterval(fetchAIStatus, 60000);        // Co 60 sekundata, 30000);   // Co 30 sekund
     setInterval(fetchAIStatus, 30000);        // Co 30 sekund
     setInterval(fetchSimulationResults, 60000); // Co 60 sekund
 
