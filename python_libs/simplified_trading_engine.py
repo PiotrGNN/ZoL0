@@ -45,7 +45,11 @@ class SimplifiedTradingEngine:
         self.last_error = None
         self.positions = {}
         self.orders = {}
-        logger.info("Zainicjalizowano SimplifiedTradingEngine")
+        self.simulated_mode = self.exchange_connector is None
+        if self.simulated_mode:
+            logger.warning("Konektor giełdy nie jest ustawiony - działanie w trybie symulacji!")
+        else:
+            logger.info(f"Zainicjalizowano SimplifiedTradingEngine z konektorem {type(self.exchange_connector).__name__}")
 
     def start_trading(self, symbols: List[str]) -> bool:
         """
@@ -180,8 +184,8 @@ class SimplifiedTradingEngine:
         Returns:
             Dict: Dane rynkowe
         """
-        if not self.exchange_connector:
-            logger.warning("Brak konektora giełdy, zwracam symulowane dane rynkowe")
+        if self.exchange_connector is None:
+            logger.warning("[SIMULATION] Pobrano dane " + symbol + " z lokalnego źródła")
             # Symulowane dane
             import random
             price = 50000 + random.uniform(-1000, 1000)
@@ -198,20 +202,32 @@ class SimplifiedTradingEngine:
             if hasattr(self.exchange_connector, 'get_ticker'):
                 ticker = self.exchange_connector.get_ticker(symbol)
                 return ticker
-            else:
-                logger.warning("Konektor giełdy nie ma metody get_ticker, zwracam symulowane dane")
-                import random
-                price = 50000 + random.uniform(-1000, 1000)
-                return {
-                    "symbol": symbol,
-                    "price": price,
-                    "volume": random.uniform(10, 100),
-                    "timestamp": datetime.now().isoformat(),
-                    "simulated": True
-                }
+            elif hasattr(self.exchange_connector, 'get_klines'):
+                klines = self.exchange_connector.get_klines(symbol=symbol, limit=1)
+                if klines and len(klines) > 0:
+                    latest = klines[0]
+                    return {
+                        "symbol": symbol,
+                        "price": latest.get("close", 0),
+                        "volume": latest.get("volume", 0),
+                        "timestamp": latest.get("datetime", datetime.now().isoformat()),
+                        "simulated": False
+                    }
+            
+            # Fallback do symulowanych danych
+            logger.warning(f"Konektor giełdy nie ma odpowiedniej metody do pobrania danych dla {symbol}, używam symulacji")
+            import random
+            price = 50000 + random.uniform(-1000, 1000)
+            return {
+                "symbol": symbol,
+                "price": price,
+                "volume": random.uniform(10, 100),
+                "timestamp": datetime.now().isoformat(),
+                "simulated": True
+            }
         except Exception as e:
             logger.error(f"Błąd podczas pobierania danych rynkowych: {e}")
-            return {"error": str(e)}
+            return {"error": str(e), "simulated": True}
 
     def calculate_positions_risk(self) -> Dict[str, float]:
         """
@@ -261,6 +277,11 @@ class SimplifiedTradingEngine:
         return risk_levels
 
 # Przykład użycia
+def __bool__(self):
+        """Gwarantuje, że instancja klasy zawsze zwraca True w kontekście logicznym."""
+        return True
+
+
 if __name__ == "__main__":
     from .simplified_risk_manager import SimplifiedRiskManager
     from .simplified_strategy import StrategyManager
