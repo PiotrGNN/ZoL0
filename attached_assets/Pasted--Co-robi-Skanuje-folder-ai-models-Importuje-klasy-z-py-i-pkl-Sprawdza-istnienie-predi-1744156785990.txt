@@ -1,0 +1,117 @@
+ Co robi:
+📁 Skanuje folder ai_models/
+
+📦 Importuje klasy z .py i .pkl
+
+🔍 Sprawdza istnienie predict() i fit()
+
+❌ Pomija klasy abstrakcyjne (ABC)
+
+🧪 Testuje fit() i predict() (z przykładowymi danymi)
+
+📝 Zapisuje logi do logs/model_check.log
+
+✅ Gotowy prompt do Replit:
+python
+Kopiuj
+Edytuj
+import os
+import importlib.util
+import logging
+import inspect
+import joblib
+
+from abc import ABC
+
+# 🔧 Logowanie
+os.makedirs("logs", exist_ok=True)
+logging.basicConfig(
+    filename="logs/model_check.log",
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s"
+)
+
+def log(msg, level="info"):
+    print(msg)
+    getattr(logging, level)(msg)
+
+def test_class_model(cls, module_name):
+    if inspect.isabstract(cls):
+        log(f"ℹ️ {module_name}.{cls.__name__} jest klasą abstrakcyjną – pomijam", "info")
+        return
+
+    try:
+        instance = cls()
+    except Exception as e:
+        log(f"⚠️ {module_name}.{cls.__name__} – błąd przy inicjalizacji: {e}", "warning")
+        return
+
+    X_sample = [[1, 2, 3, 4, 5]]
+    y_sample = [1]
+
+    if hasattr(instance, "fit"):
+        try:
+            instance.fit(X_sample, y_sample)
+            log(f"✅ {module_name}.{cls.__name__}.fit() działa", "info")
+        except Exception as e:
+            log(f"⚠️ {module_name}.{cls.__name__}.fit() błąd: {e}", "warning")
+
+    if hasattr(instance, "predict"):
+        try:
+            result = instance.predict(X_sample)
+            log(f"✅ {module_name}.{cls.__name__}.predict() OK: {result}", "info")
+        except Exception as e:
+            log(f"⚠️ {module_name}.{cls.__name__}.predict() błąd: {e}", "warning")
+    else:
+        log(f"⚠️ {module_name}.{cls.__name__} nie ma predict()", "warning")
+
+def test_py_module(path, module_name):
+    spec = importlib.util.spec_from_file_location(module_name, path)
+    module = importlib.util.module_from_spec(spec)
+    try:
+        spec.loader.exec_module(module)
+    except Exception as e:
+        log(f"❌ Błąd importu modułu {module_name}: {e}", "error")
+        return
+
+    found = False
+    for name in dir(module):
+        obj = getattr(module, name)
+        if inspect.isclass(obj):
+            found = True
+            test_class_model(obj, module_name)
+
+    if not found:
+        log(f"⚠️ {module_name}: brak klas do testu", "warning")
+
+def test_pkl_model(path):
+    try:
+        model = joblib.load(path)
+        name = os.path.basename(path)
+        if hasattr(model, "fit"):
+            model.fit([[1, 2, 3, 4, 5]], [1])
+            log(f"✅ {name}.fit() działa", "info")
+        if hasattr(model, "predict"):
+            result = model.predict([[1, 2, 3, 4, 5]])
+            log(f"✅ {name}.predict() działa: {result}", "info")
+        else:
+            log(f"⚠️ {name} nie ma predict()", "warning")
+    except Exception as e:
+        log(f"❌ Błąd przy ładowaniu .pkl {path}: {e}", "error")
+
+# 🔍 Skan folderu ai_models/
+models_path = "ai_models"
+for file in os.listdir(models_path):
+    full_path = os.path.join(models_path, file)
+    if file.endswith(".py") and not file.startswith("__"):
+        module_name = file[:-3]
+        log(f"\n📦 Analiza pliku Python: {file}")
+        test_py_module(full_path, module_name)
+    elif file.endswith(".pkl"):
+        log(f"\n🧠 Analiza modelu .pkl: {file}")
+        test_pkl_model(full_path)
+🔧 Wymagania:
+bash
+Kopiuj
+Edytuj
+pip install joblib
