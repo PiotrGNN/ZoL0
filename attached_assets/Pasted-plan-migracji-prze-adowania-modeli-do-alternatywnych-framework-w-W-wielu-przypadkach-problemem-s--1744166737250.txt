@@ -1,0 +1,69 @@
+plan migracji (przeładowania) modeli do alternatywnych frameworków. W wielu przypadkach problemem są zależności (np. z transformers, optuna, tensorflow czy xgboost) oraz niekompatybilność biblioteki systemowej GLIBC. Jeśli chcesz, aby Twoje modele funkcjonowały w środowisku, w którym nie masz dostępu do najnowszych wersji tych bibliotek, możesz rozważyć przeimplementowanie ich w oparciu o bardziej lekkie i powszechnie dostępne frameworki (takie jak scikit-learn, xgboost lub Keras). Oto przykładowe podejście:
+
+Analiza i wybór funkcjonalności modeli
+
+Zidentyfikuj zadania, jakie wykonują poszczególne modele (np. analiza sentymentu, wykrywanie anomalii, predykcja trendów rynkowych itp.).
+
+Sporządź listę wejść/wyjść (feature engineering, przetwarzanie danych) dla każdego modelu. Dzięki temu będzie wiadomo, jakie dane muszą być przygotowane i jaki typ modelu (klasyfikator, regresor, model sekwencyjny) należy wybrać.
+
+Migracja wykrywania anomalii
+
+Jeśli model wykrywania anomalii obecnie opiera się na architekturze transformers lub innej zaawansowanej metodzie, możesz wykorzystać klasyczny algorytm, taki jak IsolationForest z scikit-learn lub One-Class SVM.
+
+Wystarczy przygotować wektor cech (np. na podstawie historycznych danych rynkowych), a następnie wytrenować i przetestować model przy użyciu scikit-learn.
+
+Migracja analizy sentymentu
+
+Możesz zastąpić modele oparte na transformers modelami, które wykorzystują sieci rekurencyjne lub modele oparte na Keras.
+
+Przygotuj zbiór danych (tekst lub reprezentacje numeryczne) oraz etykiety. Następnie zaprojektuj prosty model sekwencyjny (np. embedding + LSTM/GRU + warstwa dense) lub wykorzystaj gotowe architektury dostępne w Keras.
+
+Przetestuj model na danych walidacyjnych, by osiągnąć satysfakcjonującą dokładność.
+
+Migracja strategii tradingowych i zarządzania ryzykiem
+
+Jeśli Twoje modele tradingowe (np. strategie predykcyjne, symulacje) mają część opartą na automatycznym uczeniu lub optymalizacji, możesz:
+
+Przełożyć część logiki do scikit-learn – na przykład używając regressorów lub klasyfikatorów,
+
+Wykorzystać xgboost do budowy modeli opartej na gradient boosting, które często dobrze radzą sobie z danymi o charakterze nieliniowym,
+
+W przypadku gdy potrzebna jest optymalizacja hiperparametrów, rozważ użycie prostszych metod takich jak GridSearchCV lub RandomizedSearchCV (np. w scikit-learn) zamiast optuny.
+
+Dodatkowo, mechanizmy zarządzania ryzykiem (która zdają się być już zaimplementowane – SimplifiedRiskManager) mogą pozostać w tej samej formie, o ile logika zarządzania kapitałem jest niezależna od frameworka uczenia maszynowego.
+
+Migracja (ponowne) ładowania modeli
+
+Przegląd błędów wskazuje, że wiele modułów nie ładuje się z powodu nieobecności zależności (np. brak modułu „xgboost”, „optuna”, „tensorflow” itp.).
+
+Jeżeli Twoja nowa implementacja ma korzystać z frameworków takich jak scikit-learn lub Keras, upewnij się, że:
+
+Są zainstalowane odpowiednie wersje tych bibliotek,
+
+Środowisko (np. plik requirements.txt) zawiera wpisy dla scikit-learn, xgboost, keras/tensorflow, co umożliwi ich instalację.
+
+W nowej implementacji, zamiast importować „transformers.pipelines”, możesz definiować własne pipeline’y oparte na wyżej wymienionych frameworkach.
+
+Plan migracji na poziomie kodu
+
+Zastąp moduł environment: Jeśli model w module ai_models/environment.py realizuje specyficzne operacje związane z symulacją środowiska rynkowego, rozważ reimplementację tej logiki przy użyciu standardowych narzędzi Pythona oraz bibliotek numerycznych (numpy, pandas).
+
+Feature Engineering: Przenieś funkcjonalność z ai_models/feature_engineering.py do pipeline’u scikit-learn (np. wykorzystując transformers z biblioteki sklearn.preprocessing).
+
+Modele tradingu, model_recognition, model_training, model_tuner: Jeżeli te moduły obecnie korzystają z frameworka transformers lub tensorflow/xgboost, spróbuj przeprowadzić etap eksportu danych treningowych i napisać nową wersję klasyfikatora/regresora – używając na przykład scikit-learn lub Keras.
+
+Sentiment Analysis: W module ai_models/sentiment_ai.py możesz zaprojektować architekturę Keras lub zastosować klasyczne modele (np. Naive Bayes lub SVM) z scikit-learn, z odpowiednim przygotowaniem wektorów cech (TF-IDF, word embeddings np. GloVe, FastText).
+
+Testowanie i walidacja
+
+Po przeimplementowaniu modeli warto przeprowadzić pełne testy w środowisku symulacyjnym (na przykład bazujące na danych historycznych) i porównać wyniki z oryginalnymi, aby upewnić się, że migracja przebiegła pomyślnie.
+
+Sprawdź, czy interfejs API dashboardu poprawnie pobiera statusy modeli oraz czy nowe modele działają w ramach Twojej infrastruktury.
+
+Zmiany w pliku konfiguracji i zależnościach
+
+Zaktualizuj plik requirements.txt tak, by zawierał wpisy tylko dla bibliotek, które zamierzasz wykorzystać (na przykład scikit-learn, xgboost, tensorflow lub keras).
+
+Usuń lub zakomentuj zależności, które powodują konflikty, np. transformers, jeśli nie będziesz już ich używać.
+
+Podsumowując: aby „przeładować” modele AI na inne frameworki, musisz przeprowadzić migrację funkcjonalności – zaimportować dane treningowe lub przygotować nowy pipeline, wytrenować modele w wybranych frameworkach, a następnie dostosować interfejsy integrujące te modele z resztą systemu. Proces ten może wymagać przebudowy części kodu, aby usunąć zależności od bibliotek wywołujących błędy (np. związane z GLIBC lub brakiem wymaganych modułów). Jeśli zdecydujesz się na ten krok, pamiętaj, aby najpierw dokładnie przetestować nową implementację na danych testowych, aby upewnić się, że zamienione modele działają zgodnie z oczekiwaniami.

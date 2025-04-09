@@ -230,3 +230,679 @@ ImportError: Nie udało się zaimportować modułu 'performance_monitor' z pakie
 2025-04-09 02:32:51,304 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49975.809926453025)
 2025-04-09 02:32:51,304 [INFO] Statusy komponentów: API: online, Trading: offline
 2025-04-09 02:32:51,305 [INFO] 172.31.128.76 - - [09/Apr/2025 02:32:51] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-09 02:33:21,210 [INFO] 172.31.128.76 - - [09/Apr/2025 02:33:21] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-09 02:33:21,210 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-09 02:33:21,212 [INFO] Rozpoczynam testowanie modeli w katalogu: ai_models
+2025-04-09 02:33:21,216 [INFO] 172.31.128.76 - - [09/Apr/2025 02:33:21] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-09 02:33:21,217 [INFO] Znaleziono 13 plików modeli.
+2025-04-09 02:33:21,217 [ERROR] Błąd podczas ładowania modułu ai_models/environment.py: 'ai_models.environment'
+2025-04-09 02:33:21,218 [ERROR] Błąd podczas ładowania modułu ai_models/feature_engineering.py: 'ai_models.feature_engineering'
+2025-04-09 02:33:21,218 [ERROR] Błąd podczas ładowania modułu ai_models/market_dummy_env.py: 'ai_models.market_dummy_env'
+2025-04-09 02:33:21,219 [ERROR] Błąd podczas ładowania modułu ai_models/model_training.py: 'ai_models.model_training'
+2025-04-09 02:33:21,220 [ERROR] Błąd podczas ładowania modułu ai_models/model_tuner.py: 'ai_models.model_tuner'
+2025-04-09 02:33:21,221 [ERROR] Błąd podczas ładowania modułu ai_models/real_exchange_env.py: 'ai_models.real_exchange_env'
+2025-04-09 02:33:21,221 [ERROR] Błąd podczas ładowania modułu ai_models/reinforcement_learning.py: 'ai_models.reinforcement_learning'
+2025-04-09 02:33:21,221 [ERROR] Błąd podczas ładowania modułu ai_models/ropmer_temp.py: 'ai_models.ropmer_temp'
+2025-04-09 02:33:21,222 [ERROR] Błąd podczas ładowania modułu ai_models/scalar.py: 'ai_models.scalar'
+2025-04-09 02:33:21,222 [ERROR] Błąd podczas ładowania modułu ai_models/model_loader.py: 'ai_models.model_loader'
+2025-04-09 02:33:21,222 [ERROR] Błąd podczas ładowania modułu ai_models/sentiment_ai.py: 'ai_models.sentiment_ai'
+2025-04-09 02:33:21,223 [ERROR] Błąd podczas ładowania modułu ai_models/anomaly_detection.py: 'ai_models.anomaly_detection'
+2025-04-09 02:33:21,223 [ERROR] Błąd podczas ładowania modułu ai_models/model_recognition.py: 'ai_models.model_recognition'
+2025-04-09 02:33:21,223 [INFO] Pobrano 1 modeli z ai_models.get_available_models()
+2025-04-09 02:33:21,224 [INFO] Przygotowano informacje o 1 modelach AI
+2025-04-09 02:33:21,224 [INFO] 172.31.128.76 - - [09/Apr/2025 02:33:21] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-09 02:33:21,225 [WARNING] Błąd podczas importu managera cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:33:21,229 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-09 02:33:21,268 [WARNING] Błąd HTTP 403 dla V5 API. Używam czasu lokalnego.
+2025-04-09 02:33:21,271 [WARNING] Błąd podczas zapisu do cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:33:21,272 [INFO] Silnik handlowy jest wyłączony
+2025-04-09 02:33:21,272 [WARNING] [SIMULATION] Pobrano dane BTCUSDT z lokalnego źródła
+2025-04-09 02:33:21,272 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49465.41554303187)
+2025-04-09 02:33:21,273 [INFO] Statusy komponentów: API: online, Trading: offline
+2025-04-09 02:33:21,274 [INFO] 172.31.128.76 - - [09/Apr/2025 02:33:21] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-09 02:33:51,198 [INFO] 172.31.128.76 - - [09/Apr/2025 02:33:51] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-09 02:33:51,201 [INFO] 172.31.128.76 - - [09/Apr/2025 02:33:51] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-09 02:33:51,205 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-09 02:33:51,209 [INFO] 172.31.128.76 - - [09/Apr/2025 02:33:51] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-09 02:33:51,209 [INFO] Rozpoczynam testowanie modeli w katalogu: ai_models
+2025-04-09 02:33:51,211 [INFO] Znaleziono 13 plików modeli.
+2025-04-09 02:33:51,211 [ERROR] Błąd podczas ładowania modułu ai_models/environment.py: 'ai_models.environment'
+2025-04-09 02:33:51,211 [ERROR] Błąd podczas ładowania modułu ai_models/feature_engineering.py: 'ai_models.feature_engineering'
+2025-04-09 02:33:51,212 [ERROR] Błąd podczas ładowania modułu ai_models/market_dummy_env.py: 'ai_models.market_dummy_env'
+2025-04-09 02:33:51,212 [ERROR] Błąd podczas ładowania modułu ai_models/model_training.py: 'ai_models.model_training'
+2025-04-09 02:33:51,212 [ERROR] Błąd podczas ładowania modułu ai_models/model_tuner.py: 'ai_models.model_tuner'
+2025-04-09 02:33:51,212 [ERROR] Błąd podczas ładowania modułu ai_models/real_exchange_env.py: 'ai_models.real_exchange_env'
+2025-04-09 02:33:51,213 [ERROR] Błąd podczas ładowania modułu ai_models/reinforcement_learning.py: 'ai_models.reinforcement_learning'
+2025-04-09 02:33:51,213 [ERROR] Błąd podczas ładowania modułu ai_models/ropmer_temp.py: 'ai_models.ropmer_temp'
+2025-04-09 02:33:51,213 [ERROR] Błąd podczas ładowania modułu ai_models/scalar.py: 'ai_models.scalar'
+2025-04-09 02:33:51,214 [ERROR] Błąd podczas ładowania modułu ai_models/model_loader.py: 'ai_models.model_loader'
+2025-04-09 02:33:51,215 [ERROR] Błąd podczas ładowania modułu ai_models/sentiment_ai.py: 'ai_models.sentiment_ai'
+2025-04-09 02:33:51,215 [ERROR] Błąd podczas ładowania modułu ai_models/anomaly_detection.py: 'ai_models.anomaly_detection'
+2025-04-09 02:33:51,215 [ERROR] Błąd podczas ładowania modułu ai_models/model_recognition.py: 'ai_models.model_recognition'
+2025-04-09 02:33:51,215 [INFO] Pobrano 1 modeli z ai_models.get_available_models()
+2025-04-09 02:33:51,216 [INFO] Przygotowano informacje o 1 modelach AI
+2025-04-09 02:33:51,217 [INFO] 172.31.128.76 - - [09/Apr/2025 02:33:51] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-09 02:33:51,216 [WARNING] Błąd podczas importu managera cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:33:51,221 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-09 02:33:51,347 [WARNING] Błąd HTTP 403 dla V5 API. Używam czasu lokalnego.
+2025-04-09 02:33:51,350 [WARNING] Błąd podczas zapisu do cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:33:51,350 [INFO] Silnik handlowy jest wyłączony
+2025-04-09 02:33:51,351 [WARNING] [SIMULATION] Pobrano dane BTCUSDT z lokalnego źródła
+2025-04-09 02:33:51,351 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49893.34123267936)
+2025-04-09 02:33:51,351 [INFO] Statusy komponentów: API: online, Trading: offline
+2025-04-09 02:33:51,352 [INFO] 172.31.128.76 - - [09/Apr/2025 02:33:51] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-09 02:34:06,793 [INFO]  * Detected change in '/home/runner/workspace/.main.py.1588030427~', reloading
+2025-04-09 02:34:07,480 [INFO]  * Detected change in '/home/runner/workspace/python_libs/.simulated_bybit.py.924368432~', reloading
+2025-04-09 02:34:08,002 [INFO]  * Restarting with watchdog (inotify)
+2025-04-09 02:34:11,199 [INFO] Zainicjalizowano zarządcę ryzyka portfela. Max ryzyko: 0.05, Max rozmiar pozycji: 0.2, Max drawdown: 0.1
+2025-04-09 02:34:11,202 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-09 02:34:11,205 [WARNING] Pomijam podpakiet 'utils' z powodu błędu: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:34:11,218 [INFO] Wykryto środowisko: Replit
+2025-04-09 02:34:11,218 [WARNING] ❌ OSTRZEŻENIE: .env wskazuje na testnet (BYBIT_USE_TESTNET=true). Ustaw BYBIT_USE_TESTNET=false, jeśli chcesz realny rynek!
+2025-04-09 02:34:11,219 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-09 02:34:11,220 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-09 02:34:11,220 [INFO] Zainicjalizowano uproszczony system powiadomień z 2 kanałami
+2025-04-09 02:34:11,220 [INFO] Zainicjalizowano system powiadomień z biblioteki python_libs.simplified_notification
+2025-04-09 02:34:11,220 [INFO] Zainicjalizowano uproszczony analizator sentymentu z 4 źródłami
+2025-04-09 02:34:11,220 [INFO] Inicjalizacja analizatora sentymentu z biblioteki python_libs.simplified_sentiment
+2025-04-09 02:34:11,220 [INFO] Zainicjalizowano uproszczony detektor anomalii z metodą: isolation_forest
+2025-04-09 02:34:11,220 [INFO] Inicjalizacja detektora anomalii z biblioteki python_libs.simplified_anomaly
+2025-04-09 02:34:11,220 [INFO] Zainicjalizowano StrategyManager z 3 strategiami
+2025-04-09 02:34:11,220 [INFO] Zainicjalizowano StrategyManager z biblioteki python_libs.simplified_strategy
+2025-04-09 02:34:11,221 [INFO] Zainicjalizowano SimplifiedRiskManager (max_risk=0.05, max_position_size=0.2, max_drawdown=0.1)
+2025-04-09 02:34:11,221 [INFO] Zainicjalizowano SimplifiedRiskManager
+2025-04-09 02:34:11,225 [INFO] Zainicjalizowano symulowany konektor ByBit (testnet: True)
+2025-04-09 02:34:11,225 [INFO] Utworzono symulowany konektor ByBit dla Trading Engine
+2025-04-09 02:34:11,225 [INFO] Zainicjalizowano SimplifiedTradingEngine z konektorem SimulatedBybitConnector
+2025-04-09 02:34:11,225 [INFO] Zainicjalizowano silnik handlowy (Trading Engine) z biblioteki python_libs.simplified_trading_engine
+2025-04-09 02:34:11,225 [INFO] Aktywowano strategię: trend_following
+2025-04-09 02:34:11,225 [INFO] Aktywowano strategię 'trend_following'
+2025-04-09 02:34:11,225 [INFO] Uruchomiono handel dla symboli: ['BTCUSDT']
+2025-04-09 02:34:11,226 [INFO] Ustawiono kapitał: $2004.43
+2025-04-09 02:34:11,226 [INFO] Silnik handlowy uruchomiony dla symboli: ['BTCUSDT']
+2025-04-09 02:34:11,226 [INFO] System operacyjny: Linux 6.2.16
+2025-04-09 02:34:11,226 [INFO] Inicjalizacja klienta ByBit - Klucz: aLYR****************************************************, Testnet: True
+2025-04-09 02:34:11,226 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-09 02:34:11,226 [INFO] Używasz testnet API (środowisko testowe).
+2025-04-09 02:34:11,226 [INFO] Używasz testnet API (środowisko testowe).
+2025-04-09 02:34:11,227 [INFO] BybitConnector zainicjalizowany. Testnet: True, Lazy connect: True, Market type: spot
+2025-04-09 02:34:11,228 [WARNING] Nie można sprawdzić stanu limitów API: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:34:11,228 [INFO] BybitConnector w trybie lazy initialization. Testnet: True, Market type: spot
+2025-04-09 02:34:11,230 [WARNING] Błąd podczas importu managera cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:34:11,231 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-09 02:34:11,242 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: True
+2025-04-09 02:34:11,243 [WARNING] Błąd podczas dostępu do cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:34:11,245 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-09 02:34:21,408 [WARNING] Brak dostępu do czasu serwera, używam czasu lokalnego. Błąd: Błąd HTTP 403 dla obu endpointów czasu serwera
+2025-04-09 02:34:22,318 [INFO] Połączenie z ByBit potwierdzone. Czas serwera: {'timeNow': 1744166061408}
+2025-04-09 02:34:22,320 [WARNING] Błąd podczas zapisu do cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:34:22,320 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: True
+2025-04-09 02:34:22,365 [WARNING] Błąd HTTP 403 dla V5 API. Używam czasu lokalnego.
+2025-04-09 02:34:22,367 [WARNING] Błąd podczas zapisu do cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:34:22,367 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744166051228, 'time': '2025-04-09 02:34:11', 'source': 'api'}
+2025-04-09 02:34:22,367 [INFO] System zainicjalizowany poprawnie
+2025-04-09 02:34:22,368 [INFO] Uruchamianie aplikacji Flask w środowisku Replit na hoście 0.0.0.0 i porcie 5000
+2025-04-09 02:34:22,398 [WARNING]  * Debugger is active!
+2025-04-09 02:34:22,400 [INFO]  * Debugger PIN: 165-018-534
+2025-04-09 02:34:23,986 [INFO] 172.31.128.76 - - [09/Apr/2025 02:34:23] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-09 02:34:24,006 [INFO] 172.31.128.76 - - [09/Apr/2025 02:34:24] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-09 02:34:24,020 [WARNING] Błąd podczas importu managera cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:34:24,025 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-09 02:34:24,031 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-09 02:34:24,031 [INFO] Rozpoczynam testowanie modeli w katalogu: ai_models
+2025-04-09 02:34:24,032 [INFO] Znaleziono 13 plików modeli.
+2025-04-09 02:34:24,071 [INFO] MarketEnvironment zainicjalizowane w trybie 'simulated' z kapitałem: 10000.000000
+2025-04-09 02:34:24,071 [INFO] Załadowano model MarketEnvironment z ai_models/environment.py
+2025-04-09 02:34:24,072 [INFO] Załadowano model MarketDummyEnv z ai_models/market_dummy_env.py
+2025-04-09 02:34:24,074 [WARNING] Nie można utworzyć instancji klasy ModelTrainer: ModelTrainer.__init__() missing 2 required positional arguments: 'model' and 'model_name'
+2025-04-09 02:34:24,076 [ERROR] Błąd podczas ładowania modułu ai_models/model_tuner.py: No module named 'optuna'
+2025-04-09 02:34:24,077 [WARNING] Nie można utworzyć instancji klasy RealExchangeEnv: RealExchangeEnv.__init__() missing 2 required positional arguments: 'api_url' and 'api_key'
+2025-04-09 02:34:24,078 [ERROR] Błąd podczas ładowania modułu ai_models/reinforcement_learning.py: No module named 'tensorflow'
+2025-04-09 02:34:24,079 [INFO] ExperimentManager zainicjalizowany. save_dir: 'saved_models', enable_experiments: True
+2025-04-09 02:34:24,080 [INFO] Załadowano model ExperimentManager z ai_models/ropmer_temp.py
+2025-04-09 02:34:24,081 [INFO] Inicjalizacja DataScaler z metodą: standard
+2025-04-09 02:34:24,081 [INFO] Załadowano model DataScaler z ai_models/scalar.py
+2025-04-09 02:34:24,082 [ERROR] Błąd podczas ładowania modułu ai_models/model_loader.py: ModelTester.__init__() got an unexpected keyword argument 'log_path'
+2025-04-09 02:34:24,099 [INFO] Inicjalizacja SentimentAnalyzer z 4 źródłami
+2025-04-09 02:34:24,100 [INFO] Załadowano model SentimentAnalyzer z ai_models/sentiment_ai.py
+2025-04-09 02:34:24,101 [ERROR] Błąd podczas ładowania modułu ai_models/anomaly_detection.py: No module named 'xgboost'
+2025-04-09 02:34:24,103 [ERROR] Błąd podczas ładowania modułu ai_models/model_recognition.py: No module named 'xgboost'
+2025-04-09 02:34:24,104 [WARNING] Nie można zaimportować AnomalyDetector: No module named 'xgboost'
+2025-04-09 02:34:24,105 [INFO] Zaimportowano SentimentAnalyzer
+2025-04-09 02:34:24,107 [WARNING] Nie można zaimportować ModelRecognizer: No module named 'xgboost'
+2025-04-09 02:34:24,107 [INFO] ai_models: Znaleziono 1 modeli AI
+2025-04-09 02:34:24,107 [INFO]   - sentiment_analyzer: SentimentAnalyzer
+2025-04-09 02:34:24,107 [INFO] Pobrano 1 modeli z ai_models.get_available_models()
+2025-04-09 02:34:24,108 [INFO] Przygotowano informacje o 13 modelach AI
+2025-04-09 02:34:24,109 [INFO] 172.31.128.76 - - [09/Apr/2025 02:34:24] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-09 02:34:31,287 [WARNING] Błąd HTTP 403 dla V5 API. Używam czasu lokalnego.
+2025-04-09 02:34:31,289 [WARNING] Błąd podczas zapisu do cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:34:31,290 [INFO] Poziomy ryzyka: {}
+2025-04-09 02:34:31,291 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50242.34)
+2025-04-09 02:34:31,291 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-09 02:34:31,292 [INFO] 172.31.128.76 - - [09/Apr/2025 02:34:31] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-09 02:34:51,200 [INFO] 172.31.128.76 - - [09/Apr/2025 02:34:51] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-09 02:34:51,201 [INFO] 172.31.128.76 - - [09/Apr/2025 02:34:51] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-09 02:34:51,202 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-09 02:34:51,203 [INFO] Rozpoczynam testowanie modeli w katalogu: ai_models
+2025-04-09 02:34:51,204 [INFO] 172.31.128.76 - - [09/Apr/2025 02:34:51] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-09 02:34:51,206 [INFO] Znaleziono 13 plików modeli.
+2025-04-09 02:34:51,207 [ERROR] Błąd podczas ładowania modułu ai_models/environment.py: 'ai_models.environment'
+2025-04-09 02:34:51,207 [ERROR] Błąd podczas ładowania modułu ai_models/feature_engineering.py: 'ai_models.feature_engineering'
+2025-04-09 02:34:51,207 [ERROR] Błąd podczas ładowania modułu ai_models/market_dummy_env.py: 'ai_models.market_dummy_env'
+2025-04-09 02:34:51,208 [ERROR] Błąd podczas ładowania modułu ai_models/model_training.py: 'ai_models.model_training'
+2025-04-09 02:34:51,208 [ERROR] Błąd podczas ładowania modułu ai_models/model_tuner.py: 'ai_models.model_tuner'
+2025-04-09 02:34:51,208 [ERROR] Błąd podczas ładowania modułu ai_models/real_exchange_env.py: 'ai_models.real_exchange_env'
+2025-04-09 02:34:51,208 [ERROR] Błąd podczas ładowania modułu ai_models/reinforcement_learning.py: 'ai_models.reinforcement_learning'
+2025-04-09 02:34:51,209 [ERROR] Błąd podczas ładowania modułu ai_models/ropmer_temp.py: 'ai_models.ropmer_temp'
+2025-04-09 02:34:51,209 [ERROR] Błąd podczas ładowania modułu ai_models/scalar.py: 'ai_models.scalar'
+2025-04-09 02:34:51,210 [ERROR] Błąd podczas ładowania modułu ai_models/model_loader.py: 'ai_models.model_loader'
+2025-04-09 02:34:51,213 [WARNING] Błąd podczas importu managera cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:34:51,217 [INFO] Inicjalizacja SentimentAnalyzer z 4 źródłami
+2025-04-09 02:34:51,217 [INFO] Załadowano model SentimentAnalyzer z ai_models/sentiment_ai.py
+2025-04-09 02:34:51,217 [ERROR] Błąd podczas ładowania modułu ai_models/anomaly_detection.py: 'ai_models.anomaly_detection'
+2025-04-09 02:34:51,218 [ERROR] Błąd podczas ładowania modułu ai_models/model_recognition.py: 'ai_models.model_recognition'
+2025-04-09 02:34:51,219 [INFO] Pobrano 1 modeli z ai_models.get_available_models()
+2025-04-09 02:34:51,220 [INFO] Przygotowano informacje o 3 modelach AI
+2025-04-09 02:34:51,221 [INFO] 172.31.128.76 - - [09/Apr/2025 02:34:51] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-09 02:34:51,222 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-09 02:34:51,310 [WARNING] Błąd HTTP 403 dla V5 API. Używam czasu lokalnego.
+2025-04-09 02:34:51,313 [WARNING] Błąd podczas zapisu do cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:34:51,315 [INFO] Poziomy ryzyka: {}
+2025-04-09 02:34:51,316 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49777.49)
+2025-04-09 02:34:51,317 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-09 02:34:51,317 [INFO] 172.31.128.76 - - [09/Apr/2025 02:34:51] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-09 02:35:04,961 [INFO]  * Detected change in '/home/runner/workspace/.pythonlibs/bin/pwiz.py', reloading
+2025-04-09 02:35:06,139 [INFO]  * Restarting with watchdog (inotify)
+2025-04-09 02:35:08,421 [INFO] Zainicjalizowano zarządcę ryzyka portfela. Max ryzyko: 0.05, Max rozmiar pozycji: 0.2, Max drawdown: 0.1
+2025-04-09 02:35:08,423 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-09 02:35:08,425 [WARNING] Pomijam podpakiet 'utils' z powodu błędu: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:35:08,438 [INFO] Wykryto środowisko: Replit
+2025-04-09 02:35:08,438 [WARNING] ❌ OSTRZEŻENIE: .env wskazuje na testnet (BYBIT_USE_TESTNET=true). Ustaw BYBIT_USE_TESTNET=false, jeśli chcesz realny rynek!
+2025-04-09 02:35:08,439 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-09 02:35:08,439 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-09 02:35:08,439 [INFO] Zainicjalizowano uproszczony system powiadomień z 2 kanałami
+2025-04-09 02:35:08,439 [INFO] Zainicjalizowano system powiadomień z biblioteki python_libs.simplified_notification
+2025-04-09 02:35:08,439 [INFO] Zainicjalizowano uproszczony analizator sentymentu z 4 źródłami
+2025-04-09 02:35:08,439 [INFO] Inicjalizacja analizatora sentymentu z biblioteki python_libs.simplified_sentiment
+2025-04-09 02:35:08,440 [INFO] Zainicjalizowano uproszczony detektor anomalii z metodą: isolation_forest
+2025-04-09 02:35:08,440 [INFO] Inicjalizacja detektora anomalii z biblioteki python_libs.simplified_anomaly
+2025-04-09 02:35:08,440 [INFO] Zainicjalizowano StrategyManager z 3 strategiami
+2025-04-09 02:35:08,440 [INFO] Zainicjalizowano StrategyManager z biblioteki python_libs.simplified_strategy
+2025-04-09 02:35:08,440 [INFO] Zainicjalizowano SimplifiedRiskManager (max_risk=0.05, max_position_size=0.2, max_drawdown=0.1)
+2025-04-09 02:35:08,440 [INFO] Zainicjalizowano SimplifiedRiskManager
+2025-04-09 02:35:08,444 [INFO] Zainicjalizowano symulowany konektor ByBit (testnet: True)
+2025-04-09 02:35:08,444 [INFO] Utworzono symulowany konektor ByBit dla Trading Engine
+2025-04-09 02:35:08,444 [INFO] Zainicjalizowano SimplifiedTradingEngine z konektorem SimulatedBybitConnector
+2025-04-09 02:35:08,444 [INFO] Zainicjalizowano silnik handlowy (Trading Engine) z biblioteki python_libs.simplified_trading_engine
+2025-04-09 02:35:08,444 [INFO] Aktywowano strategię: trend_following
+2025-04-09 02:35:08,444 [INFO] Aktywowano strategię 'trend_following'
+2025-04-09 02:35:08,444 [INFO] Uruchomiono handel dla symboli: ['BTCUSDT']
+2025-04-09 02:35:08,444 [INFO] Ustawiono kapitał: $1998.79
+2025-04-09 02:35:08,444 [INFO] Silnik handlowy uruchomiony dla symboli: ['BTCUSDT']
+2025-04-09 02:35:08,444 [INFO] System operacyjny: Linux 6.2.16
+2025-04-09 02:35:08,445 [INFO] Inicjalizacja klienta ByBit - Klucz: aLYR****************************************************, Testnet: True
+2025-04-09 02:35:08,445 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-09 02:35:08,445 [INFO] Używasz testnet API (środowisko testowe).
+2025-04-09 02:35:08,445 [INFO] Używasz testnet API (środowisko testowe).
+2025-04-09 02:35:08,445 [INFO] BybitConnector zainicjalizowany. Testnet: True, Lazy connect: True, Market type: spot
+2025-04-09 02:35:08,447 [WARNING] Nie można sprawdzić stanu limitów API: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:35:08,447 [INFO] BybitConnector w trybie lazy initialization. Testnet: True, Market type: spot
+2025-04-09 02:35:08,448 [WARNING] Błąd podczas importu managera cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:35:08,449 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-09 02:35:08,457 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: True
+2025-04-09 02:35:08,458 [WARNING] Błąd podczas dostępu do cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:35:08,459 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-09 02:35:18,538 [WARNING] Brak dostępu do czasu serwera, używam czasu lokalnego. Błąd: Błąd HTTP 403 dla obu endpointów czasu serwera
+2025-04-09 02:35:18,539 [INFO] Połączenie z ByBit potwierdzone. Czas serwera: {'timeNow': 1744166118538}
+2025-04-09 02:35:18,540 [WARNING] Błąd podczas zapisu do cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:35:18,540 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: True
+2025-04-09 02:35:18,580 [WARNING] Błąd HTTP 403 dla V5 API. Używam czasu lokalnego.
+2025-04-09 02:35:18,581 [WARNING] Błąd podczas zapisu do cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:35:18,582 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744166108447, 'time': '2025-04-09 02:35:08', 'source': 'api'}
+2025-04-09 02:35:18,582 [INFO] System zainicjalizowany poprawnie
+2025-04-09 02:35:18,582 [INFO] Uruchamianie aplikacji Flask w środowisku Replit na hoście 0.0.0.0 i porcie 5000
+2025-04-09 02:35:18,601 [WARNING]  * Debugger is active!
+2025-04-09 02:35:18,602 [INFO]  * Debugger PIN: 130-609-150
+2025-04-09 02:35:21,207 [INFO] 172.31.128.76 - - [09/Apr/2025 02:35:21] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-09 02:35:21,211 [WARNING] Błąd podczas importu managera cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:35:21,215 [INFO] 172.31.128.76 - - [09/Apr/2025 02:35:21] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-09 02:35:21,216 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-09 02:35:21,279 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-09 02:35:21,280 [INFO] Rozpoczynam testowanie modeli w katalogu: ai_models
+2025-04-09 02:35:21,280 [INFO] Znaleziono 13 plików modeli.
+2025-04-09 02:35:21,302 [INFO] MarketEnvironment zainicjalizowane w trybie 'simulated' z kapitałem: 10000.000000
+2025-04-09 02:35:21,302 [INFO] Załadowano model MarketEnvironment z ai_models/environment.py
+2025-04-09 02:35:21,303 [INFO] Załadowano model MarketDummyEnv z ai_models/market_dummy_env.py
+2025-04-09 02:35:21,305 [WARNING] Nie można utworzyć instancji klasy ModelTrainer: ModelTrainer.__init__() missing 2 required positional arguments: 'model' and 'model_name'
+2025-04-09 02:35:21,306 [ERROR] Błąd podczas ładowania modułu ai_models/model_tuner.py: No module named 'optuna'
+2025-04-09 02:35:21,307 [WARNING] Nie można utworzyć instancji klasy RealExchangeEnv: RealExchangeEnv.__init__() missing 2 required positional arguments: 'api_url' and 'api_key'
+2025-04-09 02:35:21,308 [ERROR] Błąd podczas ładowania modułu ai_models/reinforcement_learning.py: No module named 'tensorflow'
+2025-04-09 02:35:21,309 [INFO] ExperimentManager zainicjalizowany. save_dir: 'saved_models', enable_experiments: True
+2025-04-09 02:35:21,309 [INFO] Załadowano model ExperimentManager z ai_models/ropmer_temp.py
+2025-04-09 02:35:21,309 [INFO] Inicjalizacja DataScaler z metodą: standard
+2025-04-09 02:35:21,310 [INFO] Załadowano model DataScaler z ai_models/scalar.py
+2025-04-09 02:35:21,311 [ERROR] Błąd podczas ładowania modułu ai_models/model_loader.py: ModelTester.__init__() got an unexpected keyword argument 'log_path'
+2025-04-09 02:35:21,324 [INFO] Inicjalizacja SentimentAnalyzer z 4 źródłami
+2025-04-09 02:35:21,324 [INFO] Załadowano model SentimentAnalyzer z ai_models/sentiment_ai.py
+2025-04-09 02:35:21,325 [ERROR] Błąd podczas ładowania modułu ai_models/anomaly_detection.py: No module named 'xgboost'
+2025-04-09 02:35:21,326 [ERROR] Błąd podczas ładowania modułu ai_models/model_recognition.py: No module named 'xgboost'
+2025-04-09 02:35:21,328 [WARNING] Nie można zaimportować AnomalyDetector: No module named 'xgboost'
+2025-04-09 02:35:21,328 [INFO] Zaimportowano SentimentAnalyzer
+2025-04-09 02:35:21,329 [WARNING] Nie można zaimportować ModelRecognizer: No module named 'xgboost'
+2025-04-09 02:35:21,329 [INFO] ai_models: Znaleziono 1 modeli AI
+2025-04-09 02:35:21,330 [INFO]   - sentiment_analyzer: SentimentAnalyzer
+2025-04-09 02:35:21,330 [INFO] Pobrano 1 modeli z ai_models.get_available_models()
+2025-04-09 02:35:21,331 [INFO] Przygotowano informacje o 13 modelach AI
+2025-04-09 02:35:21,332 [INFO] 172.31.128.76 - - [09/Apr/2025 02:35:21] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-09 02:35:28,505 [WARNING] Błąd HTTP 403 dla V5 API. Używam czasu lokalnego.
+2025-04-09 02:35:28,507 [WARNING] Błąd podczas zapisu do cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:35:28,508 [INFO] Poziomy ryzyka: {}
+2025-04-09 02:35:28,508 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50033.43)
+2025-04-09 02:35:28,508 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-09 02:35:28,509 [INFO] 172.31.128.76 - - [09/Apr/2025 02:35:28] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-09 02:35:34,960 [INFO]  * Detected change in '/home/runner/workspace/.pythonlibs/bin/pwiz.py', reloading
+2025-04-09 02:35:35,509 [INFO]  * Restarting with watchdog (inotify)
+2025-04-09 02:35:38,639 [INFO] Zainicjalizowano zarządcę ryzyka portfela. Max ryzyko: 0.05, Max rozmiar pozycji: 0.2, Max drawdown: 0.1
+2025-04-09 02:35:38,641 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-09 02:35:38,644 [WARNING] Pomijam podpakiet 'utils' z powodu błędu: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:35:38,657 [INFO] Wykryto środowisko: Replit
+2025-04-09 02:35:38,658 [WARNING] ❌ OSTRZEŻENIE: .env wskazuje na testnet (BYBIT_USE_TESTNET=true). Ustaw BYBIT_USE_TESTNET=false, jeśli chcesz realny rynek!
+2025-04-09 02:35:38,659 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-09 02:35:38,659 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-09 02:35:38,659 [INFO] Zainicjalizowano uproszczony system powiadomień z 2 kanałami
+2025-04-09 02:35:38,659 [INFO] Zainicjalizowano system powiadomień z biblioteki python_libs.simplified_notification
+2025-04-09 02:35:38,659 [INFO] Zainicjalizowano uproszczony analizator sentymentu z 4 źródłami
+2025-04-09 02:35:38,660 [INFO] Inicjalizacja analizatora sentymentu z biblioteki python_libs.simplified_sentiment
+2025-04-09 02:35:38,660 [INFO] Zainicjalizowano uproszczony detektor anomalii z metodą: isolation_forest
+2025-04-09 02:35:38,660 [INFO] Inicjalizacja detektora anomalii z biblioteki python_libs.simplified_anomaly
+2025-04-09 02:35:38,660 [INFO] Zainicjalizowano StrategyManager z 3 strategiami
+2025-04-09 02:35:38,660 [INFO] Zainicjalizowano StrategyManager z biblioteki python_libs.simplified_strategy
+2025-04-09 02:35:38,661 [INFO] Zainicjalizowano SimplifiedRiskManager (max_risk=0.05, max_position_size=0.2, max_drawdown=0.1)
+2025-04-09 02:35:38,661 [INFO] Zainicjalizowano SimplifiedRiskManager
+2025-04-09 02:35:38,661 [INFO] Zainicjalizowano symulowany konektor ByBit (testnet: True)
+2025-04-09 02:35:38,661 [INFO] Utworzono symulowany konektor ByBit dla Trading Engine
+2025-04-09 02:35:38,661 [INFO] Zainicjalizowano SimplifiedTradingEngine z konektorem SimulatedBybitConnector
+2025-04-09 02:35:38,661 [INFO] Zainicjalizowano silnik handlowy (Trading Engine) z biblioteki python_libs.simplified_trading_engine
+2025-04-09 02:35:38,662 [INFO] Aktywowano strategię: trend_following
+2025-04-09 02:35:38,662 [INFO] Aktywowano strategię 'trend_following'
+2025-04-09 02:35:38,662 [INFO] Uruchomiono handel dla symboli: ['BTCUSDT']
+2025-04-09 02:35:38,662 [INFO] Ustawiono kapitał: $2008.16
+2025-04-09 02:35:38,662 [INFO] Silnik handlowy uruchomiony dla symboli: ['BTCUSDT']
+2025-04-09 02:35:38,662 [INFO] System operacyjny: Linux 6.2.16
+2025-04-09 02:35:38,662 [INFO] Inicjalizacja klienta ByBit - Klucz: aLYR****************************************************, Testnet: True
+2025-04-09 02:35:38,662 [INFO] Produkcyjne API jest WYŁĄCZONE
+2025-04-09 02:35:38,663 [INFO] Używasz testnet API (środowisko testowe).
+2025-04-09 02:35:38,663 [INFO] Używasz testnet API (środowisko testowe).
+2025-04-09 02:35:38,663 [INFO] BybitConnector zainicjalizowany. Testnet: True, Lazy connect: True, Market type: spot
+2025-04-09 02:35:38,665 [WARNING] Nie można sprawdzić stanu limitów API: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:35:38,665 [INFO] BybitConnector w trybie lazy initialization. Testnet: True, Market type: spot
+2025-04-09 02:35:38,667 [WARNING] Błąd podczas importu managera cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:35:38,668 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-09 02:35:38,677 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: True
+2025-04-09 02:35:38,678 [WARNING] Błąd podczas dostępu do cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:35:38,680 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-09 02:35:48,858 [WARNING] Brak dostępu do czasu serwera, używam czasu lokalnego. Błąd: Błąd HTTP 403 dla obu endpointów czasu serwera
+2025-04-09 02:35:48,858 [INFO] Połączenie z ByBit potwierdzone. Czas serwera: {'timeNow': 1744166148858}
+2025-04-09 02:35:48,860 [WARNING] Błąd podczas zapisu do cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:35:48,860 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: True
+2025-04-09 02:35:48,899 [WARNING] Błąd HTTP 403 dla V5 API. Używam czasu lokalnego.
+2025-04-09 02:35:48,902 [WARNING] Błąd podczas zapisu do cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:35:48,902 [INFO] Klient API ByBit zainicjalizowany pomyślnie. Czas serwera: {'success': True, 'time_ms': 1744166138665, 'time': '2025-04-09 02:35:38', 'source': 'api'}
+2025-04-09 02:35:48,902 [INFO] System zainicjalizowany poprawnie
+2025-04-09 02:35:48,902 [INFO] Uruchamianie aplikacji Flask w środowisku Replit na hoście 0.0.0.0 i porcie 5000
+2025-04-09 02:35:48,932 [WARNING]  * Debugger is active!
+2025-04-09 02:35:48,934 [INFO]  * Debugger PIN: 323-338-754
+2025-04-09 02:35:51,212 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-09 02:35:51,216 [INFO] Rozpoczynam testowanie modeli w katalogu: ai_models
+2025-04-09 02:35:51,216 [INFO] 172.31.128.76 - - [09/Apr/2025 02:35:51] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-09 02:35:51,217 [INFO] Znaleziono 13 plików modeli.
+2025-04-09 02:35:51,222 [INFO] 172.31.128.76 - - [09/Apr/2025 02:35:51] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-09 02:35:51,225 [WARNING] Błąd podczas importu managera cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:35:51,242 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-09 02:35:51,240 [INFO] 172.31.128.76 - - [09/Apr/2025 02:35:51] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-09 02:35:51,262 [INFO] MarketEnvironment zainicjalizowane w trybie 'simulated' z kapitałem: 10000.000000
+2025-04-09 02:35:51,262 [INFO] Załadowano model MarketEnvironment z ai_models/environment.py
+2025-04-09 02:35:51,263 [INFO] Załadowano model MarketDummyEnv z ai_models/market_dummy_env.py
+2025-04-09 02:35:51,265 [WARNING] Nie można utworzyć instancji klasy ModelTrainer: ModelTrainer.__init__() missing 2 required positional arguments: 'model' and 'model_name'
+2025-04-09 02:35:51,266 [ERROR] Błąd podczas ładowania modułu ai_models/model_tuner.py: No module named 'optuna'
+2025-04-09 02:35:51,267 [WARNING] Nie można utworzyć instancji klasy RealExchangeEnv: RealExchangeEnv.__init__() missing 2 required positional arguments: 'api_url' and 'api_key'
+2025-04-09 02:35:51,269 [ERROR] Błąd podczas ładowania modułu ai_models/reinforcement_learning.py: No module named 'tensorflow'
+2025-04-09 02:35:51,269 [INFO] ExperimentManager zainicjalizowany. save_dir: 'saved_models', enable_experiments: True
+2025-04-09 02:35:51,272 [INFO] Załadowano model ExperimentManager z ai_models/ropmer_temp.py
+2025-04-09 02:35:51,272 [INFO] Inicjalizacja DataScaler z metodą: standard
+2025-04-09 02:35:51,273 [INFO] Załadowano model DataScaler z ai_models/scalar.py
+2025-04-09 02:35:51,274 [ERROR] Błąd podczas ładowania modułu ai_models/model_loader.py: ModelTester.__init__() got an unexpected keyword argument 'log_path'
+2025-04-09 02:35:51,288 [INFO] Inicjalizacja SentimentAnalyzer z 4 źródłami
+2025-04-09 02:35:51,289 [INFO] Załadowano model SentimentAnalyzer z ai_models/sentiment_ai.py
+2025-04-09 02:35:51,291 [ERROR] Błąd podczas ładowania modułu ai_models/anomaly_detection.py: No module named 'xgboost'
+2025-04-09 02:35:51,293 [ERROR] Błąd podczas ładowania modułu ai_models/model_recognition.py: No module named 'xgboost'
+2025-04-09 02:35:51,296 [WARNING] Nie można zaimportować AnomalyDetector: No module named 'xgboost'
+2025-04-09 02:35:51,296 [INFO] Zaimportowano SentimentAnalyzer
+2025-04-09 02:35:51,298 [WARNING] Nie można zaimportować ModelRecognizer: No module named 'xgboost'
+2025-04-09 02:35:51,299 [INFO] ai_models: Znaleziono 1 modeli AI
+2025-04-09 02:35:51,299 [INFO]   - sentiment_analyzer: SentimentAnalyzer
+2025-04-09 02:35:51,300 [INFO] Pobrano 1 modeli z ai_models.get_available_models()
+2025-04-09 02:35:51,301 [INFO] Przygotowano informacje o 13 modelach AI
+2025-04-09 02:35:51,301 [INFO] 172.31.128.76 - - [09/Apr/2025 02:35:51] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-09 02:35:58,723 [WARNING] Błąd HTTP 403 dla V5 API. Używam czasu lokalnego.
+2025-04-09 02:35:58,725 [WARNING] Błąd podczas zapisu do cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:35:58,726 [INFO] Poziomy ryzyka: {}
+2025-04-09 02:35:58,726 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49857.94)
+2025-04-09 02:35:58,726 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-09 02:35:58,727 [INFO] 172.31.128.76 - - [09/Apr/2025 02:35:58] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-09 02:36:21,199 [INFO] 172.31.128.76 - - [09/Apr/2025 02:36:21] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-09 02:36:21,201 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-09 02:36:21,202 [INFO] Rozpoczynam testowanie modeli w katalogu: ai_models
+2025-04-09 02:36:21,204 [INFO] 172.31.128.76 - - [09/Apr/2025 02:36:21] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-09 02:36:21,206 [INFO] Znaleziono 13 plików modeli.
+2025-04-09 02:36:21,206 [ERROR] Błąd podczas ładowania modułu ai_models/environment.py: 'ai_models.environment'
+2025-04-09 02:36:21,206 [ERROR] Błąd podczas ładowania modułu ai_models/feature_engineering.py: 'ai_models.feature_engineering'
+2025-04-09 02:36:21,207 [ERROR] Błąd podczas ładowania modułu ai_models/market_dummy_env.py: 'ai_models.market_dummy_env'
+2025-04-09 02:36:21,207 [ERROR] Błąd podczas ładowania modułu ai_models/model_training.py: 'ai_models.model_training'
+2025-04-09 02:36:21,207 [ERROR] Błąd podczas ładowania modułu ai_models/model_tuner.py: 'ai_models.model_tuner'
+2025-04-09 02:36:21,207 [ERROR] Błąd podczas ładowania modułu ai_models/real_exchange_env.py: 'ai_models.real_exchange_env'
+2025-04-09 02:36:21,208 [ERROR] Błąd podczas ładowania modułu ai_models/reinforcement_learning.py: 'ai_models.reinforcement_learning'
+2025-04-09 02:36:21,208 [ERROR] Błąd podczas ładowania modułu ai_models/ropmer_temp.py: 'ai_models.ropmer_temp'
+2025-04-09 02:36:21,208 [ERROR] Błąd podczas ładowania modułu ai_models/scalar.py: 'ai_models.scalar'
+2025-04-09 02:36:21,208 [ERROR] Błąd podczas ładowania modułu ai_models/model_loader.py: 'ai_models.model_loader'
+2025-04-09 02:36:21,212 [WARNING] Błąd podczas importu managera cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:36:21,216 [INFO] Inicjalizacja SentimentAnalyzer z 4 źródłami
+2025-04-09 02:36:21,217 [INFO] Załadowano model SentimentAnalyzer z ai_models/sentiment_ai.py
+2025-04-09 02:36:21,217 [ERROR] Błąd podczas ładowania modułu ai_models/anomaly_detection.py: 'ai_models.anomaly_detection'
+2025-04-09 02:36:21,218 [ERROR] Błąd podczas ładowania modułu ai_models/model_recognition.py: 'ai_models.model_recognition'
+2025-04-09 02:36:21,218 [INFO] Pobrano 1 modeli z ai_models.get_available_models()
+2025-04-09 02:36:21,219 [INFO] Przygotowano informacje o 3 modelach AI
+2025-04-09 02:36:21,220 [INFO] 172.31.128.76 - - [09/Apr/2025 02:36:21] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-09 02:36:21,221 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-09 02:36:21,260 [WARNING] Błąd HTTP 403 dla V5 API. Używam czasu lokalnego.
+2025-04-09 02:36:21,262 [WARNING] Błąd podczas zapisu do cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:36:21,262 [INFO] Poziomy ryzyka: {}
+2025-04-09 02:36:21,262 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49754.38)
+2025-04-09 02:36:21,263 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-09 02:36:21,263 [INFO] 172.31.128.76 - - [09/Apr/2025 02:36:21] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-09 02:36:37,590 [ERROR] Błąd podczas pobierania portfolio: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/utils/__init__.py", line 31, in _import_all_modules_from_directory
+    module = importlib.import_module(f".{module_name}", package=package)
+  File "/nix/store/zdba9frlxj2ba8ca095win3nphsiiqhb-python3-3.10.8/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/runner/workspace/data/utils/performance_monitor.py", line 11, in <module>
+    import psutil
+ModuleNotFoundError: No module named 'psutil'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/main.py", line 455, in dashboard
+    portfolio = bybit_client.get_account_balance()
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 795, in get_account_balance
+    from data.utils.cache_manager import get_cached_data, store_cached_data, is_cache_valid, get_api_status
+  File "/home/runner/workspace/data/utils/__init__.py", line 75, in <module>
+    _import_all(_current_dir, __name__)
+  File "/home/runner/workspace/data/utils/__init__.py", line 70, in _import_all
+    _import_all_modules_from_directory(directory, package)
+  File "/home/runner/workspace/data/utils/__init__.py", line 33, in _import_all_modules_from_directory
+    raise ImportError(
+ImportError: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:36:37,631 [INFO] 172.31.128.76 - - [09/Apr/2025 02:36:37] "GET /?risk_level=medium&max_position_size=10&enable_auto_trading=on HTTP/1.1" 200 -
+2025-04-09 02:36:37,857 [INFO] 172.31.128.76 - - [09/Apr/2025 02:36:37] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-04-09 02:36:37,989 [INFO] 172.31.128.76 - - [09/Apr/2025 02:36:37] "[36mGET /static/js/dashboard.js HTTP/1.1[0m" 304 -
+2025-04-09 02:36:39,082 [INFO] 172.31.128.76 - - [09/Apr/2025 02:36:39] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-09 02:36:39,113 [ERROR] Błąd podczas pobierania danych portfela: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+Traceback (most recent call last):
+  File "/home/runner/workspace/data/utils/__init__.py", line 31, in _import_all_modules_from_directory
+    module = importlib.import_module(f".{module_name}", package=package)
+  File "/nix/store/zdba9frlxj2ba8ca095win3nphsiiqhb-python3-3.10.8/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/runner/workspace/data/utils/performance_monitor.py", line 11, in <module>
+    import psutil
+ModuleNotFoundError: No module named 'psutil'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/main.py", line 498, in get_portfolio_data
+    portfolio_data = bybit_client.get_account_balance()
+  File "/home/runner/workspace/data/execution/bybit_connector.py", line 795, in get_account_balance
+    from data.utils.cache_manager import get_cached_data, store_cached_data, is_cache_valid, get_api_status
+  File "/home/runner/workspace/data/utils/__init__.py", line 75, in <module>
+    _import_all(_current_dir, __name__)
+  File "/home/runner/workspace/data/utils/__init__.py", line 70, in _import_all
+    _import_all_modules_from_directory(directory, package)
+  File "/home/runner/workspace/data/utils/__init__.py", line 33, in _import_all_modules_from_directory
+    raise ImportError(
+ImportError: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:36:39,114 [INFO] 172.31.128.76 - - [09/Apr/2025 02:36:39] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-09 02:36:39,186 [WARNING] Błąd podczas importu managera cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:36:39,188 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-09 02:36:39,199 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-09 02:36:39,201 [INFO] 172.31.128.76 - - [09/Apr/2025 02:36:39] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-09 02:36:39,201 [INFO] Rozpoczynam testowanie modeli w katalogu: ai_models
+2025-04-09 02:36:39,202 [INFO] Znaleziono 13 plików modeli.
+2025-04-09 02:36:39,203 [ERROR] Błąd podczas ładowania modułu ai_models/environment.py: 'ai_models.environment'
+2025-04-09 02:36:39,203 [ERROR] Błąd podczas ładowania modułu ai_models/feature_engineering.py: 'ai_models.feature_engineering'
+2025-04-09 02:36:39,203 [ERROR] Błąd podczas ładowania modułu ai_models/market_dummy_env.py: 'ai_models.market_dummy_env'
+2025-04-09 02:36:39,203 [ERROR] Błąd podczas ładowania modułu ai_models/model_training.py: 'ai_models.model_training'
+2025-04-09 02:36:39,204 [ERROR] Błąd podczas ładowania modułu ai_models/model_tuner.py: 'ai_models.model_tuner'
+2025-04-09 02:36:39,204 [ERROR] Błąd podczas ładowania modułu ai_models/real_exchange_env.py: 'ai_models.real_exchange_env'
+2025-04-09 02:36:39,204 [ERROR] Błąd podczas ładowania modułu ai_models/reinforcement_learning.py: 'ai_models.reinforcement_learning'
+2025-04-09 02:36:39,204 [ERROR] Błąd podczas ładowania modułu ai_models/ropmer_temp.py: 'ai_models.ropmer_temp'
+2025-04-09 02:36:39,204 [ERROR] Błąd podczas ładowania modułu ai_models/scalar.py: 'ai_models.scalar'
+2025-04-09 02:36:39,205 [ERROR] Błąd podczas ładowania modułu ai_models/model_loader.py: 'ai_models.model_loader'
+2025-04-09 02:36:39,205 [ERROR] Błąd podczas ładowania modułu ai_models/sentiment_ai.py: 'ai_models.sentiment_ai'
+2025-04-09 02:36:39,205 [ERROR] Błąd podczas ładowania modułu ai_models/anomaly_detection.py: 'ai_models.anomaly_detection'
+2025-04-09 02:36:39,205 [ERROR] Błąd podczas ładowania modułu ai_models/model_recognition.py: 'ai_models.model_recognition'
+2025-04-09 02:36:39,206 [INFO] Pobrano 1 modeli z ai_models.get_available_models()
+2025-04-09 02:36:39,206 [INFO] Przygotowano informacje o 1 modelach AI
+2025-04-09 02:36:39,206 [INFO] 172.31.128.76 - - [09/Apr/2025 02:36:39] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-09 02:36:39,374 [WARNING] Błąd HTTP 403 dla V5 API. Używam czasu lokalnego.
+2025-04-09 02:36:39,376 [WARNING] Błąd podczas zapisu do cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:36:39,377 [INFO] Poziomy ryzyka: {}
+2025-04-09 02:36:39,377 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50209.29)
+2025-04-09 02:36:39,377 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-09 02:36:39,378 [INFO] 172.31.128.76 - - [09/Apr/2025 02:36:39] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-09 02:37:03,950 [INFO] Zatrzymano handel
+2025-04-09 02:37:03,951 [INFO] Zresetowano silnik handlowy
+2025-04-09 02:37:03,951 [INFO] Uruchomiono handel dla symboli: ['BTCUSDT']
+2025-04-09 02:37:03,951 [INFO] Ustawiono kapitał: $2008.51
+2025-04-09 02:37:03,951 [INFO] Silnik handlowy zresetowany pomyślnie
+2025-04-09 02:37:03,952 [INFO] System zresetowany pomyślnie
+2025-04-09 02:37:03,952 [INFO] 172.31.128.76 - - [09/Apr/2025 02:37:03] "POST /api/system/reset HTTP/1.1" 200 -
+2025-04-09 02:37:04,122 [INFO] 172.31.128.76 - - [09/Apr/2025 02:37:04] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-09 02:37:04,137 [WARNING] Błąd podczas importu managera cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:37:04,139 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-09 02:37:04,162 [INFO] 172.31.128.76 - - [09/Apr/2025 02:37:04] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-09 02:37:04,179 [WARNING] Błąd HTTP 403 dla V5 API. Używam czasu lokalnego.
+2025-04-09 02:37:04,182 [WARNING] Błąd podczas zapisu do cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:37:04,183 [INFO] Poziomy ryzyka: {}
+2025-04-09 02:37:04,183 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49819.6)
+2025-04-09 02:37:04,183 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-09 02:37:04,184 [INFO] 172.31.128.76 - - [09/Apr/2025 02:37:04] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-09 02:37:05,884 [INFO] Trading automatyczny uruchomiony pomyślnie
+2025-04-09 02:37:05,885 [INFO] 172.31.128.76 - - [09/Apr/2025 02:37:05] "POST /api/trading/start HTTP/1.1" 200 -
+2025-04-09 02:37:06,071 [WARNING] Błąd podczas importu managera cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:37:06,073 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-09 02:37:07,140 [INFO] Zatrzymano handel
+2025-04-09 02:37:07,140 [INFO] Zresetowano silnik handlowy
+2025-04-09 02:37:07,141 [INFO] Uruchomiono handel dla symboli: ['BTCUSDT']
+2025-04-09 02:37:07,141 [INFO] Ustawiono kapitał: $2009.44
+2025-04-09 02:37:07,141 [INFO] Silnik handlowy zresetowany pomyślnie
+2025-04-09 02:37:07,141 [INFO] System zresetowany pomyślnie
+2025-04-09 02:37:07,142 [INFO] 172.31.128.76 - - [09/Apr/2025 02:37:07] "POST /api/system/reset HTTP/1.1" 200 -
+2025-04-09 02:37:07,352 [INFO] 172.31.128.76 - - [09/Apr/2025 02:37:07] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-09 02:37:07,368 [INFO] 172.31.128.76 - - [09/Apr/2025 02:37:07] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-09 02:37:08,730 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-09 02:37:08,730 [INFO] Rozpoczynam testowanie modeli w katalogu: ai_models
+2025-04-09 02:37:08,731 [INFO] Znaleziono 13 plików modeli.
+2025-04-09 02:37:08,731 [ERROR] Błąd podczas ładowania modułu ai_models/environment.py: 'ai_models.environment'
+2025-04-09 02:37:08,731 [ERROR] Błąd podczas ładowania modułu ai_models/feature_engineering.py: 'ai_models.feature_engineering'
+2025-04-09 02:37:08,732 [ERROR] Błąd podczas ładowania modułu ai_models/market_dummy_env.py: 'ai_models.market_dummy_env'
+2025-04-09 02:37:08,732 [ERROR] Błąd podczas ładowania modułu ai_models/model_training.py: 'ai_models.model_training'
+2025-04-09 02:37:08,732 [ERROR] Błąd podczas ładowania modułu ai_models/model_tuner.py: 'ai_models.model_tuner'
+2025-04-09 02:37:08,732 [ERROR] Błąd podczas ładowania modułu ai_models/real_exchange_env.py: 'ai_models.real_exchange_env'
+2025-04-09 02:37:08,733 [ERROR] Błąd podczas ładowania modułu ai_models/reinforcement_learning.py: 'ai_models.reinforcement_learning'
+2025-04-09 02:37:08,733 [ERROR] Błąd podczas ładowania modułu ai_models/ropmer_temp.py: 'ai_models.ropmer_temp'
+2025-04-09 02:37:08,733 [ERROR] Błąd podczas ładowania modułu ai_models/scalar.py: 'ai_models.scalar'
+2025-04-09 02:37:08,734 [ERROR] Błąd podczas ładowania modułu ai_models/model_loader.py: 'ai_models.model_loader'
+2025-04-09 02:37:08,734 [ERROR] Błąd podczas ładowania modułu ai_models/sentiment_ai.py: 'ai_models.sentiment_ai'
+2025-04-09 02:37:08,734 [ERROR] Błąd podczas ładowania modułu ai_models/anomaly_detection.py: 'ai_models.anomaly_detection'
+2025-04-09 02:37:08,735 [ERROR] Błąd podczas ładowania modułu ai_models/model_recognition.py: 'ai_models.model_recognition'
+2025-04-09 02:37:08,735 [INFO] Pobrano 1 modeli z ai_models.get_available_models()
+2025-04-09 02:37:08,735 [INFO] Przygotowano informacje o 1 modelach AI
+2025-04-09 02:37:08,736 [INFO] 172.31.128.76 - - [09/Apr/2025 02:37:08] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-09 02:37:08,752 [INFO] 172.31.128.76 - - [09/Apr/2025 02:37:08] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-09 02:37:08,765 [INFO] 172.31.128.76 - - [09/Apr/2025 02:37:08] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-09 02:37:14,186 [WARNING] Błąd HTTP 403 dla V5 API. Używam czasu lokalnego.
+2025-04-09 02:37:14,188 [WARNING] Błąd podczas zapisu do cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:37:14,188 [INFO] Poziomy ryzyka: {}
+2025-04-09 02:37:14,189 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50031.19)
+2025-04-09 02:37:14,189 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-09 02:37:14,190 [INFO] 172.31.128.76 - - [09/Apr/2025 02:37:14] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-09 02:37:14,379 [WARNING] Błąd podczas importu managera cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:37:14,382 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-09 02:37:24,196 [WARNING] Błąd HTTP 403 dla V5 API. Używam czasu lokalnego.
+2025-04-09 02:37:24,198 [WARNING] Błąd podczas zapisu do cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:37:24,198 [INFO] Poziomy ryzyka: {}
+2025-04-09 02:37:24,199 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50064.01)
+2025-04-09 02:37:24,200 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-09 02:37:24,201 [INFO] 172.31.128.76 - - [09/Apr/2025 02:37:24] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-09 02:37:24,366 [WARNING] Błąd podczas importu managera cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:37:24,368 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-09 02:37:34,206 [WARNING] Błąd HTTP 403 dla V5 API. Używam czasu lokalnego.
+2025-04-09 02:37:34,208 [WARNING] Błąd podczas zapisu do cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:37:34,208 [INFO] Poziomy ryzyka: {}
+2025-04-09 02:37:34,209 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50214.64)
+2025-04-09 02:37:34,209 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-09 02:37:34,210 [INFO] 172.31.128.76 - - [09/Apr/2025 02:37:34] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-09 02:37:38,700 [INFO] 172.31.128.76 - - [09/Apr/2025 02:37:38] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-09 02:37:38,702 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-09 02:37:38,703 [INFO] Rozpoczynam testowanie modeli w katalogu: ai_models
+2025-04-09 02:37:38,704 [INFO] 172.31.128.76 - - [09/Apr/2025 02:37:38] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-09 02:37:38,706 [INFO] Znaleziono 13 plików modeli.
+2025-04-09 02:37:38,707 [ERROR] Błąd podczas ładowania modułu ai_models/environment.py: 'ai_models.environment'
+2025-04-09 02:37:38,707 [ERROR] Błąd podczas ładowania modułu ai_models/feature_engineering.py: 'ai_models.feature_engineering'
+2025-04-09 02:37:38,707 [ERROR] Błąd podczas ładowania modułu ai_models/market_dummy_env.py: 'ai_models.market_dummy_env'
+2025-04-09 02:37:38,708 [ERROR] Błąd podczas ładowania modułu ai_models/model_training.py: 'ai_models.model_training'
+2025-04-09 02:37:38,708 [ERROR] Błąd podczas ładowania modułu ai_models/model_tuner.py: 'ai_models.model_tuner'
+2025-04-09 02:37:38,709 [ERROR] Błąd podczas ładowania modułu ai_models/real_exchange_env.py: 'ai_models.real_exchange_env'
+2025-04-09 02:37:38,709 [ERROR] Błąd podczas ładowania modułu ai_models/reinforcement_learning.py: 'ai_models.reinforcement_learning'
+2025-04-09 02:37:38,709 [ERROR] Błąd podczas ładowania modułu ai_models/ropmer_temp.py: 'ai_models.ropmer_temp'
+2025-04-09 02:37:38,710 [ERROR] Błąd podczas ładowania modułu ai_models/scalar.py: 'ai_models.scalar'
+2025-04-09 02:37:38,710 [ERROR] Błąd podczas ładowania modułu ai_models/model_loader.py: 'ai_models.model_loader'
+2025-04-09 02:37:38,710 [ERROR] Błąd podczas ładowania modułu ai_models/sentiment_ai.py: 'ai_models.sentiment_ai'
+2025-04-09 02:37:38,710 [ERROR] Błąd podczas ładowania modułu ai_models/anomaly_detection.py: 'ai_models.anomaly_detection'
+2025-04-09 02:37:38,711 [ERROR] Błąd podczas ładowania modułu ai_models/model_recognition.py: 'ai_models.model_recognition'
+2025-04-09 02:37:38,711 [INFO] Pobrano 1 modeli z ai_models.get_available_models()
+2025-04-09 02:37:38,712 [INFO] Przygotowano informacje o 1 modelach AI
+2025-04-09 02:37:38,712 [INFO] 172.31.128.76 - - [09/Apr/2025 02:37:38] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-09 02:37:38,713 [WARNING] Błąd podczas importu managera cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:37:38,715 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-09 02:37:38,887 [INFO] 172.31.128.76 - - [09/Apr/2025 02:37:38] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-09 02:37:44,248 [WARNING] Błąd HTTP 403 dla V5 API. Używam czasu lokalnego.
+2025-04-09 02:37:44,251 [WARNING] Błąd podczas zapisu do cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:37:44,252 [INFO] Poziomy ryzyka: {}
+2025-04-09 02:37:44,252 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49973.39)
+2025-04-09 02:37:44,252 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-09 02:37:44,253 [INFO] 172.31.128.76 - - [09/Apr/2025 02:37:44] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-09 02:45:39,143 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-09 02:45:39,144 [INFO] 172.31.128.76 - - [09/Apr/2025 02:45:39] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-09 02:45:39,144 [INFO] Rozpoczynam testowanie modeli w katalogu: ai_models
+2025-04-09 02:45:39,146 [INFO] Znaleziono 13 plików modeli.
+2025-04-09 02:45:39,146 [ERROR] Błąd podczas ładowania modułu ai_models/environment.py: 'ai_models.environment'
+2025-04-09 02:45:39,146 [ERROR] Błąd podczas ładowania modułu ai_models/feature_engineering.py: 'ai_models.feature_engineering'
+2025-04-09 02:45:39,146 [ERROR] Błąd podczas ładowania modułu ai_models/market_dummy_env.py: 'ai_models.market_dummy_env'
+2025-04-09 02:45:39,150 [INFO] 172.31.128.76 - - [09/Apr/2025 02:45:39] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-09 02:45:39,150 [ERROR] Błąd podczas ładowania modułu ai_models/model_training.py: 'ai_models.model_training'
+2025-04-09 02:45:39,151 [ERROR] Błąd podczas ładowania modułu ai_models/model_tuner.py: 'ai_models.model_tuner'
+2025-04-09 02:45:39,151 [ERROR] Błąd podczas ładowania modułu ai_models/real_exchange_env.py: 'ai_models.real_exchange_env'
+2025-04-09 02:45:39,152 [ERROR] Błąd podczas ładowania modułu ai_models/reinforcement_learning.py: 'ai_models.reinforcement_learning'
+2025-04-09 02:45:39,152 [ERROR] Błąd podczas ładowania modułu ai_models/ropmer_temp.py: 'ai_models.ropmer_temp'
+2025-04-09 02:45:39,152 [ERROR] Błąd podczas ładowania modułu ai_models/scalar.py: 'ai_models.scalar'
+2025-04-09 02:45:39,152 [ERROR] Błąd podczas ładowania modułu ai_models/model_loader.py: 'ai_models.model_loader'
+2025-04-09 02:45:39,153 [ERROR] Błąd podczas ładowania modułu ai_models/sentiment_ai.py: 'ai_models.sentiment_ai'
+2025-04-09 02:45:39,153 [ERROR] Błąd podczas ładowania modułu ai_models/anomaly_detection.py: 'ai_models.anomaly_detection'
+2025-04-09 02:45:39,153 [ERROR] Błąd podczas ładowania modułu ai_models/model_recognition.py: 'ai_models.model_recognition'
+2025-04-09 02:45:39,153 [INFO] Pobrano 1 modeli z ai_models.get_available_models()
+2025-04-09 02:45:39,155 [WARNING] Błąd podczas importu managera cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:45:39,155 [INFO] Przygotowano informacje o 1 modelach AI
+2025-04-09 02:45:39,156 [INFO] 172.31.128.76 - - [09/Apr/2025 02:45:39] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-09 02:45:39,158 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-09 02:45:39,170 [INFO] 172.31.128.76 - - [09/Apr/2025 02:45:39] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-09 02:45:39,283 [WARNING] Błąd HTTP 403 dla V5 API. Używam czasu lokalnego.
+2025-04-09 02:45:39,285 [WARNING] Błąd podczas zapisu do cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:45:39,286 [INFO] Poziomy ryzyka: {}
+2025-04-09 02:45:39,286 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50128.17)
+2025-04-09 02:45:39,286 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-09 02:45:39,287 [INFO] 172.31.128.76 - - [09/Apr/2025 02:45:39] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-09 02:46:08,694 [INFO] 172.31.128.76 - - [09/Apr/2025 02:46:08] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-09 02:46:08,696 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-09 02:46:08,698 [INFO] Rozpoczynam testowanie modeli w katalogu: ai_models
+2025-04-09 02:46:08,704 [INFO] Znaleziono 13 plików modeli.
+2025-04-09 02:46:08,704 [ERROR] Błąd podczas ładowania modułu ai_models/environment.py: 'ai_models.environment'
+2025-04-09 02:46:08,705 [ERROR] Błąd podczas ładowania modułu ai_models/feature_engineering.py: 'ai_models.feature_engineering'
+2025-04-09 02:46:08,706 [ERROR] Błąd podczas ładowania modułu ai_models/market_dummy_env.py: 'ai_models.market_dummy_env'
+2025-04-09 02:46:08,706 [ERROR] Błąd podczas ładowania modułu ai_models/model_training.py: 'ai_models.model_training'
+2025-04-09 02:46:08,708 [ERROR] Błąd podczas ładowania modułu ai_models/model_tuner.py: 'ai_models.model_tuner'
+2025-04-09 02:46:08,709 [ERROR] Błąd podczas ładowania modułu ai_models/real_exchange_env.py: 'ai_models.real_exchange_env'
+2025-04-09 02:46:08,709 [ERROR] Błąd podczas ładowania modułu ai_models/reinforcement_learning.py: 'ai_models.reinforcement_learning'
+2025-04-09 02:46:08,710 [ERROR] Błąd podczas ładowania modułu ai_models/ropmer_temp.py: 'ai_models.ropmer_temp'
+2025-04-09 02:46:08,710 [ERROR] Błąd podczas ładowania modułu ai_models/scalar.py: 'ai_models.scalar'
+2025-04-09 02:46:08,710 [ERROR] Błąd podczas ładowania modułu ai_models/model_loader.py: 'ai_models.model_loader'
+2025-04-09 02:46:08,703 [INFO] 172.31.128.76 - - [09/Apr/2025 02:46:08] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-09 02:46:08,711 [ERROR] Błąd podczas ładowania modułu ai_models/sentiment_ai.py: 'ai_models.sentiment_ai'
+2025-04-09 02:46:08,708 [WARNING] Błąd podczas importu managera cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:46:08,713 [ERROR] Błąd podczas ładowania modułu ai_models/anomaly_detection.py: 'ai_models.anomaly_detection'
+2025-04-09 02:46:08,714 [ERROR] Błąd podczas ładowania modułu ai_models/model_recognition.py: 'ai_models.model_recognition'
+2025-04-09 02:46:08,715 [INFO] Pobrano 1 modeli z ai_models.get_available_models()
+2025-04-09 02:46:08,715 [INFO] Przygotowano informacje o 1 modelach AI
+2025-04-09 02:46:08,716 [INFO] 172.31.128.76 - - [09/Apr/2025 02:46:08] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-09 02:46:08,718 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-09 02:46:08,761 [WARNING] Błąd HTTP 403 dla V5 API. Używam czasu lokalnego.
+2025-04-09 02:46:08,764 [WARNING] Błąd podczas zapisu do cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:46:08,765 [INFO] Poziomy ryzyka: {}
+2025-04-09 02:46:08,765 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50044.94)
+2025-04-09 02:46:08,766 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-09 02:46:08,767 [INFO] 172.31.128.76 - - [09/Apr/2025 02:46:08] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-09 02:46:38,690 [INFO] 172.31.128.76 - - [09/Apr/2025 02:46:38] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-09 02:46:38,693 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-09 02:46:38,693 [INFO] Rozpoczynam testowanie modeli w katalogu: ai_models
+2025-04-09 02:46:38,698 [INFO] 172.31.128.76 - - [09/Apr/2025 02:46:38] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-09 02:46:38,699 [INFO] 172.31.128.76 - - [09/Apr/2025 02:46:38] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-09 02:46:38,700 [INFO] Znaleziono 13 plików modeli.
+2025-04-09 02:46:38,701 [ERROR] Błąd podczas ładowania modułu ai_models/environment.py: 'ai_models.environment'
+2025-04-09 02:46:38,701 [ERROR] Błąd podczas ładowania modułu ai_models/feature_engineering.py: 'ai_models.feature_engineering'
+2025-04-09 02:46:38,702 [ERROR] Błąd podczas ładowania modułu ai_models/market_dummy_env.py: 'ai_models.market_dummy_env'
+2025-04-09 02:46:38,702 [ERROR] Błąd podczas ładowania modułu ai_models/model_training.py: 'ai_models.model_training'
+2025-04-09 02:46:38,702 [ERROR] Błąd podczas ładowania modułu ai_models/model_tuner.py: 'ai_models.model_tuner'
+2025-04-09 02:46:38,703 [ERROR] Błąd podczas ładowania modułu ai_models/real_exchange_env.py: 'ai_models.real_exchange_env'
+2025-04-09 02:46:38,704 [ERROR] Błąd podczas ładowania modułu ai_models/reinforcement_learning.py: 'ai_models.reinforcement_learning'
+2025-04-09 02:46:38,704 [ERROR] Błąd podczas ładowania modułu ai_models/ropmer_temp.py: 'ai_models.ropmer_temp'
+2025-04-09 02:46:38,704 [ERROR] Błąd podczas ładowania modułu ai_models/scalar.py: 'ai_models.scalar'
+2025-04-09 02:46:38,705 [ERROR] Błąd podczas ładowania modułu ai_models/model_loader.py: 'ai_models.model_loader'
+2025-04-09 02:46:38,705 [ERROR] Błąd podczas ładowania modułu ai_models/sentiment_ai.py: 'ai_models.sentiment_ai'
+2025-04-09 02:46:38,707 [ERROR] Błąd podczas ładowania modułu ai_models/anomaly_detection.py: 'ai_models.anomaly_detection'
+2025-04-09 02:46:38,708 [ERROR] Błąd podczas ładowania modułu ai_models/model_recognition.py: 'ai_models.model_recognition'
+2025-04-09 02:46:38,708 [INFO] Pobrano 1 modeli z ai_models.get_available_models()
+2025-04-09 02:46:38,707 [WARNING] Błąd podczas importu managera cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:46:38,709 [INFO] Przygotowano informacje o 1 modelach AI
+2025-04-09 02:46:38,710 [INFO] 172.31.128.76 - - [09/Apr/2025 02:46:38] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-09 02:46:38,715 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-09 02:46:38,920 [WARNING] Błąd HTTP 403 dla V5 API. Używam czasu lokalnego.
+2025-04-09 02:46:38,922 [WARNING] Błąd podczas zapisu do cache: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-09 02:46:38,923 [INFO] Poziomy ryzyka: {}
+2025-04-09 02:46:38,923 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49821.16)
+2025-04-09 02:46:38,923 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-09 02:46:38,924 [INFO] 172.31.128.76 - - [09/Apr/2025 02:46:38] "GET /api/component-status HTTP/1.1" 200 -
