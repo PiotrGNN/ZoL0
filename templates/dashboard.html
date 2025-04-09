@@ -188,6 +188,38 @@
             </div>
         </div>
 
+        <!-- Sekcja Portfolio -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Stan Portfela</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="portfolio-summary">
+                                    <h4>Podsumowanie</h4>
+                                    <div id="portfolio-data">
+                                        <p>Ładowanie danych portfela...</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="portfolio-positions">
+                                    <h4>Otwarte Pozycje</h4>
+                                    <div id="portfolio-positions">
+                                        <p>Ładowanie pozycji...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <!-- Transakcje -->
         <div id="trades-tab" class="tab-content">
             <div class="card full-width">
@@ -402,7 +434,7 @@
                         <div class="no-data">Ładowanie statusu uczenia...</div>
                     </div>
                 </div>
-                
+
                 <!-- Panel kontroli symulacji -->
                 <div class="card">
                     <h2>Kontrola Symulacji i Uczenia</h2>
@@ -431,7 +463,7 @@
                                 <button type="submit" class="form-submit">Uruchom symulację</button>
                             </div>
                         </form>
-                        
+
                         <div class="button-group" style="margin-top: 20px;">
                             <button id="run-simulation-btn" class="btn btn-primary">Szybka symulacja</button>
                             <button id="run-learning-btn" class="btn btn-info">Symulacja z uczeniem</button>
@@ -440,7 +472,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Powiadomienia -->
         <div id="notifications-tab" class="tab-content">
             <div class="card full-width">
@@ -550,15 +582,17 @@
         </footer>
     </div>
 
-    <script src="/static/js/dashboard.js"></script>
-    <script src="/static/js/ai_monitor.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/ai_monitor.js') }}"></script>
     <script>
         // Skrypt do obsługi zakładki AI Monitor
         document.addEventListener('DOMContentLoaded', function() {
             // Pokazywanie/ukrywanie pola iteracji w zależności od zaznaczenia checkboxa
             const withLearningCheckbox = document.getElementById('with-learning');
             const iterationsRow = document.getElementById('iterations-row');
-            
+
             if (withLearningCheckbox && iterationsRow) {
                 withLearningCheckbox.addEventListener('change', function() {
                     iterationsRow.style.display = this.checked ? 'flex' : 'none';
