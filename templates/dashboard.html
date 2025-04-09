@@ -54,7 +54,7 @@
                         {% endif %}
                     </div>
                 </div>
-                
+
                 <!-- Status komponentów -->
                 <div class="card">
                     <h2>Status Komponentów</h2>
@@ -392,6 +392,99 @@
             </div>
         </div>
 
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">Dostępne Modele AI</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="aiModelTable">
+                                <thead>
+                                    <tr>
+                                        <th>Model</th>
+                                        <th>Status</th>
+                                        <th>Typ</th>
+                                        <th>Metryki</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Dane będą dodane przez JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sekcja wyników symulacji tradingu -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="card-title mb-0">Wyniki Symulacji Tradingu</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="card-title mb-0">Podsumowanie</h6>
+                                    </div>
+                                    <div class="card-body" id="simulationSummary">
+                                        <p>Brak danych symulacji</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="card-title mb-0">Wykres</h6>
+                                    </div>
+                                    <div class="card-body text-center" id="simulationChart">
+                                        <p>Brak wykresu symulacji</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="card-title mb-0">Historia Transakcji</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover" id="tradeHistoryTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Timestamp</th>
+                                                        <th>Akcja</th>
+                                                        <th>Cena</th>
+                                                        <th>Wielkość</th>
+                                                        <th>P/L</th>
+                                                        <th>Prowizja</th>
+                                                        <th>Kapitał</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <!-- Dane będą dodane przez JavaScript -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <footer class="footer">
             <div>Trading Bot System v1.0.0</div>
             <div>© 2025 Trading Bot</div>
@@ -401,4 +494,3 @@
     <script src="/static/js/dashboard.js"></script>
 </body>
 </html>
-

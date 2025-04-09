@@ -78,7 +78,7 @@ def initialize_system():
         except ImportError:
             from data.utils.notification_system import NotificationSystem
             notification_lib = "data.utils.notification_system"
-            
+
         # Import modułu silnika handlowego
         try:
             from python_libs.simplified_trading_engine import SimplifiedTradingEngine
@@ -91,7 +91,7 @@ def initialize_system():
                 SimplifiedTradingEngine = None
                 trading_engine_lib = None
                 logging.warning("Brak modułu silnika handlowego. Funkcjonalność handlowa będzie ograniczona.")
-            
+
         try:
             from python_libs.simplified_sentiment import SentimentAnalyzer
             sentiment_lib = "python_libs.simplified_sentiment"
@@ -102,7 +102,7 @@ def initialize_system():
             except ImportError:
                 SentimentAnalyzer = None
                 sentiment_lib = None
-                
+
         try:
             from python_libs.simplified_anomaly import AnomalyDetector
             anomaly_lib = "python_libs.simplified_anomaly"
@@ -113,7 +113,7 @@ def initialize_system():
             except ImportError:
                 AnomalyDetector = None
                 anomaly_lib = None
-                
+
         try:
             from python_libs.simplified_strategy import StrategyManager
             strategy_lib = "python_libs.simplified_strategy"
@@ -166,14 +166,14 @@ def initialize_system():
             "mean_reversion": 0.3,
             "breakout": 0.4
         }
-        
+
         if StrategyManager:
             strategy_manager = StrategyManager(strategies, exposure_limits)
             logging.info(f"Zainicjalizowano StrategyManager z biblioteki {strategy_lib}")
         else:
             strategy_manager = None
             logging.warning("Brak modułu StrategyManager")
-            
+
         # Inicjalizacja zarządcy ryzyka
         risk_manager = None
         try:
@@ -186,7 +186,7 @@ def initialize_system():
             logging.info("Zainicjalizowano SimplifiedRiskManager")
         except ImportError as e:
             logging.warning(f"Nie można zaimportować SimplifiedRiskManager: {e}")
-            
+
         # Inicjalizacja silnika handlowego
         global trading_engine
         if SimplifiedTradingEngine:
@@ -196,12 +196,12 @@ def initialize_system():
                 exchange_connector=bybit_client
             )
             logging.info(f"Zainicjalizowano silnik handlowy (Trading Engine) z biblioteki {trading_engine_lib}")
-            
+
             # Aktywacja strategii i uruchomienie silnika
             if strategy_manager:
                 strategy_manager.activate_strategy("trend_following")
                 logging.info("Aktywowano strategię 'trend_following'")
-                
+
             # Uruchomienie silnika z odpowiednim symbolem
             symbols = ["BTCUSDT"]
             engine_started = trading_engine.start_trading(symbols)
@@ -222,7 +222,7 @@ def initialize_system():
                     api_key = os.getenv("BYBIT_API_KEY", "simulated_key")
                     api_secret = os.getenv("BYBIT_API_SECRET", "simulated_secret")
                     use_testnet = True
-                    
+
                     bybit_client = SimulatedBybitConnector(
                         api_key=api_key,
                         api_secret=api_secret,
@@ -473,7 +473,7 @@ def get_dashboard_data():
                 'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                 'time_range': 'ostatnie 24 godziny'
             }
-        
+
         # Symulowane dane dla demonstracji
         return jsonify({
             'success': True,
@@ -662,17 +662,17 @@ def get_component_status():
             try:
                 # Pobierz status z silnika handlowego
                 engine_status = trading_engine.get_status()
-                
+
                 # Dodatkowe szczegóły dla diagnostyki
                 trading_engine_details = {
                     'active_symbols': engine_status.get('active_symbols', []),
                     'active_strategies': engine_status.get('active_strategies', []),
                     'last_error': engine_status.get('last_error', None)
                 }
-                
+
                 if engine_status['status'] == 'running':
                     trading_engine_status = 'online'
-                    
+
                     # Sprawdź ryzyko dla aktywnych symboli
                     if hasattr(trading_engine, 'calculate_positions_risk'):
                         try:
@@ -681,7 +681,7 @@ def get_component_status():
                             logging.info(f"Poziomy ryzyka: {risk_levels}")
                         except Exception as risk_e:
                             logging.warning(f"Nie można obliczyć ryzyka: {risk_e}")
-                            
+
                 elif engine_status['status'] == 'error':
                     trading_engine_status = 'warning'
                     logging.warning(f"Problem z silnikiem handlowym: {engine_status.get('last_error', 'Nieznany błąd')}")
@@ -691,7 +691,7 @@ def get_component_status():
             except Exception as e:
                 logging.error(f"Błąd podczas sprawdzania statusu silnika handlowego: {e}", exc_info=True)
                 trading_engine_status = 'warning'
-        
+
         # Data Processor Status - sprawdź czy można załadować dane
         data_processor_status = 'online'
         try:
@@ -765,215 +765,209 @@ def get_component_status():
 
 @app.route('/api/ai-models-status')
 def get_ai_models_status():
-    """Endpoint do pobierania statusu modeli AI"""
+    """Zwraca status wszystkich modeli AI"""
     try:
-        # Import tester modeli
+        # Najpierw sprawdź, czy model_tester jest dostępny
+        from python_libs.model_tester import ModelTester
+        tester = ModelTester(models_path='ai_models')
+        tester.run_tests()  # Uruchom testy modeli
+        test_results = tester.get_test_results()
+        loaded_models = tester.get_loaded_models()
+
+        # Pobranie wszystkich dostępnych modeli z ai_models/__init__.py
+        available_models = {}
         try:
-            # Najpierw sprawdź, czy model_tester jest dostępny
-            from python_libs.model_tester import ModelTester
-            
-            logger.info("Inicjalizuję ModelTester dla modeli AI")
-            tester = ModelTester(models_path='ai_models')
-            logger.info("Uruchamiam testy modeli")
-            tester.run_tests()  # Uruchom testy modeli
-            test_results = tester.get_test_results()
-            loaded_models = tester.get_loaded_models()
-            logger.info(f"Testy modeli zakończone. Znaleziono {len(loaded_models)} modeli.")
-            
-            # Pobranie wszystkich dostępnych modeli z ai_models/__init__.py
-            available_models = {}
-            try:
-                import ai_models
-                if hasattr(ai_models, 'get_available_models'):
-                    available_models = ai_models.get_available_models()
-                    logger.info(f"Pobrano {len(available_models)} modeli z ai_models.get_available_models()")
-            except Exception as e:
-                logger.warning(f"Nie można pobrać listy modeli z ai_models: {e}")
-                
-            # Baza modeli - połącz loaded_models i available_models
-            model_base = {}
-            
-            # Dodaj modele z testera
-            for model_info in loaded_models:
-                model_name = model_info['name']
-                model_base[model_name] = {
-                    'name': model_name,
-                    'type': model_info['instance'].__class__.__name__,
-                    'instance': model_info['instance'],
-                    'status': 'Active',
-                    'has_predict': hasattr(model_info['instance'], 'predict'),
-                    'has_fit': hasattr(model_info['instance'], 'fit'),
-                    'test_result': 'Passed'
+            import ai_models
+            if hasattr(ai_models, 'get_available_models'):
+                available_models = ai_models.get_available_models()
+                logger.info(f"Pobrano {len(available_models)} modeli z ai_models.get_available_models()")
+        except Exception as e:
+            logger.warning(f"Nie można pobrać listy modeli z ai_models: {e}")
+
+        # Baza modeli - połącz loaded_models i available_models
+        model_base = {}
+
+        # Dodaj modele z testera
+        for model_info in loaded_models:
+            model_name = model_info['name']
+            model_base[model_name] = {
+                'name': model_name,
+                'type': model_info['instance'].__class__.__name__,
+                'instance': model_info['instance'],
+                'status': 'Active',
+                'has_predict': hasattr(model_info['instance'], 'predict'),
+                'has_fit': hasattr(model_info['instance'], 'fit'),
+                'test_result': 'Passed'
+            }
+
+        # Dodaj modele z available_models, które nie są jeszcze w bazie
+        for name, model_class in available_models.items():
+            if name not in model_base:
+                # Sprawdź, czy ta klasa jest już w test_results
+                test_result = 'Unknown'
+                for module_name, result in test_results.items():
+                    if result.get('success') and model_class.__name__ in str(result.get('found_classes', [])):
+                        test_result = 'Passed'
+                        break
+                    elif not result.get('success') and model_class.__name__ in str(result.get('found_classes', [])):
+                        test_result = 'Failed'
+                        break
+
+                model_base[name] = {
+                    'name': name,
+                    'type': model_class.__name__,
+                    'status': 'Inactive',
+                    'has_predict': 'predict' in dir(model_class),
+                    'has_fit': 'fit' in dir(model_class),
+                    'test_result': test_result
                 }
-            
-            # Dodaj modele z available_models, które nie są jeszcze w bazie
-            for name, model_class in available_models.items():
-                if name not in model_base:
-                    # Sprawdź, czy ta klasa jest już w test_results
-                    test_result = 'Unknown'
-                    for module_name, result in test_results.items():
-                        if result.get('success') and model_class.__name__ in str(result.get('found_classes', [])):
-                            test_result = 'Passed'
-                            break
-                        elif not result.get('success') and model_class.__name__ in str(result.get('found_classes', [])):
-                            test_result = 'Failed'
-                            break
-                    
-                    model_base[name] = {
-                        'name': name,
-                        'type': model_class.__name__,
-                        'status': 'Inactive',
-                        'has_predict': 'predict' in dir(model_class),
-                        'has_fit': 'fit' in dir(model_class),
-                        'test_result': test_result
-                    }
-            
-            # Skanuj wszystkie pliki w folderze ai_models
-            try:
-                import os
-                import importlib
-                ai_models_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ai_models')
-                
-                # Znajdź wszystkie pliki .py
-                for filename in os.listdir(ai_models_dir):
-                    if filename.endswith('.py') and filename != '__init__.py' and not filename.startswith('_'):
-                        module_name = filename[:-3]  # Usuń rozszerzenie .py
-                        
-                        # Sprawdź, czy ten moduł jest już w test_results
-                        if module_name in test_results:
-                            # Dla każdej znalezionej klasy
-                            for class_name in test_results[module_name].get('found_classes', []):
-                                key = f"{module_name}_{class_name}"
-                                if key not in model_base:
-                                    model_base[key] = {
-                                        'name': class_name,
-                                        'type': class_name,
-                                        'module': module_name,
-                                        'status': 'Detected' if test_results[module_name].get('success') else 'Error',
-                                        'has_predict': False,  # Domyślnie, nie możemy tego stwierdzić bez instancji
-                                        'has_fit': False,      # Domyślnie, nie możemy tego stwierdzić bez instancji
-                                        'test_result': 'Passed' if test_results[module_name].get('success') else 'Failed',
-                                        'error': test_results[module_name].get('error')
-                                    }
-            except Exception as e:
-                logger.warning(f"Błąd podczas skanowania plików ai_models: {e}")
-            
-            # Przygotuj ostateczną listę modeli
-            model_summary = []
-            for key, model_info in model_base.items():
-                # Dodaj dodatkowe informacje
-                model_info['accuracy'] = round(75.0 + 10.0 * random.random(), 1)  # Przykładowa dokładność
-                model_info['last_used'] = (datetime.now() - timedelta(minutes=random.randint(5, 60))).strftime('%Y-%m-%d %H:%M:%S')
-                
-                # Usuń instancję, której nie można serializować do JSON
-                if 'instance' in model_info:
-                    del model_info['instance']
-                
-                model_summary.append(model_info)
-            
-            logger.info(f"Przygotowano informacje o {len(model_summary)} modelach AI")
-            
-        except ImportError as e:
-            logger.warning(f"Nie można zaimportować testera modeli: {e}")
-            # Używamy przykładowego kodu do znalezienia modeli
-            model_summary = []
-            
-            try:
-                import os
-                import importlib
-                import inspect
-                
-                ai_models_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ai_models')
-                
-                # Znajdź wszystkie pliki .py
-                for filename in os.listdir(ai_models_dir):
-                    if filename.endswith('.py') and filename != '__init__.py' and not filename.startswith('_'):
-                        module_name = filename[:-3]  # Usuń rozszerzenie .py
-                        
-                        try:
-                            # Zaimportuj moduł
-                            module = importlib.import_module(f"ai_models.{module_name}")
-                            
-                            # Znajdź wszystkie klasy w module
-                            model_classes = []
-                            for name, obj in inspect.getmembers(module):
-                                if inspect.isclass(obj) and obj.__module__ == f"ai_models.{module_name}":
-                                    model_classes.append((name, obj))
-                            
-                            if model_classes:
-                                for class_name, class_obj in model_classes:
-                                    model_summary.append({
-                                        'name': class_name,
-                                        'type': class_name,
-                                        'module': module_name,
-                                        'status': 'Detected',
-                                        'has_predict': hasattr(class_obj, 'predict'),
-                                        'has_fit': hasattr(class_obj, 'fit'),
-                                        'accuracy': round(75.0 + 10.0 * random.random(), 1),
-                                        'last_used': (datetime.now() - timedelta(minutes=random.randint(5, 60))).strftime('%Y-%m-%d %H:%M:%S')
-                                    })
-                            else:
-                                # Dodaj informację o module bez klas
-                                model_summary.append({
-                                    'name': f"{module_name} (bez klas)",
-                                    'type': 'Module',
+
+        # Skanuj wszystkie pliki w folderze ai_models
+        try:
+            import os
+            import importlib
+            ai_models_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ai_models')
+
+            # Znajdź wszystkie pliki .py
+            for filename in os.listdir(ai_models_dir):
+                if filename.endswith('.py') and filename != '__init__.py' and not filename.startswith('_'):
+                    module_name = filename[:-3]  # Usuń rozszerzenie .py
+
+                    # Sprawdź, czy ten moduł jest już w test_results
+                    if module_name in test_results:
+                        # Dla każdej znalezionej klasy
+                        for class_name in test_results[module_name].get('found_classes', []):
+                            key = f"{module_name}_{class_name}"
+                            if key not in model_base:
+                                model_base[key] = {
+                                    'name': class_name,
+                                    'type': class_name,
                                     'module': module_name,
-                                    'status': 'Unknown',
-                                    'has_predict': False,
-                                    'has_fit': False,
-                                    'accuracy': 0.0,
-                                    'last_used': 'Nieznane'
+                                    'status': 'Detected' if test_results[module_name].get('success') else 'Error',
+                                    'has_predict': False,  # Domyślnie, nie możemy tego stwierdzić bez instancji
+                                    'has_fit': False,      # Domyślnie, nie możemy tego stwierdzić bez instancji
+                                    'test_result': 'Passed' if test_results[module_name].get('success') else 'Failed',
+                                    'error': test_results[module_name].get('error')
+                                }
+        except Exception as e:
+            logger.warning(f"Błąd podczas skanowania plików ai_models: {e}")
+
+        # Przygotuj ostateczną listę modeli
+        model_summary = []
+        for key, model_info in model_base.items():
+            # Dodaj dodatkowe informacje
+            model_info['accuracy'] = round(75.0 + 10.0 * random.random(), 1)  # Przykładowa dokładność
+            model_info['last_used'] = (datetime.now() - timedelta(minutes=random.randint(5, 60))).strftime('%Y-%m-%d %H:%M:%S')
+
+            # Usuń instancję, której nie można serializować do JSON
+            if 'instance' in model_info:
+                del model_info['instance']
+
+            model_summary.append(model_info)
+
+        logger.info(f"Przygotowano informacje o {len(model_summary)} modelach AI")
+
+    except ImportError as e:
+        logger.warning(f"Nie można zaimportować testera modeli: {e}")
+        # Używamy przykładowego kodu do znalezienia modeli
+        model_summary = []
+
+        try:
+            import os
+            import importlib
+            import inspect
+
+            ai_models_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ai_models')
+
+            # Znajdź wszystkie pliki .py
+            for filename in os.listdir(ai_models_dir):
+                if filename.endswith('.py') and filename != '__init__.py' and not filename.startswith('_'):
+                    module_name = filename[:-3]  # Usuń rozszerzenie .py
+
+                    try:
+                        # Zaimportuj moduł
+                        module = importlib.import_module(f"ai_models.{module_name}")
+
+                        # Znajdź wszystkie klasy w module
+                        model_classes = []
+                        for name, obj in inspect.getmembers(module):
+                            if inspect.isclass(obj) and obj.__module__ == f"ai_models.{module_name}":
+                                model_classes.append((name, obj))
+
+                        if model_classes:
+                            for class_name, class_obj in model_classes:
+                                model_summary.append({
+                                    'name': class_name,
+                                    'type': class_name,
+                                    'module': module_name,
+                                    'status': 'Detected',
+                                    'has_predict': hasattr(class_obj, 'predict'),
+                                    'has_fit': hasattr(class_obj, 'fit'),
+                                    'accuracy': round(75.0 + 10.0 * random.random(), 1),
+                                    'last_used': (datetime.now() - timedelta(minutes=random.randint(5, 60))).strftime('%Y-%m-%d %H:%M:%S')
                                 })
-                        except Exception as module_e:
-                            # Dodaj informację o błędzie w module
+                        else:
+                            # Dodaj informację o module bez klas
                             model_summary.append({
-                                'name': f"{module_name} (błąd)",
-                                'type': 'Error',
+                                'name': f"{module_name} (bez klas)",
+                                'type': 'Module',
                                 'module': module_name,
-                                'status': 'Error',
+                                'status': 'Unknown',
                                 'has_predict': False,
                                 'has_fit': False,
                                 'accuracy': 0.0,
-                                'last_used': 'Nieznane',
-                                'error': str(module_e)
+                                'last_used': 'Nieznane'
                             })
-                            logger.warning(f"Błąd importu modułu {module_name}: {module_e}")
-                
-                logger.info(f"Alternatywna metoda: znaleziono {len(model_summary)} modeli AI")
-                
-            except Exception as scan_e:
-                logger.error(f"Błąd podczas skanowania modeli: {scan_e}")
-                # Używamy przykładowych modeli
-                model_summary = [
-                    {
-                        'name': 'Trend Predictor',
-                        'type': 'LSTM',
-                        'accuracy': 78.5,
-                        'status': 'Active',
-                        'last_used': (datetime.now() - timedelta(minutes=15)).strftime('%Y-%m-%d %H:%M:%S'),
-                        'has_predict': True,
-                        'has_fit': True,
-                    },
-                    {
-                        'name': 'Sentiment Analyzer',
-                        'type': 'BERT',
-                        'accuracy': 82.3,
-                        'status': 'Active',
-                        'last_used': (datetime.now() - timedelta(minutes=5)).strftime('%Y-%m-%d %H:%M:%S'),
-                        'has_predict': True,
-                        'has_fit': True,
-                    },
-                    {
-                        'name': 'Volatility Predictor',
-                        'type': 'XGBoost',
-                        'accuracy': 75.1,
-                        'status': 'Active',
-                        'last_used': (datetime.now() - timedelta(minutes=30)).strftime('%Y-%m-%d %H:%M:%S'),
-                        'has_predict': True,
-                        'has_fit': True,
-                    }
-                ]
-        
+                    except Exception as module_e:
+                        # Dodaj informację o błędzie w module
+                        model_summary.append({
+                            'name': f"{module_name} (błąd)",
+                            'type': 'Error',
+                            'module': module_name,
+                            'status': 'Error',
+                            'has_predict': False,
+                            'has_fit': False,
+                            'accuracy': 0.0,
+                            'last_used': 'Nieznane',
+                            'error': str(module_e)
+                        })
+                        logger.warning(f"Błąd importu modułu {module_name}: {module_e}")
+
+            logger.info(f"Alternatywna metoda: znaleziono {len(model_summary)} modeli AI")
+
+        except Exception as scan_e:
+            logger.error(f"Błąd podczas skanowania modeli: {scan_e}")
+            # Używamy przykładowych modeli
+            model_summary = [
+                {
+                    'name': 'Trend Predictor',
+                    'type': 'LSTM',
+                    'accuracy': 78.5,
+                    'status': 'Active',
+                    'last_used': (datetime.now() - timedelta(minutes=15)).strftime('%Y-%m-%d %H:%M:%S'),
+                    'has_predict': True,
+                    'has_fit': True,
+                },
+                {
+                    'name': 'Sentiment Analyzer',
+                    'type': 'BERT',
+                    'accuracy': 82.3,
+                    'status': 'Active',
+                    'last_used': (datetime.now() - timedelta(minutes=5)).strftime('%Y-%m-%d %H:%M:%S'),
+                    'has_predict': True,
+                    'has_fit': True,
+                },
+                {
+                    'name': 'Volatility Predictor',
+                    'type': 'XGBoost',
+                    'accuracy': 75.1,
+                    'status': 'Active',
+                    'last_used': (datetime.now() - timedelta(minutes=30)).strftime('%Y-%m-%d %H:%M:%S'),
+                    'has_predict': True,
+                    'has_fit': True,
+                }
+            ]
+
         return jsonify({'models': model_summary})
     except Exception as e:
         logging.error(f"Błąd podczas pobierania statusu modeli AI: {e}", exc_info=True)
@@ -1016,7 +1010,7 @@ def start_trading():
         if not trading_engine:
             logging.warning("Próba uruchomienia tradingu, ale silnik handlowy nie jest zainicjalizowany")
             return jsonify({'success': False, 'error': 'Silnik handlowy nie jest zainicjalizowany'}), 500
-            
+
         result = trading_engine.start()
         if result.get('success', False):
             logging.info("Trading automatyczny uruchomiony pomyślnie")
@@ -1034,7 +1028,7 @@ def stop_trading():
         if not trading_engine:
             logging.warning("Próba zatrzymania tradingu, ale silnik handlowy nie jest zainicjalizowany")
             return jsonify({'success': False, 'error': 'Silnik handlowy nie jest zainicjalizowany'}), 500
-            
+
         result = trading_engine.stop()
         if result.get('success', False):
             logging.info("Trading automatyczny zatrzymany pomyślnie")
@@ -1053,7 +1047,7 @@ def reset_system():
         if trading_engine:
             trading_engine.reset()
             logging.info("Silnik handlowy zresetowany pomyślnie")
-        
+
         # Można dodać resetowanie innych komponentów w razie potrzeby
         logging.info("System zresetowany pomyślnie")
         return jsonify({'success': True, 'message': 'System zresetowany'})
@@ -1242,12 +1236,12 @@ if __name__ == "__main__":
 
     # Uruchomienie aplikacji z odpowiednim hostem w zależności od środowiska
     port = int(os.environ.get("PORT", 5000))
-    
+
     # Jeśli jesteśmy w Replit, użyj 0.0.0.0, w przeciwnym razie 127.0.0.1
     host = "0.0.0.0" if is_replit else "127.0.0.1"
-    
+
     debug_mode = os.getenv("DEBUG", "True").lower() in ["true", "1", "yes"]
-    
+
     logging.info(f"Uruchamianie aplikacji Flask w środowisku {env_type} na hoście {host} i porcie {port}")
     try:
         app.run(host=host, port=port, debug=debug_mode)

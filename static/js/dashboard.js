@@ -1,4 +1,3 @@
-
 // Konfiguracja aplikacji
 const CONFIG = {
     updateInterval: 30000, // 30 sekund
@@ -9,7 +8,8 @@ const CONFIG = {
         dashboard: '/api/dashboard/data',
         componentStatus: '/api/component-status',
         chartData: '/api/chart/data',
-        aiModelsStatus: '/api/ai-models-status'
+        aiModelsStatus: '/api/ai-models-status',
+        simulationResults: '/api/simulation-results'
     }
 };
 
@@ -85,7 +85,7 @@ function updateAIModelsStatus() {
         })
         .then(data => {
             if (!data) return; // Obsługa sytuacji, gdy catch zwrócił undefined
-            
+
             const aiModelsContainer = document.getElementById('ai-models-container');
             if (!aiModelsContainer) {
                 console.error("Element 'ai-models-container' nie istnieje");
@@ -94,17 +94,17 @@ function updateAIModelsStatus() {
 
             if (data.models && data.models.length > 0) {
                 let modelsHtml = '';
-                
+
                 data.models.forEach(model => {
                     let statusClass = model.status === 'Active' ? 'positive' : 
                                      (model.status === 'Inactive' ? 'neutral' : 
                                      (model.status === 'Error' ? 'negative' : 'neutral'));
-                    
+
                     let accuracyClass = model.accuracy >= 70 ? 'positive' : 
                                       (model.accuracy >= 50 ? 'neutral' : 'negative');
-                    
+
                     let cardStatusClass = model.status.toLowerCase();
-                    
+
                     let testResultHtml = '';
                     if (model.test_result) {
                         let testClass = model.test_result === 'Passed' ? 'positive' : 
@@ -112,17 +112,17 @@ function updateAIModelsStatus() {
                         testResultHtml = `
                             <div>Test: <span class="${testClass}">${model.test_result}</span></div>`;
                     }
-                    
+
                     let moduleHtml = '';
                     if (model.module) {
                         moduleHtml = `<div>Moduł: <span>${model.module}</span></div>`;
                     }
-                    
+
                     let errorHtml = '';
                     if (model.error) {
                         errorHtml = `<div class="error-message">${model.error}</div>`;
                     }
-                    
+
                     modelsHtml += `
                     <div class="ai-model-card ${cardStatusClass}">
                         <h4>${model.name}</h4>
@@ -143,15 +143,15 @@ function updateAIModelsStatus() {
                         </div>
                     </div>`;
                 });
-                
+
                 aiModelsContainer.innerHTML = modelsHtml;
-                
+
                 // Dodaj podsumowanie
                 const aiModelsSection = document.getElementById('ai-models-section');
                 if (aiModelsSection) {
                     const activeModels = data.models.filter(m => m.status === 'Active').length;
                     const totalModels = data.models.length;
-                    
+
                     // Zaktualizuj nagłówek
                     const header = aiModelsSection.querySelector('h2');
                     if (header) {
@@ -251,7 +251,7 @@ function updatePortfolioData() {
         })
         .then(data => {
             const portfolioContainer = document.getElementById('portfolio-data');
-            
+
             if (!portfolioContainer) {
                 console.error("Element 'portfolio-data' nie istnieje");
                 return;
@@ -318,12 +318,12 @@ function updateDashboardData() {
                 updateElementById('trades-value', data.total_trades);
                 updateElementById('win-rate-value', `${data.win_rate.toFixed(1)}%`);
                 updateElementById('drawdown-value', `${data.max_drawdown.toFixed(1)}%`);
-                
+
                 // Aktualizacja sekcji sentymentu w zakładce analityki
                 if (data.sentiment_data) {
                     updateSentimentSection(data.sentiment_data);
                 }
-                
+
                 // Aktualizacja czasu
                 updateLastRefreshed();
             } else {
@@ -333,6 +333,129 @@ function updateDashboardData() {
         .catch(error => {
             console.error("Błąd podczas pobierania danych dashboardu:", error);
         });
+
+    // Pobierz wyniki symulacji tradingu
+    fetch('/api/simulation-results')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Błąd HTTP: ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            updateSimulationResults(data);
+        })
+        .catch(error => {
+            console.error("Błąd podczas pobierania wyników symulacji:", error);
+        });
+}
+
+// Funkcja do aktualizacji wyników symulacji
+function updateSimulationResults(data) {
+    if (data.status !== 'success') {
+        document.getElementById('simulationSummary').innerHTML = `<p>Brak danych symulacji: ${data.message}</p>`;
+        return;
+    }
+
+    const summary = data.summary;
+    const trades = data.trades;
+
+    // Aktualizacja podsumowania
+    const summaryHTML = `
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <tbody>
+                    <tr>
+                        <td>Kapitał początkowy:</td>
+                        <td>${summary.initial_capital.toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                        <td>Kapitał końcowy:</td>
+                        <td>${summary.final_capital.toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                        <td>Zysk/strata:</td>
+                        <td class="${summary.profit >= 0 ? 'text-success' : 'text-danger'}">${summary.profit.toFixed(2)} (${summary.profit_percentage.toFixed(2)}%)</td>
+                    </tr>
+                    <tr>
+                        <td>Liczba transakcji:</td>
+                        <td>${summary.trades}</td>
+                    </tr>
+                    <tr>
+                        <td>Win rate:</td>
+                        <td>${summary.win_rate.toFixed(2)}% (${summary.winning_trades}/${summary.closes})</td>
+                    </tr>
+                    <tr>
+                        <td>Max drawdown:</td>
+                        <td>${summary.max_drawdown.toFixed(2)}%</td>
+                    </tr>
+                    <tr>
+                        <td>Prowizje:</td>
+                        <td>${summary.total_commission.toFixed(2)}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    document.getElementById('simulationSummary').innerHTML = summaryHTML;
+
+    // Aktualizacja wykresu
+    const chartHTML = `
+        <img src="${data.chart_path}" alt="Wykres symulacji" class="img-fluid" />
+    `;
+
+    document.getElementById('simulationChart').innerHTML = chartHTML;
+
+    // Aktualizacja historii transakcji
+    const tradeHistoryTable = document.getElementById('tradeHistoryTable').getElementsByTagName('tbody')[0];
+    tradeHistoryTable.innerHTML = '';
+
+    if (trades && trades.length > 0) {
+        trades.forEach(trade => {
+            const row = tradeHistoryTable.insertRow();
+
+            // Format daty/czasu
+            const timestamp = new Date(trade.timestamp * 1000).toLocaleString();
+
+            // Dodaj komórki
+            let cell = row.insertCell();
+            cell.textContent = timestamp;
+
+            cell = row.insertCell();
+            cell.textContent = trade.action;
+
+            cell = row.insertCell();
+            cell.textContent = trade.price.toFixed(2);
+
+            cell = row.insertCell();
+            cell.textContent = trade.size.toFixed(4);
+
+            cell = row.insertCell();
+            if (trade.pnl !== undefined) {
+                cell.textContent = trade.pnl.toFixed(2);
+                if (trade.pnl > 0) {
+                    cell.classList.add('text-success');
+                } else if (trade.pnl < 0) {
+                    cell.classList.add('text-danger');
+                }
+            } else {
+                cell.textContent = '-';
+            }
+
+            cell = row.insertCell();
+            cell.textContent = trade.commission.toFixed(2);
+
+            cell = row.insertCell();
+            cell.textContent = trade.capital.toFixed(2);
+        });
+    } else {
+        const row = tradeHistoryTable.insertRow();
+        const cell = row.insertCell();
+        cell.colSpan = 7;
+        cell.textContent = 'Brak historii transakcji';
+        cell.style.textAlign = 'center';
+    }
 }
 
 // Bezpieczna aktualizacja elementu po ID
@@ -573,7 +696,7 @@ function showErrorMessage(message) {
 function showNotification(type, message) {
     // Sprawdź, czy kontener istnieje
     let container = document.getElementById('notifications-container');
-    
+
     // Jeśli nie istnieje, utwórz go
     if (!container) {
         container = document.createElement('div');
@@ -581,7 +704,7 @@ function showNotification(type, message) {
         container.className = 'notifications-container';
         document.body.appendChild(container);
     }
-    
+
     // Stwórz element powiadomienia
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;

@@ -1,22 +1,25 @@
 
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """
 run_live_trading.py
 ------------------
-Skrypt do przeprowadzenia tradingu na rzeczywistych danych przez określony czas.
+Skrypt do uruchamiania godzinnego tradingu z wykorzystaniem AI w trybie symulacji.
 """
 
+import argparse
 import logging
 import os
-import sys
 import time
-from datetime import datetime, timedelta
+from datetime import datetime
 
-# Dodanie ścieżek do modułów
-sys.path.append(os.path.abspath(os.path.dirname(__file__)))
-sys.path.append("python_libs")
+import numpy as np
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+import xgboost as xgb
+
+# Importy z własnych modułów
+from python_libs.market_simulator import MarketSimulator
+from python_libs.model_trainer import ModelTrainer
+from python_libs.feature_processor import FeatureProcessor
 
 # Konfiguracja logowania
 logging.basicConfig(
@@ -27,174 +30,289 @@ logging.basicConfig(
         logging.StreamHandler()
     ]
 )
+
 logger = logging.getLogger("live_trading")
 
-def setup_trading_engine():
-    """Inicjalizacja silnika tradingowego i jego komponentów."""
-    try:
-        # Import wymaganych modułów
-        from python_libs.simplified_risk_manager import SimplifiedRiskManager
-        from python_libs.simplified_strategy import StrategyManager
-        from python_libs.simplified_trading_engine import SimplifiedTradingEngine
-        from data.execution.bybit_connector import BybitConnector
+def setup_trading_environment(config):
+    """
+    Przygotowuje środowisko do symulacji tradingu.
+    
+    Parameters:
+        config (dict): Konfiguracja symulacji
         
-        # Inicjalizacja risk managera
-        logger.info("Inicjalizacja zarządzania ryzykiem...")
-        risk_manager = SimplifiedRiskManager(
-            max_risk=0.02,  # Max 2% ryzyka na transakcję
-            max_position_size=0.1,  # Max 10% kapitału na pozycję
-            max_drawdown=0.05  # Max 5% drawdown
+    Returns:
+        tuple: (symulator, procesor_cech, trener_modeli)
+    """
+    # Inicjalizacja symulatora rynku
+    simulator = MarketSimulator(
+        data_source=config.get("data_source", "synthetic"),
+        initial_capital=config.get("initial_capital", 10000),
+        leverage=config.get("leverage", 1.0),
+        spread=config.get("spread", 0.0005),
+        commission=config.get("commission", 0.001),
+        slippage=config.get("slippage", 0.0002),
+        volatility=config.get("volatility", 0.01),
+        data_file=config.get("data_file")
+    )
+    
+    # Inicjalizacja procesora cech
+    feature_processor = FeatureProcessor(scaler_type=config.get("scaler_type", "standard"))
+    
+    # Inicjalizacja trenera modeli
+    model_trainer = ModelTrainer(model_dir=config.get("model_dir", "saved_models"))
+    
+    logger.info("Środowisko tradingowe zostało zainicjalizowane")
+    
+    return simulator, feature_processor, model_trainer
+
+def create_model(model_type="randomforest", **model_params):
+    """
+    Tworzy model uczenia maszynowego.
+    
+    Parameters:
+        model_type (str): Typ modelu - "randomforest", "gradientboosting", "xgboost"
+        **model_params: Parametry modelu
+        
+    Returns:
+        Model uczenia maszynowego
+    """
+    if model_type == "randomforest":
+        model = RandomForestClassifier(**model_params)
+    elif model_type == "gradientboosting":
+        model = GradientBoostingClassifier(**model_params)
+    elif model_type == "xgboost":
+        model = xgb.XGBClassifier(**model_params)
+    else:
+        logger.warning(f"Nieznany typ modelu: {model_type}. Używam RandomForest.")
+        model = RandomForestClassifier(**model_params)
+    
+    logger.info(f"Utworzono model: {model_type}")
+    return model
+
+def train_ai_model(feature_processor, model_trainer, simulator, model_type="randomforest"):
+    """
+    Trenuje model AI na danych z symulatora.
+    
+    Parameters:
+        feature_processor: Procesor cech
+        model_trainer: Trener modeli
+        simulator: Symulator rynku
+        model_type: Typ modelu
+        
+    Returns:
+        Wytrenowany model
+    """
+    # Pobierz dane z symulatora
+    price_data = simulator.price_data.copy()
+    
+    # Tworzenie cech
+    logger.info("Tworzenie cech dla modelu AI...")
+    features_df = feature_processor.create_features(price_data, indicators=True, window_features=True)
+    
+    # Przygotowanie danych treningowych
+    X_train, X_test, y_train, y_test, feature_cols = feature_processor.prepare_data(
+        features_df, target_col='direction', train_ratio=0.8
+    )
+    
+    # Utwórz model
+    if model_type == "randomforest":
+        model = RandomForestClassifier(
+            n_estimators=100, max_depth=None, min_samples_split=2,
+            min_samples_leaf=1, random_state=42
         )
+    elif model_type == "gradientboosting":
+        model = GradientBoostingClassifier(
+            n_estimators=100, learning_rate=0.1, max_depth=3,
+            random_state=42
+        )
+    elif model_type == "xgboost":
+        model = xgb.XGBClassifier(
+            n_estimators=100, learning_rate=0.1, max_depth=3,
+            random_state=42
+        )
+    else:
+        model = RandomForestClassifier(n_estimators=100, random_state=42)
+    
+    # Trenuj model
+    logger.info(f"Trening modelu AI ({model_type})...")
+    
+    if model_type == "xgboost":
+        # Dla XGBoost, używamy early stopping
+        eval_set = [(X_test, y_test)]
+        model = model_trainer.train_model(
+            model, X_train, y_train,
+            model_name=f"{model_type.upper()}_DirectionPredictor",
+            eval_set=eval_set, early_stopping_rounds=10,
+            verbose=False
+        )
+    else:
+        model = model_trainer.train_model(
+            model, X_train, y_train,
+            model_name=f"{model_type.upper()}_DirectionPredictor"
+        )
+    
+    # Ocena modelu
+    metrics = model_trainer.evaluate_model(model, X_test, y_test)
+    logger.info(f"Wyniki modelu: {metrics}")
+    
+    # Zapisz model
+    model_trainer.save_model()
+    
+    # Generuj raport
+    model_trainer.generate_report(model, X_test, y_test)
+    
+    return model, feature_cols
+
+def run_trading_simulation(simulator, feature_processor, model, feature_cols, duration=60, save_results=True):
+    """
+    Uruchamia symulację tradingu z wykorzystaniem modelu AI.
+    
+    Parameters:
+        simulator: Symulator rynku
+        feature_processor: Procesor cech
+        model: Wytrenowany model AI
+        feature_cols: Lista kolumn z cechami
+        duration: Czas trwania symulacji w minutach
+        save_results: Czy zapisać wyniki symulacji
         
-        # Inicjalizacja strategii
-        logger.info("Inicjalizacja strategii tradingowych...")
-        strategies = {
-            "trend_following": {"name": "Trend Following", "enabled": True},
-            "mean_reversion": {"name": "Mean Reversion", "enabled": False},
-            "breakout": {"name": "Breakout", "enabled": True}
-        }
+    Returns:
+        dict: Podsumowanie symulacji
+    """
+    # Resetuj symulator
+    simulator.reset()
+    simulator.max_steps = duration
+    
+    # Główna pętla symulacji
+    logger.info(f"Rozpoczynam symulację tradingu ({duration} minut)...")
+    
+    state = simulator.get_state()
+    step = 0
+    
+    while state is not None and step < duration:
+        # Przygotuj dane do predykcji
+        current_data = pd.DataFrame([state])
+        features_df = feature_processor.create_features(current_data)
         
-        exposure_limits = {
-            "trend_following": 0.5,
-            "mean_reversion": 0.3,
-            "breakout": 0.4
-        }
+        # Niektóre cechy mogą być niedostępne w pierwszych krokach
+        if len(features_df) == 0 or features_df.isnull().values.any():
+            # Przejdź do następnego kroku bez podejmowania akcji
+            state, reward, done, info = simulator.step("hold")
+            step += 1
+            continue
         
-        strategy_manager = StrategyManager(strategies, exposure_limits)
+        # Wybierz tylko cechy, których używaliśmy do treningu
+        available_features = [col for col in feature_cols if col in features_df.columns]
         
-        # Aktywacja wybranych strategii
-        strategy_manager.activate_strategy("trend_following")
-        strategy_manager.activate_strategy("breakout")
+        # Jeśli nie ma wystarczająco cech, przejdź dalej
+        if len(available_features) < len(feature_cols) * 0.8:
+            logger.warning(f"Brak wystarczającej liczby cech: {len(available_features)}/{len(feature_cols)}")
+            state, reward, done, info = simulator.step("hold")
+            step += 1
+            continue
         
-        # Inicjalizacja konektora do giełdy (jeśli dostępny)
-        logger.info("Inicjalizacja połączenia z giełdą...")
+        X_pred = features_df[available_features]
+        
+        # Skalowanie cech
+        for col in available_features:
+            if col in feature_processor.scalers:
+                X_pred[col] = feature_processor.scalers[col].transform(X_pred[[col]])
+        
+        # Wykonaj predykcję
         try:
-            bybit_connector = BybitConnector()
-            logger.info("Połączenie z Bybit nawiązane pomyślnie")
+            if hasattr(model, 'predict_proba'):
+                prediction_proba = model.predict_proba(X_pred)[0]
+                prediction = model.predict(X_pred)[0]
+                confidence = prediction_proba[prediction] if len(prediction_proba) > 1 else prediction_proba[0]
+            else:
+                prediction = model.predict(X_pred)[0]
+                confidence = 0.5  # Domyślna wartość dla modeli bez predict_proba
+            
+            if prediction == 1 and confidence > 0.6:
+                action = "buy"
+                # Wielkość pozycji proporcjonalna do pewności przewidywania
+                position_size = min(0.2, confidence * 0.3) * simulator.current_capital / state['close']
+            elif prediction == 0 and confidence > 0.6:
+                action = "sell"
+                position_size = min(0.2, confidence * 0.3) * simulator.current_capital / state['close']
+            else:
+                # Jeśli mamy otwartą pozycję, sprawdź warunki do zamknięcia
+                if simulator.position != 0:
+                    # Sprawdź, czy osiągnęliśmy próg zysku lub straty
+                    unrealized_pnl = state['unrealized_pnl']
+                    entry_value = simulator.position_size * simulator.entry_price
+                    
+                    # Zamknij pozycję, gdy zysk > 3% lub strata > 1.5%
+                    if (unrealized_pnl > entry_value * 0.03) or (unrealized_pnl < -entry_value * 0.015):
+                        action = "close"
+                    else:
+                        action = "hold"
+                else:
+                    action = "hold"
+                position_size = None
+                
+            logger.info(f"Krok {step+1}/{duration}: Akcja={action}, Pewność={confidence:.2f}, Cena={state['close']:.2f}")
+            
+            # Wykonaj akcję
+            state, reward, done, info = simulator.step(action, position_size)
+            
         except Exception as e:
-            logger.warning(f"Nie udało się połączyć z giełdą Bybit: {str(e)}")
-            bybit_connector = None
-            logger.info("Trading będzie prowadzony w trybie symulacji")
+            logger.error(f"Błąd podczas podejmowania decyzji: {e}")
+            state, reward, done, info = simulator.step("hold")
         
-        # Inicjalizacja silnika handlowego
-        logger.info("Inicjalizacja silnika tradingowego...")
-        trading_engine = SimplifiedTradingEngine(
-            risk_manager=risk_manager,
-            strategy_manager=strategy_manager,
-            exchange_connector=bybit_connector
-        )
+        step += 1
         
-        logger.info("Silnik tradingowy zainicjalizowany pomyślnie")
-        return trading_engine
+        if done:
+            logger.info(f"Symulacja zakończona po {step} krokach. Powód: {info.get('reason', 'nieznany')}")
+            break
     
-    except Exception as e:
-        logger.error(f"Błąd podczas inicjalizacji silnika tradingowego: {str(e)}")
-        return None
+    # Zbierz wyniki
+    summary = simulator.get_summary()
+    
+    # Zapisz wyniki
+    if save_results:
+        simulator.save_results()
+        simulator.plot_results(save_path="reports/trading_simulation_result.png")
+    
+    logger.info(f"Symulacja zakończona. Wynik: {summary['profit']:.2f} ({summary['profit_percentage']:.2f}%)")
+    
+    return summary
 
-def run_trading_for_duration(duration_minutes=60, symbols=None):
-    """
-    Uruchamia trading na podanych symbolach przez określony czas.
+def main():
+    """Główna funkcja programu"""
+    parser = argparse.ArgumentParser(description="Symulacja godzinnego tradingu z wykorzystaniem AI")
+    parser.add_argument("--data-file", type=str, help="Plik CSV z danymi historycznymi")
+    parser.add_argument("--model-type", type=str, default="xgboost", choices=["randomforest", "gradientboosting", "xgboost"], help="Typ modelu AI")
+    parser.add_argument("--duration", type=int, default=60, help="Czas trwania symulacji w minutach")
+    parser.add_argument("--capital", type=float, default=10000, help="Początkowy kapitał")
+    parser.add_argument("--leverage", type=float, default=1.0, help="Dźwignia finansowa")
     
-    Args:
-        duration_minutes: Czas trwania sesji tradingowej w minutach
-        symbols: Lista symboli do tradingu (par walutowych)
-    """
-    if symbols is None:
-        symbols = ["BTCUSDT", "ETHUSDT"]  # Domyślne symbole
+    args = parser.parse_args()
     
-    # Inicjalizacja silnika
-    trading_engine = setup_trading_engine()
-    if not trading_engine:
-        logger.error("Nie udało się zainicjalizować silnika tradingowego. Przerywam.")
-        return
+    # Utworzenie katalogów
+    os.makedirs("logs", exist_ok=True)
+    os.makedirs("reports", exist_ok=True)
+    os.makedirs("saved_models", exist_ok=True)
     
-    # Rozpoczęcie tradingu
-    try:
-        logger.info(f"Rozpoczynam sesję tradingową na {symbols} na {duration_minutes} minut...")
-        
-        # Uruchomienie tradingu
-        result = trading_engine.start_trading(symbols)
-        if not result:
-            logger.error("Nie udało się uruchomić tradingu")
-            return
-        
-        logger.info(f"Trading uruchomiony. Czas trwania: {duration_minutes} minut.")
-        
-        # Obliczenie czasu zakończenia
-        end_time = datetime.now() + timedelta(minutes=duration_minutes)
-        
-        # Główna pętla tradingowa
-        while datetime.now() < end_time:
-            # Pobranie aktualnego statusu
-            status = trading_engine.get_status()
-            logger.info(f"Status silnika: {status}")
-            
-            # Pobranie aktualnych pozycji
-            positions = trading_engine.get_positions() if hasattr(trading_engine, 'get_positions') else {}
-            logger.info(f"Aktualne pozycje: {positions}")
-            
-            # Pobranie historii transakcji
-            trades = trading_engine.get_trade_history() if hasattr(trading_engine, 'get_trade_history') else []
-            if trades:
-                logger.info(f"Ostatnie transakcje: {trades[-5:] if len(trades) > 5 else trades}")
-            
-            # Obliczenie pozostałego czasu
-            remaining = (end_time - datetime.now()).total_seconds() / 60
-            logger.info(f"Pozostały czas: {remaining:.2f} minut")
-            
-            # Pauza między aktualizacjami
-            time.sleep(60)  # Aktualizacja co minutę
+    # Konfiguracja
+    config = {
+        "data_source": "file" if args.data_file else "synthetic",
+        "data_file": args.data_file,
+        "initial_capital": args.capital,
+        "leverage": args.leverage,
+        "model_dir": "saved_models"
+    }
     
-    except KeyboardInterrupt:
-        logger.info("Trading przerwany przez użytkownika")
-    except Exception as e:
-        logger.error(f"Wystąpił błąd podczas sesji tradingowej: {str(e)}")
-    finally:
-        # Zatrzymanie tradingu
-        logger.info("Zatrzymuję trading...")
-        if trading_engine and hasattr(trading_engine, 'stop_trading'):
-            trading_engine.stop_trading()
-        
-        # Generowanie raportu
-        logger.info("Generuję raport z sesji tradingowej...")
-        generate_trading_report(trading_engine)
-        
-        logger.info("Sesja tradingowa zakończona")
-
-def generate_trading_report(trading_engine):
-    """Generuje raport z sesji tradingowej"""
-    try:
-        if not trading_engine:
-            return
-        
-        report = {
-            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "duration": "1h",
-            "positions": trading_engine.get_positions() if hasattr(trading_engine, 'get_positions') else {},
-            "trades": trading_engine.get_trade_history() if hasattr(trading_engine, 'get_trade_history') else [],
-            "performance": trading_engine.get_performance() if hasattr(trading_engine, 'get_performance') else {}
-        }
-        
-        # Zapis raportu do pliku
-        import json
-        os.makedirs("reports", exist_ok=True)
-        report_file = f"reports/trading_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-        
-        with open(report_file, "w") as f:
-            json.dump(report, f, indent=4, default=str)
-        
-        logger.info(f"Raport zapisany do pliku: {report_file}")
+    # Inicjalizacja środowiska
+    simulator, feature_processor, model_trainer = setup_trading_environment(config)
     
-    except Exception as e:
-        logger.error(f"Błąd podczas generowania raportu: {str(e)}")
+    # Trenowanie modelu AI
+    model, feature_cols = train_ai_model(feature_processor, model_trainer, simulator, model_type=args.model_type)
+    
+    # Uruchomienie symulacji
+    run_trading_simulation(simulator, feature_processor, model, feature_cols, duration=args.duration, save_results=True)
 
 if __name__ == "__main__":
-    # Utworzenie katalogu na logi
-    os.makedirs("logs", exist_ok=True)
-    
-    # Parametry sesji tradingowej
-    duration = 60  # 60 minut (1 godzina)
-    trading_symbols = ["BTCUSDT", "ETHUSDT"]  # Pary walutowe do tradingu
-    
-    logger.info(f"Uruchamiam godzinny test tradingowy na symbolach: {trading_symbols}")
-    run_trading_for_duration(duration, trading_symbols)
+    try:
+        main()
+    except Exception as e:
+        logger.error(f"Błąd podczas wykonywania programu: {e}", exc_info=True)

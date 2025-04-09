@@ -109,6 +109,15 @@ mode = "sequential"
 task = "shell.exec"
 args = "bash reset_environment.sh"
 
+[[workflows.workflow]]
+name = "Run Trading Simulation"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python run_live_trading.py --duration 60 --model-type xgboost"
+
 [[ports]]
 localPort = 5000
 externalPort = 80
