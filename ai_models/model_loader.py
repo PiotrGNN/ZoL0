@@ -1,0 +1,130 @@
+
+"""
+model_loader.py
+--------------
+Moduł do automatycznego ładowania i zarządzania modelami AI.
+
+Funkcjonalności:
+- Automatyczne wykrywanie i ładowanie modeli z folderu ai_models/
+- Testowanie poprawności modeli przed załadowaniem
+- Pełna obsługa błędów i logowanie
+- Dostęp do modeli poprzez wygodne API
+"""
+
+import os
+import logging
+import traceback
+from typing import Dict, Any, List, Optional, Union
+
+from python_libs.model_tester import ModelTester
+
+# Konfiguracja logowania
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler("logs/model_loader.log"),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger(__name__)
+
+
+class ModelLoader:
+    """
+    Klasa do ładowania i zarządzania modelami AI.
+    
+    Automatycznie wykrywa i ładuje modele z folderu ai_models/,
+    zapewniając dostęp do nich poprzez wygodne API.
+    """
+    
+    def __init__(self, models_path: str = 'ai_models'):
+        """
+        Inicjalizuje loader modeli.
+        
+        Args:
+            models_path: Ścieżka do folderu z modelami
+        """
+        self.models_path = models_path
+        self.models: Dict[str, Any] = {}
+        self.model_tester = ModelTester(models_path=models_path, log_path='logs/model_loader.log')
+        
+        logger.info(f"Inicjalizacja ModelLoader dla ścieżki: {models_path}")
+    
+    def load_models(self) -> Dict[str, Any]:
+        """
+        Ładuje wszystkie dostępne modele.
+        
+        Returns:
+            Dict[str, Any]: Słownik załadowanych modeli
+        """
+        logger.info("Rozpoczęcie ładowania modeli...")
+        
+        try:
+            # Uruchomienie testera modeli
+            self.model_tester.run_tests()
+            
+            # Pobranie załadowanych modeli
+            loaded_models = self.model_tester.get_loaded_models()
+            
+            # Przechowanie modeli w słowniku
+            for model_info in loaded_models:
+                model_name = model_info['name']
+                self.models[model_name] = model_info['instance']
+                logger.info(f"Załadowano model: {model_name}")
+            
+            logger.info(f"Załadowano {len(self.models)} modeli")
+            return self.models
+            
+        except Exception as e:
+            logger.error(f"Błąd podczas ładowania modeli: {e}")
+            traceback.print_exc()
+            return {}
+    
+    def get_model(self, name: str) -> Optional[Any]:
+        """
+        Pobiera model o podanej nazwie.
+        
+        Args:
+            name: Nazwa modelu
+            
+        Returns:
+            Optional[Any]: Model lub None, jeśli nie znaleziono
+        """
+        return self.models.get(name)
+    
+    def get_all_models(self) -> Dict[str, Any]:
+        """
+        Pobiera wszystkie załadowane modele.
+        
+        Returns:
+            Dict[str, Any]: Słownik załadowanych modeli
+        """
+        return self.models
+    
+    def get_models_summary(self) -> List[Dict[str, str]]:
+        """
+        Zwraca podsumowanie załadowanych modeli.
+        
+        Returns:
+            List[Dict[str, str]]: Lista informacji o modelach
+        """
+        return [
+            {
+                'name': name,
+                'type': model.__class__.__name__,
+                'status': 'Active',
+                'has_predict': hasattr(model, 'predict'),
+                'has_fit': hasattr(model, 'fit')
+            }
+            for name, model in self.models.items()
+        ]
+
+
+# Instancja globalna dla łatwego dostępu
+model_loader = ModelLoader()
+
+# Automatyczne ładowanie modeli przy imporcie
+if __name__ != "__main__":
+    model_loader.load_models()
