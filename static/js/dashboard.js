@@ -111,7 +111,7 @@ function initializePortfolioChart() {
 function updateChartData() {
     if (!appState.portfolioChart) return;
 
-    fetch(CONFIG.apiEndpoints.chartData)
+    fetch('/api/chart-data')
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Błąd HTTP: ${response.status}`);
@@ -208,19 +208,18 @@ function updateDashboardData() {
         .then(data => {
             if (data.success) {
                 // Bezpieczne aktualizowanie elementów z kontrolą istnienia
-                updateElementById('balance-value', `${data.balance.toFixed(2)} USDT`);
-                updateElementById('profit-loss-value', `${data.profit_loss > 0 ? '+' : ''}${data.profit_loss.toFixed(2)} USDT`);
-                updateElementById('open-positions-value', data.open_positions);
-                updateElementById('total-trades-value', data.total_trades);
+                updateElementById('profit-value', `${data.balance.toFixed(2)} USDT`);
+                updateElementById('trades-value', data.total_trades);
                 updateElementById('win-rate-value', `${data.win_rate.toFixed(1)}%`);
-                updateElementById('max-drawdown-value', `${data.max_drawdown.toFixed(1)}%`);
-                updateElementById('market-sentiment-value', data.market_sentiment);
-                updateElementById('last-updated', `Ostatnia aktualizacja: ${data.last_updated}`);
-
+                updateElementById('drawdown-value', `${data.max_drawdown.toFixed(1)}%`);
+                
                 // Aktualizacja sekcji sentymentu w zakładce analityki
                 if (data.sentiment_data) {
                     updateSentimentSection(data.sentiment_data);
                 }
+                
+                // Aktualizacja czasu
+                updateLastRefreshed();
             } else {
                 console.error("Błąd podczas pobierania danych dashboardu:", data.error);
             }

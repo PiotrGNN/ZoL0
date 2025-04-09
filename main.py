@@ -496,6 +496,7 @@ def get_dashboard_data():
         }), 500
 
 @app.route('/api/chart-data')
+@app.route('/api/chart/data')
 def get_chart_data():
     """Endpoint dostarczający dane do wykresów"""
     try:
