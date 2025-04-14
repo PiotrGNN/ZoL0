@@ -17026,3 +17026,415 @@ AttributeError: 'NoneType' object has no attribute 'get_portfolio'
 2025-04-14 20:08:48,679 [INFO] 172.31.128.9 - - [14/Apr/2025 20:08:48] "GET /api/ai/thoughts HTTP/1.1" 200 -
 2025-04-14 20:08:49,153 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
 2025-04-14 20:08:49,155 [INFO] 172.31.128.9 - - [14/Apr/2025 20:08:49] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 20:09:17,678 [INFO] 172.31.128.9 - - [14/Apr/2025 20:09:17] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-14 20:09:17,704 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-14 20:09:17,705 [INFO] 172.31.128.9 - - [14/Apr/2025 20:09:17] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 20:09:17,708 [INFO] 172.31.128.9 - - [14/Apr/2025 20:09:17] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-14 20:09:17,734 [INFO] 172.31.128.9 - - [14/Apr/2025 20:09:17] "[35m[1mGET /api/sentiment HTTP/1.1[0m" 503 -
+2025-04-14 20:09:17,755 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:09:17,756 [INFO] 172.31.128.9 - - [14/Apr/2025 20:09:17] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 20:09:17,774 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-14 20:09:17,774 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50345.82)
+2025-04-14 20:09:17,774 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 20:09:17,776 [INFO] 172.31.128.9 - - [14/Apr/2025 20:09:17] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 20:09:17,815 [INFO] 172.31.128.9 - - [14/Apr/2025 20:09:17] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 20:09:17,850 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:09:17,852 [INFO] 172.31.128.9 - - [14/Apr/2025 20:09:17] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 20:09:47,673 [INFO] 172.31.128.9 - - [14/Apr/2025 20:09:47] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-14 20:09:47,673 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:09:47,674 [INFO] 172.31.128.9 - - [14/Apr/2025 20:09:47] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 20:09:47,683 [INFO] 172.31.128.9 - - [14/Apr/2025 20:09:47] "[35m[1mGET /api/sentiment HTTP/1.1[0m" 503 -
+2025-04-14 20:09:47,696 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-14 20:09:47,698 [INFO] 172.31.128.9 - - [14/Apr/2025 20:09:47] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 20:09:47,700 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-14 20:09:47,700 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49547.57)
+2025-04-14 20:09:47,700 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 20:09:47,701 [INFO] 172.31.128.9 - - [14/Apr/2025 20:09:47] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 20:09:47,751 [INFO] 172.31.128.9 - - [14/Apr/2025 20:09:47] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 20:09:47,814 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:09:47,815 [INFO] 172.31.128.9 - - [14/Apr/2025 20:09:47] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 20:10:18,599 [INFO] 172.31.128.9 - - [14/Apr/2025 20:10:18] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-14 20:10:18,601 [INFO] 172.31.128.9 - - [14/Apr/2025 20:10:18] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-14 20:10:18,622 [INFO] 172.31.128.9 - - [14/Apr/2025 20:10:18] "[35m[1mGET /api/sentiment HTTP/1.1[0m" 503 -
+2025-04-14 20:10:18,630 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:10:18,632 [INFO] 172.31.128.9 - - [14/Apr/2025 20:10:18] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 20:10:18,646 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-14 20:10:18,650 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50226.05)
+2025-04-14 20:10:18,651 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 20:10:18,636 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-14 20:10:18,652 [INFO] 172.31.128.9 - - [14/Apr/2025 20:10:18] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 20:10:18,653 [INFO] 172.31.128.9 - - [14/Apr/2025 20:10:18] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 20:10:18,735 [INFO] 172.31.128.9 - - [14/Apr/2025 20:10:18] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 20:10:18,751 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:10:18,752 [INFO] 172.31.128.9 - - [14/Apr/2025 20:10:18] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 20:10:48,596 [INFO] 172.31.128.9 - - [14/Apr/2025 20:10:48] "[35m[1mGET /api/sentiment HTTP/1.1[0m" 503 -
+2025-04-14 20:10:48,604 [INFO] 172.31.128.9 - - [14/Apr/2025 20:10:48] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-14 20:10:48,605 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:10:48,609 [INFO] 172.31.128.9 - - [14/Apr/2025 20:10:48] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 20:10:48,610 [INFO] 172.31.128.9 - - [14/Apr/2025 20:10:48] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 20:10:48,605 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-14 20:10:48,614 [INFO] 172.31.128.9 - - [14/Apr/2025 20:10:48] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 20:10:48,616 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-14 20:10:48,617 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50453.45)
+2025-04-14 20:10:48,617 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 20:10:48,618 [INFO] 172.31.128.9 - - [14/Apr/2025 20:10:48] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 20:10:48,737 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:10:48,737 [INFO] 172.31.128.9 - - [14/Apr/2025 20:10:48] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 20:11:18,570 [INFO] 172.31.128.9 - - [14/Apr/2025 20:11:18] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-14 20:11:18,572 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-14 20:11:18,573 [INFO] 172.31.128.9 - - [14/Apr/2025 20:11:18] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 20:11:18,576 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:11:18,577 [INFO] 172.31.128.9 - - [14/Apr/2025 20:11:18] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 20:11:18,579 [INFO] 172.31.128.9 - - [14/Apr/2025 20:11:18] "[35m[1mGET /api/sentiment HTTP/1.1[0m" 503 -
+2025-04-14 20:11:18,581 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-14 20:11:18,581 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50497.89)
+2025-04-14 20:11:18,582 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 20:11:18,582 [INFO] 172.31.128.9 - - [14/Apr/2025 20:11:18] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 20:11:18,583 [INFO] 172.31.128.9 - - [14/Apr/2025 20:11:18] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-14 20:11:18,742 [INFO] 172.31.128.9 - - [14/Apr/2025 20:11:18] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 20:11:18,746 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:11:18,746 [INFO] 172.31.128.9 - - [14/Apr/2025 20:11:18] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 20:11:48,594 [INFO] 172.31.128.9 - - [14/Apr/2025 20:11:48] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-14 20:11:48,597 [INFO] 172.31.128.9 - - [14/Apr/2025 20:11:48] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 20:11:48,601 [INFO] 172.31.128.9 - - [14/Apr/2025 20:11:48] "[35m[1mGET /api/sentiment HTTP/1.1[0m" 503 -
+2025-04-14 20:11:48,603 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:11:48,604 [INFO] 172.31.128.9 - - [14/Apr/2025 20:11:48] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 20:11:48,600 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-14 20:11:48,606 [INFO] 172.31.128.9 - - [14/Apr/2025 20:11:48] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 20:11:48,608 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-14 20:11:48,608 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49786.01)
+2025-04-14 20:11:48,608 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 20:11:48,609 [INFO] 172.31.128.9 - - [14/Apr/2025 20:11:48] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 20:11:48,750 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:11:48,750 [INFO] 172.31.128.9 - - [14/Apr/2025 20:11:48] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 20:12:18,737 [INFO] 172.31.128.9 - - [14/Apr/2025 20:12:18] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-14 20:12:18,742 [INFO] 172.31.128.9 - - [14/Apr/2025 20:12:18] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-14 20:12:18,747 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:12:18,748 [INFO] 172.31.128.9 - - [14/Apr/2025 20:12:18] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 20:12:18,744 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-14 20:12:18,753 [INFO] 172.31.128.9 - - [14/Apr/2025 20:12:18] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 20:12:18,754 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-14 20:12:18,754 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50196.98)
+2025-04-14 20:12:18,755 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 20:12:18,755 [INFO] 172.31.128.9 - - [14/Apr/2025 20:12:18] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 20:12:18,800 [INFO] 172.31.128.9 - - [14/Apr/2025 20:12:18] "[35m[1mGET /api/sentiment HTTP/1.1[0m" 503 -
+2025-04-14 20:12:18,894 [INFO] 172.31.128.9 - - [14/Apr/2025 20:12:18] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 20:12:18,909 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:12:18,910 [INFO] 172.31.128.9 - - [14/Apr/2025 20:12:18] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 20:12:48,617 [INFO] 172.31.128.9 - - [14/Apr/2025 20:12:48] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-14 20:12:48,619 [INFO] 172.31.128.9 - - [14/Apr/2025 20:12:48] "[35m[1mGET /api/sentiment HTTP/1.1[0m" 503 -
+2025-04-14 20:12:48,621 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-14 20:12:48,625 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:12:48,626 [INFO] 172.31.128.9 - - [14/Apr/2025 20:12:48] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 20:12:48,628 [INFO] 172.31.128.9 - - [14/Apr/2025 20:12:48] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 20:12:48,630 [INFO] 172.31.128.9 - - [14/Apr/2025 20:12:48] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 20:12:48,633 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-14 20:12:48,633 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49927.33)
+2025-04-14 20:12:48,634 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 20:12:48,634 [INFO] 172.31.128.9 - - [14/Apr/2025 20:12:48] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 20:12:48,774 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:12:48,775 [INFO] 172.31.128.9 - - [14/Apr/2025 20:12:48] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 20:13:23,490 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:23] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-14 20:13:23,523 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:23] "[35m[1mGET /api/sentiment HTTP/1.1[0m" 503 -
+2025-04-14 20:13:23,525 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:13:23,526 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:23] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 20:13:23,528 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-14 20:13:23,529 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49504.16)
+2025-04-14 20:13:23,529 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 20:13:23,529 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:23] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 20:13:23,593 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:23] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-14 20:13:23,622 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:23] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 20:13:23,630 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-14 20:13:23,633 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:23] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 20:13:23,662 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:13:23,663 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:23] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 20:13:45,516 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 100.0, 'available_balance': 100.0, 'wallet_balance': 100.0}}, 'timestamp': '2025-04-14T20:13:45.516419', 'source': 'simulated'}
+2025-04-14 20:13:45,517 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:45] "GET / HTTP/1.1" 200 -
+2025-04-14 20:13:45,816 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:45] "GET /static/css/styles.css HTTP/1.1" 200 -
+2025-04-14 20:13:45,970 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:45] "GET /static/css/ai_monitor.css HTTP/1.1" 200 -
+2025-04-14 20:13:46,125 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:46] "GET /static/js/ai_monitor.js HTTP/1.1" 200 -
+2025-04-14 20:13:46,130 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:46] "GET /static/js/dashboard.js HTTP/1.1" 200 -
+2025-04-14 20:13:47,043 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:47] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-14 20:13:47,047 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:47] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-14 20:13:47,048 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:47] "[35m[1mGET /api/sentiment HTTP/1.1[0m" 503 -
+2025-04-14 20:13:47,053 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:13:47,054 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:47] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 20:13:47,049 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-14 20:13:47,056 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:47] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 20:13:47,057 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-14 20:13:47,058 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49942.98)
+2025-04-14 20:13:47,058 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 20:13:47,058 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:47] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 20:13:47,179 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:47] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-14 20:13:47,181 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:47] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 20:13:47,182 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:13:47,182 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:47] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 20:13:47,183 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:47] "[35m[1mGET /api/sentiment HTTP/1.1[0m" 503 -
+2025-04-14 20:13:47,188 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:47] "GET /static/img/simulation_chart_20250414_200614.png HTTP/1.1" 200 -
+2025-04-14 20:13:47,190 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-14 20:13:55,211 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-14 20:13:55,216 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:55] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 20:13:55,219 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:55] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-14 20:13:55,221 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:55] "[35m[1mGET /api/sentiment HTTP/1.1[0m" 503 -
+2025-04-14 20:13:55,222 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:13:55,223 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:55] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 20:13:55,225 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-14 20:13:55,251 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:55] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 20:13:55,366 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:13:55,367 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:55] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 20:13:57,059 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50003.27)
+2025-04-14 20:13:57,060 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 20:13:57,060 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:57] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 20:13:57,067 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50107.49)
+2025-04-14 20:13:57,068 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 20:13:57,068 [INFO] 172.31.128.9 - - [14/Apr/2025 20:13:57] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 20:14:17,065 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:17] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-14 20:14:17,069 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:17] "[35m[1mGET /api/sentiment HTTP/1.1[0m" 503 -
+2025-04-14 20:14:17,073 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:17] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 20:14:17,073 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:14:17,075 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:17] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 20:14:17,071 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-14 20:14:17,077 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:17] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 20:14:17,079 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-14 20:14:17,080 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49860.35)
+2025-04-14 20:14:17,080 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 20:14:17,081 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:17] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 20:14:17,203 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:14:17,203 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:17] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 20:14:27,401 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:14:27,402 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:27] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 20:14:27,405 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:27] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-14 20:14:27,408 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-14 20:14:27,409 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:27] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 20:14:27,465 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:27] "[35m[1mGET /api/sentiment HTTP/1.1[0m" 503 -
+2025-04-14 20:14:27,469 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-14 20:14:27,469 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50300.38)
+2025-04-14 20:14:27,469 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 20:14:27,470 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:27] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 20:14:27,507 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:27] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-14 20:14:27,542 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:27] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 20:14:27,566 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:14:27,567 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:27] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 20:14:47,067 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:47] "[35m[1mGET /api/sentiment HTTP/1.1[0m" 503 -
+2025-04-14 20:14:47,068 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:47] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-14 20:14:47,073 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:14:47,075 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:47] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-14 20:14:47,075 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:47] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 20:14:47,065 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-14 20:14:47,081 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:47] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 20:14:47,082 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-14 20:14:47,083 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49582.21)
+2025-04-14 20:14:47,083 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 20:14:47,083 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:47] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 20:14:47,198 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:47] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 20:14:47,202 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:14:47,202 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:47] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 20:14:56,500 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:56] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-14 20:14:56,501 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:14:56,501 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:56] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 20:14:56,503 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:56] "[35m[1mGET /api/sentiment HTTP/1.1[0m" 503 -
+2025-04-14 20:14:56,514 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:56] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 20:14:56,512 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-14 20:14:56,518 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:56] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 20:14:56,519 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-14 20:14:56,690 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:14:56,692 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:56] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 20:14:57,083 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49997.88)
+2025-04-14 20:14:57,084 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 20:14:57,084 [INFO] 172.31.128.9 - - [14/Apr/2025 20:14:57] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 20:15:12,950 [INFO]  * Detected change in '/home/runner/workspace/.pythonlibs/bin/pwiz.py', reloading
+2025-04-14 20:15:14,224 [INFO]  * Restarting with watchdog (inotify)
+2025-04-14 20:15:16,454 [INFO] Zainicjalizowano zarządcę ryzyka portfela. Max ryzyko: 0.05, Max rozmiar pozycji: 0.2, Max drawdown: 0.1
+2025-04-14 20:15:16,457 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-14 20:15:16,460 [WARNING] Pomijam podpakiet 'utils' z powodu błędu: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-14 20:15:16,472 [INFO] Wykryto środowisko: Replit
+2025-04-14 20:15:16,472 [WARNING] ❌ OSTRZEŻENIE: .env wskazuje na testnet (BYBIT_USE_TESTNET=true). Ustaw BYBIT_USE_TESTNET=false, jeśli chcesz realny rynek!
+2025-04-14 20:15:16,473 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-14 20:15:16,473 [INFO] Zainicjalizowano ModelTester z biblioteki python_libs.model_tester
+2025-04-14 20:15:16,473 [INFO] Załadowano konfigurację AI z python_libs/ai_config.json
+2025-04-14 20:15:16,474 [INFO] ai_models: Znaleziono 3 modeli AI
+2025-04-14 20:15:16,474 [INFO]   - sentiment_analyzer: SentimentAnalyzer
+2025-04-14 20:15:16,474 [INFO]   - anomaly_detector: AnomalyDetector
+2025-04-14 20:15:16,474 [INFO]   - model_recognizer: ModelRecognizer
+2025-04-14 20:15:16,474 [INFO] Zainicjalizowano SentimentAnalyzer z 4 źródłami
+2025-04-14 20:15:16,475 [INFO] Załadowano dane sentymentu z pliku cache data/cache/sentiment_data.json
+2025-04-14 20:15:16,475 [INFO] Zainicjalizowano SentimentAnalyzer z biblioteką ai_models.sentiment_ai i źródłami ['twitter', 'news', 'forum', 'reddit']
+2025-04-14 20:15:16,475 [INFO] Zainicjalizowano AnomalyDetector z metodą z_score i progiem 2.5
+2025-04-14 20:15:16,475 [INFO] Zainicjalizowano AnomalyDetector z biblioteki ai_models.anomaly_detection (metoda: z_score, próg: 2.5)
+2025-04-14 20:15:16,475 [INFO] Zainicjalizowano ModelRecognizer
+2025-04-14 20:15:16,475 [INFO] Zainicjalizowano ModelRecognizer
+2025-04-14 20:15:16,475 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-14 20:15:16,475 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-14 20:15:16,475 [INFO] Zainicjalizowano uproszczony system powiadomień z 2 kanałami
+2025-04-14 20:15:16,476 [INFO] Zainicjalizowano system powiadomień z biblioteki python_libs.simplified_notification
+2025-04-14 20:15:16,476 [INFO] Zainicjalizowano StrategyManager z 3 strategiami
+2025-04-14 20:15:16,476 [INFO] Zainicjalizowano StrategyManager z biblioteką python_libs.simplified_strategy i 3 strategiami
+2025-04-14 20:15:16,477 [INFO] Zainicjalizowano SimplifiedRiskManager (max_risk=0.05, max_position_size=0.1, max_drawdown=0.1)
+2025-04-14 20:15:16,477 [INFO] Zainicjalizowano SimplifiedRiskManager (max_risk=0.05, max_position_size=0.1, max_drawdown=0.1)
+2025-04-14 20:15:16,477 [INFO] Używasz testnet API (środowisko testowe).
+2025-04-14 20:15:16,477 [INFO] Używasz testnet API (środowisko testowe).
+2025-04-14 20:15:16,477 [INFO] BybitConnector zainicjalizowany. Testnet: True, Lazy connect: True, Market type: spot
+2025-04-14 20:15:16,479 [WARNING] Nie można sprawdzić stanu limitów API: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-14 20:15:16,479 [INFO] BybitConnector w trybie lazy initialization. Testnet: True, Market type: spot
+2025-04-14 20:15:16,479 [INFO] Inicjalizacja klienta ByBit - Klucz: aLYR****************************************************, Testnet: True
+2025-04-14 20:15:16,479 [INFO] Zainicjalizowano SimplifiedTradingEngine z konektorem BybitConnector
+2025-04-14 20:15:16,480 [INFO] Zainicjalizowano silnik handlowy (Trading Engine) z biblioteki python_libs.simplified_trading_engine
+2025-04-14 20:15:16,480 [INFO] Aktywowano strategię: trend_following
+2025-04-14 20:15:16,480 [INFO] Aktywowano strategię 'trend_following'
+2025-04-14 20:15:16,480 [INFO] Uruchomiono handel dla symboli: ['BTCUSDT']
+2025-04-14 20:15:16,481 [WARNING] Nie udało się pobrać kapitału: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-14 20:15:16,481 [INFO] Silnik handlowy uruchomiony dla symboli: ['BTCUSDT']
+2025-04-14 20:15:16,481 [INFO] Zainicjalizowano PortfolioManager z saldem początkowym 100.0 USDT w trybie simulated
+2025-04-14 20:15:16,482 [INFO] Zainicjalizowano menadżera portfela
+2025-04-14 20:15:16,482 [INFO] Rozpoczynam testowanie modeli w katalogu: ai_models
+2025-04-14 20:15:16,482 [INFO] Znaleziono 13 plików modeli.
+2025-04-14 20:15:16,507 [INFO] MarketEnvironment zainicjalizowane w trybie 'simulated' z kapitałem: 10000.000000
+2025-04-14 20:15:16,507 [INFO] Utworzono instancję klasy MarketEnvironment (predict=False, fit=False)
+2025-04-14 20:15:16,508 [INFO] Pomyślnie załadowano 1 instancji z modułu environment
+2025-04-14 20:15:16,508 [WARNING] Brak klas w module feature_engineering
+2025-04-14 20:15:16,509 [INFO] Utworzono instancję klasy MarketDummyEnv (predict=False, fit=False)
+2025-04-14 20:15:16,509 [INFO] Pomyślnie załadowano 1 instancji z modułu market_dummy_env
+2025-04-14 20:15:16,510 [WARNING] Nie można utworzyć instancji klasy ModelTrainer: wymaga parametrów
+2025-04-14 20:15:16,510 [WARNING] Nie udało się utworzyć żadnej instancji z modułu model_training
+2025-04-14 20:15:16,511 [ERROR] Błąd podczas testowania modułu model_tuner: No module named 'optuna'
+2025-04-14 20:15:16,512 [WARNING] Nie można utworzyć instancji klasy RealExchangeEnv: wymaga parametrów
+2025-04-14 20:15:16,512 [WARNING] Nie udało się utworzyć żadnej instancji z modułu real_exchange_env
+2025-04-14 20:15:16,513 [ERROR] Błąd podczas testowania modułu reinforcement_learning: No module named 'tensorflow'
+2025-04-14 20:15:16,513 [INFO] ExperimentManager zainicjalizowany. save_dir: 'saved_models', enable_experiments: True
+2025-04-14 20:15:16,513 [INFO] Utworzono instancję klasy ExperimentManager (predict=False, fit=False)
+2025-04-14 20:15:16,514 [INFO] Pomyślnie załadowano 1 instancji z modułu ropmer_temp
+2025-04-14 20:15:16,514 [INFO] Inicjalizacja DataScaler z metodą: standard
+2025-04-14 20:15:16,514 [INFO] Utworzono instancję klasy DataScaler (predict=False, fit=True)
+2025-04-14 20:15:16,514 [INFO] Pomyślnie załadowano 1 instancji z modułu scalar
+2025-04-14 20:15:16,515 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-14 20:15:16,515 [INFO] Inicjalizacja ModelLoader dla ścieżki: ai_models
+2025-04-14 20:15:16,515 [INFO] Rozpoczęcie ładowania modeli...
+2025-04-14 20:15:16,515 [INFO] Rozpoczynam testowanie modeli w katalogu: ai_models
+2025-04-14 20:15:16,516 [INFO] Znaleziono 13 plików modeli.
+2025-04-14 20:15:16,535 [INFO] MarketEnvironment zainicjalizowane w trybie 'simulated' z kapitałem: 10000.000000
+2025-04-14 20:15:16,535 [INFO] Utworzono instancję klasy MarketEnvironment (predict=False, fit=False)
+2025-04-14 20:15:16,535 [INFO] Pomyślnie załadowano 1 instancji z modułu environment
+2025-04-14 20:15:16,535 [WARNING] Brak klas w module feature_engineering
+2025-04-14 20:15:16,535 [INFO] Utworzono instancję klasy MarketDummyEnv (predict=False, fit=False)
+2025-04-14 20:15:16,536 [INFO] Pomyślnie załadowano 1 instancji z modułu market_dummy_env
+2025-04-14 20:15:16,536 [WARNING] Nie można utworzyć instancji klasy ModelTrainer: wymaga parametrów
+2025-04-14 20:15:16,536 [WARNING] Nie udało się utworzyć żadnej instancji z modułu model_training
+2025-04-14 20:15:16,537 [ERROR] Błąd podczas testowania modułu model_tuner: No module named 'optuna'
+2025-04-14 20:15:16,537 [WARNING] Nie można utworzyć instancji klasy RealExchangeEnv: wymaga parametrów
+2025-04-14 20:15:16,538 [WARNING] Nie udało się utworzyć żadnej instancji z modułu real_exchange_env
+2025-04-14 20:15:16,539 [ERROR] Błąd podczas testowania modułu reinforcement_learning: No module named 'tensorflow'
+2025-04-14 20:15:16,539 [INFO] ExperimentManager zainicjalizowany. save_dir: 'saved_models', enable_experiments: True
+2025-04-14 20:15:16,539 [INFO] Utworzono instancję klasy ExperimentManager (predict=False, fit=False)
+2025-04-14 20:15:16,539 [INFO] Pomyślnie załadowano 1 instancji z modułu ropmer_temp
+2025-04-14 20:15:16,539 [INFO] Inicjalizacja DataScaler z metodą: standard
+2025-04-14 20:15:16,540 [INFO] Utworzono instancję klasy DataScaler (predict=False, fit=True)
+2025-04-14 20:15:16,540 [INFO] Pomyślnie załadowano 1 instancji z modułu scalar
+2025-04-14 20:15:16,540 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-14 20:15:16,540 [INFO] Inicjalizacja ModelLoader dla ścieżki: ai_models
+2025-04-14 20:15:16,541 [INFO] Utworzono instancję klasy ModelLoader (predict=False, fit=False)
+2025-04-14 20:15:16,541 [INFO] Pomyślnie załadowano 1 instancji z modułu model_loader
+2025-04-14 20:15:16,541 [INFO] Zainicjalizowano AnomalyDetector z metodą z_score i progiem 2.5
+2025-04-14 20:15:16,541 [INFO] Utworzono instancję klasy AnomalyDetector (predict=False, fit=False)
+2025-04-14 20:15:16,541 [INFO] Pomyślnie załadowano 1 instancji z modułu anomaly_detection
+2025-04-14 20:15:16,542 [INFO] Zainicjalizowano ModelRecognizer
+2025-04-14 20:15:16,542 [INFO] Utworzono instancję klasy ModelRecognizer (predict=False, fit=False)
+2025-04-14 20:15:16,542 [INFO] Pomyślnie załadowano 1 instancji z modułu model_recognition
+2025-04-14 20:15:16,542 [INFO] Zainicjalizowano SentimentAnalyzer z 4 źródłami
+2025-04-14 20:15:16,542 [INFO] Załadowano dane sentymentu z pliku cache data/cache/sentiment_data.json
+2025-04-14 20:15:16,543 [INFO] Utworzono instancję klasy SentimentAnalyzer (predict=False, fit=False)
+2025-04-14 20:15:16,543 [INFO] Pomyślnie załadowano 1 instancji z modułu sentiment_ai
+2025-04-14 20:15:16,543 [INFO] Załadowano model: MarketEnvironment
+2025-04-14 20:15:16,543 [INFO] Załadowano model: MarketDummyEnv
+2025-04-14 20:15:16,543 [INFO] Załadowano model: ExperimentManager
+2025-04-14 20:15:16,543 [INFO] Załadowano model: DataScaler
+2025-04-14 20:15:16,543 [INFO] Załadowano model: ModelLoader
+2025-04-14 20:15:16,543 [INFO] Załadowano model: AnomalyDetector
+2025-04-14 20:15:16,543 [INFO] Załadowano model: ModelRecognizer
+2025-04-14 20:15:16,544 [INFO] Załadowano model: SentimentAnalyzer
+2025-04-14 20:15:16,544 [INFO] Załadowano 8 modeli
+2025-04-14 20:15:16,544 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-14 20:15:16,544 [INFO] Inicjalizacja ModelLoader dla ścieżki: ai_models
+2025-04-14 20:15:16,544 [INFO] Utworzono instancję klasy ModelLoader (predict=False, fit=False)
+2025-04-14 20:15:16,545 [INFO] Pomyślnie załadowano 1 instancji z modułu model_loader
+2025-04-14 20:15:16,545 [INFO] Zainicjalizowano AnomalyDetector z metodą z_score i progiem 2.5
+2025-04-14 20:15:16,545 [INFO] Utworzono instancję klasy AnomalyDetector (predict=False, fit=False)
+2025-04-14 20:15:16,545 [INFO] Pomyślnie załadowano 1 instancji z modułu anomaly_detection
+2025-04-14 20:15:16,545 [INFO] Zainicjalizowano ModelRecognizer
+2025-04-14 20:15:16,546 [INFO] Utworzono instancję klasy ModelRecognizer (predict=False, fit=False)
+2025-04-14 20:15:16,546 [INFO] Pomyślnie załadowano 1 instancji z modułu model_recognition
+2025-04-14 20:15:16,546 [INFO] Zainicjalizowano SentimentAnalyzer z 4 źródłami
+2025-04-14 20:15:16,546 [INFO] Załadowano dane sentymentu z pliku cache data/cache/sentiment_data.json
+2025-04-14 20:15:16,546 [INFO] Utworzono instancję klasy SentimentAnalyzer (predict=False, fit=False)
+2025-04-14 20:15:16,546 [INFO] Pomyślnie załadowano 1 instancji z modułu sentiment_ai
+2025-04-14 20:15:16,547 [INFO] Przetestowano modele AI: znaleziono 8 działających modeli
+2025-04-14 20:15:16,547 [INFO] System zainicjalizowany poprawnie
+2025-04-14 20:15:16,547 [INFO] Uruchamianie aplikacji Flask w środowisku Replit na hoście 0.0.0.0 i porcie 5000
+2025-04-14 20:15:16,565 [WARNING]  * Debugger is active!
+2025-04-14 20:15:16,566 [INFO]  * Debugger PIN: 123-717-902
+2025-04-14 20:15:17,781 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:17] "[35m[1mGET /api/sentiment HTTP/1.1[0m" 503 -
+2025-04-14 20:15:17,782 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:17] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-14 20:15:17,785 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:17] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 20:15:17,787 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-14 20:15:17,789 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:17] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 20:15:17,792 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-14 20:15:17,792 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50396.43)
+2025-04-14 20:15:17,793 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 20:15:17,793 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:17] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 20:15:17,794 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:15:17,795 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:17] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 20:15:17,914 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:15:17,915 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:17] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 20:15:30,214 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:30] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-14 20:15:30,220 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:15:30,217 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-14 20:15:30,221 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:30] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 20:15:30,222 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:30] "[35m[1mGET /api/sentiment HTTP/1.1[0m" 503 -
+2025-04-14 20:15:30,222 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:30] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 20:15:30,225 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-14 20:15:30,226 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:30] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-14 20:15:30,227 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50194.53)
+2025-04-14 20:15:30,227 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 20:15:30,228 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:30] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 20:15:30,350 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:30] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 20:15:30,377 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:15:30,378 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:30] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 20:15:47,086 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:47] "[35m[1mGET /api/sentiment HTTP/1.1[0m" 503 -
+2025-04-14 20:15:47,104 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:47] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-14 20:15:47,107 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:47] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-14 20:15:47,107 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:15:47,110 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:47] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 20:15:47,106 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-14 20:15:47,112 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:47] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 20:15:47,114 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-14 20:15:47,114 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49824.52)
+2025-04-14 20:15:47,114 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 20:15:47,115 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:47] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 20:15:47,230 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:47] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 20:15:47,237 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:15:47,238 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:47] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 20:15:57,883 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:57] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-14 20:15:57,885 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:57] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 20:15:57,885 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:15:57,886 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:57] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 20:15:57,888 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:57] "[35m[1mGET /api/sentiment HTTP/1.1[0m" 503 -
+2025-04-14 20:15:57,891 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-14 20:15:57,894 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:57] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 20:15:57,896 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-14 20:15:57,896 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50413.56)
+2025-04-14 20:15:57,896 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 20:15:57,897 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:57] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 20:15:58,082 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:15:58,083 [INFO] 172.31.128.9 - - [14/Apr/2025 20:15:58] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 20:16:17,075 [INFO] 172.31.128.9 - - [14/Apr/2025 20:16:17] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 20:16:17,076 [INFO] 172.31.128.9 - - [14/Apr/2025 20:16:17] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-14 20:16:17,073 [WARNING] Cache manager import error: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.. Using simplified rate limiting.
+2025-04-14 20:16:17,077 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:16:17,082 [INFO] 172.31.128.9 - - [14/Apr/2025 20:16:17] "[35m[1mGET /api/sentiment HTTP/1.1[0m" 503 -
+2025-04-14 20:16:17,084 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50483.91)
+2025-04-14 20:16:17,086 [INFO] 172.31.128.9 - - [14/Apr/2025 20:16:17] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 20:16:17,087 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 20:16:17,088 [INFO] 172.31.128.9 - - [14/Apr/2025 20:16:17] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 20:16:17,085 [INFO] Inicjalizacja ModelTester dla ścieżki: ai_models
+2025-04-14 20:16:17,090 [INFO] 172.31.128.9 - - [14/Apr/2025 20:16:17] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 20:16:17,210 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
+2025-04-14 20:16:17,211 [INFO] 172.31.128.9 - - [14/Apr/2025 20:16:17] "GET /api/ai/learning-status HTTP/1.1" 200 -
