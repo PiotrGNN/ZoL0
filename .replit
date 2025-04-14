@@ -78,7 +78,7 @@ pageEnabled = false
 buttonEnabled = false
 
 [workflows]
-runButton = "Install and Run"
+runButton = "Install Dependencies with User Flag"
 
 [[workflows.workflow]]
 name = "Run"
@@ -203,6 +203,19 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "pip install -r requirements.txt"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python main.py"
+
+[[workflows.workflow]]
+name = "Install Dependencies with User Flag"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pip install --user -r requirements.txt"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
