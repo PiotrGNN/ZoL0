@@ -143,6 +143,15 @@ mode = "sequential"
 task = "shell.exec"
 args = "python setup_local_packages.py"
 
+[[workflows.workflow]]
+name = "Install Dependencies"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pip install -r requirements.txt"
+
 [[ports]]
 localPort = 5000
 externalPort = 80

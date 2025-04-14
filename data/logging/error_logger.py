@@ -1,3 +1,4 @@
+
 """
 error_logger.py
 ---------------
@@ -17,7 +18,6 @@ import traceback
 
 try:
     import sentry_sdk
-
     SENTRY_AVAILABLE = True
 except ImportError:
     SENTRY_AVAILABLE = False
@@ -31,24 +31,36 @@ logging.basicConfig(
 )
 
 
-# Funkcja maskująca wrażliwe dane w komunikatach logów
-def mask_sensitive_data(message: str, sensitive_keys: list = None) -> str:
+# Funkcja maskująca wrażliwe dane
+def mask_sensitive_data(message):
     """
-    Maskuje wartości kluczy, które mogą zawierać poufne dane.
+    Maskuje wrażliwe dane w logach, takie jak klucze API czy hasła.
 
     Parameters:
-        message (str): Komunikat do maskowania.
-        sensitive_keys (list): Lista słów kluczowych do maskowania (domyślnie ["api_key", "api_secret", "password"]).
+        message (str): Komunikat do przetworzenia.
 
     Returns:
-        str: Zmaskowany komunikat.
+        str: Komunikat z zamaskowanymi wrażliwymi danymi.
     """
-    if sensitive_keys is None:
-        sensitive_keys = ["api_key", "api_secret", "password", "token"]
+    if not isinstance(message, str):
+        return message
+
+    # Lista wzorców do maskowania
+    patterns = [
+        "api_key", "apikey", "secret", "password", "token",
+        "API_KEY", "APIKEY", "SECRET", "PASSWORD", "TOKEN"
+    ]
+
     masked_message = message
-    for key in sensitive_keys:
-        # Prosty mechanizm zastępowania – może być rozszerzony
-        masked_message = masked_message.replace(key, f"{key.upper()}=***")
+    for pattern in patterns:
+        # Szukanie wzorców w formacie "pattern=wartość"
+        if pattern in masked_message:
+            parts = masked_message.split(pattern + "=")
+            if len(parts) > 1:
+                # Zastąpienie wartości gwiazdkami
+                value_end = parts[1].find(" ") if " " in parts[1] else len(parts[1])
+                masked_message = parts[0] + pattern + "=" + parts[1][:4] + "***" + (parts[1][value_end:] if value_end < len(parts[1]) else "")
+
     return masked_message
 
 
@@ -120,5 +132,9 @@ if __name__ == "__main__":
     # Przykładowe logowanie ostrzeżeń
     error_logger.log_warning("To jest ostrzeżenie testowe.")
 
-    # Przykładowe logowanie krytyczne
-    error_logger.log_critical("To jest krytyczny błąd testowy.", exc_info=True)
+    # Przykładowe logowanie krytycznego błędu
+    try:
+        with open("nieistniejacy_plik.txt", "r") as f:
+            content = f.read()
+    except Exception as e:
+        error_logger.log_critical(f"Krytyczny błąd przy otwieraniu pliku: {str(e)}")

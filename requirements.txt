@@ -1,27 +1,35 @@
+# Core dependencies
+numpy>=1.24.0
+pandas>=2.0.0
+matplotlib>=3.5.0
+scikit-learn>=1.0.0
+tensorflow>=2.11.0
+optuna>=3.0.0
+torch>=2.0.0
+python-dotenv>=1.0.0
+pyyaml>=6.0
+requests>=2.28.0
 
-# Główne biblioteki
-flask==2.3.3
-python-dotenv==1.0.0
-numpy==1.24.3
-pandas==1.5.3
-scikit-learn==1.2.2
-matplotlib==3.7.2
-requests==2.31.0
+# Trading-specific packages
+ccxt>=4.0.0
+ta>=0.10.0
+mplfinance>=0.12.0
+
+# AI & ML related
+transformers>=4.20.0
+
+# Utilities
+psutil>=5.9.0
+flask>=2.2.0
+
+# For testing
+pytest>=7.0.0
 
 # Trading i API
 pybit==5.0.0
-ccxt==3.0.0
 
-# Analiza danych i AI
-joblib>=1.0.0
-xgboost==1.5.0
-tensorflow==2.8.0
-optuna==2.10.0
-transformers==4.30.2
 
 # Narzędzia i pomocnicze
-psutil==5.9.0
-pyyaml==6.0
 tqdm==4.64.1
 pytz==2023.3
 faker==18.13.0
@@ -37,6 +45,7 @@ sentry-sdk==1.14.0
 prometheus-client==0.17.0
 
 # Dev dependencies
-pytest==7.3.1
 flake8==6.0.0
 black==23.1.0
+joblib>=1.0.0
+xgboost==1.5.0
