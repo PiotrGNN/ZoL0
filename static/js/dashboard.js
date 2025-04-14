@@ -1384,3 +1384,40 @@ function fetchSimulationResults() {
             console.error("Błąd podczas pobierania wyników symulacji:", error);
         });
 }
+
+// Funkcja do pobierania myśli AI
+function fetchAIThoughts() {
+    fetch('/api/ai/thoughts')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Błąd HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Jeśli istnieje specyficzna obsługa w dashboardzie, dodaj ją tutaj
+            console.log("Pobrano myśli AI:", data);
+        })
+        .catch(error => {
+            console.error("Błąd podczas pobierania myśli AI:", error);
+        });
+}
+
+// Funkcja do pobierania statusu AI
+function fetchAIStatus() {
+    fetch('/api/ai-models-status')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Błąd HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            updateAIModelsStatus(data);
+            updateLastRefreshed();
+        })
+        .catch(error => {
+            console.log("Błąd podczas pobierania statusu modeli AI:", error);
+            showNotification('error', 'Nie udało się pobrać statusu modeli AI');
+        });
+}

@@ -41,12 +41,29 @@ def setup_local_directories():
         "data/cache",
         "reports",
         "static/img",
-        "saved_models"
+        "saved_models",
+        "python_libs/__pycache__",
+        "ai_models/__pycache__"
     ]
     
     for directory in directories:
         os.makedirs(directory, exist_ok=True)
         logging.info(f"Utworzono katalog: {directory}")
+        
+    # Upewnij się, że katalogi zawierają pliki __init__.py
+    init_directories = [
+        "python_libs",
+        "ai_models",
+        "data",
+        "data/cache"
+    ]
+    
+    for directory in init_directories:
+        init_file = os.path.join(directory, "__init__.py")
+        if not os.path.exists(init_file):
+            with open(init_file, 'w') as f:
+                f.write("# Auto-generated __init__.py file\n")
+            logging.info(f"Utworzono plik inicjalizacyjny: {init_file}")
 
 def main():
     """Funkcja główna."""
