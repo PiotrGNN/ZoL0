@@ -36,19 +36,24 @@ function fetchComponentStatus() {
         .catch(error => console.error('Błąd podczas pobierania statusu komponentów:', error));
 }
 
-
-// Funkcja do pobierania statusu komponentów (original function replaced)
-// function fetchComponentStatus() {
-//     fetch(CONFIG.apiEndpoints.componentStatus)
-//         .then(response => response.json())
-//         .then(data => {
-//             updateComponentStatusUI(data);
-//         })
-//         .catch(error => {
-//             console.error("Błąd podczas pobierania statusu komponentów:", error);
-//             showNotification('error', 'Nie udało się pobrać statusu komponentów');
-//         });
-// }
+// Funkcja do pobierania statusu modeli AI
+function fetchAIStatus() {
+    fetch('/api/ai-models-status')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Błąd HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            updateAIModelsStatus(data);
+            updateLastRefreshed();
+        })
+        .catch(error => {
+            console.log("Błąd podczas pobierania statusu modeli AI:", error);
+            showNotification('error', 'Nie udało się pobrać statusu modeli AI');
+        });
+}
 
 // Funkcja do aktualizacji UI na podstawie statusu komponentów
 function updateComponentStatusUI(data) {
@@ -922,7 +927,7 @@ function resetSystem() {
             'Content-Type': 'application/json',
         }
     })
-    .then(response => {
+    .then(response=> {
         if (!response.ok) {
             throw new Error(`Błąd HTTP: ${response.status}`);
         }
@@ -1311,27 +1316,27 @@ function fetchAIStatus() {
 function updateAIModelsStatus(data) {
     const container = document.getElementById('ai-models-status');
     if (!container) return;
-    
+
     // Wyczyść kontener
     container.innerHTML = '';
-    
+
     if (!data || !data.models || data.models.length === 0) {
         container.innerHTML = '<div class="no-data">Brak dostępnych modeli AI</div>';
         return;
     }
-    
+
     // Dla każdego modelu
     data.models.forEach(model => {
         const modelItem = document.createElement('div');
         modelItem.className = `model-item ${model.status === 'active' ? 'model-active' : 'model-inactive'}`;
-        
+
         modelItem.innerHTML = `
             <div class="model-name">${model.name}</div>
             <div class="model-type">${model.type || 'Nieznany'}</div>
             <div class="model-status">${model.status === 'active' ? 'Aktywny' : 'Nieaktywny'}</div>
             <div class="model-accuracy">${model.accuracy ? model.accuracy + '%' : 'N/A'}</div>
         `;
-        
+
         container.appendChild(modelItem);
     });
 }
@@ -1362,3 +1367,20 @@ function initDashboard() {
 
 // Wywołaj funkcję inicjalizującą po załadowaniu strony
 document.addEventListener('DOMContentLoaded', initDashboard);
+
+// Funkcja do pobierania wyników symulacji
+function fetchSimulationResults() {
+    fetch('/api/simulation-results')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Błąd HTTP: ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            updateSimulationResults(data);
+        })
+        .catch(error => {
+            console.error("Błąd podczas pobierania wyników symulacji:", error);
+        });
+}
