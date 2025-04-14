@@ -152,6 +152,23 @@ mode = "sequential"
 task = "shell.exec"
 args = "pip install -r requirements.txt"
 
+[[workflows.workflow]]
+name = "Fix Dashboard"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python3 fix_imports.py"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python3 auto_fix_tests.py"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python3 main.py"
+
 [[ports]]
 localPort = 5000
 externalPort = 80

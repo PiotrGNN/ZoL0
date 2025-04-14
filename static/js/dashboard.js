@@ -1293,6 +1293,49 @@ function updateComponentStatus(elementId, status) {
     }
 }
 
+// Funkcja pobierająca status modeli AI
+function fetchAIStatus() {
+    fetch('/api/ai-models-status')
+        .then(response => response.json())
+        .then(data => {
+            updateAIModelsStatus(data);
+            updateLastRefreshed();
+        })
+        .catch(error => {
+            console.log("Błąd podczas pobierania statusu modeli AI:", error);
+            showNotification('error', 'Nie udało się pobrać statusu modeli AI');
+        });
+}
+
+// Aktualizacja statusu modeli AI
+function updateAIModelsStatus(data) {
+    const container = document.getElementById('ai-models-status');
+    if (!container) return;
+    
+    // Wyczyść kontener
+    container.innerHTML = '';
+    
+    if (!data || !data.models || data.models.length === 0) {
+        container.innerHTML = '<div class="no-data">Brak dostępnych modeli AI</div>';
+        return;
+    }
+    
+    // Dla każdego modelu
+    data.models.forEach(model => {
+        const modelItem = document.createElement('div');
+        modelItem.className = `model-item ${model.status === 'active' ? 'model-active' : 'model-inactive'}`;
+        
+        modelItem.innerHTML = `
+            <div class="model-name">${model.name}</div>
+            <div class="model-type">${model.type || 'Nieznany'}</div>
+            <div class="model-status">${model.status === 'active' ? 'Aktywny' : 'Nieaktywny'}</div>
+            <div class="model-accuracy">${model.accuracy ? model.accuracy + '%' : 'N/A'}</div>
+        `;
+        
+        container.appendChild(modelItem);
+    });
+}
+
 // Funkcja inicjalizująca, wywoływana po załadowaniu strony
 function initDashboard() {
     console.log("Aktualizacja danych dashboardu...");
