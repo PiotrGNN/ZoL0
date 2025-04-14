@@ -13,7 +13,7 @@ requests>=2.25.0
 # Trading-specific packages
 ccxt>=4.0.0
 ta>=0.10.0
-mplfinance>=0.12.0
+mplfinance>=0.12.0b0
 
 # AI & ML related
 transformers>=4.20.0
