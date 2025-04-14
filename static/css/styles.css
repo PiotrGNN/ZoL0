@@ -605,23 +605,47 @@ table tr:last-child td {
   flex-wrap: wrap;
   border-bottom: 1px solid #ddd;
   margin-bottom: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px 8px 0 0;
 }
 
 .tab-button {
-  padding: 10px 15px;
+  padding: 12px 20px;
   background: none;
   border: none;
   cursor: pointer;
   font-weight: 500;
+  color: #555;
+  transition: all 0.3s ease;
+  border-bottom: 2px solid transparent;
+  margin-right: 5px;
+}
+
+.tab-button:hover {
+  background-color: #e9ecef;
+  color: #333;
 }
 
 .tab-button.active {
   border-bottom: 2px solid #4CAF50;
   color: #4CAF50;
+  background-color: #fff;
+  font-weight: 600;
 }
 
 .tab-content {
   display: none;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  margin-bottom: 30px;
+}
+
+/* Dodatkowy styl dla aktywnej zakładki */
+#dashboard-tab {
+  display: block; /* Domyślnie pokaż pierwszą zakładkę */
 }
 /* Podstawowe style dla dashboardu */
 body {

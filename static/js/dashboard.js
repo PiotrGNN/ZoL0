@@ -106,6 +106,7 @@ const appState = {
 document.addEventListener('DOMContentLoaded', function() {
     console.log("Dashboard załadowany");
     setupEventListeners();
+    setupTabNavigation(); // Dodano jawne wywołanie
     initializeUI();
     startDataUpdates();
 });
@@ -925,7 +926,7 @@ function stopTrading() {
         }
         return response.json();
     })
-    .then(data => {
+    .thendata => {
         if (data.success) {
             showNotification('success', data.message || 'Trading automatyczny zatrzymany');
             updateComponentStatus();
@@ -986,44 +987,54 @@ function setupEventListeners() {
     }
 
     // Obsługa zakładek w dashboardzie
-    const tabButtons = document.querySelectorAll('.tab-button');
-    if (tabButtons.length > 0) {
-        tabButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                // Usunięcie klasy active ze wszystkich przycisków
-                tabButtons.forEach(btn => btn.classList.remove('active'));
-                // Dodanie klasy active do klikniętego przycisku
-                this.classList.add('active');
+    function setupTabNavigation() {
+        const tabButtons = document.querySelectorAll('.tab-button');
+        if (tabButtons.length > 0) {
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Usunięcie klasy active ze wszystkich przycisków
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    // Dodanie klasy active do klikniętego przycisku
+                    this.classList.add('active');
 
-                // Ukrycie wszystkich sekcji zawartości
-                const tabId = this.getAttribute('data-tab');
-                const tabContents = document.querySelectorAll('.tab-content');
-                tabContents.forEach(content => {
-                    content.style.display = 'none';
+                    // Ukrycie wszystkich sekcji zawartości
+                    const tabId = this.getAttribute('data-tab');
+                    const tabContents = document.querySelectorAll('.tab-content');
+                    tabContents.forEach(content => {
+                        content.style.display = 'none';
+                    });
+
+                    // Pokazanie wybranej sekcji
+                    const selectedTab = document.getElementById(tabId);
+                    if (selectedTab) {
+                        selectedTab.style.display = 'block';
+                        console.log(`Przełączono na zakładkę: ${tabId}`);
+                    } else {
+                        console.error(`Nie znaleziono elementu o ID: ${tabId}`);
+                    }
+
+                    // Specjalne działania dla poszczególnych zakładek
+                    if (tabId === 'trades-tab') {
+                        fetchTradesHistory();
+                    } else if (tabId === 'analytics-tab') {
+                        updateSentimentData();
+                    } else if (tabId === 'ai-monitor-tab') {
+                        fetchAIStatus();
+                        fetchAIThoughts();
+                    } else if (tabId === 'settings-tab') {
+                        fetchSystemSettings();
+                    } else if (tabId === 'notifications-tab') {
+                        fetchNotifications();
+                    }
                 });
-
-                // Pokazanie wybranej sekcji
-                const selectedTab = document.getElementById(tabId);
-                if (selectedTab) {
-                    selectedTab.style.display = 'block';
-                }
-
-                // Specjalne działania dla poszczególnych zakładek
-                if (tabId === 'trades-tab') {
-                    fetchTradesHistory();
-                } else if (tabId === 'analytics-tab') {
-                    updateSentimentData();
-                } else if (tabId === 'ai-monitor-tab') {
-                    fetchAIStatus();
-                    fetchAIThoughts();
-                } else if (tabId === 'settings-tab') {
-                    fetchSystemSettings();
-                } else if (tabId === 'notifications-tab') {
-                    fetchNotifications();
-                }
             });
-        });
+        } else {
+            console.error("Nie znaleziono przycisków zakładek (.tab-button)");
+        }
     }
+
+
+    setupTabNavigation();
 
     // Obsługa formularza symulacji
     const simulationForm = document.getElementById('simulation-form');
