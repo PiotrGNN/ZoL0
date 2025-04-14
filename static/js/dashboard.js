@@ -323,10 +323,24 @@ function updatePortfolioData() {
             return response.json();
         })
         .then(data => {
-            const portfolioContainer = document.getElementById('portfolio-data');
+            // Próbujemy znaleźć portfolio-container zamiast portfolio-data
+            let portfolioContainer = document.getElementById('portfolio-container');
+            
+            // Sprawdźmy również portfolio-data jako alternatywę
+            if (!portfolioContainer) {
+                portfolioContainer = document.getElementById('portfolio-data');
+            }
+
+            // Jeśli nadal nie znaleziono, spróbuj znaleźć dowolny element z klasą portfolio-data
+            if (!portfolioContainer) {
+                const possibleContainers = document.getElementsByClassName('portfolio-data');
+                if (possibleContainers.length > 0) {
+                    portfolioContainer = possibleContainers[0];
+                }
+            }
 
             if (!portfolioContainer) {
-                console.error("Element 'portfolio-data' nie istnieje");
+                console.error("Element portfolio-container ani portfolio-data nie istnieje");
                 return;
             }
 
@@ -367,9 +381,14 @@ function updatePortfolioData() {
         })
         .catch(err => {
             console.error("Błąd podczas pobierania danych portfela:", err);
-            const portfolioContainer = document.getElementById('portfolio-data');
-            if (portfolioContainer) {
-                portfolioContainer.innerHTML = '<div class="error-message">Błąd podczas pobierania danych portfela. Sprawdź połączenie internetowe.</div>';
+            const possibleContainers = [
+                document.getElementById('portfolio-container'),
+                document.getElementById('portfolio-data'),
+                ...Array.from(document.getElementsByClassName('portfolio-data'))
+            ].filter(Boolean);
+            
+            if (possibleContainers.length > 0) {
+                possibleContainers[0].innerHTML = '<div class="error-message">Błąd podczas pobierania danych portfela. Sprawdź połączenie internetowe.</div>';
             }
         });
 }

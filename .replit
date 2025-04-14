@@ -78,7 +78,7 @@ pageEnabled = false
 buttonEnabled = false
 
 [workflows]
-runButton = "Naprawa Całego Systemu"
+runButton = "Niezawodny Trading System"
 
 [[workflows.workflow]]
 name = "Run"
@@ -249,6 +249,19 @@ args = "python main.py"
 
 [[workflows.workflow]]
 name = "Naprawa Całego Systemu"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python install_replit.py"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python main.py"
+
+[[workflows.workflow]]
+name = "Niezawodny Trading System"
 author = 31819671
 mode = "sequential"
 
