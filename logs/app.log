@@ -17438,3 +17438,11 @@ AttributeError: 'NoneType' object has no attribute 'get_portfolio'
 2025-04-14 20:16:17,090 [INFO] 172.31.128.9 - - [14/Apr/2025 20:16:17] "GET /api/ai-models-status HTTP/1.1" 200 -
 2025-04-14 20:16:17,210 [INFO] Załadowano raport z pliku reports/trading_report_20250414_200614.json
 2025-04-14 20:16:17,211 [INFO] 172.31.128.9 - - [14/Apr/2025 20:16:17] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 20:25:55,206 [INFO] Zainicjalizowano zarządcę ryzyka portfela. Max ryzyko: 0.05, Max rozmiar pozycji: 0.2, Max drawdown: 0.1
+2025-04-14 20:25:55,209 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-14 20:25:55,213 [WARNING] Pomijam podpakiet 'utils' z powodu błędu: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-14 20:25:55,237 [INFO] Załadowano 11 raportów. Najnowszy: 2025-04-14 20:06:14
+2025-04-14 20:29:39,926 [INFO] Zainicjalizowano zarządcę ryzyka portfela. Max ryzyko: 0.05, Max rozmiar pozycji: 0.2, Max drawdown: 0.1
+2025-04-14 20:29:39,943 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-14 20:29:39,962 [WARNING] Pomijam podpakiet 'utils' z powodu błędu: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-14 20:29:39,979 [INFO] Załadowano 11 raportów. Najnowszy: 2025-04-14 20:06:14
