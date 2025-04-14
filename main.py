@@ -1346,20 +1346,30 @@ def get_ai_models_status():
 
         # Sprawdź SentimentAnalyzer
         if sentiment_analyzer:
-            status = sentiment_analyzer.get_status()
-            models.append({
-                'name': 'SentimentAnalyzer',
-                'type': 'Sentiment Analysis',
-                'accuracy': 82.0,
-                'status': 'Active' if status.get('active') else 'Inactive',
-                'last_used': status.get('last_update', datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
-                'methods': {
-                    'predict': False,
-                    'fit': False
-                },
-                'test_result': 'Passed',
-                'module': 'sentiment_ai'
-            })
+            try:
+                status = sentiment_analyzer.get_status()
+                models.append({
+                    'name': 'SentimentAnalyzer',
+                    'type': 'Sentiment Analysis',
+                    'accuracy': 82.0,
+                    'status': 'Active' if status.get('active') else 'Inactive',
+                    'last_used': status.get('last_update', datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
+                    'methods': {
+                        'predict': hasattr(sentiment_analyzer, 'predict'),
+                        'fit': hasattr(sentiment_analyzer, 'fit')
+                    },
+                    'test_result': 'Passed',
+                    'module': 'sentiment_ai'
+                })
+                logging.info("Dodano status modelu SentimentAnalyzer")
+            except Exception as e:
+                logging.error(f"Błąd podczas pobierania statusu SentimentAnalyzer: {e}")
+                models.append({
+                    'name': 'SentimentAnalyzer',
+                    'type': 'Sentiment Analysis',
+                    'status': 'Error',
+                    'error': str(e)
+                })
 
         # Sprawdź AnomalyDetector
         if anomaly_detector:

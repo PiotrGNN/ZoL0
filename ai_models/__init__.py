@@ -21,15 +21,40 @@ def get_available_models():
     Returns:
         dict: Słownik z nazwami modeli i ich klasami
     """
-    from .sentiment_ai import SentimentAnalyzer
-    from .anomaly_detection import AnomalyDetector
-    from .model_recognition import ModelRecognizer
-
-    return {
-        "sentiment_analyzer": SentimentAnalyzer,
-        "anomaly_detector": AnomalyDetector,
-        "model_recognizer": ModelRecognizer
-    }
+    available_models = {}
+    
+    # Próba importu i dodania SentimentAnalyzer z obsługą błędów
+    try:
+        from .sentiment_ai import SentimentAnalyzer
+        available_models["sentiment_analyzer"] = SentimentAnalyzer
+        logger.info("Załadowano model: SentimentAnalyzer")
+    except ImportError as e:
+        logger.warning(f"Nie można załadować modelu SentimentAnalyzer: {e}")
+    except Exception as e:
+        logger.error(f"Nieoczekiwany błąd podczas ładowania SentimentAnalyzer: {e}")
+    
+    # Próba importu i dodania AnomalyDetector z obsługą błędów
+    try:
+        from .anomaly_detection import AnomalyDetector
+        available_models["anomaly_detector"] = AnomalyDetector
+        logger.info("Załadowano model: AnomalyDetector")
+    except ImportError as e:
+        logger.warning(f"Nie można załadować modelu AnomalyDetector: {e}")
+    except Exception as e:
+        logger.error(f"Nieoczekiwany błąd podczas ładowania AnomalyDetector: {e}")
+    
+    # Próba importu i dodania ModelRecognizer z obsługą błędów
+    try:
+        from .model_recognition import ModelRecognizer
+        available_models["model_recognizer"] = ModelRecognizer
+        logger.info("Załadowano model: ModelRecognizer")
+    except ImportError as e:
+        logger.warning(f"Nie można załadować modelu ModelRecognizer: {e}")
+    except Exception as e:
+        logger.error(f"Nieoczekiwany błąd podczas ładowania ModelRecognizer: {e}")
+    
+    logger.info(f"Łącznie załadowano {len(available_models)} modeli")
+    return available_models
 
 # Eksportuj nazwy klas do przestrzeni nazw pakietu
 try:

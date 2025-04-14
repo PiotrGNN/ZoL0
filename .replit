@@ -286,6 +286,27 @@ args = "python install_replit.py"
 task = "shell.exec"
 args = "python main.py"
 
+[[workflows.workflow]]
+name = "Napraw Modele AI"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python install_replit.py"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python fix_imports.py"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python test_models.py"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python main.py"
+
 [[ports]]
 localPort = 5000
 externalPort = 80

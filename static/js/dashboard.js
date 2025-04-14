@@ -238,15 +238,15 @@ function updateAIModelsStatus() {
                 const tbody = aiModelTable.querySelector('tbody');
                 if (tbody && data.models && data.models.length > 0) {
                     tbody.innerHTML = '';
-                    
+
                     data.models.forEach(model => {
                         const row = document.createElement('tr');
-                        
+
                         // Komórka z nazwą modelu
                         const nameCell = document.createElement('td');
                         nameCell.textContent = model.name;
                         row.appendChild(nameCell);
-                        
+
                         // Komórka ze statusem
                         const statusCell = document.createElement('td');
                         const statusSpan = document.createElement('span');
@@ -254,12 +254,12 @@ function updateAIModelsStatus() {
                         statusSpan.textContent = model.status;
                         statusCell.appendChild(statusSpan);
                         row.appendChild(statusCell);
-                        
+
                         // Komórka z typem
                         const typeCell = document.createElement('td');
                         typeCell.textContent = model.type;
                         row.appendChild(typeCell);
-                        
+
                         // Komórka z metrykami
                         const metricsCell = document.createElement('td');
                         if (model.accuracy !== undefined) {
@@ -268,13 +268,13 @@ function updateAIModelsStatus() {
                             if (model.accuracy >= 70) accuracyClass = 'positive';
                             else if (model.accuracy >= 50) accuracyClass = 'neutral';
                             else accuracyClass = 'negative';
-                            
+
                             accuracySpan.className = accuracyClass;
                             accuracySpan.textContent = `Dokładność: ${model.accuracy.toFixed(1)}%`;
                             metricsCell.appendChild(accuracySpan);
                         }
                         row.appendChild(metricsCell);
-                        
+
                         tbody.appendChild(row);
                     });
                 } else if (tbody) {
@@ -288,7 +288,7 @@ function updateAIModelsStatus() {
             if (aiModelsContainer) {
                 aiModelsContainer.innerHTML = '<div class="error-message">Błąd podczas pobierania statusu modeli AI</div>';
             }
-            
+
             // Aktualizuj tabelę modeli w przypadku błędu
             const aiModelTable = document.getElementById('aiModelTable');
             if (aiModelTable) {
@@ -297,7 +297,7 @@ function updateAIModelsStatus() {
                     tbody.innerHTML = '<tr><td colspan="4" class="text-center">Błąd podczas pobierania modeli AI</td></tr>';
                 }
             }
-            
+
             // Próbujemy ponownie po 15 sekundach zamiast 5 dla zmniejszenia obciążenia serwera
             setTimeout(updateAIModelsStatus, 15000);
         });
@@ -504,67 +504,64 @@ function updateDashboardData() {
 
 // Funkcja do aktualizacji danych sentymentu
 function updateSentimentData() {
-    fetch('/api/sentiment')
+    fetch('/api/sentiment/latest')
         .then(response => {
             if (!response.ok) {
-                throw new Error(`Błąd HTTP: ${response.status}`);
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
             return response.json();
         })
         .then(data => {
+            // Aktualizuj kontener sentymentu z otrzymanymi danymi
             const sentimentContainer = document.getElementById('sentiment-container');
-            const sentimentValue = document.getElementById('sentiment-value');
+            if (sentimentContainer && data) {
+                if (data.value !== undefined && data.analysis) {
+                    // Aktualizacja głównej wartości sentymentu
+                    const sentimentValue = document.getElementById('sentiment-value');
+                    if (sentimentValue) {
+                        sentimentValue.textContent = data.analysis;
 
-            if (sentimentValue) {
-                // Usuń poprzednie klasy
-                sentimentValue.classList.remove('positive', 'negative', 'neutral');
+                        // Usunięcie poprzednich klas
+                        sentimentValue.classList.remove('positive', 'negative', 'neutral');
 
-                // Dodaj odpowiednią klasę na podstawie wartości
-                let sentimentClass = 'neutral';
-                if (data.value > 0.1) {
-                    sentimentClass = 'positive';
-                } else if (data.value < -0.1) {
-                    sentimentClass = 'negative';
-                }
-
-                sentimentValue.textContent = data.analysis;
-                sentimentValue.classList.add(sentimentClass);
-            }
-
-            // Dodaj szczegółowe dane źródeł, jeśli istnieją
-            if (data.sources && Object.keys(data.sources).length > 0) {
-                let sourcesHtml = '<div class="sentiment-sources">';
-                sourcesHtml += '<h3>Źródła danych:</h3><ul>';
-
-                for (const [source, value] of Object.entries(data.sources)) {
-                    let sourceClass = 'neutral';
-                    if (value > 0.1) {
-                        sourceClass = 'positive';
-                    } else if (value < -0.1) {
-                        sourceClass = 'negative';
+                        // Dodanie właściwej klasy na podstawie wartości
+                        if (data.value > 0.1) {
+                            sentimentValue.classList.add('positive');
+                        } else if (data.value < -0.1) {
+                            sentimentValue.classList.add('negative');
+                        } else {
+                            sentimentValue.classList.add('neutral');
+                        }
                     }
 
-                    sourcesHtml += `<li><span class="source-name">${source}:</span> <span class="source-value ${sourceClass}">${value.toFixed(2)}</span></li>`;
-                }
-
-                sourcesHtml += '</ul></div>';
-
-                // Dodaj lub zaktualizuj element z danymi źródeł
-                const sourcesElement = document.querySelector('.sentiment-sources');
-                if (sourcesElement) {
-                    sourcesElement.outerHTML = sourcesHtml;
+                    // Aktualizacja danych źródłowych, jeśli są dostępne
+                    if (data.sources) {
+                        const sourcesContainer = document.getElementById('sentiment-sources');
+                        if (sourcesContainer) {
+                            let sourcesHtml = '';
+                            for (const [source, info] of Object.entries(data.sources)) {
+                                const scoreClass = info.score > 0 ? 'positive' : info.score < 0 ? 'negative' : 'neutral';
+                                sourcesHtml += `
+                                    <div class="source-item">
+                                        <div class="source-name">${source}</div>
+                                        <div class="source-score ${scoreClass}">${info.score.toFixed(2)}</div>
+                                        <div class="source-volume">${info.volume} wzmianek</div>
+                                    </div>
+                                `;
+                            }
+                            sourcesContainer.innerHTML = sourcesHtml || '<div class="no-data">Brak danych źródłowych</div>';
+                        }
+                    }
                 } else {
-                    sentimentContainer.innerHTML += sourcesHtml;
+                    sentimentContainer.innerHTML = '<div class="no-data">Brak danych sentymentu rynkowego</div>';
                 }
             }
         })
         .catch(error => {
-            console.error("Błąd podczas pobierania danych sentymentu:", error);
-            const sentimentValue = document.getElementById('sentiment-value');
-            if (sentimentValue) {
-                sentimentValue.textContent = "Brak danych o sentymencie";
-                sentimentValue.classList.remove('positive', 'negative');
-                sentimentValue.classList.add('neutral');
+            console.error('Błąd podczas pobierania danych sentymentu:', error);
+            const sentimentContainer = document.getElementById('sentiment-container');
+            if (sentimentContainer) {
+                sentimentContainer.innerHTML = '<div class="error-message">Błąd podczas pobierania danych sentymentu</div>';
             }
         });
 }
