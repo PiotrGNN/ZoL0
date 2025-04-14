@@ -449,15 +449,17 @@
                                 <input type="number" id="initial-capital" name="initial_capital" value="10000" min="1000" step="1000" class="form-input">
                             </div>
                             <div class="form-row">
-                                <label class="form-label" for="duration">Czas symulacji:</label>
+                                <label class="form-label" for="duration">Czas symulacji (min):</label>
                                 <input type="number" id="duration" name="duration" value="1000" min="100" step="100" class="form-input">
                             </div>
                             <div class="form-row">
                                 <label class="form-label">Typ symulacji:</label>
-                                <label class="form-checkbox-label">
-                                    <input type="checkbox" id="with-learning" name="with_learning" class="form-checkbox">
-                                    Z uczeniem modeli AI
-                                </label>
+                                <div>
+                                    <label class="form-checkbox-label">
+                                        <input type="checkbox" id="with-learning" name="with_learning" class="form-checkbox">
+                                        Z uczeniem modeli AI
+                                    </label>
+                                </div>
                             </div>
                             <div class="form-row" id="iterations-row" style="display: none;">
                                 <label class="form-label" for="iterations">Liczba iteracji:</label>
@@ -468,7 +470,7 @@
                             </div>
                         </form>
 
-                        <div class="button-group" style="margin-top: 20px;">
+                        <div style="margin-top: 20px; display: flex; gap: 10px;">
                             <button id="run-simulation-btn" class="btn btn-primary">Szybka symulacja</button>
                             <button id="run-learning-btn" class="btn btn-info">Symulacja z uczeniem</button>
                         </div>

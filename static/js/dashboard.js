@@ -1007,13 +1007,105 @@ function setupEventListeners() {
                 if (selectedTab) {
                     selectedTab.style.display = 'block';
                 }
+
+                // Specjalne działania dla poszczególnych zakładek
+                if (tabId === 'trades-tab') {
+                    fetchTradesHistory();
+                } else if (tabId === 'analytics-tab') {
+                    updateSentimentData();
+                } else if (tabId === 'ai-monitor-tab') {
+                    fetchAIStatus();
+                    fetchAIThoughts();
+                } else if (tabId === 'settings-tab') {
+                    fetchSystemSettings();
+                } else if (tabId === 'notifications-tab') {
+                    fetchNotifications();
+                }
             });
         });
     }
 
-    // Visibility change (to pause updates when tab is not visible)
+    // Obsługa formularza symulacji
+    const simulationForm = document.getElementById('simulation-form');
+    if (simulationForm) {
+        simulationForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            runSimulation();
+        });
+    }
+
+    // Widoczność (aby wstrzymać aktualizacje, gdy karta nie jest widoczna)
     document.addEventListener('visibilitychange', function() {
         appState.activeDashboard = !document.hidden;
+    });
+}
+
+// Funkcje obsługujące poszczególne zakładki
+function fetchTradesHistory() {
+    fetch('/api/trades/history')
+        .then(response => response.json())
+        .catch(error => {
+            console.error('Błąd podczas pobierania historii transakcji:', error);
+            const tradesTableBody = document.getElementById('trades-table-body');
+            if (tradesTableBody) {
+                tradesTableBody.innerHTML = '<tr><td colspan="9" class="no-data">Nie udało się pobrać historii transakcji</td></tr>';
+            }
+        });
+}
+
+function fetchSystemSettings() {
+    // Funkcja pobierająca ustawienia systemu
+    console.log("Ładowanie ustawień systemu...");
+    // Tutaj można dodać rzeczywiste pobieranie ustawień z API
+}
+
+function fetchNotifications() {
+    // Funkcja pobierająca powiadomienia
+    console.log("Ładowanie powiadomień...");
+    fetch('/api/notifications')
+        .then(response => response.json())
+        .catch(error => {
+            console.error('Błąd podczas pobierania powiadomień:', error);
+            const notificationsList = document.getElementById('notifications-list');
+            if (notificationsList) {
+                notificationsList.innerHTML = '<div class="no-data">Nie udało się pobrać powiadomień</div>';
+            }
+        });
+}
+
+// Funkcja uruchamiająca symulację
+function runSimulation() {
+    const initialCapital = document.getElementById('initial-capital').value;
+    const duration = document.getElementById('duration').value;
+    const withLearning = document.getElementById('with-learning').checked;
+    const iterations = document.getElementById('iterations').value;
+
+    const simulationData = {
+        initial_capital: initialCapital,
+        duration: duration,
+        with_learning: withLearning,
+        iterations: withLearning ? iterations : 1
+    };
+
+    fetch('/api/simulation/run', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(simulationData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('success', 'Symulacja uruchomiona pomyślnie');
+            setTimeout(() => fetchSimulationResults(), 2000);
+        } else {
+            showNotification('error', data.error || 'Błąd podczas uruchamiania symulacji');
+        }
+    })
+    .catch(error => {
+        console.error('Błąd podczas uruchamiania symulacji:', error);
+        showNotification('error', 'Błąd podczas uruchamiania symulacji');
     });
 }
 

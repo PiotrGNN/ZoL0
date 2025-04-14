@@ -500,6 +500,129 @@ table tr:last-child td {
 .performance-item .value {
   font-weight: bold;
 }
+
+/* Style dla formularza symulacji */
+.simulation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin: 10px 0;
+}
+
+.form-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.form-label {
+  min-width: 180px;
+  font-weight: bold;
+}
+
+.form-input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  flex: 1;
+}
+
+.form-checkbox {
+  margin-right: 5px;
+}
+
+.form-checkbox-label {
+  display: flex;
+  align-items: center;
+}
+
+.form-submit {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  align-self: flex-start;
+  margin-top: 10px;
+}
+
+.form-submit:hover {
+  background-color: #45a049;
+}
+
+/* Style dla kart AI */
+.ai-model-card {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.ai-model-card h4 {
+  margin-top: 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+.model-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.model-details div {
+  margin: 4px 0;
+}
+
+/* Statusy komponentów */
+.status-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background-color: #f5f5f5;
+}
+
+.status-online {
+  border-left: 4px solid #4CAF50;
+}
+
+.status-warning {
+  border-left: 4px solid #ff9800;
+}
+
+.status-offline {
+  border-left: 4px solid #f44336;
+}
+
+/* Zakładki - poprawienie stylów */
+.tab-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 20px;
+}
+
+.tab-button {
+  padding: 10px 15px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.tab-button.active {
+  border-bottom: 2px solid #4CAF50;
+  color: #4CAF50;
+}
+
+.tab-content {
+  display: none;
+}
 /* Podstawowe style dla dashboardu */
 body {
     font-family: 'Arial', sans-serif;
