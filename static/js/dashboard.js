@@ -968,6 +968,53 @@ function resetSystem() {
     });
 }
 
+// Obsługa zakładek w dashboardzie
+function setupTabNavigation() {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    if (tabButtons.length > 0) {
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Usunięcie klasy active ze wszystkich przycisków
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                // Dodanie klasy active do klikniętego przycisku
+                this.classList.add('active');
+
+                // Ukrycie wszystkich sekcji zawartości
+                const tabId = this.getAttribute('data-tab');
+                const tabContents = document.querySelectorAll('.tab-content');
+                tabContents.forEach(content => {
+                    content.style.display = 'none';
+                });
+
+                // Pokazanie wybranej sekcji
+                const selectedTab = document.getElementById(tabId);
+                if (selectedTab) {
+                    selectedTab.style.display = 'block';
+                    console.log(`Przełączono na zakładkę: ${tabId}`);
+                } else {
+                    console.error(`Nie znaleziono elementu o ID: ${tabId}`);
+                }
+
+                // Specjalne działania dla poszczególnych zakładek
+                if (tabId === 'trades-tab') {
+                    fetchTradesHistory();
+                } else if (tabId === 'analytics-tab') {
+                    updateSentimentData();
+                } else if (tabId === 'ai-monitor-tab') {
+                    fetchAIStatus();
+                    fetchAIThoughts();
+                } else if (tabId === 'settings-tab') {
+                    fetchSystemSettings();
+                } else if (tabId === 'notifications-tab') {
+                    fetchNotifications();
+                }
+            });
+        });
+    } else {
+        console.error("Nie znaleziono przycisków zakładek (.tab-button)");
+    }
+}
+
 // Setup Event Listeners
 function setupEventListeners() {
     // Trading controls
@@ -986,54 +1033,7 @@ function setupEventListeners() {
         resetSystemBtn.addEventListener('click', resetSystem);
     }
 
-    // Obsługa zakładek w dashboardzie
-    function setupTabNavigation() {
-        const tabButtons = document.querySelectorAll('.tab-button');
-        if (tabButtons.length > 0) {
-            tabButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Usunięcie klasy active ze wszystkich przycisków
-                    tabButtons.forEach(btn => btn.classList.remove('active'));
-                    // Dodanie klasy active do klikniętego przycisku
-                    this.classList.add('active');
-
-                    // Ukrycie wszystkich sekcji zawartości
-                    const tabId = this.getAttribute('data-tab');
-                    const tabContents = document.querySelectorAll('.tab-content');
-                    tabContents.forEach(content => {
-                        content.style.display = 'none';
-                    });
-
-                    // Pokazanie wybranej sekcji
-                    const selectedTab = document.getElementById(tabId);
-                    if (selectedTab) {
-                        selectedTab.style.display = 'block';
-                        console.log(`Przełączono na zakładkę: ${tabId}`);
-                    } else {
-                        console.error(`Nie znaleziono elementu o ID: ${tabId}`);
-                    }
-
-                    // Specjalne działania dla poszczególnych zakładek
-                    if (tabId === 'trades-tab') {
-                        fetchTradesHistory();
-                    } else if (tabId === 'analytics-tab') {
-                        updateSentimentData();
-                    } else if (tabId === 'ai-monitor-tab') {
-                        fetchAIStatus();
-                        fetchAIThoughts();
-                    } else if (tabId === 'settings-tab') {
-                        fetchSystemSettings();
-                    } else if (tabId === 'notifications-tab') {
-                        fetchNotifications();
-                    }
-                });
-            });
-        } else {
-            console.error("Nie znaleziono przycisków zakładek (.tab-button)");
-        }
-    }
-
-
+    // Inicjalizacja nawigacji zakładek
     setupTabNavigation();
 
     // Obsługa formularza symulacji
@@ -1054,7 +1054,37 @@ function setupEventListeners() {
 // Funkcje obsługujące poszczególne zakładki
 function fetchTradesHistory() {
     fetch('/api/trades/history')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Update the trades table with the received data
+            const tradesTableBody = document.getElementById('trades-table-body');
+            if (tradesTableBody && data && data.trades) {
+                if (data.trades.length > 0) {
+                    let html = '';
+                    data.trades.forEach(trade => {
+                        html += `<tr>
+                            <td>${trade.id || '-'}</td>
+                            <td>${trade.timestamp || '-'}</td>
+                            <td>${trade.symbol || '-'}</td>
+                            <td>${trade.type || '-'}</td>
+                            <td>${trade.price ? trade.price.toFixed(2) : '-'}</td>
+                            <td>${trade.size ? trade.size.toFixed(4) : '-'}</td>
+                            <td>${trade.value ? trade.value.toFixed(2) : '-'}</td>
+                            <td class="${trade.profit > 0 ? 'positive' : trade.profit < 0 ? 'negative' : ''}">${trade.profit ? trade.profit.toFixed(2) : '-'}</td>
+                            <td>${trade.status || '-'}</td>
+                        </tr>`;
+                    });
+                    tradesTableBody.innerHTML = html;
+                } else {
+                    tradesTableBody.innerHTML = '<tr><td colspan="9" class="no-data">Brak historii transakcji</td></tr>';
+                }
+            }
+        })
         .catch(error => {
             console.error('Błąd podczas pobierania historii transakcji:', error);
             const tradesTableBody = document.getElementById('trades-table-body');
