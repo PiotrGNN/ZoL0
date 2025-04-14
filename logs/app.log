@@ -18058,3 +18058,212 @@ AttributeError: 'NoneType' object has no attribute 'get_portfolio'
 2025-04-14 21:00:26,899 [INFO] 172.31.128.9 - - [14/Apr/2025 21:00:26] "GET /api/component-status HTTP/1.1" 200 -
 2025-04-14 21:00:26,902 [INFO] Załadowano 11 raportów. Najnowszy: 2025-04-14 20:06:14
 2025-04-14 21:00:26,903 [INFO] 172.31.128.9 - - [14/Apr/2025 21:00:26] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 21:00:56,903 [INFO] 172.31.128.9 - - [14/Apr/2025 21:00:56] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 21:00:56,906 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49850.09)
+2025-04-14 21:00:56,906 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 21:00:56,906 [INFO] 172.31.128.9 - - [14/Apr/2025 21:00:56] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 21:00:56,910 [INFO] Załadowano 11 raportów. Najnowszy: 2025-04-14 20:06:14
+2025-04-14 21:00:56,911 [INFO] 172.31.128.9 - - [14/Apr/2025 21:00:56] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 21:02:10,894 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 21:02:10,894 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50350.21)
+2025-04-14 21:02:10,895 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 21:02:10,895 [INFO] 172.31.128.9 - - [14/Apr/2025 21:02:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 21:02:10,902 [INFO] 172.31.128.9 - - [14/Apr/2025 21:02:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 21:02:10,906 [INFO] Załadowano 11 raportów. Najnowszy: 2025-04-14 20:06:14
+2025-04-14 21:02:10,906 [INFO] 172.31.128.9 - - [14/Apr/2025 21:02:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 21:03:10,904 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 21:03:10,905 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50158.83)
+2025-04-14 21:03:10,905 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 21:03:10,907 [INFO] 172.31.128.9 - - [14/Apr/2025 21:03:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 21:03:10,908 [INFO] Załadowano 11 raportów. Najnowszy: 2025-04-14 20:06:14
+2025-04-14 21:03:10,909 [INFO] 172.31.128.9 - - [14/Apr/2025 21:03:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 21:03:10,910 [INFO] 172.31.128.9 - - [14/Apr/2025 21:03:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 21:04:10,896 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50348.86)
+2025-04-14 21:04:10,897 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 21:04:10,897 [INFO] 172.31.128.9 - - [14/Apr/2025 21:04:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 21:04:10,900 [INFO] 172.31.128.9 - - [14/Apr/2025 21:04:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 21:04:10,905 [INFO] Załadowano 11 raportów. Najnowszy: 2025-04-14 20:06:14
+2025-04-14 21:04:10,905 [INFO] 172.31.128.9 - - [14/Apr/2025 21:04:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 21:04:55,710 [INFO] 172.31.128.9 - - [14/Apr/2025 21:04:55] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-14 21:04:55,713 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 21:04:55,715 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50419.33)
+2025-04-14 21:04:55,715 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 21:04:55,716 [INFO] 172.31.128.9 - - [14/Apr/2025 21:04:55] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 21:04:55,719 [INFO] Załadowano 11 raportów. Najnowszy: 2025-04-14 20:06:14
+2025-04-14 21:04:55,719 [INFO] 172.31.128.9 - - [14/Apr/2025 21:04:55] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 21:04:55,724 [INFO] Załadowano 11 raportów. Najnowszy: 2025-04-14 20:06:14
+2025-04-14 21:04:55,725 [INFO] 172.31.128.9 - - [14/Apr/2025 21:04:55] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 21:04:55,732 [INFO] 172.31.128.9 - - [14/Apr/2025 21:04:55] "[35m[1mGET /api/sentiment HTTP/1.1[0m" 503 -
+2025-04-14 21:04:55,736 [INFO] 172.31.128.9 - - [14/Apr/2025 21:04:55] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 21:04:55,911 [INFO] 172.31.128.9 - - [14/Apr/2025 21:04:55] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-14 21:05:00,082 [INFO]  * Detected change in '/home/runner/workspace/python_libs/.model_tester.py.682681482~', reloading
+2025-04-14 21:05:00,317 [INFO]  * Detected change in '/home/runner/workspace/python_libs/.model_tester.py.3363288678~', reloading
+2025-04-14 21:05:00,540 [INFO]  * Detected change in '/home/runner/workspace/python_libs/.portfolio_manager.py.4158320659~', reloading
+2025-04-14 21:05:00,876 [INFO]  * Detected change in '/home/runner/workspace/python_libs/.portfolio_manager.py.2442998433~', reloading
+2025-04-14 21:05:01,333 [INFO]  * Restarting with watchdog (inotify)
+2025-04-14 21:05:03,957 [INFO] Zainicjalizowano zarządcę ryzyka portfela. Max ryzyko: 0.05, Max rozmiar pozycji: 0.2, Max drawdown: 0.1
+2025-04-14 21:05:03,959 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-14 21:05:03,962 [INFO] Cache zainicjalizowany z domyślnymi parametrami
+2025-04-14 21:05:03,964 [WARNING] Pomijam podpakiet 'utils' z powodu błędu: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-14 21:05:03,968 [INFO] Załadowano 11 raportów. Najnowszy: 2025-04-14 20:06:14
+2025-04-14 21:05:03,968 [INFO] SimulationManager zainicjalizowany. Katalogi: reports=reports, charts=static/img
+2025-04-14 21:05:03,982 [INFO] Wykryto środowisko: Replit
+2025-04-14 21:05:03,982 [WARNING] ❌ OSTRZEŻENIE: .env wskazuje na testnet (BYBIT_TESTNET=True). Ustaw BYBIT_TESTNET=False, jeśli chcesz realny rynek!
+2025-04-14 21:05:03,990 [ERROR] Błąd podczas inicjalizacji systemu: ModelTester.__init__() got an unexpected keyword argument 'log_path'
+Traceback (most recent call last):
+  File "/home/runner/workspace/main.py", line 111, in initialize_system
+    model_tester = ModelTester(models_path='ai_models', log_path='logs/model_tests.log')
+TypeError: ModelTester.__init__() got an unexpected keyword argument 'log_path'
+2025-04-14 21:05:03,991 [INFO] Uruchamianie aplikacji Flask w środowisku Replit na hoście 0.0.0.0 i porcie 5000
+2025-04-14 21:05:04,014 [WARNING]  * Debugger is active!
+2025-04-14 21:05:04,016 [INFO]  * Debugger PIN: 259-360-683
+2025-04-14 21:07:07,146 [INFO] Zainicjalizowano zarządcę ryzyka portfela. Max ryzyko: 0.05, Max rozmiar pozycji: 0.2, Max drawdown: 0.1
+2025-04-14 21:07:07,198 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-14 21:07:07,209 [INFO] Cache zainicjalizowany z domyślnymi parametrami
+2025-04-14 21:07:07,214 [WARNING] Pomijam podpakiet 'utils' z powodu błędu: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-14 21:07:07,239 [INFO] Załadowano 11 raportów. Najnowszy: 2025-04-14 20:06:14
+2025-04-14 21:07:07,239 [INFO] SimulationManager zainicjalizowany. Katalogi: reports=reports, charts=static/img
+2025-04-14 21:07:07,252 [INFO] Wykryto środowisko: Replit
+2025-04-14 21:07:07,252 [WARNING] ❌ OSTRZEŻENIE: .env wskazuje na testnet (BYBIT_TESTNET=True). Ustaw BYBIT_TESTNET=False, jeśli chcesz realny rynek!
+2025-04-14 21:07:07,270 [ERROR] Błąd podczas inicjalizacji systemu: ModelTester.__init__() got an unexpected keyword argument 'log_path'
+Traceback (most recent call last):
+  File "/home/runner/workspace/main.py", line 111, in initialize_system
+    model_tester = ModelTester(models_path='ai_models', log_path='logs/model_tests.log')
+TypeError: ModelTester.__init__() got an unexpected keyword argument 'log_path'
+2025-04-14 21:07:07,271 [INFO] Uruchamianie aplikacji Flask w środowisku Replit na hoście 0.0.0.0 i porcie 5000
+2025-04-14 21:07:07,292 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.36:5000
+2025-04-14 21:07:07,292 [INFO] [33mPress CTRL+C to quit[0m
+2025-04-14 21:07:07,303 [INFO]  * Restarting with watchdog (inotify)
+2025-04-14 21:07:09,540 [INFO] Zainicjalizowano zarządcę ryzyka portfela. Max ryzyko: 0.05, Max rozmiar pozycji: 0.2, Max drawdown: 0.1
+2025-04-14 21:07:09,542 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-14 21:07:09,544 [INFO] Cache zainicjalizowany z domyślnymi parametrami
+2025-04-14 21:07:09,545 [WARNING] Pomijam podpakiet 'utils' z powodu błędu: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-14 21:07:09,549 [INFO] Załadowano 11 raportów. Najnowszy: 2025-04-14 20:06:14
+2025-04-14 21:07:09,549 [INFO] SimulationManager zainicjalizowany. Katalogi: reports=reports, charts=static/img
+2025-04-14 21:07:09,563 [INFO] Wykryto środowisko: Replit
+2025-04-14 21:07:09,563 [WARNING] ❌ OSTRZEŻENIE: .env wskazuje na testnet (BYBIT_TESTNET=True). Ustaw BYBIT_TESTNET=False, jeśli chcesz realny rynek!
+2025-04-14 21:07:09,565 [ERROR] Błąd podczas inicjalizacji systemu: ModelTester.__init__() got an unexpected keyword argument 'log_path'
+Traceback (most recent call last):
+  File "/home/runner/workspace/main.py", line 111, in initialize_system
+    model_tester = ModelTester(models_path='ai_models', log_path='logs/model_tests.log')
+TypeError: ModelTester.__init__() got an unexpected keyword argument 'log_path'
+2025-04-14 21:07:09,566 [INFO] Uruchamianie aplikacji Flask w środowisku Replit na hoście 0.0.0.0 i porcie 5000
+2025-04-14 21:07:09,583 [WARNING]  * Debugger is active!
+2025-04-14 21:07:09,585 [INFO]  * Debugger PIN: 115-357-842
+2025-04-14 21:07:26,888 [INFO] 172.31.128.36 - - [14/Apr/2025 21:07:26] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 21:07:26,890 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-14 21:07:26,891 [INFO] 172.31.128.36 - - [14/Apr/2025 21:07:26] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 21:07:26,895 [INFO] Załadowano 11 raportów. Najnowszy: 2025-04-14 20:06:14
+2025-04-14 21:07:26,896 [INFO] 172.31.128.36 - - [14/Apr/2025 21:07:26] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 21:08:11,341 [INFO] Załadowano 11 raportów. Najnowszy: 2025-04-14 20:06:14
+2025-04-14 21:08:11,342 [INFO] 172.31.128.36 - - [14/Apr/2025 21:08:11] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 21:08:11,394 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-14 21:08:11,394 [INFO] 172.31.128.36 - - [14/Apr/2025 21:08:11] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 21:08:11,403 [INFO] 172.31.128.36 - - [14/Apr/2025 21:08:11] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 21:08:58,717 [INFO] 172.31.128.36 - - [14/Apr/2025 21:08:58] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-14 21:08:58,725 [INFO] 172.31.128.36 - - [14/Apr/2025 21:08:58] "[35m[1mGET /api/sentiment HTTP/1.1[0m" 503 -
+2025-04-14 21:08:58,729 [INFO] Załadowano 11 raportów. Najnowszy: 2025-04-14 20:06:14
+2025-04-14 21:08:58,730 [INFO] 172.31.128.36 - - [14/Apr/2025 21:08:58] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 21:08:58,858 [INFO] 172.31.128.36 - - [14/Apr/2025 21:08:58] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-14 21:08:58,865 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-14 21:08:58,866 [INFO] 172.31.128.36 - - [14/Apr/2025 21:08:58] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 21:08:58,869 [INFO] 172.31.128.36 - - [14/Apr/2025 21:08:58] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 21:08:58,997 [INFO] Załadowano 11 raportów. Najnowszy: 2025-04-14 20:06:14
+2025-04-14 21:08:58,998 [INFO] 172.31.128.36 - - [14/Apr/2025 21:08:58] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 21:09:33,898 [WARNING] Menadżer portfela nie jest zainicjalizowany, używam danych testowych
+2025-04-14 21:09:33,937 [INFO] 172.31.128.36 - - [14/Apr/2025 21:09:33] "GET / HTTP/1.1" 200 -
+2025-04-14 21:09:34,101 [INFO] 172.31.128.36 - - [14/Apr/2025 21:09:34] "GET /static/css/ai_monitor.css HTTP/1.1" 200 -
+2025-04-14 21:09:34,151 [INFO] 172.31.128.36 - - [14/Apr/2025 21:09:34] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-04-14 21:09:34,253 [INFO] 172.31.128.36 - - [14/Apr/2025 21:09:34] "GET /static/js/dashboard.js HTTP/1.1" 200 -
+2025-04-14 21:09:34,255 [INFO] 172.31.128.36 - - [14/Apr/2025 21:09:34] "GET /static/js/ai_monitor.js HTTP/1.1" 200 -
+2025-04-14 21:09:35,174 [INFO] 172.31.128.36 - - [14/Apr/2025 21:09:35] "[35m[1mGET /api/sentiment HTTP/1.1[0m" 503 -
+2025-04-14 21:09:35,176 [INFO] 172.31.128.36 - - [14/Apr/2025 21:09:35] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-14 21:09:35,180 [INFO] Załadowano 11 raportów. Najnowszy: 2025-04-14 20:06:14
+2025-04-14 21:09:35,180 [INFO] 172.31.128.36 - - [14/Apr/2025 21:09:35] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 21:09:35,183 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-14 21:09:35,184 [INFO] 172.31.128.36 - - [14/Apr/2025 21:09:35] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 21:09:35,185 [ERROR] Błąd podczas pobierania danych portfela: 'NoneType' object has no attribute 'get_portfolio'
+Traceback (most recent call last):
+  File "/home/runner/workspace/main.py", line 545, in get_portfolio_data
+    portfolio_data = portfolio_manager.get_portfolio()
+AttributeError: 'NoneType' object has no attribute 'get_portfolio'
+2025-04-14 21:09:35,185 [INFO] 172.31.128.36 - - [14/Apr/2025 21:09:35] "[35m[1mGET /api/portfolio HTTP/1.1[0m" 500 -
+2025-04-14 21:09:35,268 [WARNING] Nie można załadować dodatkowych informacji o modelach z ModelTester: ModelTester.__init__() got an unexpected keyword argument 'log_path'
+2025-04-14 21:09:35,269 [INFO] 172.31.128.36 - - [14/Apr/2025 21:09:35] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 21:09:35,314 [INFO] 172.31.128.36 - - [14/Apr/2025 21:09:35] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 21:09:35,315 [INFO] 172.31.128.36 - - [14/Apr/2025 21:09:35] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-14 21:09:35,331 [INFO] 172.31.128.36 - - [14/Apr/2025 21:09:35] "[35m[1mGET /api/sentiment HTTP/1.1[0m" 503 -
+2025-04-14 21:09:35,336 [INFO] Załadowano 6 raportów. Najnowszy: 2025-04-14 20:06:14
+2025-04-14 21:09:35,337 [INFO] 172.31.128.36 - - [14/Apr/2025 21:09:35] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 21:09:35,339 [INFO] Załadowano 15 raportów. Najnowszy: 2025-04-14 20:06:14
+2025-04-14 21:09:35,340 [INFO] 172.31.128.36 - - [14/Apr/2025 21:09:35] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 21:09:35,426 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-14 21:09:35,427 [INFO] 172.31.128.36 - - [14/Apr/2025 21:09:35] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 21:09:35,461 [ERROR] Błąd podczas pobierania danych portfela: 'NoneType' object has no attribute 'get_portfolio'
+Traceback (most recent call last):
+  File "/home/runner/workspace/main.py", line 545, in get_portfolio_data
+    portfolio_data = portfolio_manager.get_portfolio()
+AttributeError: 'NoneType' object has no attribute 'get_portfolio'
+2025-04-14 21:09:35,462 [INFO] 172.31.128.36 - - [14/Apr/2025 21:09:35] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 21:09:35,463 [INFO] 172.31.128.36 - - [14/Apr/2025 21:09:35] "[35m[1mGET /api/portfolio HTTP/1.1[0m" 500 -
+2025-04-14 21:09:45,197 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-14 21:09:45,198 [INFO] 172.31.128.36 - - [14/Apr/2025 21:09:45] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 21:09:55,185 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-14 21:09:55,185 [INFO] 172.31.128.36 - - [14/Apr/2025 21:09:55] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 21:10:05,887 [WARNING] Nie można załadować dodatkowych informacji o modelach z ModelTester: ModelTester.__init__() got an unexpected keyword argument 'log_path'
+2025-04-14 21:10:05,888 [INFO] 172.31.128.36 - - [14/Apr/2025 21:10:05] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 21:10:05,891 [ERROR] Błąd podczas pobierania danych portfela: 'NoneType' object has no attribute 'get_portfolio'
+Traceback (most recent call last):
+  File "/home/runner/workspace/main.py", line 545, in get_portfolio_data
+    portfolio_data = portfolio_manager.get_portfolio()
+AttributeError: 'NoneType' object has no attribute 'get_portfolio'
+2025-04-14 21:10:05,891 [INFO] 172.31.128.36 - - [14/Apr/2025 21:10:05] "[35m[1mGET /api/portfolio HTTP/1.1[0m" 500 -
+2025-04-14 21:10:05,947 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-14 21:10:05,947 [INFO] 172.31.128.36 - - [14/Apr/2025 21:10:05] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 21:10:06,076 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-14 21:10:06,077 [INFO] 172.31.128.36 - - [14/Apr/2025 21:10:06] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 21:10:15,876 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-14 21:10:15,876 [INFO] 172.31.128.36 - - [14/Apr/2025 21:10:15] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 21:10:25,891 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-14 21:10:25,892 [INFO] 172.31.128.36 - - [14/Apr/2025 21:10:25] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 21:10:35,877 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-14 21:10:35,879 [INFO] 172.31.128.36 - - [14/Apr/2025 21:10:35] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 21:10:35,888 [INFO] 172.31.128.36 - - [14/Apr/2025 21:10:35] "[35m[1mGET /api/sentiment HTTP/1.1[0m" 503 -
+2025-04-14 21:10:35,888 [ERROR] Błąd podczas pobierania danych portfela: 'NoneType' object has no attribute 'get_portfolio'
+Traceback (most recent call last):
+  File "/home/runner/workspace/main.py", line 545, in get_portfolio_data
+    portfolio_data = portfolio_manager.get_portfolio()
+AttributeError: 'NoneType' object has no attribute 'get_portfolio'
+2025-04-14 21:10:35,889 [WARNING] Nie można załadować dodatkowych informacji o modelach z ModelTester: ModelTester.__init__() got an unexpected keyword argument 'log_path'
+2025-04-14 21:10:35,890 [INFO] 172.31.128.36 - - [14/Apr/2025 21:10:35] "[35m[1mGET /api/portfolio HTTP/1.1[0m" 500 -
+2025-04-14 21:10:35,892 [INFO] 172.31.128.36 - - [14/Apr/2025 21:10:35] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 21:10:35,899 [INFO] Załadowano 11 raportów. Najnowszy: 2025-04-14 20:06:14
+2025-04-14 21:10:35,900 [INFO] 172.31.128.36 - - [14/Apr/2025 21:10:35] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 21:10:35,952 [INFO] 172.31.128.36 - - [14/Apr/2025 21:10:35] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 21:10:36,031 [INFO] Załadowano 11 raportów. Najnowszy: 2025-04-14 20:06:14
+2025-04-14 21:10:36,032 [INFO] 172.31.128.36 - - [14/Apr/2025 21:10:36] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 21:10:36,041 [WARNING] Nie można załadować dodatkowych informacji o modelach z ModelTester: ModelTester.__init__() got an unexpected keyword argument 'log_path'
+2025-04-14 21:10:36,042 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-14 21:10:36,043 [INFO] 172.31.128.36 - - [14/Apr/2025 21:10:36] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 21:10:36,043 [INFO] 172.31.128.36 - - [14/Apr/2025 21:10:36] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 21:10:45,876 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-14 21:10:45,876 [INFO] 172.31.128.36 - - [14/Apr/2025 21:10:45] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 21:10:55,893 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-14 21:10:55,894 [INFO] 172.31.128.36 - - [14/Apr/2025 21:10:55] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 21:11:05,880 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-14 21:11:05,880 [INFO] 172.31.128.36 - - [14/Apr/2025 21:11:05] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 21:11:05,885 [WARNING] Nie można załadować dodatkowych informacji o modelach z ModelTester: ModelTester.__init__() got an unexpected keyword argument 'log_path'
+2025-04-14 21:11:05,886 [ERROR] Błąd podczas pobierania danych portfela: 'NoneType' object has no attribute 'get_portfolio'
+Traceback (most recent call last):
+  File "/home/runner/workspace/main.py", line 545, in get_portfolio_data
+    portfolio_data = portfolio_manager.get_portfolio()
+AttributeError: 'NoneType' object has no attribute 'get_portfolio'
+2025-04-14 21:11:05,886 [INFO] 172.31.128.36 - - [14/Apr/2025 21:11:05] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 21:11:05,887 [INFO] 172.31.128.36 - - [14/Apr/2025 21:11:05] "[35m[1mGET /api/portfolio HTTP/1.1[0m" 500 -
+2025-04-14 21:11:06,023 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-14 21:11:06,024 [INFO] 172.31.128.36 - - [14/Apr/2025 21:11:06] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 21:11:15,872 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-14 21:11:15,872 [INFO] 172.31.128.36 - - [14/Apr/2025 21:11:15] "GET /api/component-status HTTP/1.1" 200 -
