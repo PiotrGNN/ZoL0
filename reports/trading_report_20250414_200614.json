@@ -1,0 +1,71 @@
+{
+  "summary": {
+    "initial_capital": 1015.05,
+    "final_capital": 1044.24,
+    "profit": 29.19,
+    "profit_percentage": 2.88,
+    "trades": 3,
+    "wins": 0,
+    "losses": 3,
+    "win_rate": 0.0,
+    "max_drawdown": 2.97,
+    "total_commission": 6.28,
+    "winning_trades": 0,
+    "closes": 3
+  },
+  "trades": [
+    {
+      "timestamp": 1744643174.574662,
+      "action": "SHORT",
+      "price": 46140.52,
+      "size": 0.0147,
+      "commission": 0.6783,
+      "capital": 1015.05
+    },
+    {
+      "timestamp": 1744661174.57469,
+      "action": "CLOSE SHORT",
+      "price": 47362.83,
+      "size": 0.0147,
+      "pnl": -0.0,
+      "commission": 0.6962,
+      "capital": 1035.83
+    },
+    {
+      "timestamp": 1744650374.574699,
+      "action": "SHORT",
+      "price": 47210.99,
+      "size": 0.0168,
+      "commission": 0.7931,
+      "capital": 1036.85
+    },
+    {
+      "timestamp": 1744661174.574708,
+      "action": "CLOSE SHORT",
+      "price": 47142.07,
+      "size": 0.0168,
+      "pnl": -0.0,
+      "commission": 0.792,
+      "capital": 1034.87
+    },
+    {
+      "timestamp": 1744653974.574713,
+      "action": "LONG",
+      "price": 46894.57,
+      "size": 0.0352,
+      "commission": 1.6507,
+      "capital": 1034.87
+    },
+    {
+      "timestamp": 1744661174.574722,
+      "action": "CLOSE LONG",
+      "price": 47534.74,
+      "size": 0.0352,
+      "pnl": 0.0,
+      "commission": 1.6732,
+      "capital": 1044.49
+    }
+  ],
+  "chart_path": "/static/img/simulation_chart_20250414_200614.png",
+  "timestamp": "2025-04-14 20:06:14"
+}

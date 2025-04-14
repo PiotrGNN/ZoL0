@@ -1,0 +1,19 @@
+{
+  "summary": {
+    "initial_capital": 1079.24,
+    "final_capital": 1076.76,
+    "profit": -2.48,
+    "profit_percentage": -0.23,
+    "trades": 0,
+    "wins": 0,
+    "losses": 0,
+    "win_rate": 0,
+    "max_drawdown": 0.0,
+    "total_commission": 0.0,
+    "winning_trades": 0,
+    "closes": 0
+  },
+  "trades": [],
+  "chart_path": "/static/img/simulation_chart_20250414_200548.png",
+  "timestamp": "2025-04-14 20:05:48"
+}

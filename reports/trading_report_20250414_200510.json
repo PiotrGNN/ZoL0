@@ -1,0 +1,156 @@
+{
+  "summary": {
+    "initial_capital": 820.44,
+    "final_capital": 813.29,
+    "profit": -7.15,
+    "profit_percentage": -0.87,
+    "trades": 8,
+    "wins": 0,
+    "losses": 8,
+    "win_rate": 0.0,
+    "max_drawdown": 4.75,
+    "total_commission": 24.02,
+    "winning_trades": 0,
+    "closes": 8
+  },
+  "trades": [
+    {
+      "timestamp": 1744596309.827311,
+      "action": "SHORT",
+      "price": 54673.7,
+      "size": 0.0365,
+      "commission": 1.9956,
+      "capital": 818.98
+    },
+    {
+      "timestamp": 1744603509.827338,
+      "action": "CLOSE SHORT",
+      "price": 54362.16,
+      "size": 0.0365,
+      "pnl": -0.0,
+      "commission": 1.9842,
+      "capital": 813.26
+    },
+    {
+      "timestamp": 1744614309.827359,
+      "action": "LONG",
+      "price": 53757.3,
+      "size": 0.0247,
+      "commission": 1.3278,
+      "capital": 813.06
+    },
+    {
+      "timestamp": 1744635909.827378,
+      "action": "CLOSE LONG",
+      "price": 57001.21,
+      "size": 0.0247,
+      "pnl": -0.0,
+      "commission": 1.4079,
+      "capital": 850.74
+    },
+    {
+      "timestamp": 1744617909.827383,
+      "action": "LONG",
+      "price": 50697.12,
+      "size": 0.0213,
+      "commission": 1.0798,
+      "capital": 850.74
+    },
+    {
+      "timestamp": 1744628709.827391,
+      "action": "CLOSE LONG",
+      "price": 50793.6,
+      "size": 0.0213,
+      "pnl": -0.0,
+      "commission": 1.0819,
+      "capital": 850.96
+    },
+    {
+      "timestamp": 1744621509.827396,
+      "action": "SHORT",
+      "price": 49341.08,
+      "size": 0.0112,
+      "commission": 0.5526,
+      "capital": 850.96
+    },
+    {
+      "timestamp": 1744635909.827405,
+      "action": "CLOSE SHORT",
+      "price": 47443.3,
+      "size": 0.0112,
+      "pnl": 0.0,
+      "commission": 0.5314,
+      "capital": 824.18
+    },
+    {
+      "timestamp": 1744639509.827413,
+      "action": "SHORT",
+      "price": 45742.77,
+      "size": 0.0157,
+      "commission": 0.7182,
+      "capital": 822.47
+    },
+    {
+      "timestamp": 1744661109.827423,
+      "action": "CLOSE SHORT",
+      "price": 46029.33,
+      "size": 0.0157,
+      "pnl": 0.0,
+      "commission": 0.7227,
+      "capital": 825.93
+    },
+    {
+      "timestamp": 1744643109.827432,
+      "action": "LONG",
+      "price": 47343.05,
+      "size": 0.0365,
+      "commission": 1.728,
+      "capital": 825.93
+    },
+    {
+      "timestamp": 1744661109.827441,
+      "action": "CLOSE LONG",
+      "price": 47412.84,
+      "size": 0.0365,
+      "pnl": 0.0,
+      "commission": 1.7306,
+      "capital": 825.18
+    },
+    {
+      "timestamp": 1744646709.827445,
+      "action": "LONG",
+      "price": 51628.05,
+      "size": 0.044,
+      "commission": 2.2716,
+      "capital": 825.18
+    },
+    {
+      "timestamp": 1744661109.827453,
+      "action": "CLOSE LONG",
+      "price": 51210.35,
+      "size": 0.044,
+      "pnl": -0.0,
+      "commission": 2.2533,
+      "capital": 817.6
+    },
+    {
+      "timestamp": 1744657509.82746,
+      "action": "LONG",
+      "price": 54856.41,
+      "size": 0.0422,
+      "commission": 2.3149,
+      "capital": 815.6
+    },
+    {
+      "timestamp": 1744661109.827465,
+      "action": "CLOSE LONG",
+      "price": 54856.41,
+      "size": 0.0422,
+      "pnl": 0.0,
+      "commission": 2.3149,
+      "capital": 813.29
+    }
+  ],
+  "chart_path": "/static/img/simulation_chart_20250414_200509.png",
+  "timestamp": "2025-04-14 20:05:09"
+}
