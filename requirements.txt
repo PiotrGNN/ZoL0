@@ -1,11 +1,9 @@
+
 # Core dependencies
 numpy>=1.20.0
 pandas>=1.3.0
 matplotlib>=3.4.0
 scikit-learn>=0.24.0
-tensorflow>=2.11.0
-optuna>=2.8.0
-torch>=2.0.0
 python-dotenv>=0.19.0
 PyYAML>=6.0
 requests>=2.25.0
@@ -13,10 +11,7 @@ requests>=2.25.0
 # Trading-specific packages
 ccxt>=4.0.0
 ta>=0.10.0
-mplfinance==0.12.9b7  # Using a specific beta version that's known to work
-
-# AI & ML related - commented out heavy dependencies that are causing issues
-# transformers>=4.20.0
+mplfinance==0.12.9b7
 
 # Utilities
 psutil>=5.8.0
@@ -27,7 +22,6 @@ pytest>=6.2.0
 
 # Trading i API
 pybit==5.0.0
-
 
 # Narzędzia i pomocnicze
 tqdm==4.64.1
@@ -49,3 +43,9 @@ flake8>=3.9.0
 black>=21.5b0
 joblib>=1.0.0
 xgboost>=1.4.0
+
+# Usunięto problematyczne pakiety:
+# tensorflow>=2.11.0
+# torch>=2.0.0
+# transformers>=4.20.0
+# optuna>=2.8.0
