@@ -325,7 +325,7 @@ function updatePortfolioData() {
         .then(data => {
             // Próbujemy znaleźć portfolio-container zamiast portfolio-data
             let portfolioContainer = document.getElementById('portfolio-container');
-            
+
             // Sprawdźmy również portfolio-data jako alternatywę
             if (!portfolioContainer) {
                 portfolioContainer = document.getElementById('portfolio-data');
@@ -386,7 +386,7 @@ function updatePortfolioData() {
                 document.getElementById('portfolio-data'),
                 ...Array.from(document.getElementsByClassName('portfolio-data'))
             ].filter(Boolean);
-            
+
             if (possibleContainers.length > 0) {
                 possibleContainers[0].innerHTML = '<div class="error-message">Błąd podczas pobierania danych portfela. Sprawdź połączenie internetowe.</div>';
             }
@@ -1360,28 +1360,63 @@ function updateAIModelsStatus(data) {
     });
 }
 
+// Flaga do śledzenia, czy funkcja już jest wykonywana
+let isInitializing = false;
+let isInitialized = false;
+
 // Funkcja inicjalizująca, wywoływana po załadowaniu strony
 function initDashboard() {
+    // Zapobiegamy wielokrotnemu uruchomieniu
+    if (isInitializing || isInitialized) {
+        console.log("Dashboard już jest inicjalizowany lub zainicjalizowany");
+        return;
+    }
+
+    isInitializing = true;
     console.log("Aktualizacja danych dashboardu...");
 
-    // Pobierz dane startowe
-    fetchComponentStatus();
-    fetchPortfolioData();
-    fetchSentimentData();
-    fetchAIStatus();
-    fetchSimulationResults();
-    fetchAIThoughts();
-    updateChartData();
+    // Pobierz dane startowe (po jednym, z opóźnieniem, aby uniknąć zawieszenia)
+    setTimeout(() => fetchComponentStatus(), 500);
+    setTimeout(() => fetchPortfolioData(), 1000);
+    setTimeout(() => fetchSentimentData(), 1500);
+    setTimeout(() => fetchAIStatus(), 2000);
+    setTimeout(() => fetchSimulationResults(), 2500);
+    setTimeout(() => fetchAIThoughts(), 3000);
+    setTimeout(() => updateChartData(), 3500);
 
-    // Ustaw interwały dla automatycznego odświeżania
-    setInterval(fetchComponentStatus, 10000); // Co 10 sekund
-    setInterval(fetchPortfolioData, 30000);   // Co 30 sekund
-    setInterval(fetchSentimentData, 60000);   // Co 60 sekund
-    setInterval(fetchAIStatus, 60000);        // Co 60 sekundata, 30000);   // Co 30 sekund
-    setInterval(fetchAIStatus, 30000);        // Co 30 sekund
-    setInterval(fetchSimulationResults, 60000); // Co 60 sekund
+    // Ustaw interwały dla automatycznego odświeżania (różne czasy, aby rozłożyć obciążenie)
+    setTimeout(() => {
+        // Sprawdzamy przed ustawieniem interwału, czy strona jest aktywna
+        if (appState.activeDashboard) {
+            setInterval(() => {
+                if (appState.activeDashboard) fetchComponentStatus();
+            }, 11000); // Co 11 sekund
 
-    console.log("Dashboard załadowany");
+            setInterval(() => {
+                if (appState.activeDashboard) fetchPortfolioData();
+            }, 31000);   // Co 31 sekund
+
+            setInterval(() => {
+                if (appState.activeDashboard) fetchSentimentData();
+            }, 61000);   // Co 61 sekund
+
+            setInterval(() => {
+                if (appState.activeDashboard) fetchAIStatus();
+            }, 33000);   // Co 33 sekundy
+
+            setInterval(() => {
+                if (appState.activeDashboard) fetchSimulationResults();
+            }, 63000);   // Co 63 sekundy
+
+            setInterval(() => {
+                if (appState.activeDashboard) updateChartData();
+            }, 65000);   // Co 65 sekund
+        }
+
+        isInitializing = false;
+        isInitialized = true;
+        console.log("Dashboard załadowany");
+    }, 4000);
 }
 
 // Wywołaj funkcję inicjalizującą po załadowaniu strony
