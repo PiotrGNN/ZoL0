@@ -24713,3 +24713,574 @@ AttributeError: 'NoneType' object has no attribute 'get_portfolio'
 2025-04-14 22:17:22,987 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49773.32)
 2025-04-14 22:17:22,987 [INFO] Statusy komponentów: API: online, Trading: online
 2025-04-14 22:17:22,988 [INFO] 172.31.128.36 - - [14/Apr/2025 22:17:22] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:23:57,253 [INFO] Zainicjalizowano zarządcę ryzyka portfela. Max ryzyko: 0.05, Max rozmiar pozycji: 0.2, Max drawdown: 0.1
+2025-04-14 22:23:57,256 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-14 22:23:57,259 [INFO] Cache zainicjalizowany z domyślnymi parametrami
+2025-04-14 22:23:57,261 [WARNING] Pomijam podpakiet 'utils' z powodu błędu: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-14 22:23:57,272 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:23:57,272 [INFO] SimulationManager zainicjalizowany. Katalogi: reports=reports, charts=static/img
+2025-04-14 22:23:57,290 [INFO] Uruchamianie aplikacji w środowisku lokalnym
+2025-04-14 22:23:57,290 [WARNING] ❌ OSTRZEŻENIE: .env wskazuje na testnet (BYBIT_TESTNET=True). Ustaw BYBIT_TESTNET=False, jeśli chcesz realny rynek!
+2025-04-14 22:23:57,291 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-14 22:23:57,292 [INFO] Zainicjalizowano ModelTester z biblioteki python_libs.model_tester
+2025-04-14 22:23:57,292 [INFO] Załadowano konfigurację AI z python_libs/ai_config.json
+2025-04-14 22:23:57,293 [INFO] Załadowano dane sentymentu z cache (timestamp: 2025-04-14 21:57:53.681569)
+2025-04-14 22:23:57,293 [INFO] SentimentAnalyzer zainicjalizowany z 4 źródłami
+2025-04-14 22:23:57,294 [INFO] Załadowano model: SentimentAnalyzer
+2025-04-14 22:23:57,294 [INFO] Załadowano model: AnomalyDetector
+2025-04-14 22:23:57,294 [INFO] Załadowano model: ModelRecognizer
+2025-04-14 22:23:57,294 [INFO] Łącznie załadowano 3 modeli
+2025-04-14 22:23:57,294 [INFO] ai_models: Znaleziono 3 modeli AI
+2025-04-14 22:23:57,294 [INFO]   - sentiment_analyzer: SentimentAnalyzer
+2025-04-14 22:23:57,294 [INFO]   - anomaly_detector: AnomalyDetector
+2025-04-14 22:23:57,294 [INFO]   - model_recognizer: ModelRecognizer
+2025-04-14 22:23:57,294 [INFO] Załadowano dane sentymentu z cache (timestamp: 2025-04-14 21:57:53.681569)
+2025-04-14 22:23:57,295 [INFO] SentimentAnalyzer zainicjalizowany z 4 źródłami
+2025-04-14 22:23:57,295 [INFO] Zainicjalizowano SentimentAnalyzer z biblioteką ai_models.sentiment_ai i źródłami ['twitter', 'news', 'forum', 'reddit']
+2025-04-14 22:23:57,295 [INFO] Zainicjalizowano AnomalyDetector (metoda: z_score, próg: 2.5)
+2025-04-14 22:23:57,295 [INFO] Zainicjalizowano AnomalyDetector z biblioteki ai_models.anomaly_detection (metoda: z_score, próg: 2.5)
+2025-04-14 22:23:57,295 [INFO] Zainicjalizowano ModelRecognizer
+2025-04-14 22:23:57,295 [INFO] Zainicjalizowano ModelRecognizer
+2025-04-14 22:23:57,295 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-14 22:23:57,295 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-14 22:23:57,295 [INFO] Zainicjalizowano system powiadomień z 2 kanałami
+2025-04-14 22:23:57,295 [INFO] Zainicjalizowano system powiadomień z biblioteki python_libs.simplified_notification
+2025-04-14 22:23:57,296 [INFO] Zainicjalizowano StrategyManager z 3 strategiami
+2025-04-14 22:23:57,296 [INFO] Zainicjalizowano StrategyManager z biblioteką python_libs.simplified_strategy i 3 strategiami
+2025-04-14 22:23:57,297 [INFO] Zainicjalizowano zarządcę ryzyka portfela. Max ryzyko: 0.05, Max rozmiar pozycji: 0.1, Max drawdown: 0.1
+2025-04-14 22:23:57,297 [INFO] Zainicjalizowano SimplifiedRiskManager (max_risk=0.05, max_position_size=0.1, max_drawdown=0.1)
+2025-04-14 22:23:57,297 [INFO] Używasz testnet API (środowisko testowe).
+2025-04-14 22:23:57,297 [INFO] Używasz testnet API (środowisko testowe).
+2025-04-14 22:23:57,297 [INFO] BybitConnector zainicjalizowany. Testnet: True, Lazy connect: True, Market type: spot
+2025-04-14 22:23:57,297 [INFO] BybitConnector w trybie lazy initialization. Testnet: True, Market type: spot
+2025-04-14 22:23:57,298 [INFO] Inicjalizacja klienta ByBit - Klucz: aLYR****************************************************, Testnet: True
+2025-04-14 22:23:57,298 [INFO] Zainicjalizowano uproszczony silnik handlowy (SimplifiedTradingEngine)
+2025-04-14 22:23:57,298 [INFO] Zainicjalizowano silnik handlowy (Trading Engine) z biblioteki python_libs.simplified_trading_engine
+2025-04-14 22:23:57,298 [INFO] Aktywowano strategię: trend_following
+2025-04-14 22:23:57,298 [INFO] Aktywowano strategię 'trend_following'
+2025-04-14 22:23:57,298 [INFO] Uruchomiono handel na symbolach: ['BTCUSDT']
+2025-04-14 22:23:57,298 [INFO] Silnik handlowy uruchomiony dla symboli: ['BTCUSDT']
+2025-04-14 22:23:57,303 [INFO] Używasz testnet API (środowisko testowe).
+2025-04-14 22:23:57,303 [INFO] Używasz testnet API (środowisko testowe).
+2025-04-14 22:23:57,303 [INFO] BybitConnector zainicjalizowany. Testnet: True, Lazy connect: False, Market type: spot
+2025-04-14 22:23:57,401 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: True
+2025-04-14 22:23:57,401 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 22:23:57,665 [WARNING] Brak dostępu do czasu serwera, używam czasu lokalnego. Błąd: Błąd HTTP 403 dla obu endpointów czasu serwera
+2025-04-14 22:23:57,665 [INFO] Połączenie z ByBit potwierdzone. Czas serwera: {'timeNow': 1744669437665}
+2025-04-14 22:23:57,666 [INFO] Zainicjalizowano klienta ByBit API. Wersja: spot, Testnet: True
+2025-04-14 22:24:02,406 [INFO] Połączenie z API ByBit nawiązane poprawnie: {'success': True, 'balances': {'BTC': {'equity': 0.01, 'available_balance': 0.01, 'wallet_balance': 0.01}, 'USDT': {'equity': 1000, 'available_balance': 950, 'wallet_balance': 1000}}, 'source': 'testnet_simulation'}
+2025-04-14 22:24:02,406 [INFO] PortfolioManager zainicjowany w trybie 'hybrid' z saldem 10000.0 USDT
+2025-04-14 22:24:02,407 [INFO] Zainicjalizowano menadżera portfela
+2025-04-14 22:24:02,407 [INFO] Rozpoczynam testy modeli...
+2025-04-14 22:24:02,408 [INFO] Znaleziono moduł: environment
+2025-04-14 22:24:02,409 [INFO] Znaleziono moduł: feature_engineering
+2025-04-14 22:24:02,410 [INFO] Znaleziono moduł: market_dummy_env
+2025-04-14 22:24:02,412 [INFO] Znaleziono moduł: model_training
+2025-04-14 22:24:02,414 [ERROR] Błąd importu modułu model_tuner: No module named 'optuna'
+2025-04-14 22:24:02,415 [INFO] Znaleziono moduł: real_exchange_env
+2025-04-14 22:24:02,416 [ERROR] Błąd importu modułu reinforcement_learning: No module named 'tensorflow'
+2025-04-14 22:24:02,419 [INFO] Znaleziono moduł: ropmer_temp
+2025-04-14 22:24:02,420 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_loader.log
+2025-04-14 22:24:02,420 [INFO] Inicjalizacja ModelLoader dla ścieżki: ai_models
+2025-04-14 22:24:02,421 [INFO] Rozpoczęcie ładowania modeli...
+2025-04-14 22:24:02,421 [INFO] Rozpoczynam testy modeli...
+2025-04-14 22:24:02,421 [INFO] Znaleziono moduł: environment
+2025-04-14 22:24:02,421 [INFO] Znaleziono moduł: feature_engineering
+2025-04-14 22:24:02,422 [INFO] Znaleziono moduł: market_dummy_env
+2025-04-14 22:24:02,422 [INFO] Znaleziono moduł: model_training
+2025-04-14 22:24:02,423 [ERROR] Błąd importu modułu model_tuner: No module named 'optuna'
+2025-04-14 22:24:02,424 [INFO] Znaleziono moduł: real_exchange_env
+2025-04-14 22:24:02,425 [ERROR] Błąd importu modułu reinforcement_learning: No module named 'tensorflow'
+2025-04-14 22:24:02,425 [INFO] Znaleziono moduł: ropmer_temp
+2025-04-14 22:24:02,426 [INFO] Znaleziono moduł: model_loader
+2025-04-14 22:24:02,427 [INFO] Znaleziono moduł: anomaly_detection
+2025-04-14 22:24:02,427 [INFO] Znaleziono moduł: model_recognition
+2025-04-14 22:24:02,428 [INFO] Znaleziono moduł: scalar
+2025-04-14 22:24:02,430 [INFO] Załadowano dane sentymentu z cache (timestamp: 2025-04-14 21:57:53.681569)
+2025-04-14 22:24:02,430 [INFO] SentimentAnalyzer zainicjalizowany z 4 źródłami
+2025-04-14 22:24:02,430 [INFO] Znaleziono moduł: sentiment_ai
+2025-04-14 22:24:02,430 [ERROR] Błąd tworzenia instancji klasy ModelTrainer: ModelTrainer.__init__() missing 2 required positional arguments: 'model' and 'model_name'
+2025-04-14 22:24:02,430 [INFO] Inicjalizacja DataScaler z metodą: standard
+2025-04-14 22:24:02,430 [INFO] Znaleziono klasę modelu: DataScaler w module scalar
+2025-04-14 22:24:02,431 [INFO] Znaleziono klasę modelu: MinMaxScaler w module scalar
+2025-04-14 22:24:02,431 [INFO] Znaleziono klasę modelu: RobustScaler w module scalar
+2025-04-14 22:24:02,431 [INFO] Znaleziono klasę modelu: StandardScaler w module scalar
+2025-04-14 22:24:02,432 [INFO] Dopasowanie scalera zakończone.
+2025-04-14 22:24:02,432 [INFO] Test metody fit dla DataScaler zakończony sukcesem
+2025-04-14 22:24:02,433 [INFO] Test metody fit dla MinMaxScaler zakończony sukcesem
+2025-04-14 22:24:02,434 [INFO] Test metody fit dla RobustScaler zakończony sukcesem
+2025-04-14 22:24:02,435 [INFO] Test metody fit dla StandardScaler zakończony sukcesem
+2025-04-14 22:24:02,435 [INFO] Zakończono testy modeli. Znaleziono 4 działających modeli.
+2025-04-14 22:24:02,435 [INFO] Załadowano model: DataScaler
+2025-04-14 22:24:02,435 [INFO] Załadowano model: MinMaxScaler
+2025-04-14 22:24:02,435 [INFO] Załadowano model: RobustScaler
+2025-04-14 22:24:02,435 [INFO] Załadowano model: StandardScaler
+2025-04-14 22:24:02,435 [INFO] Załadowano 4 modeli
+2025-04-14 22:24:02,436 [INFO] Znaleziono moduł: model_loader
+2025-04-14 22:24:02,436 [INFO] Znaleziono moduł: anomaly_detection
+2025-04-14 22:24:02,436 [INFO] Znaleziono moduł: model_recognition
+2025-04-14 22:24:02,436 [INFO] Znaleziono moduł: scalar
+2025-04-14 22:24:02,437 [INFO] Znaleziono moduł: sentiment_ai
+2025-04-14 22:24:02,437 [ERROR] Błąd tworzenia instancji klasy ModelTrainer: ModelTrainer.__init__() missing 2 required positional arguments: 'model' and 'model_name'
+2025-04-14 22:24:02,437 [INFO] Inicjalizacja DataScaler z metodą: standard
+2025-04-14 22:24:02,437 [INFO] Znaleziono klasę modelu: DataScaler w module scalar
+2025-04-14 22:24:02,438 [INFO] Znaleziono klasę modelu: MinMaxScaler w module scalar
+2025-04-14 22:24:02,438 [INFO] Znaleziono klasę modelu: RobustScaler w module scalar
+2025-04-14 22:24:02,438 [INFO] Znaleziono klasę modelu: StandardScaler w module scalar
+2025-04-14 22:24:02,439 [INFO] Dopasowanie scalera zakończone.
+2025-04-14 22:24:02,439 [INFO] Test metody fit dla DataScaler zakończony sukcesem
+2025-04-14 22:24:02,439 [INFO] Test metody fit dla MinMaxScaler zakończony sukcesem
+2025-04-14 22:24:02,440 [INFO] Test metody fit dla RobustScaler zakończony sukcesem
+2025-04-14 22:24:02,441 [INFO] Test metody fit dla StandardScaler zakończony sukcesem
+2025-04-14 22:24:02,441 [INFO] Zakończono testy modeli. Znaleziono 4 działających modeli.
+2025-04-14 22:24:02,441 [INFO] Przetestowano modele AI: znaleziono 4 działających modeli
+2025-04-14 22:24:02,441 [INFO] System zainicjalizowany poprawnie
+2025-04-14 22:24:02,441 [INFO] Uruchamianie aplikacji Flask lokalnie na 127.0.0.1:5000
+2025-04-14 22:24:02,461 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-04-14 22:24:02,461 [INFO] [33mPress CTRL+C to quit[0m
+2025-04-14 22:24:02,471 [INFO]  * Restarting with watchdog (inotify)
+2025-04-14 22:24:05,037 [INFO] Zainicjalizowano zarządcę ryzyka portfela. Max ryzyko: 0.05, Max rozmiar pozycji: 0.2, Max drawdown: 0.1
+2025-04-14 22:24:05,039 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-14 22:24:05,042 [INFO] Cache zainicjalizowany z domyślnymi parametrami
+2025-04-14 22:24:05,043 [WARNING] Pomijam podpakiet 'utils' z powodu błędu: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-14 22:24:05,050 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:24:05,050 [INFO] SimulationManager zainicjalizowany. Katalogi: reports=reports, charts=static/img
+2025-04-14 22:24:05,063 [INFO] Uruchamianie aplikacji w środowisku lokalnym
+2025-04-14 22:24:05,063 [WARNING] ❌ OSTRZEŻENIE: .env wskazuje na testnet (BYBIT_TESTNET=True). Ustaw BYBIT_TESTNET=False, jeśli chcesz realny rynek!
+2025-04-14 22:24:05,064 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-14 22:24:05,064 [INFO] Zainicjalizowano ModelTester z biblioteki python_libs.model_tester
+2025-04-14 22:24:05,064 [INFO] Załadowano konfigurację AI z python_libs/ai_config.json
+2025-04-14 22:24:05,065 [INFO] Załadowano dane sentymentu z cache (timestamp: 2025-04-14 21:57:53.681569)
+2025-04-14 22:24:05,065 [INFO] SentimentAnalyzer zainicjalizowany z 4 źródłami
+2025-04-14 22:24:05,066 [INFO] Załadowano model: SentimentAnalyzer
+2025-04-14 22:24:05,066 [INFO] Załadowano model: AnomalyDetector
+2025-04-14 22:24:05,066 [INFO] Załadowano model: ModelRecognizer
+2025-04-14 22:24:05,066 [INFO] Łącznie załadowano 3 modeli
+2025-04-14 22:24:05,066 [INFO] ai_models: Znaleziono 3 modeli AI
+2025-04-14 22:24:05,066 [INFO]   - sentiment_analyzer: SentimentAnalyzer
+2025-04-14 22:24:05,066 [INFO]   - anomaly_detector: AnomalyDetector
+2025-04-14 22:24:05,067 [INFO]   - model_recognizer: ModelRecognizer
+2025-04-14 22:24:05,067 [INFO] Załadowano dane sentymentu z cache (timestamp: 2025-04-14 21:57:53.681569)
+2025-04-14 22:24:05,067 [INFO] SentimentAnalyzer zainicjalizowany z 4 źródłami
+2025-04-14 22:24:05,067 [INFO] Zainicjalizowano SentimentAnalyzer z biblioteką ai_models.sentiment_ai i źródłami ['twitter', 'news', 'forum', 'reddit']
+2025-04-14 22:24:05,067 [INFO] Zainicjalizowano AnomalyDetector (metoda: z_score, próg: 2.5)
+2025-04-14 22:24:05,067 [INFO] Zainicjalizowano AnomalyDetector z biblioteki ai_models.anomaly_detection (metoda: z_score, próg: 2.5)
+2025-04-14 22:24:05,067 [INFO] Zainicjalizowano ModelRecognizer
+2025-04-14 22:24:05,067 [INFO] Zainicjalizowano ModelRecognizer
+2025-04-14 22:24:05,068 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-14 22:24:05,068 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-14 22:24:05,068 [INFO] Zainicjalizowano system powiadomień z 2 kanałami
+2025-04-14 22:24:05,068 [INFO] Zainicjalizowano system powiadomień z biblioteki python_libs.simplified_notification
+2025-04-14 22:24:05,068 [INFO] Zainicjalizowano StrategyManager z 3 strategiami
+2025-04-14 22:24:05,068 [INFO] Zainicjalizowano StrategyManager z biblioteką python_libs.simplified_strategy i 3 strategiami
+2025-04-14 22:24:05,069 [INFO] Zainicjalizowano zarządcę ryzyka portfela. Max ryzyko: 0.05, Max rozmiar pozycji: 0.1, Max drawdown: 0.1
+2025-04-14 22:24:05,069 [INFO] Zainicjalizowano SimplifiedRiskManager (max_risk=0.05, max_position_size=0.1, max_drawdown=0.1)
+2025-04-14 22:24:05,069 [INFO] Używasz testnet API (środowisko testowe).
+2025-04-14 22:24:05,069 [INFO] Używasz testnet API (środowisko testowe).
+2025-04-14 22:24:05,069 [INFO] BybitConnector zainicjalizowany. Testnet: True, Lazy connect: True, Market type: spot
+2025-04-14 22:24:05,070 [INFO] BybitConnector w trybie lazy initialization. Testnet: True, Market type: spot
+2025-04-14 22:24:05,070 [INFO] Inicjalizacja klienta ByBit - Klucz: aLYR****************************************************, Testnet: True
+2025-04-14 22:24:05,070 [INFO] Zainicjalizowano uproszczony silnik handlowy (SimplifiedTradingEngine)
+2025-04-14 22:24:05,070 [INFO] Zainicjalizowano silnik handlowy (Trading Engine) z biblioteki python_libs.simplified_trading_engine
+2025-04-14 22:24:05,070 [INFO] Aktywowano strategię: trend_following
+2025-04-14 22:24:05,070 [INFO] Aktywowano strategię 'trend_following'
+2025-04-14 22:24:05,070 [INFO] Uruchomiono handel na symbolach: ['BTCUSDT']
+2025-04-14 22:24:05,070 [INFO] Silnik handlowy uruchomiony dla symboli: ['BTCUSDT']
+2025-04-14 22:24:05,071 [INFO] Używasz testnet API (środowisko testowe).
+2025-04-14 22:24:05,071 [INFO] Używasz testnet API (środowisko testowe).
+2025-04-14 22:24:05,071 [INFO] BybitConnector zainicjalizowany. Testnet: True, Lazy connect: False, Market type: spot
+2025-04-14 22:24:05,081 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: True
+2025-04-14 22:24:05,082 [INFO] Używam cache'owanego czasu serwera: {'timeNow': 1744669437665}
+2025-04-14 22:24:05,082 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 22:24:05,082 [INFO] Połączenie z API ByBit nawiązane poprawnie: {'success': True, 'balances': {'BTC': {'equity': 0.01, 'available_balance': 0.01, 'wallet_balance': 0.01}, 'USDT': {'equity': 1000, 'available_balance': 950, 'wallet_balance': 1000}}, 'source': 'testnet_simulation'}
+2025-04-14 22:24:05,082 [INFO] PortfolioManager zainicjowany w trybie 'hybrid' z saldem 10000.0 USDT
+2025-04-14 22:24:05,082 [INFO] Zainicjalizowano menadżera portfela
+2025-04-14 22:24:05,083 [INFO] Rozpoczynam testy modeli...
+2025-04-14 22:24:05,083 [INFO] Znaleziono moduł: environment
+2025-04-14 22:24:05,084 [INFO] Znaleziono moduł: feature_engineering
+2025-04-14 22:24:05,085 [INFO] Znaleziono moduł: market_dummy_env
+2025-04-14 22:24:05,087 [INFO] Znaleziono moduł: model_training
+2025-04-14 22:24:05,089 [ERROR] Błąd importu modułu model_tuner: No module named 'optuna'
+2025-04-14 22:24:05,090 [INFO] Znaleziono moduł: real_exchange_env
+2025-04-14 22:24:05,091 [ERROR] Błąd importu modułu reinforcement_learning: No module named 'tensorflow'
+2025-04-14 22:24:05,092 [INFO] Znaleziono moduł: ropmer_temp
+2025-04-14 22:24:05,093 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_loader.log
+2025-04-14 22:24:05,094 [INFO] Inicjalizacja ModelLoader dla ścieżki: ai_models
+2025-04-14 22:24:05,094 [INFO] Rozpoczęcie ładowania modeli...
+2025-04-14 22:24:05,094 [INFO] Rozpoczynam testy modeli...
+2025-04-14 22:24:05,094 [INFO] Znaleziono moduł: environment
+2025-04-14 22:24:05,095 [INFO] Znaleziono moduł: feature_engineering
+2025-04-14 22:24:05,095 [INFO] Znaleziono moduł: market_dummy_env
+2025-04-14 22:24:05,095 [INFO] Znaleziono moduł: model_training
+2025-04-14 22:24:05,097 [ERROR] Błąd importu modułu model_tuner: No module named 'optuna'
+2025-04-14 22:24:05,097 [INFO] Znaleziono moduł: real_exchange_env
+2025-04-14 22:24:05,099 [ERROR] Błąd importu modułu reinforcement_learning: No module named 'tensorflow'
+2025-04-14 22:24:05,099 [INFO] Znaleziono moduł: ropmer_temp
+2025-04-14 22:24:05,099 [INFO] Znaleziono moduł: model_loader
+2025-04-14 22:24:05,100 [INFO] Znaleziono moduł: anomaly_detection
+2025-04-14 22:24:05,101 [INFO] Znaleziono moduł: model_recognition
+2025-04-14 22:24:05,103 [INFO] Znaleziono moduł: scalar
+2025-04-14 22:24:05,105 [INFO] Załadowano dane sentymentu z cache (timestamp: 2025-04-14 21:57:53.681569)
+2025-04-14 22:24:05,105 [INFO] SentimentAnalyzer zainicjalizowany z 4 źródłami
+2025-04-14 22:24:05,105 [INFO] Znaleziono moduł: sentiment_ai
+2025-04-14 22:24:05,105 [ERROR] Błąd tworzenia instancji klasy ModelTrainer: ModelTrainer.__init__() missing 2 required positional arguments: 'model' and 'model_name'
+2025-04-14 22:24:05,105 [INFO] Inicjalizacja DataScaler z metodą: standard
+2025-04-14 22:24:05,106 [INFO] Znaleziono klasę modelu: DataScaler w module scalar
+2025-04-14 22:24:05,106 [INFO] Znaleziono klasę modelu: MinMaxScaler w module scalar
+2025-04-14 22:24:05,106 [INFO] Znaleziono klasę modelu: RobustScaler w module scalar
+2025-04-14 22:24:05,106 [INFO] Znaleziono klasę modelu: StandardScaler w module scalar
+2025-04-14 22:24:05,107 [INFO] Dopasowanie scalera zakończone.
+2025-04-14 22:24:05,107 [INFO] Test metody fit dla DataScaler zakończony sukcesem
+2025-04-14 22:24:05,108 [INFO] Test metody fit dla MinMaxScaler zakończony sukcesem
+2025-04-14 22:24:05,109 [INFO] Test metody fit dla RobustScaler zakończony sukcesem
+2025-04-14 22:24:05,110 [INFO] Test metody fit dla StandardScaler zakończony sukcesem
+2025-04-14 22:24:05,110 [INFO] Zakończono testy modeli. Znaleziono 4 działających modeli.
+2025-04-14 22:24:05,110 [INFO] Załadowano model: DataScaler
+2025-04-14 22:24:05,110 [INFO] Załadowano model: MinMaxScaler
+2025-04-14 22:24:05,110 [INFO] Załadowano model: RobustScaler
+2025-04-14 22:24:05,111 [INFO] Załadowano model: StandardScaler
+2025-04-14 22:24:05,111 [INFO] Załadowano 4 modeli
+2025-04-14 22:24:05,111 [INFO] Znaleziono moduł: model_loader
+2025-04-14 22:24:05,111 [INFO] Znaleziono moduł: anomaly_detection
+2025-04-14 22:24:05,111 [INFO] Znaleziono moduł: model_recognition
+2025-04-14 22:24:05,111 [INFO] Znaleziono moduł: scalar
+2025-04-14 22:24:05,111 [INFO] Znaleziono moduł: sentiment_ai
+2025-04-14 22:24:05,112 [ERROR] Błąd tworzenia instancji klasy ModelTrainer: ModelTrainer.__init__() missing 2 required positional arguments: 'model' and 'model_name'
+2025-04-14 22:24:05,112 [INFO] Inicjalizacja DataScaler z metodą: standard
+2025-04-14 22:24:05,112 [INFO] Znaleziono klasę modelu: DataScaler w module scalar
+2025-04-14 22:24:05,113 [INFO] Znaleziono klasę modelu: MinMaxScaler w module scalar
+2025-04-14 22:24:05,113 [INFO] Znaleziono klasę modelu: RobustScaler w module scalar
+2025-04-14 22:24:05,113 [INFO] Znaleziono klasę modelu: StandardScaler w module scalar
+2025-04-14 22:24:05,114 [INFO] Dopasowanie scalera zakończone.
+2025-04-14 22:24:05,114 [INFO] Test metody fit dla DataScaler zakończony sukcesem
+2025-04-14 22:24:05,114 [INFO] Test metody fit dla MinMaxScaler zakończony sukcesem
+2025-04-14 22:24:05,115 [INFO] Test metody fit dla RobustScaler zakończony sukcesem
+2025-04-14 22:24:05,116 [INFO] Test metody fit dla StandardScaler zakończony sukcesem
+2025-04-14 22:24:05,116 [INFO] Zakończono testy modeli. Znaleziono 4 działających modeli.
+2025-04-14 22:24:05,116 [INFO] Przetestowano modele AI: znaleziono 4 działających modeli
+2025-04-14 22:24:05,116 [INFO] System zainicjalizowany poprawnie
+2025-04-14 22:24:05,117 [INFO] Uruchamianie aplikacji Flask lokalnie na 127.0.0.1:5000
+2025-04-14 22:24:05,136 [WARNING]  * Debugger is active!
+2025-04-14 22:24:05,138 [INFO]  * Debugger PIN: 350-429-582
+2025-04-14 22:24:09,761 [INFO]  * Detected change in '/home/runner/workspace/.pythonlibs/bin/pwiz.py', reloading
+2025-04-14 22:24:10,279 [INFO]  * Restarting with watchdog (inotify)
+2025-04-14 22:24:12,525 [INFO] Zainicjalizowano zarządcę ryzyka portfela. Max ryzyko: 0.05, Max rozmiar pozycji: 0.2, Max drawdown: 0.1
+2025-04-14 22:24:12,527 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-14 22:24:12,529 [INFO] Cache zainicjalizowany z domyślnymi parametrami
+2025-04-14 22:24:12,530 [WARNING] Pomijam podpakiet 'utils' z powodu błędu: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-14 22:24:12,536 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:24:12,536 [INFO] SimulationManager zainicjalizowany. Katalogi: reports=reports, charts=static/img
+2025-04-14 22:24:12,549 [INFO] Uruchamianie aplikacji w środowisku lokalnym
+2025-04-14 22:24:12,549 [WARNING] ❌ OSTRZEŻENIE: .env wskazuje na testnet (BYBIT_TESTNET=True). Ustaw BYBIT_TESTNET=False, jeśli chcesz realny rynek!
+2025-04-14 22:24:12,550 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-14 22:24:12,550 [INFO] Zainicjalizowano ModelTester z biblioteki python_libs.model_tester
+2025-04-14 22:24:12,550 [INFO] Załadowano konfigurację AI z python_libs/ai_config.json
+2025-04-14 22:24:12,551 [INFO] Załadowano dane sentymentu z cache (timestamp: 2025-04-14 21:57:53.681569)
+2025-04-14 22:24:12,551 [INFO] SentimentAnalyzer zainicjalizowany z 4 źródłami
+2025-04-14 22:24:12,551 [INFO] Załadowano model: SentimentAnalyzer
+2025-04-14 22:24:12,552 [INFO] Załadowano model: AnomalyDetector
+2025-04-14 22:24:12,552 [INFO] Załadowano model: ModelRecognizer
+2025-04-14 22:24:12,552 [INFO] Łącznie załadowano 3 modeli
+2025-04-14 22:24:12,552 [INFO] ai_models: Znaleziono 3 modeli AI
+2025-04-14 22:24:12,552 [INFO]   - sentiment_analyzer: SentimentAnalyzer
+2025-04-14 22:24:12,552 [INFO]   - anomaly_detector: AnomalyDetector
+2025-04-14 22:24:12,552 [INFO]   - model_recognizer: ModelRecognizer
+2025-04-14 22:24:12,552 [INFO] Załadowano dane sentymentu z cache (timestamp: 2025-04-14 21:57:53.681569)
+2025-04-14 22:24:12,552 [INFO] SentimentAnalyzer zainicjalizowany z 4 źródłami
+2025-04-14 22:24:12,552 [INFO] Zainicjalizowano SentimentAnalyzer z biblioteką ai_models.sentiment_ai i źródłami ['twitter', 'news', 'forum', 'reddit']
+2025-04-14 22:24:12,553 [INFO] Zainicjalizowano AnomalyDetector (metoda: z_score, próg: 2.5)
+2025-04-14 22:24:12,553 [INFO] Zainicjalizowano AnomalyDetector z biblioteki ai_models.anomaly_detection (metoda: z_score, próg: 2.5)
+2025-04-14 22:24:12,553 [INFO] Zainicjalizowano ModelRecognizer
+2025-04-14 22:24:12,553 [INFO] Zainicjalizowano ModelRecognizer
+2025-04-14 22:24:12,553 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-14 22:24:12,553 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-14 22:24:12,553 [INFO] Zainicjalizowano system powiadomień z 2 kanałami
+2025-04-14 22:24:12,553 [INFO] Zainicjalizowano system powiadomień z biblioteki python_libs.simplified_notification
+2025-04-14 22:24:12,554 [INFO] Zainicjalizowano StrategyManager z 3 strategiami
+2025-04-14 22:24:12,554 [INFO] Zainicjalizowano StrategyManager z biblioteką python_libs.simplified_strategy i 3 strategiami
+2025-04-14 22:24:12,554 [INFO] Zainicjalizowano zarządcę ryzyka portfela. Max ryzyko: 0.05, Max rozmiar pozycji: 0.1, Max drawdown: 0.1
+2025-04-14 22:24:12,554 [INFO] Zainicjalizowano SimplifiedRiskManager (max_risk=0.05, max_position_size=0.1, max_drawdown=0.1)
+2025-04-14 22:24:12,554 [INFO] Używasz testnet API (środowisko testowe).
+2025-04-14 22:24:12,555 [INFO] Używasz testnet API (środowisko testowe).
+2025-04-14 22:24:12,555 [INFO] BybitConnector zainicjalizowany. Testnet: True, Lazy connect: True, Market type: spot
+2025-04-14 22:24:12,555 [INFO] BybitConnector w trybie lazy initialization. Testnet: True, Market type: spot
+2025-04-14 22:24:12,555 [INFO] Inicjalizacja klienta ByBit - Klucz: aLYR****************************************************, Testnet: True
+2025-04-14 22:24:12,555 [INFO] Zainicjalizowano uproszczony silnik handlowy (SimplifiedTradingEngine)
+2025-04-14 22:24:12,555 [INFO] Zainicjalizowano silnik handlowy (Trading Engine) z biblioteki python_libs.simplified_trading_engine
+2025-04-14 22:24:12,555 [INFO] Aktywowano strategię: trend_following
+2025-04-14 22:24:12,555 [INFO] Aktywowano strategię 'trend_following'
+2025-04-14 22:24:12,556 [INFO] Uruchomiono handel na symbolach: ['BTCUSDT']
+2025-04-14 22:24:12,556 [INFO] Silnik handlowy uruchomiony dla symboli: ['BTCUSDT']
+2025-04-14 22:24:12,556 [INFO] Używasz testnet API (środowisko testowe).
+2025-04-14 22:24:12,556 [INFO] Używasz testnet API (środowisko testowe).
+2025-04-14 22:24:12,556 [INFO] BybitConnector zainicjalizowany. Testnet: True, Lazy connect: False, Market type: spot
+2025-04-14 22:24:12,566 [INFO] Zainicjalizowano klienta ByBit API Spot. Testnet: True
+2025-04-14 22:24:12,567 [INFO] Używam cache'owanego czasu serwera: {'timeNow': 1744669437665}
+2025-04-14 22:24:12,567 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 22:24:12,567 [INFO] Połączenie z API ByBit nawiązane poprawnie: {'success': True, 'balances': {'BTC': {'equity': 0.01, 'available_balance': 0.01, 'wallet_balance': 0.01}, 'USDT': {'equity': 1000, 'available_balance': 950, 'wallet_balance': 1000}}, 'source': 'testnet_simulation'}
+2025-04-14 22:24:12,567 [INFO] PortfolioManager zainicjowany w trybie 'hybrid' z saldem 10000.0 USDT
+2025-04-14 22:24:12,567 [INFO] Zainicjalizowano menadżera portfela
+2025-04-14 22:24:12,567 [INFO] Rozpoczynam testy modeli...
+2025-04-14 22:24:12,568 [INFO] Znaleziono moduł: environment
+2025-04-14 22:24:12,569 [INFO] Znaleziono moduł: feature_engineering
+2025-04-14 22:24:12,570 [INFO] Znaleziono moduł: market_dummy_env
+2025-04-14 22:24:12,571 [INFO] Znaleziono moduł: model_training
+2025-04-14 22:24:12,573 [ERROR] Błąd importu modułu model_tuner: No module named 'optuna'
+2025-04-14 22:24:12,574 [INFO] Znaleziono moduł: real_exchange_env
+2025-04-14 22:24:12,575 [ERROR] Błąd importu modułu reinforcement_learning: No module named 'tensorflow'
+2025-04-14 22:24:12,576 [INFO] Znaleziono moduł: ropmer_temp
+2025-04-14 22:24:12,577 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_loader.log
+2025-04-14 22:24:12,577 [INFO] Inicjalizacja ModelLoader dla ścieżki: ai_models
+2025-04-14 22:24:12,577 [INFO] Rozpoczęcie ładowania modeli...
+2025-04-14 22:24:12,577 [INFO] Rozpoczynam testy modeli...
+2025-04-14 22:24:12,578 [INFO] Znaleziono moduł: environment
+2025-04-14 22:24:12,578 [INFO] Znaleziono moduł: feature_engineering
+2025-04-14 22:24:12,578 [INFO] Znaleziono moduł: market_dummy_env
+2025-04-14 22:24:12,578 [INFO] Znaleziono moduł: model_training
+2025-04-14 22:24:12,580 [ERROR] Błąd importu modułu model_tuner: No module named 'optuna'
+2025-04-14 22:24:12,580 [INFO] Znaleziono moduł: real_exchange_env
+2025-04-14 22:24:12,581 [ERROR] Błąd importu modułu reinforcement_learning: No module named 'tensorflow'
+2025-04-14 22:24:12,582 [INFO] Znaleziono moduł: ropmer_temp
+2025-04-14 22:24:12,582 [INFO] Znaleziono moduł: model_loader
+2025-04-14 22:24:12,583 [INFO] Znaleziono moduł: anomaly_detection
+2025-04-14 22:24:12,584 [INFO] Znaleziono moduł: model_recognition
+2025-04-14 22:24:12,585 [INFO] Znaleziono moduł: scalar
+2025-04-14 22:24:12,586 [INFO] Załadowano dane sentymentu z cache (timestamp: 2025-04-14 21:57:53.681569)
+2025-04-14 22:24:12,586 [INFO] SentimentAnalyzer zainicjalizowany z 4 źródłami
+2025-04-14 22:24:12,586 [INFO] Znaleziono moduł: sentiment_ai
+2025-04-14 22:24:12,586 [ERROR] Błąd tworzenia instancji klasy ModelTrainer: ModelTrainer.__init__() missing 2 required positional arguments: 'model' and 'model_name'
+2025-04-14 22:24:12,586 [INFO] Inicjalizacja DataScaler z metodą: standard
+2025-04-14 22:24:12,587 [INFO] Znaleziono klasę modelu: DataScaler w module scalar
+2025-04-14 22:24:12,587 [INFO] Znaleziono klasę modelu: MinMaxScaler w module scalar
+2025-04-14 22:24:12,587 [INFO] Znaleziono klasę modelu: RobustScaler w module scalar
+2025-04-14 22:24:12,587 [INFO] Znaleziono klasę modelu: StandardScaler w module scalar
+2025-04-14 22:24:12,588 [INFO] Dopasowanie scalera zakończone.
+2025-04-14 22:24:12,588 [INFO] Test metody fit dla DataScaler zakończony sukcesem
+2025-04-14 22:24:12,589 [INFO] Test metody fit dla MinMaxScaler zakończony sukcesem
+2025-04-14 22:24:12,590 [INFO] Test metody fit dla RobustScaler zakończony sukcesem
+2025-04-14 22:24:12,590 [INFO] Test metody fit dla StandardScaler zakończony sukcesem
+2025-04-14 22:24:12,591 [INFO] Zakończono testy modeli. Znaleziono 4 działających modeli.
+2025-04-14 22:24:12,591 [INFO] Załadowano model: DataScaler
+2025-04-14 22:24:12,591 [INFO] Załadowano model: MinMaxScaler
+2025-04-14 22:24:12,591 [INFO] Załadowano model: RobustScaler
+2025-04-14 22:24:12,591 [INFO] Załadowano model: StandardScaler
+2025-04-14 22:24:12,591 [INFO] Załadowano 4 modeli
+2025-04-14 22:24:12,591 [INFO] Znaleziono moduł: model_loader
+2025-04-14 22:24:12,592 [INFO] Znaleziono moduł: anomaly_detection
+2025-04-14 22:24:12,592 [INFO] Znaleziono moduł: model_recognition
+2025-04-14 22:24:12,592 [INFO] Znaleziono moduł: scalar
+2025-04-14 22:24:12,592 [INFO] Znaleziono moduł: sentiment_ai
+2025-04-14 22:24:12,592 [ERROR] Błąd tworzenia instancji klasy ModelTrainer: ModelTrainer.__init__() missing 2 required positional arguments: 'model' and 'model_name'
+2025-04-14 22:24:12,593 [INFO] Inicjalizacja DataScaler z metodą: standard
+2025-04-14 22:24:12,593 [INFO] Znaleziono klasę modelu: DataScaler w module scalar
+2025-04-14 22:24:12,593 [INFO] Znaleziono klasę modelu: MinMaxScaler w module scalar
+2025-04-14 22:24:12,593 [INFO] Znaleziono klasę modelu: RobustScaler w module scalar
+2025-04-14 22:24:12,593 [INFO] Znaleziono klasę modelu: StandardScaler w module scalar
+2025-04-14 22:24:12,594 [INFO] Dopasowanie scalera zakończone.
+2025-04-14 22:24:12,594 [INFO] Test metody fit dla DataScaler zakończony sukcesem
+2025-04-14 22:24:12,594 [INFO] Test metody fit dla MinMaxScaler zakończony sukcesem
+2025-04-14 22:24:12,595 [INFO] Test metody fit dla RobustScaler zakończony sukcesem
+2025-04-14 22:24:12,596 [INFO] Test metody fit dla StandardScaler zakończony sukcesem
+2025-04-14 22:24:12,596 [INFO] Zakończono testy modeli. Znaleziono 4 działających modeli.
+2025-04-14 22:24:12,596 [INFO] Przetestowano modele AI: znaleziono 4 działających modeli
+2025-04-14 22:24:12,596 [INFO] System zainicjalizowany poprawnie
+2025-04-14 22:24:12,596 [INFO] Uruchamianie aplikacji Flask lokalnie na 127.0.0.1:5000
+2025-04-14 22:24:12,615 [WARNING]  * Debugger is active!
+2025-04-14 22:24:12,617 [INFO]  * Debugger PIN: 433-011-826
+2025-04-14 22:24:18,578 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:18,579 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:18,620 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:18] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:19,371 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:19] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-04-14 22:24:19,660 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:19] "[36mGET /static/css/ai_monitor.css HTTP/1.1[0m" 304 -
+2025-04-14 22:24:19,932 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:19] "[36mGET /static/js/ai_monitor.js HTTP/1.1[0m" 304 -
+2025-04-14 22:24:20,016 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:20] "[36mGET /static/js/dashboard.js HTTP/1.1[0m" 304 -
+2025-04-14 22:24:21,950 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:22,291 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:22,781 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:23,580 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:23,580 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:23,580 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:23,581 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:23] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:23,582 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:23] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:23,583 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:23] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:23,944 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:23] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-04-14 22:24:25,063 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:25,488 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:26,000 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:27,407 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:27,564 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:28,120 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:28,493 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:28,493 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:28,495 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:28] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:28,581 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:28,581 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:28,582 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:28,583 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:28] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:28,584 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:28,584 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:28,584 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:28,585 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:28] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:28,586 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:28] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:28,587 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:28] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:28,587 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:28] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:28,588 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:28] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:29,499 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:29] "GET /static/css/styles.css HTTP/1.1" 200 -
+2025-04-14 22:24:29,696 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:29] "GET /static/css/ai_monitor.css HTTP/1.1" 200 -
+2025-04-14 22:24:29,701 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:29] "[36mGET /static/js/dashboard.js HTTP/1.1[0m" 304 -
+2025-04-14 22:24:29,702 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:29] "[36mGET /static/js/ai_monitor.js HTTP/1.1[0m" 304 -
+2025-04-14 22:24:30,200 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:30,416 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:31,539 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:32,121 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:32,823 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:33,361 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:33,584 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:33,584 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:33,586 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:33] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:33,587 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:33,588 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:33] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:33,588 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:33,588 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:33,588 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:33,590 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:33] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:33,592 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:33] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:33,592 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:33] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:33,594 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:33] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:34,063 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:34,641 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:35,185 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:35,756 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:36,308 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:36,859 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:37,494 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:38,261 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:38,588 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:38,589 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:38,590 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:38,590 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:38,591 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:38] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:38,591 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:38,591 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:38,592 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:38,593 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:38] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:38,594 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:38] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:38,594 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:38,595 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:38] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:38,597 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:38] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:38,598 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:38] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:38,599 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:38] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:38,601 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:38] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:38,907 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:39,518 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:40,071 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:40,351 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:40,683 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:43,597 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:43,597 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:43,597 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:43,598 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:43] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:43,599 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:43,599 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:43,600 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:43] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:43,601 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:43] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:43,603 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:43] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:43,604 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:43] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:43,980 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:43] "GET /static/css/ai_monitor.css HTTP/1.1" 200 -
+2025-04-14 22:24:44,120 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:44] "[35m[1mGET /static/css/styles.css HTTP/1.1[0m" 206 -
+2025-04-14 22:24:44,267 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:44] "GET /static/js/dashboard.js HTTP/1.1" 200 -
+2025-04-14 22:24:44,268 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:44] "GET /static/js/ai_monitor.js HTTP/1.1" 200 -
+2025-04-14 22:24:44,268 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:44] "[35m[1mGET /static/css/styles.css HTTP/1.1[0m" 206 -
+2025-04-14 22:24:44,929 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:44] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-14 22:24:44,933 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:44] "[33mGET /api/sentiment/latest HTTP/1.1[0m" 404 -
+2025-04-14 22:24:44,934 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:44,940 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:44] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:24:44,940 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 22:24:44,942 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49587.27)
+2025-04-14 22:24:44,943 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:24:44,944 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:24:44,948 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:44] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 22:24:44,949 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:44] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:24:45,109 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:24:45,110 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:45] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:24:45,123 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:45] "[36mGET /static/img/simulation_chart_20250414_214308.png HTTP/1.1[0m" 304 -
+2025-04-14 22:24:45,295 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:48,602 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 10000.0, 'available_balance': 10000.0, 'wallet_balance': 10000.0}, 'BTC': {'equity': 0.15, 'available_balance': 0.15, 'wallet_balance': 0.15}, 'ETH': {'equity': 1.2, 'available_balance': 1.2, 'wallet_balance': 1.2}}, 'total_value': 10001.35, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-14 22:24:48,603 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:48] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-14 22:24:48,604 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:48] "GET / HTTP/1.1" 200 -
+2025-04-14 22:24:48,760 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:48] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-04-14 22:24:48,903 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:48] "[36mGET /static/css/ai_monitor.css HTTP/1.1[0m" 304 -
+2025-04-14 22:24:48,923 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:48] "[36mGET /static/js/dashboard.js HTTP/1.1[0m" 304 -
+2025-04-14 22:24:48,925 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:48] "[36mGET /static/js/ai_monitor.js HTTP/1.1[0m" 304 -
+2025-04-14 22:24:49,691 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:49] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-14 22:24:49,694 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:49,695 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:49] "[33mGET /api/sentiment/latest HTTP/1.1[0m" 404 -
+2025-04-14 22:24:49,701 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:24:49,705 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:49] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 22:24:49,823 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:49] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:24:49,832 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:24:49,832 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:49] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:24:49,943 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50046.05)
+2025-04-14 22:24:49,943 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:24:49,944 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:49] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:24:50,163 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:50] "GET /static/img/simulation_chart_20250414_214308.png HTTP/1.1" 200 -
+2025-04-14 22:24:51,187 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:51] "GET /api/sentiment HTTP/1.1" 200 -
+2025-04-14 22:24:51,687 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-14 22:24:51,689 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:51] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 22:24:52,192 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:24:52,198 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:52] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 22:24:52,695 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:52] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:24:53,187 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:53] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-14 22:24:53,607 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:53] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-14 22:24:53,739 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:24:54,947 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49833.28)
+2025-04-14 22:24:54,947 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:24:54,948 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:54] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:24:58,612 [INFO] 127.0.0.1 - - [14/Apr/2025 22:24:58] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-14 22:25:04,702 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49621.19)
+2025-04-14 22:25:04,703 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:25:04,703 [INFO] 127.0.0.1 - - [14/Apr/2025 22:25:04] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:25:15,707 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50316.53)
+2025-04-14 22:25:15,708 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:25:15,708 [INFO] 127.0.0.1 - - [14/Apr/2025 22:25:15] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:25:19,695 [INFO] 127.0.0.1 - - [14/Apr/2025 22:25:19] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-14 22:25:19,697 [INFO] 127.0.0.1 - - [14/Apr/2025 22:25:19] "[33mGET /api/sentiment/latest HTTP/1.1[0m" 404 -
+2025-04-14 22:25:19,705 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:25:19,709 [INFO] 127.0.0.1 - - [14/Apr/2025 22:25:19] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 22:25:20,709 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49512.78)
+2025-04-14 22:25:20,710 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:25:20,711 [INFO] 127.0.0.1 - - [14/Apr/2025 22:25:20] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:25:24,699 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-14 22:25:24,699 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 22:25:24,700 [INFO] 127.0.0.1 - - [14/Apr/2025 22:25:24] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-14 22:25:26,699 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49897.41)
+2025-04-14 22:25:26,700 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:25:26,701 [INFO] 127.0.0.1 - - [14/Apr/2025 22:25:26] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:25:26,700 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-14 22:25:26,703 [INFO] 127.0.0.1 - - [14/Apr/2025 22:25:26] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 22:25:37,695 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49958.9)
+2025-04-14 22:25:37,695 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:25:37,696 [INFO] 127.0.0.1 - - [14/Apr/2025 22:25:37] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:25:37,752 [INFO] 127.0.0.1 - - [14/Apr/2025 22:25:37] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:25:37,754 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-14 22:25:37,755 [INFO] 127.0.0.1 - - [14/Apr/2025 22:25:37] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 22:25:37,888 [INFO] 127.0.0.1 - - [14/Apr/2025 22:25:37] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:25:37,890 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-14 22:25:37,892 [INFO] 127.0.0.1 - - [14/Apr/2025 22:25:37] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 22:25:38,543 [INFO] 127.0.0.1 - - [14/Apr/2025 22:25:38] "[33mGET /api/sentiment/latest HTTP/1.1[0m" 404 -
+2025-04-14 22:25:38,675 [INFO] 127.0.0.1 - - [14/Apr/2025 22:25:38] "[33mGET /api/sentiment/latest HTTP/1.1[0m" 404 -
+2025-04-14 22:25:39,600 [INFO] 127.0.0.1 - - [14/Apr/2025 22:25:39] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-14 22:25:39,727 [INFO] 127.0.0.1 - - [14/Apr/2025 22:25:39] "GET /api/notifications HTTP/1.1" 200 -
+2025-04-14 22:25:41,023 [INFO] 127.0.0.1 - - [14/Apr/2025 22:25:41] "[33mGET /api/trades/history HTTP/1.1[0m" 404 -
+2025-04-14 22:25:41,159 [INFO] 127.0.0.1 - - [14/Apr/2025 22:25:41] "[33mGET /api/trades/history HTTP/1.1[0m" 404 -
+2025-04-14 22:25:48,698 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 22:25:48,699 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50394.35)
+2025-04-14 22:25:48,699 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:25:48,700 [INFO] 127.0.0.1 - - [14/Apr/2025 22:25:48] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:25:49,849 [INFO] 127.0.0.1 - - [14/Apr/2025 22:25:49] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:25:49,856 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:25:49,857 [INFO] 127.0.0.1 - - [14/Apr/2025 22:25:49] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:25:53,703 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50210.67)
+2025-04-14 22:25:53,703 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:25:53,704 [INFO] 127.0.0.1 - - [14/Apr/2025 22:25:53] "GET /api/component-status HTTP/1.1" 200 -
