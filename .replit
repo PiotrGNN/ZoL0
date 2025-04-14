@@ -78,7 +78,7 @@ pageEnabled = false
 buttonEnabled = false
 
 [workflows]
-runButton = "Napraw Dashboard JS"
+runButton = "Naprawa Całego Systemu"
 
 [[workflows.workflow]]
 name = "Run"
@@ -236,6 +236,19 @@ args = "python main.py"
 
 [[workflows.workflow]]
 name = "Napraw Dashboard JS"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python install_replit.py"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python main.py"
+
+[[workflows.workflow]]
+name = "Naprawa Całego Systemu"
 author = 31819671
 mode = "sequential"
 

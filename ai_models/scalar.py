@@ -64,12 +64,13 @@ class DataScaler:
             )
         return filled
 
-    def fit(self, data):
+    def fit(self, data, *args, **kwargs):
         """
         Dopasowuje wybrany scaler do danych.
 
         Parameters:
             data (pd.DataFrame lub np.ndarray): Dane wejściowe.
+            *args, **kwargs: Dodatkowe argumenty (ignorowane, dla kompatybilności)
         """
         data = self._fill_missing(data)
         if self.method == "standard":
