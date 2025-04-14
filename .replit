@@ -78,7 +78,7 @@ pageEnabled = false
 buttonEnabled = false
 
 [workflows]
-runButton = "Run Fixed App"
+runButton = "Run Project"
 
 [[workflows.workflow]]
 name = "Run"
@@ -171,6 +171,19 @@ args = "python3 main.py"
 
 [[workflows.workflow]]
 name = "Run Fixed App"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pip install -r requirements.txt"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python main.py"
+
+[[workflows.workflow]]
+name = "Run Project"
 author = 31819671
 mode = "sequential"
 
