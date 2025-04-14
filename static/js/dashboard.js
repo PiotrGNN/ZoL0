@@ -926,7 +926,7 @@ function stopTrading() {
         }
         return response.json();
     })
-    .thendata => {
+    .then(data => {
         if (data.success) {
             showNotification('success', data.message || 'Trading automatyczny zatrzymany');
             updateComponentStatus();
