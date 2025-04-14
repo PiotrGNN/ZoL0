@@ -1,220 +1,216 @@
 """
 simplified_risk_manager.py
---------------------------
-Uproszczony moduł zarządzania ryzykiem, kompatybilny zarówno z lokalnym środowiskiem, jak i Replit.
+-------------------------
+Uproszczony menedżer ryzyka dla platformy tradingowej.
 """
 
 import logging
-import os
-import sys
-from datetime import datetime
-from typing import Dict, List, Optional, Union, Any
+import time
+from typing import Dict, Any, List, Optional
 
-# Konfiguracja logowania
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.FileHandler("logs/risk_manager.log"),
-        logging.StreamHandler()
-    ]
-)
 logger = logging.getLogger(__name__)
 
 class SimplifiedRiskManager:
-    """
-    Uproszczony manager ryzyka dla systemu tradingowego.
-    """
+    """Uproszczony menedżer ryzyka do zarządzania ryzykiem w handlu."""
 
-    def __init__(self, max_risk: float = 0.02, max_position_size: float = 0.2, max_drawdown: float = 0.1):
+    def __init__(self, max_risk: float = 0.05, max_position_size: float = 0.2, max_drawdown: float = 0.1):
         """
-        Inicjalizacja managera ryzyka.
+        Inicjalizuje menedżera ryzyka.
 
-        Args:
-            max_risk: Maksymalne ryzyko na pojedynczą transakcję (wyrażone jako % kapitału)
-            max_position_size: Maksymalny rozmiar pojedynczej pozycji (wyrażony jako % kapitału)
-            max_drawdown: Maksymalny akceptowalny drawdown (spadek kapitału)
+        Parameters:
+            max_risk (float): Maksymalne ryzyko na transakcję jako % kapitału
+            max_position_size (float): Maksymalny rozmiar pozycji jako % kapitału
+            max_drawdown (float): Maksymalny dopuszczalny drawdown jako % kapitału
         """
         self.max_risk = max_risk
         self.max_position_size = max_position_size
         self.max_drawdown = max_drawdown
-        self.current_drawdown = 0.0
-        self.initial_capital = 0.0
-        self.current_capital = 0.0
-        logger.info(f"Zainicjalizowano SimplifiedRiskManager (max_risk={max_risk}, max_position_size={max_position_size}, max_drawdown={max_drawdown})")
 
-    def set_capital(self, capital: float) -> None:
-        """
-        Ustawia kapitał początkowy i bieżący.
+        self.risk_metrics = {
+            "current_drawdown": 0.0,
+            "max_drawdown_reached": 0.0,
+            "total_risk_exposure": 0.0,
+            "positions_risk": {}
+        }
 
-        Args:
-            capital: Wartość kapitału
-        """
-        if self.initial_capital == 0.0:
-            self.initial_capital = capital
-        self.current_capital = capital
-        self.update_drawdown()
+        self.risk_limits_reached = {
+            "max_risk": False,
+            "max_position_size": False,
+            "max_drawdown": False
+        }
 
-    def update_drawdown(self) -> float:
+        logger.info(f"Zainicjalizowano zarządcę ryzyka portfela. Max ryzyko: {max_risk}, Max rozmiar pozycji: {max_position_size}, Max drawdown: {max_drawdown}")
+
+    def check_trade_risk(self, symbol: str, side: str, quantity: float, price: Optional[float] = None) -> Dict[str, Any]:
         """
-        Aktualizuje i zwraca bieżący drawdown.
+        Sprawdza ryzyko związane z transakcją.
+
+        Parameters:
+            symbol (str): Symbol instrumentu
+            side (str): Strona transakcji ('buy', 'sell')
+            quantity (float): Ilość instrumentu
+            price (Optional[float]): Cena transakcji
 
         Returns:
-            float: Bieżący drawdown (0.0 - 1.0)
+            Dict[str, Any]: Wynik sprawdzenia ryzyka
         """
-        if self.initial_capital > 0:
-            self.current_drawdown = max(0, (self.initial_capital - self.current_capital) / self.initial_capital)
-        else:
-            self.current_drawdown = 0.0
-        return self.current_drawdown
+        try:
+            # Sprawdź, czy osiągnięto limity ryzyka
+            if self.risk_limits_reached["max_drawdown"]:
+                return {
+                    "success": False,
+                    "error": f"Osiągnięto maksymalny drawdown ({self.max_drawdown * 100}%)",
+                    "risk_level": "critical"
+                }
 
-    def can_take_new_positions(self) -> bool:
+            if self.risk_limits_reached["max_risk"]:
+                return {
+                    "success": False,
+                    "error": f"Osiągnięto maksymalne ryzyko całkowite ({self.max_risk * 100}%)",
+                    "risk_level": "high"
+                }
+
+            # Symulowany poziom ryzyka dla transakcji
+            transaction_risk = quantity * (price or 1.0) * 0.01  # Przykładowe ryzyko 1%
+
+            # Przykładowa walidacja ryzyka
+            if transaction_risk > self.max_risk:
+                return {
+                    "success": False,
+                    "error": f"Ryzyko transakcji ({transaction_risk:.2f}) przekracza maksymalne ryzyko ({self.max_risk:.2f})",
+                    "risk_level": "high"
+                }
+
+            position_size = quantity * (price or 1.0)
+            if position_size > self.max_position_size:
+                return {
+                    "success": False,
+                    "error": f"Rozmiar pozycji ({position_size:.2f}) przekracza maksymalny rozmiar ({self.max_position_size:.2f})",
+                    "risk_level": "medium"
+                }
+
+            # Aktualizuj metryki ryzyka
+            self.risk_metrics["total_risk_exposure"] += transaction_risk
+
+            if symbol not in self.risk_metrics["positions_risk"]:
+                self.risk_metrics["positions_risk"][symbol] = 0.0
+
+            self.risk_metrics["positions_risk"][symbol] += transaction_risk
+
+            # Aktualizuj flagi limitów ryzyka
+            self.risk_limits_reached["max_risk"] = self.risk_metrics["total_risk_exposure"] >= self.max_risk
+
+            return {
+                "success": True,
+                "risk": transaction_risk,
+                "risk_level": "low" if transaction_risk < self.max_risk / 2 else "medium"
+            }
+        except Exception as e:
+            logger.error(f"Błąd podczas sprawdzania ryzyka transakcji: {e}")
+            return {"success": False, "error": str(e), "risk_level": "unknown"}
+
+    def update_drawdown(self, current_drawdown: float) -> Dict[str, Any]:
         """
-        Sprawdza, czy można otwierać nowe pozycje w oparciu o bieżący drawdown.
+        Aktualizuje bieżący drawdown.
+
+        Parameters:
+            current_drawdown (float): Bieżący drawdown jako % kapitału
 
         Returns:
-            bool: True jeśli można otwierać nowe pozycje, False w przeciwnym razie
+            Dict[str, Any]: Zaktualizowane metryki ryzyka
         """
-        return self.current_drawdown < self.max_drawdown
+        try:
+            self.risk_metrics["current_drawdown"] = current_drawdown
 
-    def determine_position_size(self, account_balance: float, stop_loss: float, asset_price: float) -> float:
+            if current_drawdown > self.risk_metrics["max_drawdown_reached"]:
+                self.risk_metrics["max_drawdown_reached"] = current_drawdown
+
+            self.risk_limits_reached["max_drawdown"] = current_drawdown >= self.max_drawdown
+
+            return {
+                "success": True,
+                "metrics": self.risk_metrics,
+                "limits_reached": self.risk_limits_reached
+            }
+        except Exception as e:
+            logger.error(f"Błąd podczas aktualizacji drawdown: {e}")
+            return {"success": False, "error": str(e)}
+
+    def reset_risk_metrics(self) -> Dict[str, Any]:
         """
-        Określa rozmiar pozycji na podstawie balansu konta, poziomu stop-loss i ceny aktywa.
-
-        Args:
-            account_balance: Bilans konta
-            stop_loss: Poziom stop-loss (jako % od ceny wejścia)
-            asset_price: Cena aktywa
+        Resetuje metryki ryzyka.
 
         Returns:
-            float: Zalecany rozmiar pozycji (w jednostkach aktywa)
+            Dict[str, Any]: Zresetowane metryki ryzyka
         """
-        if stop_loss <= 0 or asset_price <= 0:
-            return 0.0
+        try:
+            self.risk_metrics = {
+                "current_drawdown": 0.0,
+                "max_drawdown_reached": 0.0,
+                "total_risk_exposure": 0.0,
+                "positions_risk": {}
+            }
 
-        # Obliczenie ryzyka w jednostkach waluty
-        risk_amount = account_balance * self.max_risk
+            self.risk_limits_reached = {
+                "max_risk": False,
+                "max_position_size": False,
+                "max_drawdown": False
+            }
 
-        # Obliczenie straty na jednostkę, jeśli stop-loss zostanie aktywowany
-        loss_per_unit = asset_price * stop_loss
+            logger.info("Zresetowano metryki ryzyka")
 
-        # Obliczenie ilości jednostek, które można nabyć przy danym poziomie ryzyka
-        if loss_per_unit > 0:
-            position_size = risk_amount / loss_per_unit
-        else:
-            position_size = 0.0
+            return {
+                "success": True,
+                "metrics": self.risk_metrics,
+                "limits_reached": self.risk_limits_reached
+            }
+        except Exception as e:
+            logger.error(f"Błąd podczas resetowania metryk ryzyka: {e}")
+            return {"success": False, "error": str(e)}
 
-        # Upewnienie się, że rozmiar pozycji nie przekracza maksymalnego dopuszczalnego rozmiaru
-        max_allowed_size = account_balance * self.max_position_size / asset_price
-        position_size = min(position_size, max_allowed_size)
-
-        return position_size
-
-    def calculate_stop_loss(self, entry_price: float, position_type: str, volatility: float = 0.01) -> float:
+    def update_settings(self, settings: Dict[str, float]) -> bool:
         """
-        Oblicza poziom stop-loss na podstawie ceny wejścia, typu pozycji i zmienności.
+        Aktualizuje ustawienia menedżera ryzyka.
 
-        Args:
-            entry_price: Cena wejścia
-            position_type: Typ pozycji ('long' lub 'short')
-            volatility: Zmienność (jako % od ceny wejścia)
+        Parameters:
+            settings (Dict[str, float]): Nowe ustawienia
 
         Returns:
-            float: Poziom stop-loss
+            bool: True jeśli operacja się powiodła, False w przeciwnym przypadku
         """
-        volatility_factor = max(0.005, volatility)  # Minimum 0.5% zmienności
+        try:
+            if "max_risk" in settings:
+                self.max_risk = settings["max_risk"]
 
-        if position_type.lower() == 'long':
-            stop_loss = entry_price * (1 - 2 * volatility_factor)
-        else:  # short
-            stop_loss = entry_price * (1 + 2 * volatility_factor)
+            if "max_position_size" in settings:
+                self.max_position_size = settings["max_position_size"]
 
-        return stop_loss
+            if "max_drawdown" in settings:
+                self.max_drawdown = settings["max_drawdown"]
 
-    def calculate_take_profit(self, stop_loss: float, entry_price: float = None, position_type: str = None, risk_reward: float = 2.0) -> float:
+            # Aktualizuj flagi limitów ryzyka
+            self.risk_limits_reached["max_risk"] = self.risk_metrics["total_risk_exposure"] >= self.max_risk
+            self.risk_limits_reached["max_drawdown"] = self.risk_metrics["current_drawdown"] >= self.max_drawdown
+
+            logger.info(f"Zaktualizowano ustawienia zarządcy ryzyka: {settings}")
+            return True
+        except Exception as e:
+            logger.error(f"Błąd podczas aktualizacji ustawień zarządcy ryzyka: {e}")
+            return False
+
+    def get_risk_metrics(self) -> Dict[str, Any]:
         """
-        Oblicza poziom take-profit na podstawie poziomu stop-loss i stosunku ryzyka do zysku.
-
-        Args:
-            stop_loss: Poziom stop-loss
-            entry_price: Cena wejścia (opcjonalne)
-            position_type: Typ pozycji ('long' lub 'short') (opcjonalne)
-            risk_reward: Stosunek ryzyka do zysku (domyślnie 2.0)
+        Zwraca metryki ryzyka.
 
         Returns:
-            float: Poziom take-profit
+            Dict[str, Any]: Metryki ryzyka
         """
-        if entry_price is None or position_type is None:
-            return 0.0
-
-        sl_distance = abs(entry_price - stop_loss)
-        tp_distance = sl_distance * risk_reward
-
-        if position_type.lower() == 'long':
-            take_profit = entry_price + tp_distance
-        else:  # short
-            take_profit = entry_price - tp_distance
-
-        return take_profit
-
-    def adjust_leverage(self, market_conditions: Dict[str, Any]) -> float:
-        """
-        Dostosowuje poziom dźwigni w oparciu o warunki rynkowe.
-
-        Args:
-            market_conditions: Słownik zawierający informacje o warunkach rynkowych
-
-        Returns:
-            float: Zalecany poziom dźwigni
-        """
-        # Przykładowa logika dostosowywania dźwigni
-        # W rzeczywistej implementacji byłaby bardziej złożona logika
-
-        volatility = market_conditions.get('volatility', 0.02)
-        trend_strength = market_conditions.get('trend_strength', 0.5)
-
-        base_leverage = 3.0  # Domyślna dźwignia
-
-        # Zmniejsz dźwignię przy dużej zmienności
-        if volatility > 0.05:  # Wysoka zmienność
-            base_leverage *= 0.5
-
-        # Zwiększ dźwignię przy silnym trendzie
-        if trend_strength > 0.7:  # Silny trend
-            base_leverage *= 1.2
-
-        # Upewnij się, że dźwignia jest w rozsądnych granicach
-        return max(1.0, min(10.0, base_leverage))
-
-# Przykład użycia
-if __name__ == "__main__":
-    # Inicjalizacja managera ryzyka
-    risk_manager = SimplifiedRiskManager(
-        max_risk=0.02,  # 2% kapitału na transakcję
-        max_position_size=0.2,  # Maksymalnie 20% kapitału w jednej pozycji
-        max_drawdown=0.1  # Maksymalny drawdown 10%
-    )
-
-    # Przykładowe użycie
-    capital = 10000  # 10,000 USD
-    risk_manager.set_capital(capital)
-
-    # Sprawdzenie czy można otwierać nowe pozycje
-    can_trade = risk_manager.can_take_new_positions()
-    print(f"Można otwierać nowe pozycje: {can_trade}")
-
-    # Obliczenie rozmiaru pozycji
-    entry_price = 50000  # 50,000 USD za BTC
-    stop_loss_pct = 0.02  # 2% stop-loss
-    position_size = risk_manager.determine_position_size(capital, stop_loss_pct, entry_price)
-    print(f"Zalecany rozmiar pozycji: {position_size:.6f} BTC (${position_size * entry_price:.2f})")
-
-    # Obliczenie poziomów stop-loss i take-profit
-    stop_loss = risk_manager.calculate_stop_loss(entry_price, 'long', 0.02)
-    take_profit = risk_manager.calculate_take_profit(stop_loss, entry_price, 'long', 2.5)
-    print(f"Stop-Loss: ${stop_loss:.2f}, Take-Profit: ${take_profit:.2f}")
-
-    # Dostosowanie dźwigni
-    market_conditions = {'volatility': 0.03, 'trend_strength': 0.8}
-    leverage = risk_manager.adjust_leverage(market_conditions)
-    print(f"Zalecana dźwignia: {leverage:.1f}x")
+        return {
+            "metrics": self.risk_metrics,
+            "limits": {
+                "max_risk": self.max_risk,
+                "max_position_size": self.max_position_size,
+                "max_drawdown": self.max_drawdown
+            },
+            "limits_reached": self.risk_limits_reached
+        }

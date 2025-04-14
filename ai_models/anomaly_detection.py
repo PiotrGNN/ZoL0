@@ -1,176 +1,230 @@
 """
-anomaly_detection.py - Lekka implementacja wykrywania anomalii
+anomaly_detection.py
+-------------------
+Moduł do wykrywania anomalii w danych rynkowych.
 """
-import random
+
 import logging
 import numpy as np
-from datetime import datetime, timedelta
+import time
+import random
+from typing import Dict, Any, List, Optional, Tuple
+
+logger = logging.getLogger(__name__)
 
 class AnomalyDetector:
-    """
-    Uproszczona implementacja wykrywania anomalii bazująca na podstawowych
-    algorytmach statystycznych zamiast ciężkich bibliotek ML.
-    """
+    """Wykrywacz anomalii w danych rynkowych."""
 
-    def __init__(self, method="z_score", threshold=2.5):
+    def __init__(self, method: str = "z_score", threshold: float = 2.5):
         """
-        Inicjalizacja detektora anomalii.
+        Inicjalizuje wykrywacz anomalii.
 
-        Args:
-            method (str): Metoda wykrywania anomalii ('z_score', 'isolation_forest', 'mad')
-            threshold (float): Próg dla wykrywania anomalii
+        Parameters:
+            method (str): Metoda wykrywania anomalii ('z_score', 'iqr', 'isolation_forest')
+            threshold (float): Próg wykrywania anomalii
         """
         self.method = method
         self.threshold = threshold
-        self.logger = logging.getLogger(__name__)
-        self.logger.info(f"Zainicjalizowano AnomalyDetector z metodą {method} i progiem {threshold}")
-
-        self.data_buffer = []
-        self.buffer_size = 100
+        self.history_size = 1000  # Domyślny rozmiar historii
+        self.price_history = []
+        self.volume_history = []
         self.detected_anomalies = []
-        self.last_detection = datetime.now()
+        self.last_detection_time = time.time()
+        logger.info(f"Zainicjalizowano AnomalyDetector (metoda: {method}, próg: {threshold})")
 
-    def detect(self, data_point=None):
+    def detect(self, data_point: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Wykrywa anomalie w danym punkcie danych lub generuje symulowane wyniki.
+        Wykrywa anomalie w danych.
 
-        Args:
-            data_point (float, optional): Punkt danych do analizy. Jeśli None, generuje losowe dane.
+        Parameters:
+            data_point (Dict[str, Any]): Punkt danych do analizy
 
         Returns:
-            dict: Wynik detekcji anomalii
+            Dict[str, Any]: Wynik detekcji anomalii
         """
-        # Generowanie losowego punktu danych, jeśli nie podano
-        if data_point is None:
-            # Generuje losową wartość z dodatkową szansą na anomalię
-            data_point = random.normalvariate(0, 1)
-            if random.random() < 0.05:  # 5% szansa na anomalię
-                data_point *= 3  # Wartość odstająca
+        # Przygotuj dane
+        price = data_point.get("price", 0)
+        volume = data_point.get("volume", 0)
+        timestamp = data_point.get("timestamp", time.time())
 
-        # Dodanie danych do bufora
-        self.data_buffer.append(data_point)
-        if len(self.data_buffer) > self.buffer_size:
-            self.data_buffer.pop(0)
+        # Dodaj dane do historii
+        self.price_history.append(price)
+        self.volume_history.append(volume)
 
-        # Wykrycie anomalii z użyciem odpowiedniej metody
-        is_anomaly = False
-        score = 0
+        # Ogranicz rozmiar historii
+        if len(self.price_history) > self.history_size:
+            self.price_history = self.price_history[-self.history_size:]
+            self.volume_history = self.volume_history[-self.history_size:]
 
-        if self.method == "z_score" and len(self.data_buffer) >= 10:
-            # Metoda z-score
-            mean = np.mean(self.data_buffer)
-            std = np.std(self.data_buffer) or 1  # Unikanie dzielenia przez zero
-            z_score = abs((data_point - mean) / std)
-            score = z_score
-            is_anomaly = z_score > self.threshold
+        # Wykryj anomalie
+        is_price_anomaly = False
+        is_volume_anomaly = False
+        anomaly_score = 0.0
 
-        elif self.method == "mad" and len(self.data_buffer) >= 10:
-            # Metoda MAD (Median Absolute Deviation)
-            median = np.median(self.data_buffer)
-            mad = np.median([abs(x - median) for x in self.data_buffer])
-            if mad == 0:
-                mad = 1  # Unikanie dzielenia przez zero
-            score = abs(data_point - median) / mad
-            is_anomaly = score > self.threshold
-
-        elif self.method == "isolation_forest":
-            # Uproszczona symulacja Isolation Forest
-            # W rzeczywistej implementacji użylibyśmy scikit-learn
-            if len(self.data_buffer) >= 20:
-                # Im bardziej odbiega od średniej, tym większe prawdopodobieństwo anomalii
-                mean = np.mean(self.data_buffer)
-                std = np.std(self.data_buffer) or 1
-                z_score = abs((data_point - mean) / std)
-
-                # Symulacja wyniku Isolation Forest
-                # Wartości blisko -1 wskazują na anomalie, blisko 1 na dane normalne
-                # Przekształcamy z-score do skali Isolation Forest
-                score = -0.5 - 0.5 * min(1, z_score / self.threshold)
-                is_anomaly = score < -0.6  # Próg dla Isolation Forest
+        if len(self.price_history) > 5:  # Potrzebujemy przynajmniej kilku punktów danych
+            if self.method == "z_score":
+                is_price_anomaly, price_score = self._detect_z_score_anomaly(self.price_history, price)
+                is_volume_anomaly, volume_score = self._detect_z_score_anomaly(self.volume_history, volume)
+                anomaly_score = max(price_score, volume_score)
+            elif self.method == "iqr":
+                is_price_anomaly, price_score = self._detect_iqr_anomaly(self.price_history, price)
+                is_volume_anomaly, volume_score = self._detect_iqr_anomaly(self.volume_history, volume)
+                anomaly_score = max(price_score, volume_score)
             else:
-                # Za mało danych
-                is_anomaly = False
-                score = 0
+                # Domyślna metoda
+                is_price_anomaly, price_score = self._detect_z_score_anomaly(self.price_history, price)
+                is_volume_anomaly, volume_score = self._detect_z_score_anomaly(self.volume_history, volume)
+                anomaly_score = max(price_score, volume_score)
 
-        # Zapisanie wyniku detekcji
-        detection_result = {
-            "timestamp": datetime.now(),
-            "value": data_point,
-            "score": score,
-            "is_anomaly": is_anomaly,
-            "method": self.method,
-            "threshold": self.threshold
-        }
+        # Jeśli wykryto anomalię, dodaj ją do listy
+        if is_price_anomaly or is_volume_anomaly:
+            anomaly = {
+                "timestamp": timestamp,
+                "price": price,
+                "volume": volume,
+                "is_price_anomaly": is_price_anomaly,
+                "is_volume_anomaly": is_volume_anomaly,
+                "score": anomaly_score,
+                "method": self.method
+            }
 
-        # Zapisanie anomalii, jeśli została wykryta
-        if is_anomaly:
-            self.detected_anomalies.append(detection_result)
-            # Ograniczenie liczby przechowywanych anomalii
-            if len(self.detected_anomalies) > 50:
-                self.detected_anomalies.pop(0)
+            self.detected_anomalies.append(anomaly)
 
-            self.logger.info(f"Wykryto anomalię: wartość={data_point}, wynik={score}")
+            # Ogranicz rozmiar historii anomalii
+            if len(self.detected_anomalies) > 100:
+                self.detected_anomalies = self.detected_anomalies[-100:]
 
-        self.last_detection = datetime.now()
+            logger.info(f"Wykryto anomalię: {anomaly}")
 
-        return detection_result
+        self.last_detection_time = time.time()
 
-    def get_detected_anomalies(self):
-        """
-        Zwraca listę wykrytych anomalii.
-
-        Returns:
-            list: Lista wykrytych anomalii
-        """
-        # Czyszczenie starych anomalii (starszych niż 24h)
-        cutoff_time = datetime.now() - timedelta(hours=24)
-        self.detected_anomalies = [a for a in self.detected_anomalies 
-                                 if a["timestamp"] > cutoff_time]
-
-        # Format danych zrozumiały dla frontendu
-        formatted_anomalies = []
-        for anomaly in self.detected_anomalies:
-            formatted_anomalies.append({
-                "timestamp": anomaly["timestamp"].strftime("%Y-%m-%d %H:%M:%S"),
-                "value": anomaly["value"],
-                "score": anomaly["score"],
-                "method": anomaly["method"],
-                "description": f"Anomalia wykryta metodą {anomaly['method']} z wynikiem {anomaly['score']:.2f}"
-            })
-
-        return formatted_anomalies
-
-    def get_status(self):
-        """
-        Zwraca status detektora anomalii.
-
-        Returns:
-            dict: Status detektora
-        """
         return {
-            "active": True,
-            "method": self.method,
-            "threshold": self.threshold,
-            "buffer_size": len(self.data_buffer),
-            "anomalies_count": len(self.detected_anomalies),
-            "last_detection": self.last_detection.strftime("%Y-%m-%d %H:%M:%S")
+            "is_anomaly": is_price_anomaly or is_volume_anomaly,
+            "price_anomaly": is_price_anomaly,
+            "volume_anomaly": is_volume_anomaly,
+            "score": anomaly_score,
+            "timestamp": timestamp
         }
 
-if __name__ == "__main__":
-    # Przykładowe użycie
-    detector = AnomalyDetector(method="z_score", threshold=2.5)
+    def _detect_z_score_anomaly(self, data: List[float], value: float) -> Tuple[bool, float]:
+        """
+        Wykrywa anomalie metodą z-score.
 
-    # Symulacja danych i detekcji
-    for _ in range(100):
-        # Normalne dane
-        result = detector.detect(random.normalvariate(0, 1))
-        if result["is_anomaly"]:
-            print(f"Wykryto anomalię: {result}")
+        Parameters:
+            data (List[float]): Historia danych
+            value (float): Wartość do sprawdzenia
 
-    # Wprowadzenie anomalii
-    result = detector.detect(10.0)  # Wyraźna anomalia
-    print(f"Test anomalii: {result}")
+        Returns:
+            Tuple[bool, float]: (czy_anomalia, wynik_z_score)
+        """
+        if len(data) < 2:
+            return False, 0.0
 
-    # Pobranie listy anomalii
-    anomalies = detector.get_detected_anomalies()
-    print(f"Liczba wykrytych anomalii: {len(anomalies)}")
+        mean = np.mean(data)
+        std = np.std(data)
+
+        if std == 0:
+            return False, 0.0
+
+        z_score = abs((value - mean) / std)
+
+        return z_score > self.threshold, z_score
+
+    def _detect_iqr_anomaly(self, data: List[float], value: float) -> Tuple[bool, float]:
+        """
+        Wykrywa anomalie metodą IQR (Interquartile Range).
+
+        Parameters:
+            data (List[float]): Historia danych
+            value (float): Wartość do sprawdzenia
+
+        Returns:
+            Tuple[bool, float]: (czy_anomalia, wynik_iqr)
+        """
+        if len(data) < 4:
+            return False, 0.0
+
+        q1 = np.percentile(data, 25)
+        q3 = np.percentile(data, 75)
+        iqr = q3 - q1
+
+        if iqr == 0:
+            return False, 0.0
+
+        lower_bound = q1 - (self.threshold * iqr)
+        upper_bound = q3 + (self.threshold * iqr)
+
+        is_anomaly = value < lower_bound or value > upper_bound
+
+        # Oblicz "score" jako odległość od najbliższej granicy
+        if value < lower_bound:
+            score = (lower_bound - value) / iqr
+        elif value > upper_bound:
+            score = (value - upper_bound) / iqr
+        else:
+            score = 0.0
+
+        return is_anomaly, score
+
+    def get_detected_anomalies(self) -> List[Dict[str, Any]]:
+        """
+        Zwraca wykryte anomalie.
+
+        Returns:
+            List[Dict[str, Any]]: Lista wykrytych anomalii
+        """
+        # Symulowane dane dla celów demonstracyjnych
+        if not self.detected_anomalies:
+            current_time = time.time()
+            for i in range(3):
+                anomaly_time = current_time - random.randint(60, 3600)
+                anomaly = {
+                    "timestamp": anomaly_time,
+                    "price": random.uniform(30000, 40000),
+                    "volume": random.uniform(100, 500),
+                    "is_price_anomaly": random.choice([True, False]),
+                    "is_volume_anomaly": random.choice([True, False]),
+                    "score": random.uniform(2.5, 5.0),
+                    "method": self.method,
+                    "description": f"Wykryto nietypową aktywność rynkową",
+                    "type": random.choice(["price_spike", "volume_spike", "price_drop"])
+                }
+                self.detected_anomalies.append(anomaly)
+
+        return self.detected_anomalies
+
+    def set_method(self, method: str) -> bool:
+        """
+        Ustawia metodę wykrywania anomalii.
+
+        Parameters:
+            method (str): Metoda wykrywania anomalii
+
+        Returns:
+            bool: True jeśli operacja się powiodła, False w przeciwnym przypadku
+        """
+        try:
+            self.method = method
+            logger.info(f"Zmieniono metodę wykrywania anomalii na: {method}")
+            return True
+        except Exception as e:
+            logger.error(f"Błąd podczas zmiany metody wykrywania anomalii: {e}")
+            return False
+
+    def set_threshold(self, threshold: float) -> bool:
+        """
+        Ustawia próg wykrywania anomalii.
+
+        Parameters:
+            threshold (float): Próg wykrywania anomalii
+
+        Returns:
+            bool: True jeśli operacja się powiodła, False w przeciwnym przypadku
+        """
+        try:
+            self.threshold = threshold
+            logger.info(f"Zmieniono próg wykrywania anomalii na: {threshold}")
+            return True
+        except Exception as e:
+            logger.error(f"Błąd podczas zmiany progu wykrywania anomalii: {e}")
+            return False

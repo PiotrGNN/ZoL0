@@ -1,142 +1,150 @@
 """
-model_recognition.py - Lekka implementacja rozpoznawania modeli
+model_recognition.py
+-------------------
+Moduł do rozpoznawania typów modeli rynkowych.
 """
-import os
-import random
+
 import logging
-import numpy as np
-from datetime import datetime
+import random
+import time
+from typing import Dict, Any, List, Optional
+
+logger = logging.getLogger(__name__)
 
 class ModelRecognizer:
-    """
-    Uproszczona implementacja rozpoznawania modeli
-    """
+    """Rozpoznawacz modeli rynkowych."""
 
     def __init__(self):
-        """
-        Inicjalizacja modułu rozpoznawania modeli
-        """
-        self.logger = logging.getLogger(__name__)
-        self.logger.info("Zainicjalizowano ModelRecognizer")
-        self.last_update = datetime.now()
-
-        # Symulowane katalogi modeli
-        self.model_types = {
-            "time_series": ["ARIMA", "LSTM", "Prophet"],
-            "classification": ["RandomForest", "SVM", "XGBoost"],
-            "regression": ["LinearRegression", "ElasticNet", "GradientBoosting"]
-        }
-
-    def scan_models(self, directory="saved_models"):
-        """
-        Skanuje katalog w poszukiwaniu modeli.
-
-        Args:
-            directory (str): Ścieżka do katalogu z modelami
-
-        Returns:
-            dict: Informacje o znalezionych modelach
-        """
-        self.logger.info(f"Skanowanie katalogu {directory} w poszukiwaniu modeli")
-
-        if not os.path.exists(directory):
-            self.logger.warning(f"Katalog {directory} nie istnieje")
-            return {"models": [], "error": f"Katalog {directory} nie istnieje"}
-
-        models = []
-
-        try:
-            # Rzeczywiste skanowanie plików
-            for filename in os.listdir(directory):
-                filepath = os.path.join(directory, filename)
-
-                # Pomijanie katalogów
-                if os.path.isdir(filepath):
-                    continue
-
-                # Sprawdzenie rozszerzenia pliku
-                if filename.endswith(".pkl") or filename.endswith(".joblib") or filename.endswith(".h5"):
-                    # Analiza nazwy pliku
-                    parts = filename.split("_")
-
-                    if len(parts) >= 2:
-                        model_type = parts[0]
-                        model_name = parts[1]
-                        date_info = "_".join(parts[2:]).replace(".pkl", "").replace(".joblib", "").replace(".h5", "")
-
-                        # Tworzenie informacji o modelu
-                        model_info = {
-                            "filename": filename,
-                            "filepath": filepath,
-                            "type": model_type,
-                            "name": model_name,
-                            "date": date_info,
-                            "size": os.path.getsize(filepath),
-                            "last_modified": datetime.fromtimestamp(os.path.getmtime(filepath)).strftime("%Y-%m-%d %H:%M:%S")
-                        }
-
-                        models.append(model_info)
-
-            self.last_update = datetime.now()
-            return {
-                "models": models,
-                "count": len(models),
-                "timestamp": self.last_update.strftime("%Y-%m-%d %H:%M:%S")
+        """Inicjalizuje rozpoznawacz modeli."""
+        self.model_types = [
+            {
+                "id": "trending_market",
+                "name": "Trend rosnący/malejący",
+                "description": "Rynek w wyraźnym trendzie jednokierunkowym"
+            },
+            {
+                "id": "ranging_market",
+                "name": "Rynek w konsolidacji",
+                "description": "Cena oscyluje w określonym zakresie"
+            },
+            {
+                "id": "breakout_pattern",
+                "name": "Wybicie z formacji",
+                "description": "Cena przebija ważny poziom wsparcia lub oporu"
+            },
+            {
+                "id": "reversal_pattern",
+                "name": "Formacja odwrócenia",
+                "description": "Wzór sugerujący zmianę kierunku trendu"
+            },
+            {
+                "id": "high_volatility",
+                "name": "Wysoka zmienność",
+                "description": "Rynek charakteryzuje się dużymi wahaniami cen"
+            },
+            {
+                "id": "low_liquidity",
+                "name": "Niska płynność",
+                "description": "Rynek z niskim wolumenem i dużymi spreadami"
             }
+        ]
+        self.last_recognition_time = time.time()
+        logger.info("Zainicjalizowano ModelRecognizer")
 
-        except Exception as e:
-            self.logger.error(f"Błąd podczas skanowania modeli: {str(e)}")
-            return {"models": [], "error": str(e)}
-
-    def identify_model_type(self, model_data):
+    def identify_model_type(self, data: Optional[Dict[str, Any]]) -> Dict[str, Any]:
         """
-        Identyfikuje typ modelu na podstawie dostarczonych danych.
+        Identyfikuje typ modelu rynkowego.
 
-        Args:
-            model_data: Dane modelu do identyfikacji
+        Parameters:
+            data (Optional[Dict[str, Any]]): Dane rynkowe
 
         Returns:
-            dict: Informacje o rozpoznanym modelu
+            Dict[str, Any]: Rozpoznany model
         """
-        # Ta funkcja byłaby używana do rozpoznawania typu modelu
-        # W uproszczonej implementacji zwracamy symulowane dane
+        # Symulowane rozpoznawanie modelu dla celów demonstracyjnych
+        selected_model = random.choice(self.model_types)
+        confidence = random.uniform(0.6, 0.95)
 
-        # Losowy wybór typu modelu
-        model_category = random.choice(list(self.model_types.keys()))
-        model_name = random.choice(self.model_types[model_category])
-
-        confidence = random.uniform(0.7, 0.98)
-
-        return {
-            "type": model_category,
-            "name": model_name,
+        result = {
+            "type": selected_model["id"],
+            "name": selected_model["name"],
+            "description": selected_model["description"],
             "confidence": confidence,
-            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            "timestamp": time.time()
         }
 
-    def get_status(self):
+        self.last_recognition_time = time.time()
+        return result
+
+    def get_available_models(self) -> List[Dict[str, Any]]:
         """
-        Zwraca status modułu rozpoznawania modeli.
+        Zwraca listę dostępnych modeli rynkowych.
 
         Returns:
-            dict: Status modułu
+            List[Dict[str, Any]]: Lista modeli
         """
+        return self.model_types
+
+    def analyze_price_action(self, price_data: List[float]) -> Dict[str, Any]:
+        """
+        Analizuje akcję cenową.
+
+        Parameters:
+            price_data (List[float]): Dane cenowe
+
+        Returns:
+            Dict[str, Any]: Wynik analizy
+        """
+        # Przykładowa implementacja analizy akcji cenowej
+        if len(price_data) < 10:
+            return {"error": "Za mało danych do analizy"}
+
+        # Symulowana analiza
+        is_trending = random.random() > 0.5
+        is_volatile = random.random() > 0.7
+        is_ranging = not is_trending and random.random() > 0.5
+
+        trend_strength = random.uniform(0.1, 1.0) if is_trending else 0.0
+        volatility = random.uniform(0.1, 1.0) if is_volatile else random.uniform(0.0, 0.1)
+        range_width = random.uniform(0.01, 0.05) if is_ranging else 0.0
+
+        # Określ dominujący model
+        if is_trending and trend_strength > 0.7:
+            dominant_model = "trending_market"
+        elif is_ranging and range_width > 0.03:
+            dominant_model = "ranging_market"
+        elif is_volatile and volatility > 0.8:
+            dominant_model = "high_volatility"
+        else:
+            dominant_model = random.choice([m["id"] for m in self.model_types])
+
+        # Znajdź pełne informacje o modelu
+        model_info = next((m for m in self.model_types if m["id"] == dominant_model), None)
+
         return {
-            "active": True,
-            "model_types": self.model_types,
-            "last_update": self.last_update.strftime("%Y-%m-%d %H:%M:%S")
+            "dominant_model": dominant_model,
+            "model_name": model_info["name"] if model_info else dominant_model,
+            "trend_strength": trend_strength,
+            "volatility": volatility,
+            "range_width": range_width,
+            "confidence": random.uniform(0.7, 0.95),
+            "timestamp": time.time()
         }
 
 if __name__ == "__main__":
     # Przykładowe użycie
     recognizer = ModelRecognizer()
 
-    # Skanowanie katalogów
-    results = recognizer.scan_models("saved_models")
-    print(f"Znaleziono {results['count']} modeli:")
-    for model in results.get("models", []):
-        print(f"- {model['name']} ({model['type']}): {model['filepath']}")
-
     # Identyfikacja typu modelu
     model_type = recognizer.identify_model_type(None)
     print(f"Rozpoznany model: {model_type['name']} (typ: {model_type['type']}) z pewnością {model_type['confidence']:.2f}")
+
+    # Analiza akcji cenowej
+    price_data = [10, 12, 15, 14, 16, 18, 20, 19, 17, 19, 22, 25]
+    price_analysis = recognizer.analyze_price_action(price_data)
+    print(f"Analiza akcji cenowej: {price_analysis}")
+
+
+    # Pobranie dostępnych modeli
+    available_models = recognizer.get_available_models()
+    print(f"Dostępne modele: {available_models}")

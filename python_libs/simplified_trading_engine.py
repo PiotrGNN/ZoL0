@@ -1,327 +1,355 @@
 """
 simplified_trading_engine.py
-----------------------------
-Uproszczony silnik handlowy kompatybilny zarówno z lokalnym środowiskiem, jak i Replit.
+---------------------------
+Uproszczony silnik handlowy dla platformy tradingowej.
 """
 
 import logging
-import os
-import sys
 import time
-import json
-from datetime import datetime
-from typing import Dict, List, Optional, Union, Any
+import random
+from typing import Dict, Any, List, Optional, Union
 
-# Konfiguracja logowania
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.FileHandler("logs/trading_engine.log"),
-        logging.StreamHandler()
-    ]
-)
 logger = logging.getLogger(__name__)
 
 class SimplifiedTradingEngine:
-    """
-    Uproszczony silnik handlowy dla systemu tradingowego.
-    """
+    """Uproszczony silnik handlowy do wykonywania transakcji."""
 
     def __init__(self, risk_manager=None, strategy_manager=None, exchange_connector=None):
         """
-        Inicjalizacja silnika handlowego.
+        Inicjalizuje silnik handlowy.
 
-        Args:
-            risk_manager: Manager ryzyka
-            strategy_manager: Manager strategii
-            exchange_connector: Konektor do giełdy
+        Parameters:
+            risk_manager: Menedżer ryzyka
+            strategy_manager: Menedżer strategii
+            exchange_connector: Konektor giełdy
         """
         self.risk_manager = risk_manager
         self.strategy_manager = strategy_manager
         self.exchange_connector = exchange_connector
-        self.is_running = False
-        self.active_symbols = []
-        self.last_error = None
-        self.positions = {}
-        self.orders = {}
-        self.simulated_mode = self.exchange_connector is None
-        if self.simulated_mode:
-            logger.warning("Konektor giełdy nie jest ustawiony - działanie w trybie symulacji!")
-        else:
-            logger.info(f"Zainicjalizowano SimplifiedTradingEngine z konektorem {type(self.exchange_connector).__name__}")
+
+        self.status = {
+            "running": False,
+            "active_symbols": [],
+            "last_trade_time": None,
+            "last_error": None,
+            "trade_count": 0
+        }
+
+        self.settings = {
+            "trade_interval": 60,  # Interwał handlu w sekundach
+            "max_orders_per_symbol": 5,
+            "enable_auto_trading": False
+        }
+
+        self.orders = []
+        self.positions = []
+
+        logger.info("Zainicjalizowano uproszczony silnik handlowy (SimplifiedTradingEngine)")
 
     def start_trading(self, symbols: List[str]) -> bool:
         """
-        Uruchamia handel dla podanych symboli.
+        Uruchamia handel na określonych symbolach.
 
-        Args:
-            symbols: Lista symboli do handlu
+        Parameters:
+            symbols (List[str]): Lista symboli do handlu
 
         Returns:
-            bool: True jeśli uruchomienie się powiodło, False w przeciwnym razie
+            bool: True jeśli operacja się powiodła, False w przeciwnym przypadku
         """
         try:
-            if not self.exchange_connector:
-                self.last_error = "Brak konektora giełdy"
-                logger.error(self.last_error)
+            if not symbols:
+                self.status["last_error"] = "Brak określonych symboli do handlu"
+                logger.error(self.status["last_error"])
                 return False
 
-            if not self.strategy_manager:
-                self.last_error = "Brak managera strategii"
-                logger.error(self.last_error)
-                return False
+            self.status["active_symbols"] = symbols
+            self.status["running"] = True
+            self.status["last_error"] = None
 
-            if not self.risk_manager:
-                self.last_error = "Brak managera ryzyka"
-                logger.error(self.last_error)
-                return False
-
-            self.active_symbols = symbols
-            self.is_running = True
-            logger.info(f"Uruchomiono handel dla symboli: {symbols}")
-
-            # Symulacja pobierania kapitału
-            if hasattr(self.exchange_connector, 'get_account_balance'):
-                try:
-                    balance = self.exchange_connector.get_account_balance()
-                    if 'balances' in balance and 'USDT' in balance['balances']:
-                        capital = balance['balances']['USDT'].get('equity', 1000.0)
-                        if self.risk_manager:
-                            self.risk_manager.set_capital(capital)
-                            logger.info(f"Ustawiono kapitał: ${capital:.2f}")
-                except Exception as e:
-                    logger.warning(f"Nie udało się pobrać kapitału: {e}")
-
+            logger.info(f"Uruchomiono handel na symbolach: {symbols}")
             return True
         except Exception as e:
-            self.last_error = str(e)
-            logger.error(f"Błąd podczas uruchamiania handlu: {e}")
+            self.status["last_error"] = f"Błąd podczas uruchamiania handlu: {str(e)}"
+            logger.error(self.status["last_error"])
             return False
 
-    def stop(self) -> Dict[str, Any]:
+    def stop_trading(self) -> bool:
         """
         Zatrzymuje handel.
 
         Returns:
-            Dict: Status zatrzymania
+            bool: True jeśli operacja się powiodła, False w przeciwnym przypadku
         """
-        if not self.is_running:
-            return {"success": True, "message": "Handel już jest zatrzymany"}
+        try:
+            self.status["running"] = False
+            logger.info("Zatrzymano handel")
+            return True
+        except Exception as e:
+            self.status["last_error"] = f"Błąd podczas zatrzymywania handlu: {str(e)}"
+            logger.error(self.status["last_error"])
+            return False
 
-        self.is_running = False
-        logger.info("Zatrzymano handel")
-        return {"success": True, "message": "Handel zatrzymany pomyślnie"}
-
-    def start(self) -> Dict[str, Any]:
+    def create_order(self, symbol: str, order_type: str, side: str, quantity: float, price: Optional[float] = None) -> Dict[str, Any]:
         """
-        Uruchamia handel dla wcześniej ustawionych symboli.
+        Tworzy zlecenie handlowe.
+
+        Parameters:
+            symbol (str): Symbol instrumentu
+            order_type (str): Typ zlecenia ('market', 'limit')
+            side (str): Strona zlecenia ('buy', 'sell')
+            quantity (float): Ilość instrumentu
+            price (Optional[float]): Cena dla zleceń limit
 
         Returns:
-            Dict: Status uruchomienia
+            Dict[str, Any]: Informacje o zleceniu
         """
-        if self.is_running:
-            return {"success": True, "message": "Handel już jest uruchomiony"}
+        try:
+            # Sprawdź, czy handel jest uruchomiony
+            if not self.status["running"]:
+                return {"success": False, "error": "Handel nie jest uruchomiony"}
 
-        if not self.active_symbols:
-            return {"success": False, "error": "Brak aktywnych symboli"}
+            # Sprawdź, czy symbol jest w aktywnych symbolach
+            if symbol not in self.status["active_symbols"]:
+                return {"success": False, "error": f"Symbol {symbol} nie jest aktywny"}
 
-        success = self.start_trading(self.active_symbols)
-        if success:
-            return {"success": True, "message": f"Handel uruchomiony dla symboli: {self.active_symbols}"}
-        else:
-            return {"success": False, "error": self.last_error or "Nieznany błąd"}
+            # Sprawdź limity zleceń
+            symbol_orders = [o for o in self.orders if o["symbol"] == symbol and o["status"] == "open"]
+            if len(symbol_orders) >= self.settings["max_orders_per_symbol"]:
+                return {"success": False, "error": f"Osiągnięto maksymalną liczbę zleceń dla symbolu {symbol}"}
 
-    def reset(self) -> Dict[str, Any]:
-        """
-        Resetuje silnik handlowy.
+            # Jeśli jest menedżer ryzyka, sprawdź limity ryzyka
+            if self.risk_manager:
+                risk_check = self.risk_manager.check_trade_risk(symbol, side, quantity, price)
+                if not risk_check["success"]:
+                    return {"success": False, "error": risk_check["error"]}
 
-        Returns:
-            Dict: Status resetu
-        """
-        was_running = self.is_running
-        if was_running:
-            self.stop()
+            # Przygotuj zlecenie
+            order_id = f"order_{int(time.time())}_{random.randint(1000, 9999)}"
 
-        self.last_error = None
-        self.positions = {}
-        self.orders = {}
+            order = {
+                "id": order_id,
+                "symbol": symbol,
+                "type": order_type,
+                "side": side,
+                "quantity": quantity,
+                "price": price if order_type == "limit" else None,
+                "status": "open",
+                "filled": 0.0,
+                "timestamp": time.time()
+            }
 
-        logger.info("Zresetowano silnik handlowy")
+            # Dodaj zlecenie do listy
+            self.orders.append(order)
 
-        if was_running:
-            success = self.start_trading(self.active_symbols)
-            if success:
-                return {"success": True, "message": "Silnik handlowy zresetowany i uruchomiony ponownie"}
+            # Jeśli jest konektor giełdy, wyślij zlecenie
+            if self.exchange_connector:
+                exchange_order = self.exchange_connector.create_order(
+                    symbol=symbol,
+                    order_type=order_type,
+                    side=side,
+                    quantity=quantity,
+                    price=price
+                )
+
+                if exchange_order.get("success"):
+                    # Aktualizuj zlecenie z informacjami z giełdy
+                    order["exchange_id"] = exchange_order.get("order_id")
+                    order["exchange_status"] = exchange_order.get("status")
+
+                    logger.info(f"Utworzono zlecenie na giełdzie: {order_id}")
+                else:
+                    # Jeśli zlecenie nie zostało utworzone na giełdzie, oznacz je jako anulowane
+                    order["status"] = "cancelled"
+                    order["error"] = exchange_order.get("error")
+
+                    logger.error(f"Błąd podczas tworzenia zlecenia na giełdzie: {exchange_order.get('error')}")
+                    return {"success": False, "error": exchange_order.get("error")}
             else:
-                return {"success": False, "error": self.last_error or "Nie udało się uruchomić handlu po resecie"}
-        else:
-            return {"success": True, "message": "Silnik handlowy zresetowany"}
+                # Symulacja wykonania zlecenia
+                if order_type == "market":
+                    # Symuluj natychmiastowe wykonanie zlecenia rynkowego
+                    order["status"] = "filled"
+                    order["filled"] = quantity
+
+                    # Dodaj pozycję
+                    position = {
+                        "id": f"position_{int(time.time())}_{random.randint(1000, 9999)}",
+                        "symbol": symbol,
+                        "side": side,
+                        "quantity": quantity,
+                        "entry_price": price or random.uniform(30000, 40000),  # Symulowana cena
+                        "current_price": price or random.uniform(30000, 40000),
+                        "timestamp": time.time()
+                    }
+
+                    self.positions.append(position)
+
+                    logger.info(f"Zasymulowano wykonanie zlecenia rynkowego: {order_id}")
+                else:
+                    # Symuluj częściowe wykonanie zlecenia limit
+                    order["filled"] = random.uniform(0, quantity)
+
+                    logger.info(f"Zasymulowano częściowe wykonanie zlecenia limit: {order_id}")
+
+            # Aktualizuj statystyki
+            self.status["last_trade_time"] = time.time()
+            self.status["trade_count"] += 1
+
+            return {"success": True, "order": order}
+        except Exception as e:
+            error_msg = f"Błąd podczas tworzenia zlecenia: {str(e)}"
+            self.status["last_error"] = error_msg
+            logger.error(error_msg)
+            return {"success": False, "error": error_msg}
+
+    def cancel_order(self, order_id: str) -> Dict[str, Any]:
+        """
+        Anuluje zlecenie.
+
+        Parameters:
+            order_id (str): ID zlecenia
+
+        Returns:
+            Dict[str, Any]: Wynik operacji
+        """
+        try:
+            # Znajdź zlecenie
+            order = next((o for o in self.orders if o["id"] == order_id), None)
+
+            if not order:
+                return {"success": False, "error": f"Nie znaleziono zlecenia o ID {order_id}"}
+
+            if order["status"] != "open":
+                return {"success": False, "error": f"Zlecenie o ID {order_id} nie jest otwarte"}
+
+            # Jeśli jest konektor giełdy i zlecenie ma ID na giełdzie, anuluj je
+            if self.exchange_connector and "exchange_id" in order:
+                exchange_result = self.exchange_connector.cancel_order(
+                    symbol=order["symbol"],
+                    order_id=order["exchange_id"]
+                )
+
+                if exchange_result.get("success"):
+                    order["status"] = "cancelled"
+                    logger.info(f"Anulowano zlecenie na giełdzie: {order_id}")
+                else:
+                    logger.error(f"Błąd podczas anulowania zlecenia na giełdzie: {exchange_result.get('error')}")
+                    return {"success": False, "error": exchange_result.get("error")}
+            else:
+                # Symuluj anulowanie zlecenia
+                order["status"] = "cancelled"
+                logger.info(f"Zasymulowano anulowanie zlecenia: {order_id}")
+
+            return {"success": True, "order": order}
+        except Exception as e:
+            error_msg = f"Błąd podczas anulowania zlecenia: {str(e)}"
+            self.status["last_error"] = error_msg
+            logger.error(error_msg)
+            return {"success": False, "error": error_msg}
+
+    def get_orders(self, symbol: Optional[str] = None, status: Optional[str] = None) -> List[Dict[str, Any]]:
+        """
+        Zwraca listę zleceń.
+
+        Parameters:
+            symbol (Optional[str]): Filtrowanie po symbolu
+            status (Optional[str]): Filtrowanie po statusie
+
+        Returns:
+            List[Dict[str, Any]]: Lista zleceń
+        """
+        filtered_orders = self.orders
+
+        if symbol:
+            filtered_orders = [o for o in filtered_orders if o["symbol"] == symbol]
+
+        if status:
+            filtered_orders = [o for o in filtered_orders if o["status"] == status]
+
+        return filtered_orders
+
+    def get_positions(self, symbol: Optional[str] = None) -> List[Dict[str, Any]]:
+        """
+        Zwraca listę pozycji.
+
+        Parameters:
+            symbol (Optional[str]): Filtrowanie po symbolu
+
+        Returns:
+            List[Dict[str, Any]]: Lista pozycji
+        """
+        if symbol:
+            return [p for p in self.positions if p["symbol"] == symbol]
+        return self.positions
 
     def get_status(self) -> Dict[str, Any]:
         """
         Zwraca status silnika handlowego.
 
         Returns:
-            Dict: Status silnika
+            Dict[str, Any]: Status silnika handlowego
         """
-        return {
-            "status": "running" if self.is_running else "stopped",
-            "active_symbols": self.active_symbols,
-            "active_strategies": self.strategy_manager.get_active_strategies() if self.strategy_manager else [],
-            "positions_count": len(self.positions),
-            "orders_count": len(self.orders),
-            "last_error": self.last_error
-        }
+        return self.status
 
-    def get_market_data(self, symbol: str) -> Dict[str, Any]:
+    def update_settings(self, settings: Dict[str, Any]) -> bool:
         """
-        Pobiera dane rynkowe dla podanego symbolu.
+        Aktualizuje ustawienia silnika handlowego.
 
-        Args:
-            symbol: Symbol do pobrania danych
+        Parameters:
+            settings (Dict[str, Any]): Nowe ustawienia
 
         Returns:
-            Dict: Dane rynkowe
+            bool: True jeśli operacja się powiodła, False w przeciwnym przypadku
         """
-        if self.exchange_connector is None:
-            logger.warning("[SIMULATION] Pobrano dane " + symbol + " z lokalnego źródła")
-            # Symulowane dane
-            import random
-            price = 50000 + random.uniform(-1000, 1000)
-            return {
-                "symbol": symbol,
-                "price": price,
-                "volume": random.uniform(10, 100),
-                "timestamp": datetime.now().isoformat(),
-                "simulated": True
-            }
-
         try:
-            # Próba pobrania danych z konektora giełdy
-            if hasattr(self.exchange_connector, 'get_ticker'):
-                ticker = self.exchange_connector.get_ticker(symbol)
-                return ticker
-            elif hasattr(self.exchange_connector, 'get_klines'):
-                klines = self.exchange_connector.get_klines(symbol=symbol, limit=1)
-                if klines and len(klines) > 0:
-                    latest = klines[0]
-                    return {
-                        "symbol": symbol,
-                        "price": latest.get("close", 0),
-                        "volume": latest.get("volume", 0),
-                        "timestamp": latest.get("datetime", datetime.now().isoformat()),
-                        "simulated": False
-                    }
-            
-            # Fallback do symulowanych danych
-            logger.warning(f"Konektor giełdy nie ma odpowiedniej metody do pobrania danych dla {symbol}, używam symulacji")
-            import random
-            price = 50000 + random.uniform(-1000, 1000)
-            return {
-                "symbol": symbol,
-                "price": price,
-                "volume": random.uniform(10, 100),
-                "timestamp": datetime.now().isoformat(),
-                "simulated": True
-            }
-        except Exception as e:
-            logger.error(f"Błąd podczas pobierania danych rynkowych: {e}")
-            return {"error": str(e), "simulated": True}
+            for key, value in settings.items():
+                if key in self.settings:
+                    self.settings[key] = value
 
-    def calculate_positions_risk(self) -> Dict[str, float]:
+            logger.info(f"Zaktualizowano ustawienia silnika handlowego: {settings}")
+            return True
+        except Exception as e:
+            self.status["last_error"] = f"Błąd podczas aktualizacji ustawień: {str(e)}"
+            logger.error(self.status["last_error"])
+            return False
+
+    def start(self) -> Dict[str, Any]:
         """
-        Oblicza ryzyko dla aktywnych pozycji.
+        Uruchamia silnik handlowy (alias dla start_trading).
 
         Returns:
-            Dict: Poziomy ryzyka dla aktywnych pozycji
+            Dict[str, Any]: Wynik operacji
         """
-        risk_levels = {}
+        success = self.start_trading(self.status["active_symbols"] or ["BTCUSDT"])
+        return {"success": success, "status": self.get_status()}
 
-        if not self.positions:
-            return risk_levels
+    def stop(self) -> Dict[str, Any]:
+        """
+        Zatrzymuje silnik handlowy (alias dla stop_trading).
 
-        for symbol, position in self.positions.items():
-            try:
-                # Przykładowa logika obliczania ryzyka
-                entry_price = position.get('entry_price', 0)
-                size = position.get('size', 0)
-                side = position.get('side', 'NONE')
+        Returns:
+            Dict[str, Any]: Wynik operacji
+        """
+        success = self.stop_trading()
+        return {"success": success, "status": self.get_status()}
 
-                market_data = self.get_market_data(symbol)
-                current_price = market_data.get('price', entry_price)
+    def reset(self) -> Dict[str, Any]:
+        """
+        Resetuje silnik handlowy.
 
-                if entry_price <= 0 or size <= 0:
-                    risk_levels[symbol] = 0
-                    continue
+        Returns:
+            Dict[str, Any]: Wynik operacji
+        """
+        try:
+            self.stop_trading()
+            self.orders = []
+            self.positions = []
+            self.status["trade_count"] = 0
+            self.status["last_error"] = None
 
-                # Obliczenie P&L
-                if side == 'BUY':
-                    pnl_pct = (current_price - entry_price) / entry_price
-                else:
-                    pnl_pct = (entry_price - current_price) / entry_price
-
-                # Obliczenie ryzyka (przykładowo, w praktyce byłaby bardziej złożona logika)
-                if pnl_pct < -0.05:  # Strata > 5%
-                    risk_levels[symbol] = 0.8  # Wysokie ryzyko
-                elif pnl_pct < -0.02:  # Strata > 2%
-                    risk_levels[symbol] = 0.5  # Średnie ryzyko
-                elif pnl_pct < 0:  # Jakakolwiek strata
-                    risk_levels[symbol] = 0.3  # Niskie ryzyko
-                else:
-                    risk_levels[symbol] = 0.1  # Bardzo niskie ryzyko
-            except Exception as e:
-                logger.error(f"Błąd podczas obliczania ryzyka dla {symbol}: {e}")
-                risk_levels[symbol] = 0
-
-        return risk_levels
-
-# Przykład użycia
-def __bool__(self):
-        """Gwarantuje, że instancja klasy zawsze zwraca True w kontekście logicznym."""
-        return True
-
-
-if __name__ == "__main__":
-    from .simplified_risk_manager import SimplifiedRiskManager
-    from .simplified_strategy import StrategyManager
-
-    # Przykładowa inicjalizacja komponentów
-    risk_manager = SimplifiedRiskManager(max_risk=0.02, max_position_size=0.2, max_drawdown=0.1)
-
-    strategies = {
-        "trend_following": {"name": "Trend Following", "enabled": True},
-        "mean_reversion": {"name": "Mean Reversion", "enabled": False},
-        "breakout": {"name": "Breakout", "enabled": True}
-    }
-
-    exposure_limits = {
-        "trend_following": 0.5,
-        "mean_reversion": 0.3,
-        "breakout": 0.4
-    }
-
-    strategy_manager = StrategyManager(strategies, exposure_limits)
-    strategy_manager.activate_strategy("trend_following")
-
-    # Inicjalizacja silnika handlowego
-    trading_engine = SimplifiedTradingEngine(
-        risk_manager=risk_manager,
-        strategy_manager=strategy_manager,
-        exchange_connector=None  # W rzeczywistym użyciu byłby tutaj konektor do giełdy
-    )
-
-    # Uruchomienie handlu
-    trading_engine.start_trading(["BTCUSDT", "ETHUSDT"])
-
-    # Sprawdzenie statusu
-    status = trading_engine.get_status()
-    print(f"Status silnika: {status}")
-
-    # Symulacja danych rynkowych
-    market_data = trading_engine.get_market_data("BTCUSDT")
-    print(f"Dane rynkowe: {market_data}")
-
-    # Zatrzymanie handlu
-    stop_result = trading_engine.stop()
-    print(f"Wynik zatrzymania: {stop_result}")
+            logger.info("Zresetowano silnik handlowy")
+            return {"success": True, "status": self.get_status()}
+        except Exception as e:
+            self.status["last_error"] = f"Błąd podczas resetowania silnika handlowego: {str(e)}"
+            logger.error(self.status["last_error"])
+            return {"success": False, "error": self.status["last_error"]}

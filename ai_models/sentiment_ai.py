@@ -1,227 +1,159 @@
 """
-sentiment_ai.py - Lekka implementacja analizy sentymentu
+sentiment_ai.py
+--------------
+Moduł do analizy sentymentu rynkowego.
 """
-import random
-import logging
-import numpy as np
-import json
-import os
-from datetime import datetime
 
-# Konfiguracja logowania (from original code)
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s"
-)
+import logging
+import random
+import time
+from typing import Dict, Any, List, Optional
+
 logger = logging.getLogger(__name__)
 
 class SentimentAnalyzer:
-    """
-    Uproszczona implementacja analizatora sentymentu bazująca na scikit-learn
-    zamiast transformers lub innych ciężkich bibliotek.
-    """
+    """Analizator sentymentu rynkowego."""
 
-    def __init__(self, sources=None):
+    def __init__(self, sources: List[str] = None):
         """
-        Inicjalizacja analizatora sentymentu.
+        Inicjalizuje analizator sentymentu.
 
-        Args:
-            sources (list): Lista źródeł, z których pobierany jest sentyment
+        Parameters:
+            sources (List[str]): Lista źródeł danych do analizy
         """
-        self.sources = sources or ["twitter", "news", "reddit", "forum"]
-        self.logger = logging.getLogger(__name__)
-        self.logger.info(f"Zainicjalizowano SentimentAnalyzer z {len(self.sources)} źródłami")
-        self.last_update = datetime.now()
-        
-        # Ścieżka do katalogu cache
-        self.cache_dir = "data/cache"
-        os.makedirs(self.cache_dir, exist_ok=True)
-        self.cache_file = os.path.join(self.cache_dir, "sentiment_data.json")
+        self.sources = sources or ["twitter", "news", "forum", "reddit"]
+        self.last_update = time.time()
+        self.cache_validity = 60  # ważność cache w sekundach
+        self.cached_sentiment = None
+        self.active = True
+        logger.info(f"Zainicjalizowano SentimentAnalyzer ze źródłami: {self.sources}")
 
-        # Inicjalizacja bazowych wartości sentymentu dla każdego źródła
-        self.base_sentiments = {}
-        
-        # Próba załadowania zapisanych wartości
-        self._load_sentiment_data()
-        
-        # Jeśli nie ma zapisanych, generujemy nowe
-        if not self.base_sentiments:
-            for source in self.sources:
-                self.base_sentiments[source] = random.uniform(-0.3, 0.3)
-            self._save_sentiment_data()
-
-    def _load_sentiment_data(self):
-        """Ładuje zapisane dane sentymentu z pliku cache, jeśli istnieje."""
-        try:
-            if os.path.exists(self.cache_file):
-                with open(self.cache_file, 'r') as f:
-                    data = json.load(f)
-                    if "base_sentiments" in data:
-                        self.base_sentiments = data["base_sentiments"]
-                    if "last_update" in data:
-                        self.last_update = datetime.fromisoformat(data["last_update"])
-                self.logger.info(f"Załadowano dane sentymentu z pliku cache {self.cache_file}")
-        except Exception as e:
-            self.logger.warning(f"Nie udało się załadować danych sentymentu: {e}")
-
-    def _save_sentiment_data(self):
-        """Zapisuje dane sentymentu do pliku cache."""
-        try:
-            data = {
-                "base_sentiments": self.base_sentiments,
-                "last_update": self.last_update.isoformat()
-            }
-            with open(self.cache_file, 'w') as f:
-                json.dump(data, f, indent=2)
-            self.logger.debug(f"Zapisano dane sentymentu do pliku cache {self.cache_file}")
-        except Exception as e:
-            self.logger.warning(f"Nie udało się zapisać danych sentymentu: {e}")
-
-    def analyze(self, text=None):
+    def analyze(self) -> Dict[str, Any]:
         """
-        Analizuje sentyment dla danego tekstu lub generuje symulowane wyniki.
-
-        Args:
-            text (str, optional): Tekst do analizy. Jeśli None, generuje symulowane wyniki.
+        Analizuje sentyment na podstawie różnych źródeł.
 
         Returns:
-            dict: Wyniki analizy sentymentu
+            Dict[str, Any]: Wyniki analizy
         """
-        # Symulowane wyniki, jeśli nie podano tekstu
-        if text is None:
-            sentiment_values = {}
+        # Sprawdź, czy mamy ważne dane w cache
+        current_time = time.time()
+        if self.cached_sentiment and current_time - self.last_update < self.cache_validity:
+            return self.cached_sentiment
 
-            # Generowanie wartości sentymentu dla każdego źródła
-            for source in self.sources:
-                # Dodaj losowe wahanie do bazowego sentymentu
-                base = self.base_sentiments[source]
-                variance = random.uniform(-0.1, 0.1)
-                sentiment_values[source] = max(-1.0, min(1.0, base + variance))
+        # Symulowany sentyment dla celów demonstracyjnych
+        sentiment_values = {
+            "twitter": random.uniform(-1.0, 1.0),
+            "news": random.uniform(-1.0, 1.0),
+            "forum": random.uniform(-1.0, 1.0),
+            "reddit": random.uniform(-1.0, 1.0)
+        }
 
-            # Powolna ewolucja bazowego sentymentu
-            # Co jakiś czas aktualizujemy bazowy sentyment, aby symulować zmiany rynkowe
-            if random.random() < 0.1:  # 10% szans na aktualizację bazowego sentymentu
-                for source in self.sources:
-                    self.base_sentiments[source] += random.uniform(-0.05, 0.05)
-                    # Utrzymujemy wartości w zakresie [-0.5, 0.5]
-                    self.base_sentiments[source] = max(-0.5, min(0.5, self.base_sentiments[source]))
-                self._save_sentiment_data()
+        # Filtruj tylko wybrane źródła
+        sentiment_sources = {source: sentiment_values.get(source, 0)
+                            for source in self.sources if source in sentiment_values}
 
-            # Obliczanie średniego sentymentu
-            overall = sum(sentiment_values.values()) / len(sentiment_values)
+        # Oblicz średni sentyment ze wszystkich źródeł
+        average_sentiment = sum(sentiment_sources.values()) / len(sentiment_sources) if sentiment_sources else 0
 
-            # Określanie kategorii sentymentu
-            if overall > 0.2:
-                analysis = "Pozytywny"
-            elif overall < -0.2:
-                analysis = "Negatywny"
-            else:
-                analysis = "Neutralny"
-
-            # Dodajemy dodatkowe dane rynkowe
-            market_data = {
-                "POSITIVE": max(0, (overall + 1) / 2),  # Konwersja z [-1,1] do [0,1]
-                "NEGATIVE": max(0, (1 - overall) / 2),  # Konwersja z [-1,1] do [0,1]
-                "volatility": abs(random.gauss(0, 0.015)),
-                "momentum": overall * random.uniform(0.8, 1.2),
-                "trend_strength": abs(overall) * random.uniform(0.7, 1.3)
-            }
-
-            self.last_update = datetime.now()
-            result = {
-                "value": overall,
-                "analysis": analysis,
-                "sources": sentiment_values,
-                "market_data": market_data,
-                "timestamp": self.last_update.strftime("%Y-%m-%d %H:%M:%S")
-            }
-            
-            # Aktualizacja czasu ostatniej aktualizacji w cache
-            self._save_sentiment_data()
-            
-            return result
-
-        # Implementacja analizy rzeczywistego tekstu
+        # Określ tekstowy opis sentymentu
+        if average_sentiment > 0.3:
+            analysis = "Bardzo pozytywny"
+        elif average_sentiment > 0.1:
+            analysis = "Pozytywny"
+        elif average_sentiment > -0.1:
+            analysis = "Neutralny"
+        elif average_sentiment > -0.3:
+            analysis = "Negatywny"
         else:
-            # Prosta heurystyka oparta na słowach kluczowych
-            positive_words = ["wzrost", "zysk", "sukces", "bull", "up", "strong", "good", "positive"]
-            negative_words = ["spadek", "strata", "bear", "down", "weak", "bad", "negative"]
+            analysis = "Bardzo negatywny"
 
-            text_lower = text.lower()
+        # Zapisz wyniki w cache
+        self.cached_sentiment = {
+            "value": average_sentiment,
+            "analysis": analysis,
+            "sources": sentiment_sources,
+            "timestamp": current_time
+        }
 
-            positive_count = sum(1 for word in positive_words if word in text_lower)
-            negative_count = sum(1 for word in negative_words if word in text_lower)
+        self.last_update = current_time
+        return self.cached_sentiment
 
-            # Obliczanie prostego wyniku sentymentu
-            if positive_count + negative_count == 0:
-                score = 0
-            else:
-                score = (positive_count - negative_count) / (positive_count + negative_count)
-
-            # Określanie kategorii sentymentu
-            if score > 0.2:
-                analysis = "Pozytywny"
-            elif score < -0.2:
-                analysis = "Negatywny"
-            else:
-                analysis = "Neutralny"
-
-            # Dodajemy dodatkowe dane rynkowe
-            market_data = {
-                "POSITIVE": max(0, (score + 1) / 2),  # Konwersja z [-1,1] do [0,1]
-                "NEGATIVE": max(0, (1 - score) / 2),  # Konwersja z [-1,1] do [0,1]
-                "volatility": abs(random.gauss(0, 0.015)),
-                "momentum": score * random.uniform(0.8, 1.2),
-                "trend_strength": abs(score) * random.uniform(0.7, 1.3)
-            }
-
-            self.last_update = datetime.now()
-            return {
-                "value": score,
-                "analysis": analysis,
-                "text": text,
-                "market_data": market_data,
-                "timestamp": self.last_update.strftime("%Y-%m-%d %H:%M:%S")
-            }
-
-    def get_market_sentiment(self):
+    def get_status(self) -> Dict[str, Any]:
         """
-        Zwraca aktualny sentyment rynkowy jako słownik z metrykami.
-        
-        Returns:
-            dict: Dane sentymentu rynkowego
-        """
-        # Używamy funkcji analyze do wygenerowania danych
-        analysis = self.analyze()
-        
-        # Zwracamy tylko rynkowe dane, bez metadanych
-        return analysis.get("market_data", {})
-
-    def get_status(self):
-        """
-        Zwraca status analizatora sentymentu.
+        Zwraca status analizatora.
 
         Returns:
-            dict: Status analizatora
+            Dict[str, Any]: Status analizatora
         """
         return {
-            "active": True,
+            "active": self.active,
             "sources": self.sources,
-            "last_update": self.last_update.strftime("%Y-%m-%d %H:%M:%S")
+            "last_update": time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(self.last_update))
         }
+
+    def set_sources(self, sources: List[str]) -> bool:
+        """
+        Ustawia źródła danych.
+
+        Parameters:
+            sources (List[str]): Lista źródeł danych
+
+        Returns:
+            bool: True jeśli operacja się powiodła, False w przeciwnym przypadku
+        """
+        try:
+            self.sources = sources
+            # Zresetuj cache po zmianie źródeł
+            self.cached_sentiment = None
+            logger.info(f"Zaktualizowano źródła danych: {sources}")
+            return True
+        except Exception as e:
+            logger.error(f"Błąd podczas ustawiania źródeł danych: {e}")
+            return False
+
+    def activate(self) -> bool:
+        """
+        Aktywuje analizator.
+
+        Returns:
+            bool: True jeśli operacja się powiodła, False w przeciwnym przypadku
+        """
+        self.active = True
+        logger.info("Aktywowano analizator sentymentu")
+        return True
+
+    def deactivate(self) -> bool:
+        """
+        Deaktywuje analizator.
+
+        Returns:
+            bool: True jeśli operacja się powiodła, False w przeciwnym przypadku
+        """
+        self.active = False
+        logger.info("Deaktywowano analizator sentymentu")
+        return True
 
 if __name__ == "__main__":
     # Przykładowe użycie
     analyzer = SentimentAnalyzer()
 
-    # Symulowane wyniki
+    # Analiza sentymentu
     result = analyzer.analyze()
-    print("Symulowane wyniki:", result)
+    print("Analiza sentymentu:", result)
 
-    # Dane sentymentu rynkowego
-    market_sentiment = analyzer.get_market_sentiment()
-    print("Sentyment rynkowy:", market_sentiment)
+    # Status analizatora
+    status = analyzer.get_status()
+    print("Status analizatora:", status)
 
-    # Analiza rzeczywistego tekstu
-    text_result = analyzer.analyze("Rynek wykazuje silne oznaki wzrostu po ostatnich pozytywnych danych ekonomicznych.")
-    print("Analiza tekstu:", text_result)
+    # Zmiana źródeł danych
+    analyzer.set_sources(["news", "reddit"])
+    result = analyzer.analyze()
+    print("Analiza sentymentu po zmianie źródeł:", result)
+
+    # Aktywacja/deaktywacja analizatora
+    analyzer.deactivate()
+    status = analyzer.get_status()
+    print("Status analizatora po deaktywacji:", status)
+    analyzer.activate()
+    status = analyzer.get_status()
+    print("Status analizatora po aktywacji:", status)
