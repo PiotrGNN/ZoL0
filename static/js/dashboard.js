@@ -158,80 +158,128 @@ function updateAIModelsStatus() {
             return response.json();
         })
         .then(data => {
+            // Aktualizacja kart modeli AI
             const aiModelsContainer = document.getElementById('ai-models-container');
-            if (!aiModelsContainer) {
-                console.error("Element 'ai-models-container' nie istnieje");
-                return;
+            if (aiModelsContainer) {
+                if (data.models && data.models.length > 0) {
+                    let modelsHtml = '';
+
+                    data.models.forEach(model => {
+                        let statusClass = model.status === 'Active' ? 'positive' :
+                                        (model.status === 'Inactive' ? 'neutral' :
+                                        (model.status === 'Error' ? 'negative' : 'neutral'));
+
+                        let accuracyClass = model.accuracy >= 70 ? 'positive' :
+                                        (model.accuracy >= 50 ? 'neutral' : 'negative');
+
+                        let cardStatusClass = model.status.toLowerCase();
+
+                        let testResultHtml = '';
+                        if (model.test_result) {
+                            let testClass = model.test_result === 'Passed' ? 'positive' :
+                                        (model.test_result === 'Failed' ? 'negative' : 'neutral');
+                            testResultHtml = `
+                                <div>Test: <span class="${testClass}">${model.test_result}</span></div>`;
+                        }
+
+                        let moduleHtml = '';
+                        if (model.module) {
+                            moduleHtml = `<div>Moduł: <span>${model.module}</span></div>`;
+                        }
+
+                        let errorHtml = '';
+                        if (model.error) {
+                            errorHtml = `<div class="error-message">${model.error}</div>`;
+                        }
+
+                        modelsHtml += `
+                        <div class="ai-model-card ${cardStatusClass}">
+                            <h4>${model.name}</h4>
+                            <div class="model-details">
+                                <div>Typ: <span>${model.type}</span></div>
+                                <div>Dokładność: <span class="${accuracyClass}">${model.accuracy.toFixed(1)}%</span></div>
+                                <div>Status: <span class="${statusClass}">${model.status}</span></div>
+                                <div>Ostatnie użycie: <span>${model.last_used || 'Nieznane'}</span></div>
+                                <div>Metody: 
+                                    <div>
+                                        <span class="${model.has_predict ? 'positive' : 'negative'}">predict ${model.has_predict ? '✓' : '✗'}</span>, 
+                                        <span class="${model.has_fit ? 'positive' : 'negative'}">fit ${model.has_fit ? '✓' : '✗'}</span>
+                                    </div>
+                                </div>
+                                ${testResultHtml}
+                                ${moduleHtml}
+                                ${errorHtml}
+                            </div>
+                        </div>`;
+                    });
+
+                    aiModelsContainer.innerHTML = modelsHtml;
+
+                    // Dodaj podsumowanie
+                    const aiModelsSection = document.getElementById('ai-models-section');
+                    if (aiModelsSection) {
+                        const activeModels = data.models.filter(m => m.status === 'Active').length;
+                        const totalModels = data.models.length;
+
+                        // Zaktualizuj nagłówek
+                        const header = aiModelsSection.querySelector('h2');
+                        if (header) {
+                            header.innerHTML = `Modele AI <span class="models-count">(${activeModels}/${totalModels} aktywnych)</span>`;
+                        }
+                    }
+                } else {
+                    aiModelsContainer.innerHTML = '<div class="no-data">Brak dostępnych modeli AI</div>';
+                }
             }
 
-            if (data.models && data.models.length > 0) {
-                let modelsHtml = '';
-
-                data.models.forEach(model => {
-                    let statusClass = model.status === 'Active' ? 'positive' :
-                                     (model.status === 'Inactive' ? 'neutral' :
-                                     (model.status === 'Error' ? 'negative' : 'neutral'));
-
-                    let accuracyClass = model.accuracy >= 70 ? 'positive' :
-                                      (model.accuracy >= 50 ? 'neutral' : 'negative');
-
-                    let cardStatusClass = model.status.toLowerCase();
-
-                    let testResultHtml = '';
-                    if (model.test_result) {
-                        let testClass = model.test_result === 'Passed' ? 'positive' :
-                                      (model.test_result === 'Failed' ? 'negative' : 'neutral');
-                        testResultHtml = `
-                            <div>Test: <span class="${testClass}">${model.test_result}</span></div>`;
-                    }
-
-                    let moduleHtml = '';
-                    if (model.module) {
-                        moduleHtml = `<div>Moduł: <span>${model.module}</span></div>`;
-                    }
-
-                    let errorHtml = '';
-                    if (model.error) {
-                        errorHtml = `<div class="error-message">${model.error}</div>`;
-                    }
-
-                    modelsHtml += `
-                    <div class="ai-model-card ${cardStatusClass}">
-                        <h4>${model.name}</h4>
-                        <div class="model-details">
-                            <div>Typ: <span>${model.type}</span></div>
-                            <div>Dokładność: <span class="${accuracyClass}">${model.accuracy.toFixed(1)}%</span></div>
-                            <div>Status: <span class="${statusClass}">${model.status}</span></div>
-                            <div>Ostatnie użycie: <span>${model.last_used || 'Nieznane'}</span></div>
-                            <div>Metody: 
-                                <div>
-                                    <span class="${model.has_predict ? 'positive' : 'negative'}">predict ${model.has_predict ? '✓' : '✗'}</span>, 
-                                    <span class="${model.has_fit ? 'positive' : 'negative'}">fit ${model.has_fit ? '✓' : '✗'}</span>
-                                </div>
-                            </div>
-                            ${testResultHtml}
-                            ${moduleHtml}
-                            ${errorHtml}
-                        </div>
-                    </div>`;
-                });
-
-                aiModelsContainer.innerHTML = modelsHtml;
-
-                // Dodaj podsumowanie
-                const aiModelsSection = document.getElementById('ai-models-section');
-                if (aiModelsSection) {
-                    const activeModels = data.models.filter(m => m.status === 'Active').length;
-                    const totalModels = data.models.length;
-
-                    // Zaktualizuj nagłówek
-                    const header = aiModelsSection.querySelector('h2');
-                    if (header) {
-                        header.innerHTML = `Modele AI <span class="models-count">(${activeModels}/${totalModels} aktywnych)</span>`;
-                    }
+            // Aktualizacja tabeli modeli AI
+            const aiModelTable = document.getElementById('aiModelTable');
+            if (aiModelTable) {
+                const tbody = aiModelTable.querySelector('tbody');
+                if (tbody && data.models && data.models.length > 0) {
+                    tbody.innerHTML = '';
+                    
+                    data.models.forEach(model => {
+                        const row = document.createElement('tr');
+                        
+                        // Komórka z nazwą modelu
+                        const nameCell = document.createElement('td');
+                        nameCell.textContent = model.name;
+                        row.appendChild(nameCell);
+                        
+                        // Komórka ze statusem
+                        const statusCell = document.createElement('td');
+                        const statusSpan = document.createElement('span');
+                        statusSpan.className = `status-${model.status.toLowerCase()}`;
+                        statusSpan.textContent = model.status;
+                        statusCell.appendChild(statusSpan);
+                        row.appendChild(statusCell);
+                        
+                        // Komórka z typem
+                        const typeCell = document.createElement('td');
+                        typeCell.textContent = model.type;
+                        row.appendChild(typeCell);
+                        
+                        // Komórka z metrykami
+                        const metricsCell = document.createElement('td');
+                        if (model.accuracy !== undefined) {
+                            const accuracySpan = document.createElement('span');
+                            let accuracyClass = '';
+                            if (model.accuracy >= 70) accuracyClass = 'positive';
+                            else if (model.accuracy >= 50) accuracyClass = 'neutral';
+                            else accuracyClass = 'negative';
+                            
+                            accuracySpan.className = accuracyClass;
+                            accuracySpan.textContent = `Dokładność: ${model.accuracy.toFixed(1)}%`;
+                            metricsCell.appendChild(accuracySpan);
+                        }
+                        row.appendChild(metricsCell);
+                        
+                        tbody.appendChild(row);
+                    });
+                } else if (tbody) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center">Brak dostępnych modeli AI</td></tr>';
                 }
-            } else {
-                aiModelsContainer.innerHTML = '<div class="no-data">Brak dostępnych modeli AI</div>';
             }
         })
         .catch(error => {
@@ -240,6 +288,16 @@ function updateAIModelsStatus() {
             if (aiModelsContainer) {
                 aiModelsContainer.innerHTML = '<div class="error-message">Błąd podczas pobierania statusu modeli AI</div>';
             }
+            
+            // Aktualizuj tabelę modeli w przypadku błędu
+            const aiModelTable = document.getElementById('aiModelTable');
+            if (aiModelTable) {
+                const tbody = aiModelTable.querySelector('tbody');
+                if (tbody) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center">Błąd podczas pobierania modeli AI</td></tr>';
+                }
+            }
+            
             // Próbujemy ponownie po 15 sekundach zamiast 5 dla zmniejszenia obciążenia serwera
             setTimeout(updateAIModelsStatus, 15000);
         });

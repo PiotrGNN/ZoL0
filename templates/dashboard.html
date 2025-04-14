@@ -507,7 +507,26 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- Dane będą dodane przez JavaScript -->
+                                    {% if ai_models %}
+                                        {% for model in ai_models %}
+                                        <tr>
+                                            <td>{{ model.name }}</td>
+                                            <td><span class="status-{{ model.status|lower }}">{{ model.status }}</span></td>
+                                            <td>{{ model.type }}</td>
+                                            <td>
+                                                {% if model.accuracy is defined %}
+                                                    <span class="{% if model.accuracy >= 70 %}positive{% elif model.accuracy >= 50 %}neutral{% else %}negative{% endif %}">
+                                                        Dokładność: {{ model.accuracy }}%
+                                                    </span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="4" class="text-center">Brak dostępnych modeli AI</td>
+                                        </tr>
+                                    {% endif %}
                                 </tbody>
                             </table>
                         </div>
