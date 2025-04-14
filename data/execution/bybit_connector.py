@@ -61,15 +61,14 @@ class BybitConnector:
         # Priorytetyzacja parametrów:
         # 1. Przekazany parametr use_testnet
         # 2. BYBIT_TESTNET
-        # 3. BYBIT_USE_TESTNET
-        # 4. Domyślnie False (produkcja)
+        # 3. Domyślnie False (produkcja)
         if use_testnet is None:
             if is_env_flag_true("BYBIT_TESTNET"):
                 self.use_testnet = True
-            elif os.getenv("BYBIT_USE_TESTNET", "false").lower() == "true":
+            elif os.getenv("BYBIT_TESTNET", "false").lower() == "true":
                 self.use_testnet = True
             else:
-                self.use_testnet = False
+                self.use_testnet = False  # Domyślnie używamy produkcyjnego API
         else:
             self.use_testnet = use_testnet
         # Upewnij się, że używasz odpowiedniego URL API
@@ -789,6 +788,157 @@ class BybitConnector:
             self.logger.error(f"Błąd podczas pobierania księgi zleceń: {e}")
             return {"symbol": symbol, "bids": [], "asks": [], "error": str(e)}
 
+    def get_wallet_balance(self, coin: str = None) -> Dict[str, Any]:
+        """
+        Pobiera saldo portfela dla określonej waluty lub wszystkich walut.
+        
+        Args:
+            coin (str, optional): Symbol waluty. Domyślnie None (wszystkie waluty).
+            
+        Returns:
+            dict: Informacje o saldzie portfela
+        """
+        try:
+            self._apply_rate_limit()
+            
+            # Używamy API V5 - sprawdź czy klient jest zainicjalizowany
+            if not self._connection_initialized:
+                self._initialize_client()
+            
+            if self.client is None:
+                return {
+                    "success": False,
+                    "error": "Klient API nie jest zainicjalizowany",
+                    "balances": {}
+                }
+            
+            # W trybie testnet zwracamy symulowane dane
+            if self.use_testnet:
+                balances = {
+                    "BTC": {"equity": 0.01, "available_balance": 0.01, "wallet_balance": 0.01},
+                    "USDT": {"equity": 1000, "available_balance": 950, "wallet_balance": 1000}
+                }
+                
+                if coin:
+                    if coin in balances:
+                        return {
+                            "success": True,
+                            "balances": {coin: balances[coin]},
+                            "source": "testnet_simulation"
+                        }
+                    return {
+                        "success": False,
+                        "error": f"Coin {coin} not found in balances",
+                        "balances": {}
+                    }
+                
+                return {
+                    "success": True,
+                    "balances": balances,
+                    "source": "testnet_simulation"
+                }
+            
+            # Bezpośrednie zapytanie HTTP do V5 API z obsługą HMAC auth
+            endpoint = f"{self.base_url}/v5/account/wallet-balance"
+            
+            # Parametry zapytania
+            params = {
+                "accountType": "UNIFIED"  # Dostosuj w zależności od typu konta
+            }
+            
+            if coin:
+                params["coin"] = coin
+            
+            # Tworzenie sygnatury
+            timestamp = str(int(time.time() * 1000))
+            recv_window = "20000"
+            
+            # Przygotowanie parametrów do sygnatury
+            param_str = '&'.join([f"{key}={value}" for key, value in sorted(params.items())])
+            
+            # Tworzenie pre_sign zgodnie z dokumentacją V5 API
+            if param_str:
+                pre_sign = f"{timestamp}{self.api_key}{recv_window}{param_str}"
+            else:
+                pre_sign = f"{timestamp}{self.api_key}{recv_window}"
+            
+            # Generowanie sygnatury HMAC SHA256
+            signature = hmac.new(
+                bytes(self.api_secret, 'utf-8'),
+                bytes(pre_sign, 'utf-8'),
+                hashlib.sha256
+            ).hexdigest()
+            
+            # Ustawienie nagłówków
+            headers = {
+                "X-BAPI-API-KEY": self.api_key,
+                "X-BAPI-TIMESTAMP": timestamp,
+                "X-BAPI-SIGN": signature,
+                "X-BAPI-RECV-WINDOW": recv_window,
+                "Content-Type": "application/json"
+            }
+            
+            # Wykonanie zapytania
+            response = requests.get(
+                endpoint,
+                headers=headers,
+                params=params,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                if data.get("retCode") == 0 and "result" in data:
+                    balances = {}
+                    
+                    # Przetwarzanie odpowiedzi - przetwarzamy dane konta z API V5
+                    if "list" in data["result"]:
+                        for account in data["result"]["list"]:
+                            if "coin" in account and isinstance(account["coin"], list):
+                                for coin_data in account["coin"]:
+                                    symbol = coin_data.get("coin")
+                                    if symbol:
+                                        # Bezpieczne konwertowanie wartości na float
+                                        try:
+                                            equity = float(coin_data.get("equity", 0) or 0)
+                                            available = float(coin_data.get("availableBalance", 0) or coin_data.get("availableToWithdraw", 0) or 0)
+                                            wallet = float(coin_data.get("walletBalance", 0) or 0)
+                                        except (ValueError, TypeError):
+                                            self.logger.warning(f"Błędna wartość dla {symbol}")
+                                            continue
+                                            
+                                        balances[symbol] = {
+                                            "equity": equity,
+                                            "available_balance": available,
+                                            "wallet_balance": wallet
+                                        }
+                    
+                    return {
+                        "success": True,
+                        "balances": balances,
+                        "source": "api_v5"
+                    }
+                else:
+                    return {
+                        "success": False,
+                        "error": data.get("retMsg", "Unknown error"),
+                        "balances": {}
+                    }
+            else:
+                return {
+                    "success": False,
+                    "error": f"HTTP Error: {response.status_code} - {response.text}",
+                    "balances": {}
+                }
+        except Exception as e:
+            self.logger.error(f"Błąd podczas pobierania salda portfela: {e}")
+            return {
+                "success": False,
+                "error": str(e),
+                "balances": {}
+            }
+    
     def get_account_balance(self) -> Dict[str, Any]:
         """Pobiera saldo konta z zastosowaniem zaawansowanego cache i rate limitingu."""
         # Import managera cache

@@ -5,31 +5,26 @@ import json
 import random
 from datetime import datetime, timedelta
 
-# Ensure needed directories exist
+# Zapewnienie istnienia potrzebnych katalogów
 os.makedirs("logs", exist_ok=True)
 os.makedirs("data/cache", exist_ok=True)
+os.makedirs("reports", exist_ok=True)
+os.makedirs("static/img", exist_ok=True)
+os.makedirs("saved_models", exist_ok=True)
 
-# Katalog na lokalne biblioteki (opcjonalny)
+# Katalog z własnymi bibliotekami
 LOCAL_LIBS_DIR = "python_libs"
 if os.path.exists(LOCAL_LIBS_DIR):
     sys.path.insert(0, LOCAL_LIBS_DIR)
     print(f"Dodano katalog {LOCAL_LIBS_DIR} do ścieżki Pythona.")
 
-# Add base directory to Python path
+# Dodanie katalogu głównego projektu do ścieżki Pythona
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_dir)
 
-try:
-    from dotenv import load_dotenv
-except ImportError:
-    os.system("pip install python-dotenv")
-    from dotenv import load_dotenv
-
-try:
-    from flask import Flask, jsonify, render_template, request
-except ImportError:
-    os.system("pip install flask")
-    from flask import Flask, jsonify, render_template, request
+# Importy zewnętrznych bibliotek
+from dotenv import load_dotenv
+from flask import Flask, jsonify, render_template, request
 
 # Konfiguracja logowania
 log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
@@ -1531,10 +1526,8 @@ if __name__ == "__main__":
     os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "cache"), exist_ok=True)
     os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), "python_libs"), exist_ok=True)
 
-    # Sprawdzenie, w jakim środowisku działa aplikacja
-    is_replit = 'REPL_ID' in os.environ
-    env_type = "Replit" if is_replit else "Lokalne"
-    logger.info(f"Wykryto środowisko: {env_type}")
+    # Logowanie informacji o uruchomieniu
+    logger.info("Uruchamianie aplikacji w środowisku lokalnym")
 
     # Sprawdź środowisko - czy na pewno używamy produkcyjnego API
     if is_env_flag_true("BYBIT_TESTNET"):
@@ -1592,15 +1585,12 @@ if __name__ == "__main__":
             with open(simulation_chart_path, 'w') as f:
                 f.write('')
 
-    # Uruchomienie aplikacji z odpowiednim hostem w zależności od środowiska
+    # Konfiguracja uruchomienia aplikacji
     port = int(os.environ.get("PORT", 5000))
-
-    # W środowisku Replit zawsze używaj 0.0.0.0
-    host = "0.0.0.0"
-
+    host = "127.0.0.1"  # Localhost dla środowiska lokalnego
     debug_mode = os.getenv("DEBUG", "True").lower() in ["true", "1", "yes"]
 
-    logging.info(f"Uruchamianie aplikacji Flask w środowisku {env_type} na hoście {host} i porcie {port}")
+    logging.info(f"Uruchamianie aplikacji Flask lokalnie na {host}:{port}")
     try:
         app.run(host=host, port=port, debug=debug_mode)
     except Exception as e:
