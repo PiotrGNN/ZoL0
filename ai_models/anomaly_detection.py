@@ -30,23 +30,47 @@ class AnomalyDetector:
         Wykrywa anomalie w danych.
 
         Args:
-            data: Dane do analizy
+            data: Dane do analizy (lista wartości numerycznych lub słownik z danymi OHLCV)
 
         Returns:
             dict: Wynik detekcji anomalii
         """
-        if data is None or len(data) < 2:
+        if data is None:
+            return {"detected": False, "score": 0, "message": "Brak danych"}
+            
+        # Konwersja słownika na listę wartości (jeśli data to słownik OHLCV)
+        numeric_data = []
+        if isinstance(data, dict):
+            # Sprawdź obecność kluczy 'close' lub 'price'
+            if 'close' in data and isinstance(data['close'], (list, np.ndarray)):
+                numeric_data = data['close']
+            elif 'price' in data and isinstance(data['price'], (list, np.ndarray)):
+                numeric_data = data['price']
+            elif 'values' in data and isinstance(data['values'], (list, np.ndarray)):
+                numeric_data = data['values']
+            else:
+                # Pobierz pierwsze pole numeryczne znalezione w słowniku
+                for key, value in data.items():
+                    if isinstance(value, (list, np.ndarray)) and len(value) > 0:
+                        numeric_data = value
+                        self.logger.info(f"Używam pola '{key}' do detekcji anomalii")
+                        break
+        else:
+            numeric_data = data
+            
+        # Sprawdź czy mamy wystarczającą ilość danych
+        if len(numeric_data) < 2:
             return {"detected": False, "score": 0, "message": "Zbyt mało danych"}
 
         # Implementacja metody z-score
         if self.method == "z_score":
-            mean = np.mean(data)
-            std = np.std(data)
+            mean = np.mean(numeric_data)
+            std = np.std(numeric_data)
 
             if std == 0:
                 return {"detected": False, "score": 0, "message": "Brak zmienności w danych"}
 
-            z_scores = [(x - mean) / std for x in data]
+            z_scores = [(x - mean) / std for x in numeric_data]
             max_z = max(abs(z) for z in z_scores)
 
             is_anomaly = max_z > self.threshold

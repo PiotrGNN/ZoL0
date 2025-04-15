@@ -63,17 +63,55 @@ class ModelRecognizer:
         self.status = "Active"
 
 
-    def predict(self, data: Optional[Dict[str, Any]]) -> Dict[str, Any]:
+    def prepare_input_data(self, data: Any) -> Dict[str, Any]:
+        """
+        Przygotowuje dane wejściowe do analizy.
+        
+        Parameters:
+            data (Any): Dane wejściowe w różnych formatach
+            
+        Returns:
+            Dict[str, Any]: Przygotowane dane w formacie słownika
+        """
+        # Jeśli dane są już słownikiem, sprawdź czy mają wymagane pola
+        if isinstance(data, dict):
+            # Jeśli brak pola price_data, sprawdź inne możliwe pola
+            if 'price_data' not in data:
+                if 'close' in data and isinstance(data['close'], (list, np.ndarray)):
+                    return {'price_data': data['close']}
+                elif 'prices' in data and isinstance(data['prices'], (list, np.ndarray)):
+                    return {'price_data': data['prices']}
+                elif 'data' in data and isinstance(data['data'], (list, np.ndarray)):
+                    return {'price_data': data['data']}
+            return data
+            
+        # Jeśli dane są array lub listą, uznaj za price_data
+        elif isinstance(data, (list, np.ndarray)):
+            return {'price_data': data}
+            
+        # Jeśli dane są DataFrame, przekonwertuj na słownik
+        elif hasattr(data, 'to_dict'):
+            try:
+                return {'price_data': data['close'].tolist() if 'close' in data else data.iloc[:, 0].tolist()}
+            except:
+                self.logger.warning("Nie udało się przekonwertować DataFrame na słownik")
+                
+        return {'error': 'Nieobsługiwany format danych wejściowych'}
+            
+    def predict(self, data: Optional[Any]) -> Dict[str, Any]:
         """
         Przewiduje typ modelu rynkowego na podstawie danych.
 
         Parameters:
-            data (Optional[Dict[str, Any]]): Dane rynkowe
+            data (Optional[Any]): Dane rynkowe w dowolnym formacie
 
         Returns:
             Dict[str, Any]: Rozpoznany model
         """
-        return self.identify_model_type(data)
+        if data is not None:
+            prepared_data = self.prepare_input_data(data)
+            return self.identify_model_type(prepared_data)
+        return self.identify_model_type(None)
 
     def identify_model_type(self, data: Optional[Dict[str, Any]]) -> Dict[str, Any]:
         """

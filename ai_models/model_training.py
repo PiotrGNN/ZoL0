@@ -249,3 +249,102 @@ if __name__ == "__main__":
     except Exception as e:
         logging.error("Błąd w przykładowym użyciu ModelTrainer: %s", e)
         raise
+"""
+model_training.py
+----------------
+Moduł do trenowania modeli AI w systemie.
+"""
+
+import logging
+import numpy as np
+import pandas as pd
+from typing import Union, Dict, List, Any, Tuple
+
+logger = logging.getLogger(__name__)
+
+def prepare_data_for_model(data: Union[Dict, List, np.ndarray, pd.DataFrame]) -> np.ndarray:
+    """
+    Konwertuje różne formaty danych do formatu odpowiedniego dla modeli ML/AI.
+    
+    Args:
+        data: Dane wejściowe w różnych formatach (słownik, lista, DataFrame, array)
+        
+    Returns:
+        np.ndarray: Dane w formacie numpy.ndarray gotowe do użycia w modelach
+    """
+    if data is None:
+        raise ValueError("Dane wejściowe nie mogą być None")
+        
+    # Jeśli to słownik OHLCV, konwertujemy na DataFrame
+    if isinstance(data, dict):
+        logger.info("Konwersja słownika danych na DataFrame")
+        df = pd.DataFrame(data)
+        return df.values
+        
+    # Jeśli to DataFrame, konwertujemy na numpy array
+    elif isinstance(data, pd.DataFrame):
+        logger.info("Konwersja DataFrame na numpy array")
+        return data.values
+        
+    # Jeśli to lista, konwertujemy na numpy array
+    elif isinstance(data, list):
+        logger.info("Konwersja listy na numpy array")
+        return np.array(data)
+        
+    # Jeśli to już numpy array, zwracamy bez zmian
+    elif isinstance(data, np.ndarray):
+        return data
+        
+    else:
+        raise TypeError(f"Nieobsługiwany format danych: {type(data)}")
+
+def reshape_for_lstm(data: np.ndarray, time_steps: int = 1, features: int = None) -> np.ndarray:
+    """
+    Przekształca dane do formatu wymaganego przez modele LSTM: [samples, time_steps, features]
+    
+    Args:
+        data: Dane wejściowe jako numpy array
+        time_steps: Liczba kroków czasowych (sequence length)
+        features: Liczba cech (jeśli None, zostanie wywnioskowana z danych)
+        
+    Returns:
+        np.ndarray: Dane w formacie odpowiednim dla LSTM
+    """
+    if features is None:
+        if len(data.shape) > 1:
+            features = data.shape[1]  # liczba kolumn
+        else:
+            features = 1
+            
+    # Jeśli dane są jednowymiarowe, przekształć na 2D
+    if len(data.shape) == 1:
+        data = data.reshape(-1, 1)
+        
+    # Jeśli time_steps > 1, utwórz sekwencje
+    if time_steps > 1:
+        samples = len(data) - time_steps + 1
+        new_data = np.zeros((samples, time_steps, features))
+        
+        for i in range(samples):
+            new_data[i] = data[i:i+time_steps].reshape(time_steps, features)
+        
+        return new_data
+    else:
+        # Dodaj wymiar time_steps
+        return data.reshape(data.shape[0], 1, features)
+
+class ModelTrainer:
+    """
+    Klasa do trenowania modeli AI/ML
+    """
+    
+    def __init__(self, model_type: str = "keras"):
+        """
+        Inicjalizuje trener modeli.
+        
+        Args:
+            model_type: Typ modelu do trenowania (keras, sklearn, xgboost)
+        """
+        self.model_type = model_type
+        self.logger = logging.getLogger(f"ModelTrainer.{model_type}")
+        self.logger.info(f"Inicjalizacja trenera modeli typu {model_type}")
