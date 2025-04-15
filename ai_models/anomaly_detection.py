@@ -74,8 +74,19 @@ class AnomalyDetector:
 
             # Zabezpieczenie przed dzieleniem przez zero i konwersja na typ numeryczny
             if isinstance(numeric_data, (list, np.ndarray)) and len(numeric_data) > 0:
-                z_scores = [(float(x) - mean) / std for x in numeric_data]
-                max_z = max(abs(z) for z in z_scores)
+                try:
+                    # Obsługa zarówno pojedynczych wartości jak i tablic wielowymiarowych
+                    if isinstance(numeric_data, np.ndarray) and numeric_data.ndim > 1:
+                        # Spłaszczamy tablicę, żeby móc obliczyć z-score
+                        flattened_data = numeric_data.flatten()
+                        z_scores = [(float(x) - mean) / std for x in flattened_data]
+                    else:
+                        z_scores = [(float(x) - mean) / std for x in numeric_data]
+                    
+                    max_z = max(abs(z) for z in z_scores)
+                except Exception as e:
+                    self.logger.warning(f"Błąd podczas liczenia z-score: {e}")
+                    return {"detected": False, "score": 0, "message": f"Błąd obliczania z-score: {e}"}
             else:
                 return {"detected": False, "score": 0, "message": "Nieprawidłowy format danych"}
 

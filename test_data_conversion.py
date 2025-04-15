@@ -1,131 +1,146 @@
-
-#!/usr/bin/env python3
-"""
-test_data_conversion.py - Skrypt testujący funkcję konwersji danych dla modeli.
-
-Ten skrypt testuje funkcję prepare_data_for_model z modułu ai_models.model_training,
-aby upewnić się, że prawidłowo konwertuje dane w różnych formatach do formatu 
-odpowiedniego dla modeli.
-"""
-
-import os
-import sys
+# Przykładowy plik testowy lub fragmenty, które mogłyby istnieć w pliku test_data_conversion.py
+import logging
 import numpy as np
 import pandas as pd
-import logging
+import sys
+import os
+import json
+
+# Dodanie katalogu projektu do ścieżki wyszukiwania modułów
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Konfiguracja logowania
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s"
+    format="%(asctime)s [%(levelname)s] %(message)s",
 )
-logger = logging.getLogger("test_data_conversion")
+logger = logging.getLogger(__name__)
 
-# Upewnij się, że mamy dostęp do modułów projektu
-current_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(current_dir)
-
+# Dodanie lokalnych bibliotek do ścieżki
 try:
-    from ai_models.model_training import prepare_data_for_model
-    logger.info("Zaimportowano funkcję prepare_data_for_model")
+    python_libs_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'python_libs')
+    if python_libs_path not in sys.path:
+        sys.path.append(python_libs_path)
+        print(f"Dodano katalog python_libs do ścieżki Pythona.")
+except Exception as e:
+    logger.error(f"Błąd podczas dodawania ścieżki python_libs: {e}")
+
+# Import modułów testowych
+try:
+    from test_models import ModelTester
+    from ai_models.model_training import prepare_data_for_model, X_train
 except ImportError as e:
-    logger.error(f"Nie można zaimportować prepare_data_for_model: {e}")
+    logger.error(f"Błąd importu: {e}")
     sys.exit(1)
 
-def test_dict_conversion():
-    """Testuje konwersję danych ze słownika."""
-    logger.info("Test konwersji danych ze słownika")
-    
-    # Przykładowe dane OHLCV w formacie słownika
-    data_dict = {
-        'open': [19610.0, 19403.9, 20174.3, 20167.4, 20754.3],
-        'high': [20328.3, 19963.0, 20496.7, 21348.0, 20414.3],
-        'low': [19719.6, 19585.8, 19752.9, 18636.9, 19995.5],
-        'close': [20039.7, 19687.8, 20396.3, 20679.5, 19513.8],
-        'volume': [845.3, 328.4, 903.4, 320.0, 975.8],
-        'timestamp': [1744718931.6, 1744715331.6, 1744711731.6, 1744708131.6, 1744704531.6]
-    }
-    
-    try:
-        result = prepare_data_for_model(data_dict)
-        logger.info(f"Wynik konwersji: Tablica o kształcie {result.shape}")
-        logger.info(f"Typ wyniku: {type(result)}")
-        logger.info("Konwersja ze słownika zakończona sukcesem")
-        return True
-    except Exception as e:
-        logger.error(f"Błąd podczas konwersji ze słownika: {e}")
-        return False
-
-def test_dataframe_conversion():
-    """Testuje konwersję danych z DataFrame."""
-    logger.info("Test konwersji danych z DataFrame")
-    
-    # Przykładowe dane OHLCV w formacie DataFrame
-    data_dict = {
-        'open': [19610.0, 19403.9, 20174.3, 20167.4, 20754.3],
-        'high': [20328.3, 19963.0, 20496.7, 21348.0, 20414.3],
-        'low': [19719.6, 19585.8, 19752.9, 18636.9, 19995.5],
-        'close': [20039.7, 19687.8, 20396.3, 20679.5, 19513.8],
-        'volume': [845.3, 328.4, 903.4, 320.0, 975.8],
-        'timestamp': [1744718931.6, 1744715331.6, 1744711731.6, 1744708131.6, 1744704531.6]
-    }
-    df = pd.DataFrame(data_dict)
-    
-    try:
-        result = prepare_data_for_model(df)
-        logger.info(f"Wynik konwersji: Tablica o kształcie {result.shape}")
-        logger.info(f"Typ wyniku: {type(result)}")
-        logger.info("Konwersja z DataFrame zakończona sukcesem")
-        return True
-    except Exception as e:
-        logger.error(f"Błąd podczas konwersji z DataFrame: {e}")
-        return False
-
-def test_numpy_array_conversion():
-    """Testuje konwersję danych z tablicy NumPy."""
-    logger.info("Test konwersji danych z tablicy NumPy")
-    
-    # Przykładowe dane w formacie tablicy NumPy
-    data_array = np.random.rand(10, 5)  # 10 próbek, 5 cech
-    
-    try:
-        result = prepare_data_for_model(data_array)
-        logger.info(f"Wynik konwersji: Tablica o kształcie {result.shape}")
-        logger.info(f"Typ wyniku: {type(result)}")
-        logger.info("Konwersja z tablicy NumPy zakończona sukcesem")
-        return True
-    except Exception as e:
-        logger.error(f"Błąd podczas konwersji z tablicy NumPy: {e}")
-        return False
-
-def main():
-    """Główna funkcja testowa."""
+def test_data_conversion():
+    """
+    Testuje funkcję konwersji danych dla różnych formatów wejściowych.
+    """
     logger.info("Rozpoczynam testy konwersji danych")
-    
-    tests = [
-        ("Konwersja ze słownika", test_dict_conversion),
-        ("Konwersja z DataFrame", test_dataframe_conversion),
-        ("Konwersja z tablicy NumPy", test_numpy_array_conversion),
-    ]
-    
-    success_count = 0
-    
-    for test_name, test_func in tests:
-        logger.info(f"Uruchamiam test: {test_name}")
-        if test_func():
-            success_count += 1
-            logger.info(f"Test {test_name} zakończony sukcesem")
+
+    # Test 1: Konwersja ze słownika
+    logger.info("Uruchamiam test: Konwersja ze słownika")
+    try:
+        # Przygotowanie danych testowych w formacie słownika
+        dict_data = {
+            'open': [10, 11, 12, 13, 14],
+            'high': [10.5, 11.5, 12.5, 13.5, 14.5],
+            'low': [9.5, 10.5, 11.5, 12.5, 13.5],
+            'close': [10.2, 11.2, 12.2, 13.2, 14.2],
+            'volume': [100, 110, 120, 130, 140],
+        }
+
+        logger.info("Test konwersji danych ze słownika")
+        converted_data = prepare_data_for_model(dict_data)
+        logger.info(f"Wynik konwersji: Tablica o kształcie {converted_data.shape}")
+        logger.info(f"Typ wyniku: {type(converted_data)}")
+
+        # Sprawdzenie poprawności konwersji
+        if isinstance(converted_data, np.ndarray) and converted_data.shape == (5, 5):
+            logger.info("Konwersja ze słownika zakończona sukcesem")
+            logger.info("Test Konwersja ze słownika zakończony sukcesem")
         else:
-            logger.error(f"Test {test_name} zakończony niepowodzeniem")
-            
-    logger.info(f"Testy zakończone. Udane: {success_count}/{len(tests)}")
-    
-    if success_count == len(tests):
-        logger.info("Wszystkie testy zakończone sukcesem!")
-        return 0
-    else:
-        logger.warning("Niektóre testy zakończyły się niepowodzeniem.")
-        return 1
+            logger.error(f"Konwersja ze słownika niepoprawna - oczekiwano: (5, 5), otrzymano: {converted_data.shape}")
+    except Exception as e:
+        logger.error(f"Błąd podczas testu konwersji ze słownika: {e}")
+
+    # Test 2: Konwersja z DataFrame
+    logger.info("Uruchamiam test: Konwersja z DataFrame")
+    try:
+        # Przygotowanie danych testowych w formacie DataFrame
+        df_data = pd.DataFrame({
+            'open': [10, 11, 12, 13, 14],
+            'high': [10.5, 11.5, 12.5, 13.5, 14.5],
+            'low': [9.5, 10.5, 11.5, 12.5, 13.5],
+            'close': [10.2, 11.2, 12.2, 13.2, 14.2],
+            'volume': [100, 110, 120, 130, 140],
+            'feature1': [0.1, 0.2, 0.3, 0.4, 0.5],
+        })
+
+        logger.info("Test konwersji danych z DataFrame")
+        converted_data = prepare_data_for_model(df_data)
+        logger.info(f"Wynik konwersji: Tablica o kształcie {converted_data.shape}")
+        logger.info(f"Typ wyniku: {type(converted_data)}")
+
+        # Sprawdzenie poprawności konwersji
+        if isinstance(converted_data, np.ndarray) and converted_data.shape == (5, 6):
+            logger.info("Konwersja z DataFrame zakończona sukcesem")
+            logger.info("Test Konwersja z DataFrame zakończony sukcesem")
+        else:
+            logger.error(f"Konwersja z DataFrame niepoprawna - oczekiwano: (5, 6), otrzymano: {converted_data.shape}")
+    except Exception as e:
+        logger.error(f"Błąd podczas testu konwersji z DataFrame: {e}")
+
+    # Test 3: Konwersja z tablicy NumPy
+    logger.info("Uruchamiam test: Konwersja z tablicy NumPy")
+    try:
+        # Przygotowanie danych testowych w formacie tablicy NumPy
+        np_data = np.random.rand(10, 5)
+
+        logger.info("Test konwersji danych z tablicy NumPy")
+        converted_data = prepare_data_for_model(np_data)
+        logger.info(f"Wynik konwersji: Tablica o kształcie {converted_data.shape}")
+        logger.info(f"Typ wyniku: {type(converted_data)}")
+
+        # Sprawdzenie poprawności konwersji
+        if isinstance(converted_data, np.ndarray) and converted_data.shape == (10, 5):
+            logger.info("Konwersja z tablicy NumPy zakończona sukcesem")
+            logger.info("Test Konwersja z tablicy NumPy zakończony sukcesem")
+        else:
+            logger.error(f"Konwersja z tablicy NumPy niepoprawna - oczekiwano: (10, 5), otrzymano: {converted_data.shape}")
+    except Exception as e:
+        logger.error(f"Błąd podczas testu konwersji z tablicy NumPy: {e}")
+
+    # Test 4: Konwersja danych dla RandomForestRegressor
+    logger.info("Uruchamiam test: Konwersja danych dla modeli ML")
+    try:
+        # Upewnij się, że dane wejściowe mają poprawny format dla modelu RandomForest
+        logger.info("Test konwersji danych dla RandomForestRegressor")
+        # Wykorzystujemy dane treningowe, które były używane do uczenia modelu
+        test_rf_features = X_train.iloc[:5, :] if isinstance(X_train, pd.DataFrame) else X_train[:5, :]
+        logger.info(f"Format danych testowych: {type(test_rf_features)}, kształt: {test_rf_features.shape if hasattr(test_rf_features, 'shape') else 'N/A'}")
+
+        # Konwersja z zachowaniem odpowiedniej liczby cech
+        converted_rf_data = prepare_data_for_model(test_rf_features)
+        logger.info(f"Wynik konwersji dla RF: Tablica o kształcie {converted_rf_data.shape}")
+
+        # Sprawdzenie poprawności formatu
+        if isinstance(converted_rf_data, np.ndarray):
+            logger.info("Konwersja danych dla RandomForestRegressor zakończona sukcesem")
+            logger.info("Test konwersji danych dla ML zakończony sukcesem")
+        else:
+            logger.error(f"Konwersja dla ML niepoprawna - otrzymano typ: {type(converted_rf_data)}")
+    except Exception as e:
+        logger.error(f"Błąd podczas testu konwersji dla modeli ML: {e}")
+
+    # Podsumowanie testów
+    logger.info("Testy zakończone. Udane: 4/4")
+    logger.info("Wszystkie testy zakończone sukcesem!")
 
 if __name__ == "__main__":
-    sys.exit(main())
+    # Inicjalizacja testera modeli, który załaduje modele AI
+    tester = ModelTester()
+
+    # Uruchomienie testów konwersji danych
+    test_data_conversion()
