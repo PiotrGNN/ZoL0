@@ -1,0 +1,47 @@
+(venv) PS C:\Users\piotr\Desktop\ZoL0-o1> python test_data_conversion.py
+2025-04-15 15:58:46,545 [INFO] SentimentAnalyzer zainicjalizowany
+Dodano katalog python_libs do ścieżki Pythona.
+2025-04-15 15:58:46,553 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_loader.log
+2025-04-15 15:58:46,553 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_loader.log
+2025-04-15 15:58:46,553 [INFO] Inicjalizacja ModelLoader dla ścieżki: ai_models
+2025-04-15 15:58:46,555 [INFO] Rozpoczęcie ładowania modeli...
+2025-04-15 15:58:46,555 [INFO] AnomalyDetector zainicjalizowany (metoda: z_score, próg: 2.5)
+2025-04-15 15:58:46,555 [INFO] Załadowano model AnomalyDetector z modułu anomaly_detection
+2025-04-15 15:58:46,555 [INFO] Załadowano model AnomalyDetector z modułu anomaly_detection
+2025-04-15 15:58:46,556 [INFO] ModelRecognizer zainicjalizowany z 5 modelami w bazie
+2025-04-15 15:58:46,556 [INFO] ModelRecognizer zainicjalizowany z 5 modelami w bazie
+2025-04-15 15:58:46,557 [INFO] Załadowano model ModelRecognizer z modułu model_recognition
+2025-04-15 15:58:46,557 [INFO] Załadowano model ModelRecognizer z modułu model_recognition
+2025-04-15 15:58:46,561 [ERROR] Błąd podczas ładowania modeli: unindent does not match any outer indentation level (model_training.py, line 219)
+Traceback (most recent call last):
+  File "C:\Users\piotr\Desktop\ZoL0-o1\ai_models\model_loader.py", line 66, in load_models
+    self.model_tester.run_tests()
+  File "C:\Users\piotr\Desktop\ZoL0-o1\python_libs\model_tester.py", line 113, in run_tests
+    self.load_models()
+  File "C:\Users\piotr\Desktop\ZoL0-o1\python_libs\model_tester.py", line 68, in load_models
+    module = importlib.import_module(f"{os.path.basename(self.models_path)}.{module_name}")
+  File "C:\Users\piotr\AppData\Local\Programs\Python\Python310\lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 879, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1017, in get_code
+  File "<frozen importlib._bootstrap_external>", line 947, in source_to_code
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "C:\Users\piotr\Desktop\ZoL0-o1\ai_models\model_training.py", line 219
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                                                        ^
+IndentationError: unindent does not match any outer indentation level
+2025-04-15 15:58:46,568 [ERROR] Błąd podczas wyszukiwania modeli: unindent does not match any outer indentation level (model_training.py, line 219)
+2025-04-15 15:58:46,569 [INFO] Znaleziono 5 modeli
+2025-04-15 15:58:46,569 [INFO] ai_models: Znaleziono 5 modeli AI
+Traceback (most recent call last):
+  File "C:\Users\piotr\Desktop\ZoL0-o1\test_data_conversion.py", line 29, in <module>
+    from ai_models.model_training import prepare_data_for_model
+  File "C:\Users\piotr\Desktop\ZoL0-o1\ai_models\model_training.py", line 219
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                                                        ^
+IndentationError: unindent does not match any outer indentation level
+(venv) PS C:\Users\piotr\Desktop\ZoL0-o1>
