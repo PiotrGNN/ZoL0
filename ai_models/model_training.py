@@ -210,11 +210,11 @@ class ModelTrainer:
             if hasattr(self.model, 'n_features_in_') or hasattr(self.model, 'feature_importances_') or \
                (tf is not None and isinstance(self.model, tf.keras.Model) and len(self.model.layers) > 0):
 
-                    # Jeśli to model Sklearn i nie był trenowany, dodajemy ostrzeżenie
-                    if hasattr(self.model, 'fit') and not hasattr(self.model, 'n_features_in_') and \
-                       not (tf is not None and isinstance(self.model, tf.keras.Model)):
-                        logging.warning("Model %s może nie być wytrenowany! Sprawdź czy wywołano fit() przed zapisem.", 
-                                      self.model_name)
+                # Jeśli to model Sklearn i nie był trenowany, dodajemy ostrzeżenie
+                if hasattr(self.model, 'fit') and not hasattr(self.model, 'n_features_in_') and \
+                   not (tf is not None and isinstance(self.model, tf.keras.Model)):
+                    logging.warning("Model %s może nie być wytrenowany! Sprawdź czy wywołano fit() przed zapisem.", 
+                                  self.model_name)
 
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                 model_filename = os.path.join(
@@ -222,22 +222,22 @@ class ModelTrainer:
                 )
 
                 if tf is not None and isinstance(self.model, tf.keras.Model):
-                # Sprawdzenie czy model ma warstwy
-                if not self.model.layers:
-                    logging.error("Model Sequential nie ma warstw! Anulowanie zapisu.")
-                    return
+                    # Sprawdzenie czy model ma warstwy
+                    if not self.model.layers:
+                        logging.error("Model Sequential nie ma warstw! Anulowanie zapisu.")
+                        return
 
-                model_filename += ".h5"
-                self.model.save(model_filename)
+                    model_filename += ".h5"
+                    self.model.save(model_filename)
+                else:
+                    model_filename += ".pkl"
+                    with open(model_filename, "wb") as f:
+                        pickle.dump(self.model, f)
+
+                logging.info("Model zapisany w: %s", model_filename)
             else:
-                model_filename += ".pkl"
-                with open(model_filename, "wb") as f:
-                    pickle.dump(self.model, f)
-
-            logging.info("Model zapisany w: %s", model_filename)
-        else:
-            logging.error("Model %s nie został wytrenowany lub nie ma warstw! Anulowanie zapisu.", 
-                        self.model_name)
+                logging.error("Model %s nie został wytrenowany lub nie ma warstw! Anulowanie zapisu.", 
+                            self.model_name)
 
         except Exception as e:
             logging.error("Błąd podczas zapisywania modelu: %s", e)
