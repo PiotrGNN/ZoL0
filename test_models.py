@@ -253,11 +253,57 @@ def test_models() -> Dict[str, Any]:
     # Wygeneruj dane testowe
     X_train, X_test, y_train, y_test = generate_test_data()
 
-    # Testuj modele typu ML z metodami fit/predict
+    # Specjalne traktowanie dla RandomForestRegressor - zawsze trenuj od zera i zapisz
+    random_forest_trained = False
+    for model_info in models:
+        if model_info['name'] == 'RandomForestRegressor':
+            print("🌲 Trenuję model RandomForestRegressor od zera...")
+            rf_result = model_tester.train_and_save_random_forest(X_train, y_train, force_train=True)
+            
+            if rf_result['success']:
+                print(f"✅ Model RandomForestRegressor został wytrenowany i zapisany do {rf_result['model_path']}")
+                random_forest_trained = True
+            else:
+                print(f"❌ Błąd podczas trenowania RandomForestRegressor: {rf_result.get('error', 'Nieznany błąd')}")
+            
+            break
+    
+    # Jeśli nie znaleziono modelu RandomForestRegressor wśród załadowanych modeli, utwórz go
+    if not random_forest_trained:
+        print("🌲 Tworzę i trenuję nowy model RandomForestRegressor...")
+        try:
+            from sklearn.ensemble import RandomForestRegressor
+            rf_model = RandomForestRegressor(n_estimators=100, random_state=42)
+            
+            # Dodaj model do listy
+            models.append({
+                'name': 'RandomForestRegressor',
+                'type': str(type(rf_model)),
+                'instance': rf_model,
+                'module': 'sklearn.ensemble',
+                'has_fit': True,
+                'has_predict': True
+            })
+            
+            # Trenuj i zapisz model
+            rf_result = model_tester.train_and_save_random_forest(X_train, y_train, force_train=True)
+            
+            if rf_result['success']:
+                print(f"✅ Model RandomForestRegressor został wytrenowany i zapisany do {rf_result['model_path']}")
+            else:
+                print(f"❌ Błąd podczas trenowania RandomForestRegressor: {rf_result.get('error', 'Nieznany błąd')}")
+        except Exception as e:
+            print(f"❌ Błąd podczas tworzenia i trenowania RandomForestRegressor: {e}")
+
+    # Testuj pozostałe modele typu ML z metodami fit/predict
     ml_results = {}
     for model_info in models:
         model_name = model_info['name']
         instance = model_info.get('instance')
+        
+        # Pomiń RandomForestRegressor, który już został przetestowany
+        if model_name == 'RandomForestRegressor':
+            continue
         
         if not instance:
             print(f"⚠️ Model {model_name}: brak instancji, pomijam test")
@@ -290,15 +336,9 @@ def test_models() -> Dict[str, Any]:
                 try:
                     from ai_models.model_training import prepare_data_for_model
                     
-                    # Dostosuj liczbę cech dla RandomForestRegressor
-                    if model_name == "RandomForestRegressor":
-                        # RandomForestRegressor w przykładzie został wytrenowany na 2 cechach
-                        expected_features = 2  # Wiemy z błędu że model oczekuje 2 cech
-                        X_train_prepared = prepare_data_for_model(X_train, expected_features=expected_features)
-                        X_test_prepared = prepare_data_for_model(X_test, expected_features=expected_features)
-                    else:
-                        X_train_prepared = X_train
-                        X_test_prepared = X_test
+                    # Dostosuj liczbę cech dla modelu, jeśli potrzeba
+                    X_train_prepared = prepare_data_for_model(X_train)
+                    X_test_prepared = prepare_data_for_model(X_test)
                 except ImportError:
                     X_train_prepared = X_train
                     X_test_prepared = X_test
@@ -331,6 +371,33 @@ def test_models() -> Dict[str, Any]:
                 print(f"❌ Błąd podczas testowania modelu {model_name}: {e}")
                 ml_results[model_name] = {"success": False, "error": str(e)}
 
+    # Dodaj wyniki RandomForestRegressor
+    if random_forest_trained:
+        # Sprawdź działanie zapisanego modelu
+        try:
+            model_path = "models/random_forest_model.pkl"
+            rf_model = model_tester.load_model_from_file(model_path)
+            if rf_model is not None:
+                # Przygotuj dane testowe
+                try:
+                    from ai_models.model_training import prepare_data_for_model
+                    X_test_prepared = prepare_data_for_model(X_test, expected_features=2)
+                except ImportError:
+                    X_test_prepared = X_test
+                
+                # Ocena modelu
+                predictions = rf_model.predict(X_test_prepared)
+                mse = ((predictions - y_test) ** 2).mean()
+                print(f"✅ Zapisany model RandomForestRegressor: MSE = {mse:.4f}")
+                ml_results['RandomForestRegressor'] = {
+                    "success": True, 
+                    "mse": mse,
+                    "saved_model_test": "passed"
+                }
+        except Exception as e:
+            print(f"❌ Błąd podczas testowania zapisanego modelu RandomForestRegressor: {e}")
+            ml_results['RandomForestRegressor'] = {"success": False, "error": str(e)}
+
     # Zapisz metadane modeli
     try:
         model_tester.save_model_metadata("model_metadata.json")
@@ -341,6 +408,9 @@ def test_models() -> Dict[str, Any]:
     print(f"- Wykryto {results.get('models_detected', 0) or len(models)} modeli")
     print(f"- Załadowano {results.get('models_loaded', 0) or len(models)} modeli")
     print(f"- Przetestowano {len(ml_results)} modeli ML")
+    
+    if random_forest_trained:
+        print(f"- RandomForestRegressor został wytrenowany od zera i zapisany do models/random_forest_model.pkl")
 
     if results.get('errors', []):
         print("\n⚠️ Problemy podczas testów:")
