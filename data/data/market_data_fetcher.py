@@ -100,9 +100,30 @@ class MarketDataFetcher:
         """
         params = {"symbol": symbol, "interval": interval, "limit": limit}
         data = self._make_request("/market_data", params)
-        # Zakładamy, że API zwraca listę świec (candlestick) w postaci listy list lub słowników
-        # Przykładowy format: [{"timestamp": "...", "open": ..., "high": ..., "low": ..., "close": ..., "volume": ...}, ...]
-        df = pd.DataFrame(data)
+        # Rzeczywiste przetwarzanie odpowiedzi API
+        try:
+            # Przetwarzanie danych z API Bybit
+            if 'result' in data and 'list' in data['result']:
+                raw_data = data['result']['list']
+                processed_data = []
+                for item in raw_data:
+                    processed_data.append({
+                        'timestamp': int(item[0]),
+                        'open': float(item[1]),
+                        'high': float(item[2]),
+                        'low': float(item[3]),
+                        'close': float(item[4]),
+                        'volume': float(item[5]),
+                    })
+                df = pd.DataFrame(processed_data)
+            else:
+                # Fallback dla innych formatów API
+                df = pd.DataFrame(data)
+                
+            logging.info(f"Pobrano rzeczywiste dane rynkowe: {len(df)} rekordów")
+        except Exception as e:
+            logging.error(f"Błąd podczas przetwarzania danych z API: {e}")
+            raise
         # Konwersja timestamp na datetime
         if "timestamp" in df.columns:
             df["timestamp"] = pd.to_datetime(df["timestamp"])

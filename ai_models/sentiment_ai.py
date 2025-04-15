@@ -106,8 +106,8 @@ class SentimentAnalyzer:
         else:
             sentiment_score = (positive_count - negative_count) / total_sentiment_words
 
-        # Dodawanie niewielkiej losowości dla różnorodności wyników
-        sentiment_score = min(1.0, max(-1.0, sentiment_score + random.uniform(-0.2, 0.2)))
+        # Używamy rzeczywistego algorytmu bez sztucznych modyfikacji
+        sentiment_score = min(1.0, max(-1.0, sentiment_score))
 
         # Określanie kategorii sentymentu
         if sentiment_score > 0.2:

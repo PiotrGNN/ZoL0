@@ -78,7 +78,7 @@ pageEnabled = false
 buttonEnabled = false
 
 [workflows]
-runButton = "Naprawiony System"
+runButton = "System z Realnymi Danymi"
 
 [[workflows.workflow]]
 name = "Run"
@@ -360,6 +360,15 @@ args = "python main.py"
 
 [[workflows.workflow]]
 name = "Naprawiony System"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python3 main.py"
+
+[[workflows.workflow]]
+name = "System z Realnymi Danymi"
 author = 31819671
 mode = "sequential"
 

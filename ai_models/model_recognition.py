@@ -77,9 +77,52 @@ class ModelRecognizer:
         Returns:
             Dict[str, Any]: Rozpoznany model
         """
-        # Symulowane rozpoznawanie modelu dla celów demonstracyjnych
-        selected_model = random.choice(self.model_types)
-        confidence = random.uniform(0.6, 0.95)
+        # Rzeczywiste rozpoznawanie modeli rynkowych na podstawie danych
+        if data is None or not isinstance(data, dict) or 'price_data' not in data:
+            logging.warning("Brak wymaganych danych cenowych dla rozpoznania modelu rynkowego")
+            return {"error": "Niewystarczające dane do analizy", "timestamp": time.time()}
+            
+        price_data = data['price_data']
+        
+        # Analiza trendu
+        is_trending = False
+        trend_direction = 0
+        
+        if len(price_data) >= 10:
+            # Prosta analiza trendu - kierunek ruchu ostatnich 10 świec
+            up_moves = sum(1 for i in range(1, len(price_data)) if price_data[i] > price_data[i-1])
+            down_moves = sum(1 for i in range(1, len(price_data)) if price_data[i] < price_data[i-1])
+            
+            # Jeśli ponad 70% ruchów w jednym kierunku - mamy trend
+            if up_moves / len(price_data) > 0.7:
+                is_trending = True
+                trend_direction = 1  # wzrostowy
+            elif down_moves / len(price_data) > 0.7:
+                is_trending = True
+                trend_direction = -1  # spadkowy
+        
+        # Analiza zmienności
+        volatility = 0
+        if len(price_data) >= 2:
+            returns = [abs(price_data[i] / price_data[i-1] - 1) for i in range(1, len(price_data))]
+            volatility = sum(returns) / len(returns)
+        
+        high_volatility = volatility > 0.01  # 1% zmienności jako próg
+        
+        # Określenie typu rynku
+        if is_trending and trend_direction > 0:
+            selected_model = next(m for m in self.model_types if m["id"] == "trending_market")
+            confidence = 0.7 + (up_moves / len(price_data) * 0.3)  # 0.7-1.0 zależnie od siły trendu
+        elif is_trending and trend_direction < 0:
+            selected_model = next(m for m in self.model_types if m["id"] == "trending_market")
+            confidence = 0.7 + (down_moves / len(price_data) * 0.3)
+        elif high_volatility:
+            selected_model = next(m for m in self.model_types if m["id"] == "high_volatility")
+            confidence = 0.7 + min(volatility * 10, 0.3)  # Skalowanie 0.7-1.0
+        else:
+            # Domyślnie konsolidacja
+            selected_model = next(m for m in self.model_types if m["id"] == "ranging_market")
+            confidence = 0.8
 
         result = {
             "type": selected_model["id"],

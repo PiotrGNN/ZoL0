@@ -7,6 +7,8 @@ Uproszczony silnik handlowy dla platformy tradingowej.
 import logging
 import time
 import random
+import os
+import json
 from typing import Dict, Any, List, Optional, Union
 
 logger = logging.getLogger(__name__)
@@ -353,3 +355,91 @@ class SimplifiedTradingEngine:
             self.status["last_error"] = f"Błąd podczas resetowania silnika handlowego: {str(e)}"
             logger.error(self.status["last_error"])
             return {"success": False, "error": self.status["last_error"]}
+
+    def _get_real_market_data(self):
+        """Pobiera rzeczywiste dane rynkowe z API."""
+        try:
+            from data.data.market_data_fetcher import MarketDataFetcher
+
+            # Pobierz klucz API z .env lub konfiguracji
+            api_key = os.getenv("BYBIT_API_KEY", "")
+            api_secret = os.getenv("BYBIT_API_SECRET", "")
+
+            if not api_key or not api_secret:
+                logging.warning("Brak kluczy API do pobierania rzeczywistych danych. Używam zapisanych danych.")
+                return self._get_cached_data()
+
+            # Inicjalizacja fetchera danych
+            fetcher = MarketDataFetcher(api_key=api_key)
+
+            # Pobierz dane dla pary BTC/USDT w interwale 15m
+            df = fetcher.fetch_data(symbol="BTCUSDT", interval="15m", limit=100)
+
+            # Konwersja na listę cen zamknięcia
+            if df is not None and not df.empty and 'close' in df.columns:
+                price_data = df['close'].tolist()
+                logging.info(f"Pobrano {len(price_data)} punktów danych rzeczywistych")
+
+                # Zapisz dane do cache
+                self._cache_data(price_data)
+
+                return price_data
+            else:
+                logging.warning("Pobrane dane są puste lub nieprawidłowe")
+                return self._get_cached_data()
+
+        except Exception as e:
+            logging.error(f"Błąd podczas pobierania rzeczywistych danych: {e}")
+            return self._get_cached_data()
+
+    def _get_cached_data(self):
+        """Pobiera dane z cache lub generuje nowe jeśli cache jest pusty."""
+        cache_file = "data/cache/market_data_cache.json"
+
+        if os.path.exists(cache_file):
+            try:
+                with open(cache_file, 'r') as f:
+                    data = json.load(f)
+                logging.info(f"Używam danych z cache ({len(data)} punktów)")
+                return data
+            except Exception as e:
+                logging.error(f"Błąd odczytu cache: {e}")
+
+        # Fallback do generowania danych
+        return self._generate_mock_data()
+
+    def _cache_data(self, data):
+        """Zapisuje dane do cache."""
+        cache_file = "data/cache/market_data_cache.json"
+        cache_dir = os.path.dirname(cache_file)
+
+        try:
+            os.makedirs(cache_dir, exist_ok=True)
+            with open(cache_file, 'w') as f:
+                json.dump(data, f)
+            logging.info(f"Zapisano {len(data)} punktów danych do cache")
+        except Exception as e:
+            logging.error(f"Błąd zapisu cache: {e}")
+
+    def _generate_mock_data(self):
+        """Generuje symulowane dane rynkowe jako ostateczny fallback."""
+        logging.warning("Używam symulowanych danych jako ostateczność!")
+        start_price = 100.0
+        price_data = []
+
+        # Generowanie losowych cen z trendem
+        current_price = start_price
+        for _ in range(100):
+            change = random.uniform(-2, 2)
+            # Dodajemy trend
+            if _ < 50:
+                change += 0.1  # trend wzrostowy w pierwszej połowie
+            else:
+                change -= 0.1  # trend spadkowy w drugiej połowie
+
+            current_price += change
+            current_price = max(current_price, 50)  # Zapobieganie ujemnym cenom
+
+            price_data.append(current_price)
+
+        return price_data

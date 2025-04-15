@@ -147,7 +147,7 @@ def initialize_system():
             sentiment_config = ai_config.get("model_settings", {}).get("sentiment_analyzer", {})
             sources = sentiment_config.get("sources", ["twitter", "news", "forum", "reddit"])
 
-            sentiment_analyzer = SentimentAnalyzer(sources=sources)
+            sentiment_analyzer = SentimentAnalyzer()
             logging.info(f"Zainicjalizowano SentimentAnalyzer z biblioteką {sentiment_lib} i źródłami {sources}")
         except ImportError as e:
             logging.warning(f"Nie można zaimportować SentimentAnalyzer z ai_models: {e}")
