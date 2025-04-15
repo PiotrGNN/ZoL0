@@ -765,7 +765,7 @@ class BybitConnector:
 
             for i in range(limit):
                 bid_price = base_price * (1 - 0.001 * (i + 1))
-                ask_price = base_price * (1 +0.001* (i + 1))
+                ask_price = base_price * (1 +0.0001* (i + 1))
 
                 bid_amount = random.uniform(
                     0.1, 2.0) if "BTC" in symbol else random.uniform(
@@ -1089,10 +1089,10 @@ class BybitConnector:
                         "Klient API został pomyślnie reinicjalizowany.")
                 except Exception as initerror:
                     self.logger.error(
-                        f"Nie udało się zainicjalizować klienta API: {init_error}"
+                        f"Nie udało się zainicjalizować klienta API: {initerror}"
                     )
                     logging.error(
-                        f"Klient API nie został zainicjalizowany. Błąd: {init_error}"
+                        f"Klient API nie został zainicjalizowany. Błąd: {initerror}"
                     )
                     return {
                         "balances": {
@@ -1109,7 +1109,7 @@ class BybitConnector:
                         },
                         "success": False,
                         "error":
-                        f"Klient API nie został zainicjalizowany. Błąd: {init_error}",
+                        f"Klient API nie został zainicjalizowany. Błąd: {initerror}",
                         "note": "Dane przykładowe -błąd inicjalizacji klienta"
                     }
 
@@ -1500,7 +1500,6 @@ class BybitConnector:
                                     f"Błąd podczas używania bezpośredniego zapytania HTTP: {e}"
                                 )
                                 # Kontynuujemy, aby spróbować innych metod
-
                         for method_name, params in wallet_methods:
                             if hasattr(self.client, method_name):
                                 try:
@@ -1595,8 +1594,10 @@ class BybitConnector:
                                             result["balances"][coin] = {
                                                 "equity": float(account_data.get("equity", 0)),
                                                 "available_balance": float(
-                                                    account_data.get("availableBalance", 0) or 
-                                                    account_data.get("availableToWithdraw", 0)
+                                                    account_data.get(
+                                                        "availableBalance", 0) or 
+                                                    account_data.get(
+                                                        "availableToWithdraw", 0)
                                                 ),
                                                 "wallet_balance": float(account_data.get("walletBalance", 0))
                                             }
