@@ -1,0 +1,14 @@
+2025-04-15 00:55:30,884 [INFO] Rozpoczynam naprawę dashboardu i interfejsu...
+2025-04-15 00:55:30,884 [INFO] Utworzono kopię zapasową pliku main.py -> main.py.backup
+2025-04-15 00:55:30,885 [INFO] Utworzono kopię zapasową pliku static/js/dashboard.js -> static/js/dashboard.js.backup
+2025-04-15 00:55:30,885 [INFO] Utworzono kopię zapasową pliku templates/dashboard.html -> templates/dashboard.html.backup
+2025-04-15 00:55:30,885 [INFO] Upewniono się, że katalog 'static/css' istnieje
+2025-04-15 00:55:30,886 [INFO] Upewniono się, że katalog 'static/js' istnieje
+2025-04-15 00:55:30,886 [INFO] Upewniono się, że katalog 'static/img' istnieje
+2025-04-15 00:55:30,886 [INFO] Upewniono się, że katalog 'templates' istnieje
+2025-04-15 00:55:30,886 [INFO] Upewniono się, że katalog 'logs' istnieje
+2025-04-15 00:55:30,886 [INFO] Upewniono się, że katalog 'data/cache' istnieje
+2025-04-15 00:55:30,886 [INFO] Endpoint '/api/sentiment/latest' już istnieje
+2025-04-15 00:55:30,887 [INFO] URL do API sentymentu jest poprawny lub już został naprawiony
+2025-04-15 00:55:30,887 [INFO] Kontenery na dane portfela są już obecne w szablonie
+2025-04-15 00:55:30,887 [INFO] Naprawa dashboardu i interfejsu zakończona.
