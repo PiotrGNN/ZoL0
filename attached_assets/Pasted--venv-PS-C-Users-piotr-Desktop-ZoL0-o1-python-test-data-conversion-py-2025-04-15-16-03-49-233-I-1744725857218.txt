@@ -1,0 +1,86 @@
+(venv) PS C:\Users\piotr\Desktop\ZoL0-o1> python test_data_conversion.py
+2025-04-15 16:03:49,233 [INFO] SentimentAnalyzer zainicjalizowany
+Dodano katalog python_libs do ścieżki Pythona.
+2025-04-15 16:03:49,241 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_loader.log
+2025-04-15 16:03:49,241 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_loader.log
+2025-04-15 16:03:49,241 [INFO] Inicjalizacja ModelLoader dla ścieżki: ai_models
+2025-04-15 16:03:49,241 [INFO] Rozpoczęcie ładowania modeli...
+2025-04-15 16:03:49,243 [INFO] AnomalyDetector zainicjalizowany (metoda: z_score, próg: 2.5)
+2025-04-15 16:03:49,243 [INFO] Załadowano model AnomalyDetector z modułu anomaly_detection
+2025-04-15 16:03:49,243 [INFO] Załadowano model AnomalyDetector z modułu anomaly_detection
+2025-04-15 16:03:49,243 [INFO] ModelRecognizer zainicjalizowany z 5 modelami w bazie
+2025-04-15 16:03:49,243 [INFO] ModelRecognizer zainicjalizowany z 5 modelami w bazie
+2025-04-15 16:03:49,243 [INFO] Załadowano model ModelRecognizer z modułu model_recognition
+2025-04-15 16:03:49,243 [INFO] Załadowano model ModelRecognizer z modułu model_recognition
+2025-04-15 16:03:49.321079: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-04-15 16:03:50.332965: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-04-15 16:03:52,995 [INFO] Załadowano model RandomForestRegressor z modułu model_training
+2025-04-15 16:03:52,995 [INFO] Załadowano model RandomForestRegressor z modułu model_training
+2025-04-15 16:03:52,996 [INFO] Załadowano model Sequential z modułu reinforcement_learning
+2025-04-15 16:03:52,996 [INFO] Załadowano model Sequential z modułu reinforcement_learning
+2025-04-15 16:03:53,002 [INFO] SentimentAnalyzer zainicjalizowany
+2025-04-15 16:03:53,002 [INFO] Załadowano model SentimentAnalyzer z modułu sentiment_ai
+2025-04-15 16:03:53,002 [INFO] Załadowano model SentimentAnalyzer z modułu sentiment_ai
+2025-04-15 16:03:53,002 [INFO] Dane wejściowe przekonwertowane dla modelu AnomalyDetector
+2025-04-15 16:03:53,002 [INFO] Dane wejściowe przekonwertowane dla modelu AnomalyDetector
+2025-04-15 16:03:53,005 [WARNING] Błąd podczas używania metody detect: only length-1 arrays can be converted to Python scalars
+2025-04-15 16:03:53,005 [INFO] Dane wejściowe przekonwertowane dla modelu ModelRecognizer
+2025-04-15 16:03:53,005 [INFO] Dane wejściowe przekonwertowane dla modelu ModelRecognizer
+2025-04-15 16:03:53,005 [INFO] Rozpoznano model: Cup and Handle z pewnością 0.77
+2025-04-15 16:03:53,005 [INFO] Rozpoznano model: Cup and Handle z pewnością 0.77
+2025-04-15 16:03:53,005 [INFO] Dane wejściowe przekonwertowane dla modelu RandomForestRegressor
+2025-04-15 16:03:53,005 [INFO] Dane wejściowe przekonwertowane dla modelu RandomForestRegressor
+2025-04-15 16:03:53,005 [WARNING] Model RandomForestRegressor nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:03:53,005 [WARNING] Model RandomForestRegressor nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:03:53,135 [INFO] Model RandomForestRegressor został wytrenowany.
+2025-04-15 16:03:53,135 [INFO] Model RandomForestRegressor został wytrenowany.
+C:\Users\piotr\Desktop\ZoL0-o1\venv\lib\site-packages\sklearn\utils\validation.py:2739: UserWarning: X does not have valid feature names, but RandomForestRegressor was fitted with feature names
+  warnings.warn(
+2025-04-15 16:03:53,175 [ERROR] Błąd podczas predykcji modelu RandomForestRegressor: X has 5 features, but RandomForestRegressor is expecting 2 features as input.
+2025-04-15 16:03:53,175 [ERROR] Błąd podczas predykcji modelu RandomForestRegressor: X has 5 features, but RandomForestRegressor is expecting 2 features as input.
+2025-04-15 16:03:53,175 [INFO] Dane wejściowe przekonwertowane dla modelu Sequential
+2025-04-15 16:03:53,175 [INFO] Dane wejściowe przekonwertowane dla modelu Sequential
+2025-04-15 16:03:53,175 [WARNING] Model Sequential nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:03:53,175 [WARNING] Model Sequential nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:03:53,175 [ERROR] Błąd podczas trenowania modelu Sequential: You must call `compile()` before using the model.
+2025-04-15 16:03:53,175 [ERROR] Błąd podczas trenowania modelu Sequential: You must call `compile()` before using the model.
+2025-04-15 16:03:53,175 [INFO] Dane wejściowe przekonwertowane dla modelu SentimentAnalyzer
+2025-04-15 16:03:53,175 [INFO] Dane wejściowe przekonwertowane dla modelu SentimentAnalyzer
+2025-04-15 16:03:53,175 [WARNING] Model SentimentAnalyzer nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:03:53,175 [WARNING] Model SentimentAnalyzer nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:03:53,175 [INFO] Model sentymentu wytrenowany. Nowa dokładność: 82.66%
+2025-04-15 16:03:53,181 [INFO] Model SentimentAnalyzer został wytrenowany.
+2025-04-15 16:03:53,181 [INFO] Model SentimentAnalyzer został wytrenowany.
+2025-04-15 16:03:53,181 [INFO] Zakończono testy 5 modeli
+2025-04-15 16:03:53,181 [INFO] Zakończono testy 5 modeli
+2025-04-15 16:03:53,181 [INFO] Załadowano model: AnomalyDetector
+2025-04-15 16:03:53,181 [INFO] Załadowano model: ModelRecognizer
+2025-04-15 16:03:53,181 [INFO] Załadowano model: RandomForestRegressor
+2025-04-15 16:03:53,181 [INFO] Załadowano model: Sequential
+2025-04-15 16:03:53,181 [INFO] Załadowano model: SentimentAnalyzer
+2025-04-15 16:03:53,181 [INFO] Załadowano 5 modeli
+2025-04-15 16:03:53,181 [INFO] Znaleziono 13 modeli
+2025-04-15 16:03:53,181 [INFO] ai_models: Znaleziono 13 modeli AI
+2025-04-15 16:03:53,181 [INFO] Zaimportowano funkcję prepare_data_for_model
+2025-04-15 16:03:53,181 [INFO] Rozpoczynam testy konwersji danych
+2025-04-15 16:03:53,181 [INFO] Uruchamiam test: Konwersja ze słownika
+2025-04-15 16:03:53,181 [INFO] Test konwersji danych ze słownika
+2025-04-15 16:03:53,181 [INFO] Wynik konwersji: Tablica o kształcie (5, 5)
+2025-04-15 16:03:53,181 [INFO] Typ wyniku: <class 'numpy.ndarray'>
+2025-04-15 16:03:53,181 [INFO] Konwersja ze słownika zakończona sukcesem
+2025-04-15 16:03:53,181 [INFO] Test Konwersja ze słownika zakończony sukcesem
+2025-04-15 16:03:53,181 [INFO] Uruchamiam test: Konwersja z DataFrame
+2025-04-15 16:03:53,181 [INFO] Test konwersji danych z DataFrame
+2025-04-15 16:03:53,181 [INFO] Wynik konwersji: Tablica o kształcie (5, 6)
+2025-04-15 16:03:53,181 [INFO] Typ wyniku: <class 'numpy.ndarray'>
+2025-04-15 16:03:53,181 [INFO] Konwersja z DataFrame zakończona sukcesem
+2025-04-15 16:03:53,181 [INFO] Test Konwersja z DataFrame zakończony sukcesem
+2025-04-15 16:03:53,181 [INFO] Uruchamiam test: Konwersja z tablicy NumPy
+2025-04-15 16:03:53,181 [INFO] Test konwersji danych z tablicy NumPy
+2025-04-15 16:03:53,181 [INFO] Wynik konwersji: Tablica o kształcie (10, 5)
+2025-04-15 16:03:53,181 [INFO] Typ wyniku: <class 'numpy.ndarray'>
+2025-04-15 16:03:53,181 [INFO] Konwersja z tablicy NumPy zakończona sukcesem
+2025-04-15 16:03:53,181 [INFO] Test Konwersja z tablicy NumPy zakończony sukcesem
+2025-04-15 16:03:53,181 [INFO] Testy zakończone. Udane: 3/3
+2025-04-15 16:03:53,181 [INFO] Wszystkie testy zakończone sukcesem!
+(venv) PS C:\Users\piotr\Desktop\ZoL0-o1>
