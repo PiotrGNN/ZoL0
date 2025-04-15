@@ -73,6 +73,13 @@ class ModelRecognizer:
         Returns:
             Dict[str, Any]: Przygotowane dane w formacie słownika
         """
+        import numpy as np
+        import pandas as pd
+        
+        # Jeśli dane są None, zwróć pusty słownik z błędem
+        if data is None:
+            return {'error': 'Brak danych wejściowych'}
+            
         # Jeśli dane są już słownikiem, sprawdź czy mają wymagane pola
         if isinstance(data, dict):
             # Jeśli brak pola price_data, sprawdź inne możliwe pola
@@ -90,11 +97,14 @@ class ModelRecognizer:
             return {'price_data': data}
             
         # Jeśli dane są DataFrame, przekonwertuj na słownik
-        elif hasattr(data, 'to_dict'):
+        elif isinstance(data, pd.DataFrame):
             try:
-                return {'price_data': data['close'].tolist() if 'close' in data else data.iloc[:, 0].tolist()}
-            except:
-                self.logger.warning("Nie udało się przekonwertować DataFrame na słownik")
+                if 'close' in data.columns:
+                    return {'price_data': data['close'].tolist()}
+                else:
+                    return {'price_data': data.iloc[:, 0].tolist()}
+            except Exception as e:
+                self.logger.warning(f"Nie udało się przekonwertować DataFrame na słownik: {e}")
                 
         return {'error': 'Nieobsługiwany format danych wejściowych'}
             

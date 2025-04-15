@@ -279,6 +279,17 @@ def prepare_data_for_model(data: Union[Dict, List, np.ndarray, pd.DataFrame]) ->
     if isinstance(data, dict):
         logger.info("Konwersja słownika danych na DataFrame")
         df = pd.DataFrame(data)
+        
+        # Wybieramy kolumny OHLCV jeśli istnieją
+        cols_to_use = []
+        for col in ['open', 'high', 'low', 'close', 'volume']:
+            if col in df.columns:
+                cols_to_use.append(col)
+        
+        # Jeśli znaleziono odpowiednie kolumny, użyj ich
+        if cols_to_use:
+            return df[cols_to_use].values
+        # W przeciwnym razie użyj wszystkich kolumn
         return df.values
         
     # Jeśli to DataFrame, konwertujemy na numpy array

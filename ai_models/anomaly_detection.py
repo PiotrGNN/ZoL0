@@ -70,8 +70,12 @@ class AnomalyDetector:
             if std == 0:
                 return {"detected": False, "score": 0, "message": "Brak zmienności w danych"}
 
-            z_scores = [(x - mean) / std for x in numeric_data]
-            max_z = max(abs(z) for z in z_scores)
+            # Zabezpieczenie przed dzieleniem przez zero i konwersja na typ numeryczny
+            if isinstance(numeric_data, (list, np.ndarray)) and len(numeric_data) > 0:
+                z_scores = [(float(x) - mean) / std for x in numeric_data]
+                max_z = max(abs(z) for z in z_scores)
+            else:
+                return {"detected": False, "score": 0, "message": "Nieprawidłowy format danych"}
 
             is_anomaly = max_z > self.threshold
 
