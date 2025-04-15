@@ -1587,10 +1587,10 @@ if __name__ == "__main__":
 
     # Konfiguracja uruchomienia aplikacji
     port = int(os.environ.get("PORT", 5000))
-    host = "127.0.0.1"  # Localhost dla środowiska lokalnego
+    host = "0.0.0.0"  # Używamy 0.0.0.0 dla dostępu zewnętrznego w środowisku Replit
     debug_mode = os.getenv("DEBUG", "True").lower() in ["true", "1", "yes"]
 
-    logging.info(f"Uruchamianie aplikacji Flask lokalnie na {host}:{port}")
+    logging.info(f"Uruchamianie aplikacji Flask na {host}:{port}")
     try:
         app.run(host=host, port=port, debug=debug_mode)
     except Exception as e:

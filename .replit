@@ -70,7 +70,7 @@ pattern = "**/*.py"
 start = "pylsp"
 
 [deployment]
-run = ["sh", "-c", "python main.py"]
+run = ["sh", "-c", "python install_replit.py && python main.py"]
 
 
 [auth]
@@ -78,7 +78,7 @@ pageEnabled = false
 buttonEnabled = false
 
 [workflows]
-runButton = "Niezawodny Trading System"
+runButton = "Uruchom Z Naprawami"
 
 [[workflows.workflow]]
 name = "Run"
@@ -302,6 +302,23 @@ args = "python fix_imports.py"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python test_models.py"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python main.py"
+
+[[workflows.workflow]]
+name = "Uruchom Z Naprawami"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python install_replit.py"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python fix_imports.py"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
