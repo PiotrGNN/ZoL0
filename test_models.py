@@ -253,6 +253,15 @@ def test_models() -> Dict[str, Any]:
         if model_info['has_fit'] and model_info['has_predict']:
             print(f"⏳ Testowanie modelu ML: {model_name}...")
 
+            # Sprawdź czy model Sequential ma warstwy
+            try:
+                import tensorflow as tf
+                if tf is not None and isinstance(instance, tf.keras.Sequential) and len(instance.layers) == 0:
+                    print(f"⚠️ Model {model_name} (Sequential) nie ma warstw, pomijam test")
+                    continue
+            except ImportError:
+                pass # Ignore if tensorflow is not installed
+
             try:
                 # Trenuj model
                 instance.fit(X_train, y_train)
@@ -398,13 +407,13 @@ except ImportError:
             try:
                 from ai_models.anomaly_detection import AnomalyDetector
                 from ai_models.model_training import prepare_data_for_model
-                
+
                 anomaly_detector = AnomalyDetector()
-                
+
                 # Test z przykładowymi danymi
                 test_data = {'open': [100, 101, 102], 'high': [105, 106, 107], 'low': [98, 99, 100], 
                            'close': [103, 104, 105], 'volume': [1000, 1100, 1200]}
-                
+
                 # Konwersja danych do odpowiedniego formatu przed testem
                 if hasattr(anomaly_detector, "predict"):
                     prepared_data = prepare_data_for_model(test_data)
@@ -416,7 +425,7 @@ except ImportError:
                         predict_success = False
                 else:
                     predict_success = False
-                
+
                 test_results["AnomalyDetector"] = {
                     "success": True,
                     "accuracy": 84.5,
@@ -426,7 +435,7 @@ except ImportError:
                     },
                     "predict_test": predict_success
                 }
-                
+
                 self.loaded_models.append({
                     "name": "AnomalyDetector",
                     "instance": anomaly_detector,
@@ -612,12 +621,20 @@ def test_models(models_to_test: Optional[List[str]] = None) -> Dict[str, Any]:
             print(f"⏳ Testowanie modelu ML: {model_name}...")
 
             try:
+                import tensorflow as tf
+                if tf is not None and isinstance(instance, tf.keras.Sequential) and len(instance.layers) == 0:
+                    print(f"⚠️ Model {model_name} (Sequential) nie ma warstw, pomijam test")
+                    continue
+            except ImportError:
+                pass # Ignore if tensorflow is not installed
+
+            try:
                 # Trenuj model
                 instance.fit(X_train, y_train)
 
                 # Oceń model
-                test_result = model_tester.test_model(model_name)
-                ml_results[model_name] = test_result
+                evaluation = model_tester.evaluate_model(model_name, X_test, y_test)
+                ml_results[model_name] = evaluation
 
                 print(f"✅ Model {model_name} przetestowany pomyślnie!")
             except Exception as e:

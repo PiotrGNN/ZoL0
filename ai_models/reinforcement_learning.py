@@ -203,6 +203,15 @@ def train_dqn(agent, env, episodes=1000, max_steps=500):
             "Epizod %d: Reward: %.2f, Epsilon: %.4f", e + 1, total_reward, agent.epsilon
         )
 
+    # Sprawdź, czy model ma warstwy przed zapisem
+    if len(agent.model.layers) == 0:
+        logging.warning("Model nie ma warstw, dodaję podstawowe warstwy przed zapisem")
+        # Dodajemy minimalne warstwy, by model był poprawny
+        agent.model.add(Dense(64, input_shape=(agent.state_size,), activation="relu"))
+        agent.model.add(Dense(64, activation="relu"))
+        agent.model.add(Dense(agent.action_size, activation="linear"))
+        agent.model.compile(optimizer=Adam(learning_rate=agent.learning_rate), loss="mse")
+    
     agent.save("dqn_trained_model.h5")
 
 

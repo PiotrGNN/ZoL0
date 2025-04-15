@@ -209,13 +209,13 @@ class ModelTrainer:
             # Sprawdzenie, czy model został wytrenowany
             if hasattr(self.model, 'n_features_in_') or hasattr(self.model, 'feature_importances_') or \
                (tf is not None and isinstance(self.model, tf.keras.Model) and len(self.model.layers) > 0):
-                
-                # Jeśli to model Sklearn i nie był trenowany, dodajemy ostrzeżenie
-                if hasattr(self.model, 'fit') and not hasattr(self.model, 'n_features_in_') and \
-                   not (tf is not None and isinstance(self.model, tf.keras.Model)):
-                    logging.warning("Model %s może nie być wytrenowany! Sprawdź czy wywołano fit() przed zapisem.", 
-                                  self.model_name)
-                
+
+                    # Jeśli to model Sklearn i nie był trenowany, dodajemy ostrzeżenie
+                    if hasattr(self.model, 'fit') and not hasattr(self.model, 'n_features_in_') and \
+                       not (tf is not None and isinstance(self.model, tf.keras.Model)):
+                        logging.warning("Model %s może nie być wytrenowany! Sprawdź czy wywołano fit() przed zapisem.", 
+                                      self.model_name)
+
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                 model_filename = os.path.join(
                     self.saved_model_dir, f"{self.model_name}_{timestamp}"
@@ -226,7 +226,7 @@ class ModelTrainer:
                     if not self.model.layers:
                         logging.error("Model Sequential nie ma warstw! Anulowanie zapisu.")
                         return
-                    
+
                     model_filename += ".h5"
                     self.model.save(model_filename)
                 else:
@@ -238,7 +238,7 @@ class ModelTrainer:
             else:
                 logging.error("Model %s nie został wytrenowany lub nie ma warstw! Anulowanie zapisu.", 
                             self.model_name)
-                
+
         except Exception as e:
             logging.error("Błąd podczas zapisywania modelu: %s", e)
             raise
