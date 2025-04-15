@@ -288,4 +288,4 @@ class ReinforcementLearner:
         # Upewnij się, że katalog logów istnieje
         os.makedirs('logs', exist_ok=True)
 
-ReinforcementLearner = DQNAgent
+# Usunięto nadpisanie klasy ReinforcementLearner
