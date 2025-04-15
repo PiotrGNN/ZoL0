@@ -1579,13 +1579,34 @@ def is_env_flag_true(env_var_name: str) -> bool:
 
 # Uruchomienie aplikacji
 if __name__ == "__main__":
+    # Parser argumentów
+    import argparse
+    parser = argparse.ArgumentParser(description="ZoL0-1: System Tradingowy z AI")
+    parser.add_argument("--mode", choices=["sim", "real"], default="sim", 
+                      help="Tryb pracy: sim (symulacja) lub real (rzeczywisty)")
+    parser.add_argument("--port", type=int, default=5000, 
+                      help="Port dla dashboardu (domyślnie: 5000)")
+    parser.add_argument("--debug", action="store_true", 
+                      help="Włącza tryb debugowania")
+    parser.add_argument("--dashboard-only", action="store_true", 
+                      help="Uruchamia tylko dashboard bez pełnej inicjalizacji systemu")
+    args = parser.parse_args()
+
     # Tworzenie katalogów - użycie os.path.join dla kompatybilności z Windows
     os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs"), exist_ok=True)
     os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "cache"), exist_ok=True)
     os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), "python_libs"), exist_ok=True)
+    os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), "models"), exist_ok=True)
 
     # Logowanie informacji o uruchomieniu
-    logger.info("Uruchamianie aplikacji w środowisku lokalnym")
+    mode_str = "symulowanym" if args.mode == "sim" else "RZECZYWISTYM"
+    logger.info(f"Uruchamianie aplikacji w trybie {mode_str}")
+    
+    if args.mode == "real":
+        logger.warning("========== UWAGA ==========")
+        logger.warning("Uruchomiono system w trybie RZECZYWISTYM!")
+        logger.warning("Transakcje będą wykonywane na prawdziwym koncie!")
+        logger.warning("===========================")
 
     # Sprawdź środowisko - czy na pewno używamy produkcyjnego API
     if is_env_flag_true("BYBIT_TESTNET"):
@@ -1643,10 +1664,18 @@ if __name__ == "__main__":
             with open(simulation_chart_path, 'w') as f:
                 f.write('')
 
+    # Dodatkowa konfiguracja dla trybu rzeczywistego
+    if args.mode == "real" and not args.dashboard_only:
+        if portfolio_manager:
+            portfolio_manager.switch_mode("real")
+            logger.info("Przełączono tryb pracy portfolio_manager na RZECZYWISTY")
+        else:
+            logger.warning("Nie można przełączyć trybu pracy portfolio_manager - nie jest zainicjalizowany")
+    
     # Konfiguracja uruchomienia aplikacji
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", args.port))
     host = "0.0.0.0"  # Używamy 0.0.0.0 dla dostępu zewnętrznego w środowisku Replit
-    debug_mode = os.getenv("DEBUG", "True").lower() in ["true", "1", "yes"]
+    debug_mode = args.debug or os.getenv("DEBUG", "False").lower() in ["true", "1", "yes"]
 
     logging.info(f"Uruchamianie aplikacji Flask na {host}:{port}")
     try:
@@ -1654,6 +1683,6 @@ if __name__ == "__main__":
     except Exception as e:
         logging.error(f"Błąd podczas uruchamiania aplikacji Flask: {e}")
         print(f"\nBłąd podczas uruchamiania aplikacji: {e}")
-        print("Sprawdź czy port 5000 nie jest już używany.")
+        print("Sprawdź czy port {port} nie jest już używany.")
         import sys
         sys.exit(1)

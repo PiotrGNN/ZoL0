@@ -1,36 +1,18 @@
 run = "python main.py"
+entrypoint = "main.py"
 modules = ["python-3.10:v18-20230807-322e88b"]
 
-hidden = [".pythonlibs"]
-
 [nix]
-channel = "stable-23_11"
-
-[env]
-PYTHONPATH = "${PYTHONPATH}:${REPL_HOME}"
-FLASK_APP = "main.py"
-FLASK_ENV = "development"
-PORT = "5000"
-HOST = "0.0.0.0"
-
-[packager]
-language = "python3"
-
-[packager.features]
-packageSearch = true
-guessImports = true
-enabledForHosting = true
+channel = "stable-23_05"
 
 [deployment]
-run = ["sh", "-c", "python main.py"]
+run = ["python", "main.py"]
 deploymentTarget = "cloudrun"
 
-[[ports]]
-localPort = 5000
-externalPort = 80
+[unitTest]
+language = "python3"
 
 [workflows]
-runButton = "Naprawiony System"
 
 [[workflows.workflow]]
 name = "Naprawiony System"
@@ -41,18 +23,34 @@ task = "shell.exec"
 args = "python main.py"
 
 [[workflows.workflow]]
-name = "Run"
+name = "Test Modeli"
 author = 31819671
 mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python main.py"
+args = "python test_models.py"
 
 [[workflows.workflow]]
-name = "Test Modeli"
+name = "Czyszczenie Cache"
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python -c \"from data.utils.cache_manager import clean_old_data; clean_old_data(); print('✅ Cache wyczyszczone!')\""
+
+[[workflows.workflow]]
+name = "Testy Pełne"
 author = 31819671
 mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python test_environment.py"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python test_data_conversion.py"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
@@ -85,35 +83,27 @@ mode = "sequential"
 task = "shell.exec"
 args = "python main.py"
 
-[[workflows.workflow]]
-name = "Testy Pełne"
-author = 31819671
-mode = "sequential"
+# Wspólne skróty
+[keybindings]
+run = "ctrl+r"
+test = "ctrl+shift+t"
+deploy = "ctrl+shift+d"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python test_environment.py"
+[env]
+PYTHONPATH = "${PYTHONPATH}:${REPL_HOME}"
+FLASK_APP = "main.py"
+FLASK_ENV = "development"
+PORT = "5000"
+HOST = "0.0.0.0"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python test_data_conversion.py"
+[packager]
+language = "python3"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python test_models.py"
+[packager.features]
+packageSearch = true
+guessImports = true
+enabledForHosting = true
 
-[[workflows.workflow]]
-name = "Czyszczenie Cache"
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python -c \"from data.utils.cache_manager import clean_old_data; clean_old_data(); print('✅ Cache wyczyszczone!')\""
-
-[[workflows.workflow]]
-name = "Zarządzanie Modelami AI"
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python manage_ai_models.py"
+[[ports]]
+localPort = 5000
+externalPort = 80

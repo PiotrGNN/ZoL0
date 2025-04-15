@@ -1,96 +1,132 @@
-# 🚀 ZoL0-1: System Tradingowy z AI
 
-## 📋 Opis projektu
-ZoL0-1 to zaawansowany system tradingowy wykorzystujący różne modele sztucznej inteligencji do analizy rynków finansowych. System integruje analizę techniczną, sentiment oraz algorytmy uczenia maszynowego do generowania sygnałów tradingowych.
+# ZoL0-1: System Tradingowy z AI
 
-## 🛠️ Funkcje
-- Wykrywanie anomalii rynkowych
-- Analiza sentymentu na podstawie danych tekstowych (dokładność ~82%)
-- Przewidywanie cen na podstawie RandomForest z automatycznym zapisem modeli
-- Rozpoznawanie wzorców rynkowych (ModelRecognizer) z walidacją danych
-- Dashboard webowy do monitorowania stanu systemu
-- Zarządzanie ryzykiem i portfelem
-- Integracja z giełdą ByBit
-- Inteligentne buforowanie danych z automatycznym czyszczeniem
+System automatyzacji handlu z wykorzystaniem sztucznej inteligencji i analizy technicznej. Projekt integruje modele uczenia maszynowego, zarządzanie ryzykiem oraz efektywne operacje handlowe w trybie symulowanym lub rzeczywistym.
 
-## 🧠 Status modeli AI
-| Model | Status | Dokładność | Zapisywanie |
-|-------|--------|------------|-------------|
-| RandomForestRegressor | ✅ Działa | Zmienna | Automatyczne (.pkl) |
-| SentimentAnalyzer | ✅ Działa | ~82% | Automatyczne (.pkl) |
-| Sequential (Keras) | ✅ Naprawiony | Zmienna | Automatyczne (.h5) |
-| ModelRecognizer | ✅ Działa | Wysoka | Nie dotyczy |
-| AnomalyDetector | ✅ Działa | Zmienna | Nie dotyczy |
+## 🚀 Funkcjonalność
 
-## 📦 Wymagania
-- Python 3.8+
-- Biblioteki zainstalowane z pliku requirements.txt
-- Przestrzeń dyskowa na cache i modele (~500MB)
+- **Modele AI i uczenie maszynowe**: Przewidywanie ruchu cen i rozpoznawanie wzorców cenowych
+- **Zarządzanie Ryzykiem**: Dynamiczny mechanizm zarządzania ryzykiem i portfelem
+- **Analiza Techniczna**: Wskaźniki techniczne i analiza wolumenu
+- **Dashboard Web**: Wizualizacja portfela, transakcji i rezultatów modeli AI
+- **API Giełdowe**: Integracja z ByBit i możliwość dodania innych giełd
+- **Symulacje**: Możliwość uruchomienia w trybie symulowanym z rzeczywistymi danymi
 
-## 🚀 Uruchomienie
-System można uruchomić na dwa sposoby:
+## 📋 Wymagania
 
-### 1. Uruchomienie pełnego systemu
+- Python 3.8 lub nowszy
+- Pakiety wymienione w `requirements.txt`
+- Klucze API giełdy (opcjonalnie dla trybu rzeczywistego)
+
+## 🔧 Instalacja
+
+1. Sklonuj repozytorium:
+```bash
+git clone https://github.com/twój-użytkownik/ZoL0-1.git
+cd ZoL0-1
+```
+
+2. Zainstaluj zależności:
+```bash
+pip install -r requirements.txt
+```
+
+3. Skonfiguruj zmienne środowiskowe:
+```bash
+cp .env.example .env
+# Edytuj plik .env, aby dodać klucze API
+```
+
+## 🖥 Uruchomienie
+
+### Tryb Symulowany (domyślny)
 ```bash
 python main.py
 ```
-Uruchamia backend wraz z API webowym.
 
-### 2. Uruchomienie testów modeli
+### Tryb Rzeczywisty (wymaga kluczy API)
 ```bash
-python test_models.py
+python main.py --mode real
 ```
-Testuje modele AI w systemie.
 
-### 3. Uruchomienie testów konwersji danych
+### Uruchomienie Testów
 ```bash
-python test_data_conversion.py
+python test_models.py  # Test modeli AI
+python test_environment.py  # Sprawdzenie środowiska
+python test_data_conversion.py  # Test konwersji danych
 ```
-Testuje poprawność konwersji danych między różnymi formatami.
 
-## 📊 Dashboard
-System udostępnia dashboard webowy dostępny pod adresem: `http://localhost:5000`
+## 🔍 Dashboard i Monitoring
 
-## 🧪 Modele AI
-- **RandomForestRegressor** - przewidywanie cen
-- **Sequential (Keras)** - uczenie ze wzmocnieniem
-- **SentimentAnalyzer** - analiza sentymentu
-- **AnomalyDetector** - wykrywanie anomalii
-- **ModelRecognizer** - rozpoznawanie wzorców rynkowych
+System posiada wbudowany dashboard dostępny pod adresem http://localhost:5000 po uruchomieniu programu. Dashboard zawiera:
 
-## 📁 Struktura projektu
+- Podsumowanie portfela i pozycji
+- Wizualizacje transakcji i zysków/strat
+- Status modeli AI
+- Analityki w czasie rzeczywistym
+
+## 🏗 Struktura Projektu
+
 ```
-├── ai_models/            # Modele AI do analizy rynku
-├── data/                 # Komponenty przetwarzania danych
-│   ├── cache/            # Dane cache
-│   ├── execution/        # Moduły wykonywania transakcji
+ZoL0-1/
+├── ai_models/            # Modele AI i uczenia maszynowego
+├── data/                 # Operacje na danych i komunikacja z API
+│   ├── cache/            # Dane tymczasowe i cache
+│   ├── data/             # Przetwarzanie danych
+│   ├── execution/        # Realizacja transakcji
 │   ├── indicators/       # Wskaźniki techniczne
-│   ├── logging/          # Logowanie operacji
+│   ├── logging/          # System logowania
 │   ├── optimization/     # Optymalizacja strategii
 │   ├── risk_management/  # Zarządzanie ryzykiem
-│   ├── strategies/       # Strategie tradingowe
-│   ├── tests/            # Testy
+│   ├── strategies/       # Strategie handlowe
+│   ├── tests/            # Testy modułów
 │   └── utils/            # Narzędzia pomocnicze
 ├── logs/                 # Pliki logów
-├── python_libs/          # Uproszczone/specjalne biblioteki
-├── static/               # Statyczne zasoby web
-├── templates/            # Szablony HTML
-├── main.py               # Główny punkt wejścia aplikacji
-├── models/               # Zapisane modele w formacie .pkl
-├── config/               # Pliki konfiguracyjne
-├── requirements.txt      # Zależności projektu
-└── test_data_conversion.py # Testy konwersji danych
-
+├── models/               # Zapisane modele ML
+├── python_libs/          # Biblioteki pomocnicze
+├── reports/              # Raporty i analizy
+├── saved_models/         # Zapisane i wytrenowane modele
+├── static/               # Pliki statyczne dla dashboardu
+│   ├── css/
+│   ├── img/
+│   └── js/
+└── templates/            # Szablony HTML dla dashboardu
 ```
 
-## 🔧 Konfiguracja
-Ustawienia znajdują się w katalogu `config/`. Skopiuj `.env.example` do `.env` i dostosuj parametry.
+## 📊 Zarządzanie Portfelem
 
-## 📝 Logi
-Logi systemu zapisywane są w katalogu `logs/`.
+System oferuje:
 
-## 🤝 Autorzy
-- ZoL0-1 Team
+- Symulowany lub rzeczywisty handel
+- Podgląd stanu portfela w czasie rzeczywistym
+- Szczegółowe metryki wydajności (ROI, drawdown, profit factor)
+- Śledzenie wszystkich transakcji w logach
 
-## 📄 Licencja
-Copyright © 2025
+## 📃 Logi i Historia Transakcji
+
+Wszystkie operacje są rejestrowane w folderze `logs/`:
+
+- `app.log` - Ogólne logi aplikacji
+- `portfolio.log` - Logi portfela
+- `trade.log` - Historia transakcji
+- `model_tests.log` - Testy modeli AI
+- `detailed_trades.json` - Szczegółowa historia w formacie JSON
+
+## 🔐 Bezpieczeństwo
+
+- Klucze API są przechowywane tylko w pliku `.env` (niewersjonowanym)
+- Domyślnie używany jest tryb symulowany, który nie wymaga kluczy API
+- Tryb rzeczywisty wymaga dodatkowego potwierdzenia
+
+## 🛠 Konfiguracja
+
+Główna konfiguracja znajduje się w `config/settings.py`. Możesz dostosować:
+
+- Parametry ryzyka
+- Ustawienia handlowe (prowizje, limity zleceń)
+- Ustawienia modeli AI
+- API i środowisko
+
+## 📜 Licencja
+
+[MIT License](LICENSE)
