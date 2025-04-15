@@ -37,7 +37,7 @@ class AnomalyDetector:
         """
         if data is None:
             return {"detected": False, "score": 0, "message": "Brak danych"}
-            
+
         # Konwersja słownika na listę wartości (jeśli data to słownik OHLCV)
         numeric_data = []
         if isinstance(data, dict):
@@ -57,7 +57,7 @@ class AnomalyDetector:
                         break
         else:
             numeric_data = data
-            
+
         # Sprawdź czy mamy wystarczającą ilość danych
         if len(numeric_data) < 2:
             return {"detected": False, "score": 0, "message": "Zbyt mało danych"}
@@ -135,15 +135,31 @@ class AnomalyDetector:
 
     def predict(self, data):
         """
-        Przewiduje, czy dane zawierają anomalie.
+        Przewiduje anomalie na podstawie podanych danych.
 
         Args:
-            data: Dane do analizy
+            data: Dane wejściowe (np. OHLCV)
 
         Returns:
-            dict: Wynik detekcji anomalii
+            dict: Wynik zawierający informację o anomaliach.
         """
-        return self.detect(data)
+        try:
+            if self.model is None:
+                self._load_model()
+
+            if self.model is None:
+                return {"error": "Model nie jest załadowany", "success": False}
+
+            # Konwersja danych wejściowych na odpowiedni format
+            from ai_models.model_training import prepare_data_for_model
+            data_prepared = prepare_data_for_model(data)
+
+            # Wykonaj predykcję
+            prediction = self.model.predict(data_prepared)
+            return {"prediction": prediction, "success": True}
+        except Exception as e:
+            return {"error": str(e), "success": False}
+
 
     def get_status(self):
         """

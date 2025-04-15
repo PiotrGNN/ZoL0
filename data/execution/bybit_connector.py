@@ -698,14 +698,37 @@ class BybitConnector:
         """
         try:
             self._apply_rate_limit()
-            # Konwertuj interwał na liczbę minut, jeśli ma format 'Xm'
-            interval_value = interval
-            if isinstance(interval, str) and 'm' in interval:
-                try:
-                    interval_value = int(interval.replace('m', ''))
-                except ValueError:
-                    self.logger.error(f"Nieprawidłowy format interwału: {interval}")
-                    return []
+            # Konwertuj interwał na liczbę minut
+            interval_value = 15  # Domyślnie 15 minut
+            
+            if isinstance(interval, str):
+                if interval.endswith('m'):
+                    try:
+                        interval_value = int(interval.replace('m', ''))
+                    except ValueError:
+                        self.logger.error(f"Nieprawidłowy format interwału: {interval}")
+                        return []
+                elif interval.endswith('h'):
+                    try:
+                        # Konwersja godzin na minuty
+                        interval_value = int(interval.replace('h', '')) * 60
+                    except ValueError:
+                        self.logger.error(f"Nieprawidłowy format interwału: {interval}")
+                        return []
+                elif interval.endswith('d'):
+                    try:
+                        # Konwersja dni na minuty
+                        interval_value = int(interval.replace('d', '')) * 60 * 24
+                    except ValueError:
+                        self.logger.error(f"Nieprawidłowy format interwału: {interval}")
+                        return []
+                else:
+                    try:
+                        # Próba bezpośredniej konwersji na liczbę
+                        interval_value = int(interval)
+                    except ValueError:
+                        self.logger.error(f"Nieprawidłowy format interwału: {interval}")
+                        return []
 
             # Symulacja danych świecowych
             current_time = int(time.time())

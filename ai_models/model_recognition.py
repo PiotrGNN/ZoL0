@@ -66,20 +66,20 @@ class ModelRecognizer:
     def prepare_input_data(self, data: Any) -> Dict[str, Any]:
         """
         Przygotowuje dane wejściowe do analizy.
-        
+
         Parameters:
             data (Any): Dane wejściowe w różnych formatach
-            
+
         Returns:
             Dict[str, Any]: Przygotowane dane w formacie słownika
         """
         import numpy as np
         import pandas as pd
-        
+
         # Jeśli dane są None, zwróć pusty słownik z błędem
         if data is None:
             return {'error': 'Brak danych wejściowych'}
-            
+
         # Jeśli dane są już słownikiem, sprawdź czy mają wymagane pola
         if isinstance(data, dict):
             # Jeśli brak pola price_data, sprawdź inne możliwe pola
@@ -97,11 +97,11 @@ class ModelRecognizer:
                             self.logger.info(f"Używam pola '{key}' jako danych cenowych")
                             return {'price_data': value}
             return data
-            
+
         # Jeśli dane są array lub listą, uznaj za price_data
         elif isinstance(data, (list, np.ndarray)):
             return {'price_data': data}
-            
+
         # Jeśli dane są DataFrame, przekonwertuj na słownik
         elif isinstance(data, pd.DataFrame):
             try:
@@ -115,7 +115,7 @@ class ModelRecognizer:
                     return {'price_data': data.iloc[:, 0].tolist()}
             except Exception as e:
                 self.logger.warning(f"Nie udało się przekonwertować DataFrame na słownik: {e}")
-                
+
         # Jeśli nic nie pasuje, spróbuj skonwertować dane do postaci numpy
         try:
             array_data = np.array(data)
@@ -123,9 +123,9 @@ class ModelRecognizer:
                 return {'price_data': array_data.flatten().tolist()}
         except:
             pass
-                
+
         return {'error': 'Nieobsługiwany format danych wejściowych'}
-            
+
     def predict(self, data: Optional[Any]) -> Dict[str, Any]:
         """
         Przewiduje typ modelu rynkowego na podstawie danych.
@@ -294,40 +294,40 @@ from typing import Dict, List, Any, Optional
 
 class ModelRecognizer:
     """Klasa do rozpoznawania modeli rynkowych."""
-    
+
     def __init__(self, confidence_threshold: float = 0.7):
         """
         Inicjalizacja rozpoznawania modeli.
-        
+
         Args:
             confidence_threshold: Próg pewności dla rozpoznawania modelu
         """
         self.confidence_threshold = confidence_threshold
         self.models_database = self._initialize_models_database()
-        
+
         # Konfiguracja loggera
         self.logger = logging.getLogger('ModelRecognizer')
         self.logger.setLevel(logging.INFO)
-        
+
         # Upewnij się, że katalog logów istnieje
         os.makedirs('logs', exist_ok=True)
-        
+
         # Dodaj handler pliku
         file_handler = logging.FileHandler('logs/model_recognition.log')
         file_handler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s'))
         self.logger.addHandler(file_handler)
-        
+
         # Dodaj handler konsoli
         console_handler = logging.StreamHandler()
         console_handler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s'))
         self.logger.addHandler(console_handler)
-        
+
         self.logger.info(f"ModelRecognizer zainicjalizowany z {len(self.models_database)} modelami w bazie")
-    
+
     def _initialize_models_database(self) -> List[Dict[str, Any]]:
         """
         Inicjalizuje bazę znanych modeli rynkowych.
-        
+
         Returns:
             List[Dict[str, Any]]: Baza modeli
         """
@@ -383,14 +383,14 @@ class ModelRecognizer:
                 }
             }
         ]
-    
+
     def identify_model_type(self, market_data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """
         Identyfikuje model rynkowy na podstawie danych.
-        
+
         Args:
             market_data: Dane rynkowe do analizy (ceny, wolumen, itp.)
-            
+
         Returns:
             Dict[str, Any]: Zidentyfikowany model lub informacja o błędzie
         """
@@ -401,13 +401,13 @@ class ModelRecognizer:
                 'error': 'Brak wymaganych danych cenowych',
                 'message': 'Potrzebne są dane OHLCV do rozpoznania modelu'
             }
-        
+
         try:
             # Tutaj byłaby prawdziwa logika analizy danych i rozpoznawania modeli
             # Dla celów demonstracyjnych zwracamy losowy model z bazy
             model = random.choice(self.models_database)
             confidence = random.uniform(0.6, 0.95)
-            
+
             if confidence >= self.confidence_threshold:
                 self.logger.info(f"Rozpoznano model: {model['name']} z pewnością {confidence:.2f}")
                 return {
@@ -435,3 +435,31 @@ class ModelRecognizer:
                 'error': str(e),
                 'message': 'Wystąpił błąd podczas analizy modelu'
             }
+
+    def predict(self, data):
+        """
+        Przewiduje jaki model rynkowy najlepiej pasuje do aktualnych danych.
+
+        Args:
+            data: Dane OHLCV w formacie słownika lub DataFrame
+
+        Returns:
+            dict: Wynik predykcji zawierający nazwę najlepiej pasującego modelu i pewność.
+        """
+        try:
+            if self.model is None:
+                self._load_model()
+
+            if self.model is None:
+                return {"error": "Model nie jest załadowany", "success": False}
+
+            # Konwersja danych wejściowych na odpowiedni format
+            from ai_models.model_training import prepare_data_for_model
+            data_prepared = prepare_data_for_model(data)
+
+            # Wykonaj predykcję
+            prediction = self.model.predict(data_prepared)
+            return prediction #Assuming prediction is already in a suitable dictionary format.  Adjust if needed.
+
+        except Exception as e:
+            return {"error": f"Błąd podczas predykcji: {e}", "success": False}
