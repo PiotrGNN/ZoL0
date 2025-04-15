@@ -397,15 +397,36 @@ except ImportError:
             # Sprawdź model anomalii
             try:
                 from ai_models.anomaly_detection import AnomalyDetector
+                from ai_models.model_training import prepare_data_for_model
+                
                 anomaly_detector = AnomalyDetector()
+                
+                # Test z przykładowymi danymi
+                test_data = {'open': [100, 101, 102], 'high': [105, 106, 107], 'low': [98, 99, 100], 
+                           'close': [103, 104, 105], 'volume': [1000, 1100, 1200]}
+                
+                # Konwersja danych do odpowiedniego formatu przed testem
+                if hasattr(anomaly_detector, "predict"):
+                    prepared_data = prepare_data_for_model(test_data)
+                    try:
+                        anomaly_detector.predict(prepared_data)
+                        predict_success = True
+                    except Exception as predict_error:
+                        self.logger.warning(f"Test predykcji AnomalyDetector nie powiódł się: {predict_error}")
+                        predict_success = False
+                else:
+                    predict_success = False
+                
                 test_results["AnomalyDetector"] = {
                     "success": True,
                     "accuracy": 84.5,
                     "methods": {
                         "detect": hasattr(anomaly_detector, "detect"),
                         "predict": hasattr(anomaly_detector, "predict")
-                    }
+                    },
+                    "predict_test": predict_success
                 }
+                
                 self.loaded_models.append({
                     "name": "AnomalyDetector",
                     "instance": anomaly_detector,
@@ -494,21 +515,30 @@ except ImportError:
             """Ocenia model na danych testowych."""
             from ai_models.model_training import prepare_data_for_model
 
-            x_test_prepared = prepare_data_for_model(x_test)
+            # Upewnij się, że dane są odpowiednio przygotowane
+            if isinstance(x_test, dict):
+                x_test_prepared = prepare_data_for_model(x_test)
+            else:
+                x_test_prepared = x_test
 
             for model_info in self.loaded_models:
                 if model_info['name'] == model_name:
                     model = model_info['instance']
                     try:
-                        prediction = model.predict(x_test_prepared)
-                        if hasattr(model, 'score'):
-                            score = model.score(x_test_prepared, y_test)
-                            accuracy = score
+                        # Upewnij się, że dane są odpowiednio sformatowane dla modelu
+                        if hasattr(model, 'predict'):
+                            prediction = model.predict(x_test_prepared)
+                            if hasattr(model, 'score'):
+                                score = model.score(x_test_prepared, y_test)
+                                accuracy = score
+                            else:
+                                mse = ((prediction - y_test) ** 2).mean()
+                                accuracy = 1.0 / (1.0 + mse)
+                            return {'accuracy': accuracy, 'mse': mse if 'mse' in locals() else None}
                         else:
-                            mse = ((prediction - y_test) ** 2).mean()
-                            accuracy = 1.0 / (1.0 + mse)
-                        return {'accuracy': accuracy, 'mse': mse if 'mse' in locals() else None}
+                            return {'error': f'Model {model_name} has no predict method'}
                     except Exception as e:
+                        self.logger.error(f"Błąd podczas evaluacji modelu {model_name}: {e}")
                         return {'error': str(e)}
             return {'error': f'Model {model_name} not found'}
 
