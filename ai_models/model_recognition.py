@@ -473,7 +473,7 @@ class ModelRecognizer:
             except ImportError:
                 # Jeśli nie możemy zaimportować funkcji prepare_data_for_model
                 return self.identify_model_type(data)
-            except Exception as prep_error:
+            except Exception as prep_erroror:
                 logging.warning(f"Błąd podczas przygotowania danych: {prep_error}")
                 return self.identify_model_type(data)
 
