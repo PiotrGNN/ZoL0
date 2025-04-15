@@ -14,7 +14,7 @@ import random
 from collections import deque
 
 import numpy as np
-# # # # import tensorflow as tf  # Zakomentowano - opcjonalny pakiet  # Zakomentowano - opcjonalny pakiet  # Zakomentowano - opcjonalny pakiet
+# # # # # # import tensorflow as tf  # Zakomentowano - opcjonalny pakiet  # Zakomentowano - opcjonalny pakiet  # Zakomentowano - opcjonalny pakiet  # Zakomentowano - opcjonalny pakiet
 from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Dense, Input
 from tensorflow.keras.optimizers import Adam

@@ -15,7 +15,7 @@ Funkcjonalności:
 import logging
 
 import numpy as np
-# # # import optuna  # Zakomentowano - opcjonalny pakiet  # Zakomentowano - opcjonalny pakiet  # Zakomentowano - opcjonalny pakiet
+# # # # import optuna  # Zakomentowano - opcjonalny pakiet  # Zakomentowano - opcjonalny pakiet  # Zakomentowano - opcjonalny pakiet  # Zakomentowano - opcjonalny pakiet
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 from sklearn.model_selection import KFold
 

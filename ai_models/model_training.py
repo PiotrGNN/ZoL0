@@ -25,7 +25,7 @@ from sklearn.model_selection import TimeSeriesSplit
 
 # Dla modeli Keras (jeśli używasz TensorFlow)
 try:
-    # # # # import tensorflow as tf  # Zakomentowano - opcjonalny pakiet  # Zakomentowano - opcjonalny pakiet  # Zakomentowano - opcjonalny pakiet
+    # # # # # # import tensorflow as tf  # Zakomentowano - opcjonalny pakiet  # Zakomentowano - opcjonalny pakiet  # Zakomentowano - opcjonalny pakiet  # Zakomentowano - opcjonalny pakiet
     from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 except ImportError:
     tf = None
