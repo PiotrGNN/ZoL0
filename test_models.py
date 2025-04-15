@@ -554,6 +554,17 @@ except ImportError:
             """Testuje konkretny model."""
             for model_info in self.loaded_models:
                 if model_info["name"] == model_name:
+                    # Dla modelu Sequential sprawdź, czy jest kompilowany
+                    if model_name == "Sequential" and hasattr(model_info.get("instance", None), "compile"):
+                        # Upewnij się, że model jest skompilowany
+                        if not hasattr(model_info["instance"].model, "_is_compiled") or not model_info["instance"].model._is_compiled:
+                            model_info["instance"].model.compile(
+                                optimizer="adam",
+                                loss="mse",
+                                metrics=["accuracy"]
+                            )
+                            self.logger.info(f"Skompilowano model {model_name}")
+                    
                     return {
                         "success": True,
                         "accuracy": round(70 + np.random.random() * 20, 1),

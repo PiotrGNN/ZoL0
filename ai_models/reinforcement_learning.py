@@ -18,6 +18,7 @@ import tensorflow as tf
 from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Dense, Input
 from tensorflow.keras.optimizers import Adam
+import os
 
 # Konfiguracja logowania
 logging.basicConfig(
@@ -244,4 +245,41 @@ if __name__ == "__main__":
     except Exception as e:
         logging.error("Błąd: %s", e)
         raise
+
+class ReinforcementLearner:
+    """Klasa implementująca uczenie ze wzmocnieniem dla handlu."""
+
+    def __init__(self, input_dim=10, num_actions=3):
+        """
+        Inicjalizuje model uczenia ze wzmocnieniem.
+
+        Args:
+            input_dim: Wymiar wejścia (liczba cech)
+            num_actions: Liczba możliwych akcji (1: kupno, 2: sprzedaż, 0: nic)
+        """
+        self.input_dim = input_dim
+        self.num_actions = num_actions
+        self.model = Sequential([
+            Dense(64, activation='relu', input_shape=(input_dim,)),
+            Dense(32, activation='relu'),
+            Dense(num_actions, activation='linear')
+        ])
+
+        # Kompilacja modelu
+        self.model.compile(
+            optimizer=Adam(learning_rate=0.001),
+            loss='mse',
+            metrics=['accuracy']
+        )
+
+        # Utwórz katalog dla zapisywania modeli, jeśli nie istnieje
+        os.makedirs('saved_models/checkpoints', exist_ok=True)
+
+        # Konfiguracja loggera
+        self.logger = logging.getLogger('ReinforcementLearning')
+        self.logger.setLevel(logging.INFO)
+
+        # Upewnij się, że katalog logów istnieje
+        os.makedirs('logs', exist_ok=True)
+
 ReinforcementLearner = DQNAgent

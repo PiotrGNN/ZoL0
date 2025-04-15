@@ -29,149 +29,104 @@ logging.basicConfig(
 )
 
 
-def prepare_data_for_model(data: Union[Dict, List, np.ndarray, pd.DataFrame], expected_features: int = None) -> np.ndarray:
+def prepare_data_for_model(data, features_count=None):
     """
-    Konwertuje różne formaty danych do formatu odpowiedniego dla modeli ML/AI.
+    Przygotowuje dane do formatu akceptowanego przez modele ML.
 
     Args:
-        data: Dane wejściowe w różnych formatach (słownik, lista, DataFrame, array)
-        expected_features: Oczekiwana liczba cech (jeśli znana)
+        data: Dane wejściowe (np. DataFrame, słownik, lista)
+        features_count: Opcjonalna liczba cech do zwrócenia (dopasowanie wymiarów)
 
     Returns:
-        np.ndarray: Dane w formacie numpy.ndarray gotowe do użycia w modelach
+        Przygotowane dane w formacie numpy array lub DataFrame
     """
-    import logging
-    logger = logging.getLogger(__name__)
-
     try:
-        # Jeśli dane są None, zwróć pustą tablicę
-        if data is None:
-            logger.warning("Otrzymano None jako dane wejściowe")
-            return np.array([])
-
-        # Przypadek: expected_features, ale data nie jest tablicą
-        if expected_features is not None and not isinstance(data, (np.ndarray, pd.DataFrame)):
-            # Konwertujemy do numpy.array i dostosowujemy wymiar
-            if isinstance(data, dict):
-                if 'close' in data:
-                    values = np.array(data['close']).reshape(-1, 1)
-                elif len(data) > 0:
-                    first_key = list(data.keys())[0]
-                    values = np.array(data[first_key]).reshape(-1, 1)
-                else:
-                    values = np.zeros((1, 1))
-            elif isinstance(data, list):
-                values = np.array(data).reshape(-1, 1)
-            else:
-                values = np.zeros((1, 1))
-                
-            # Teraz tworzymy tablicę o oczekiwanej liczbie cech
-            if values.shape[1] < expected_features:
-                padding = np.zeros((values.shape[0], expected_features - values.shape[1]))
-                return np.hstack((values, padding))
-            else:
-                return values[:, :expected_features]
-
-        # Jeśli dane są już typu ndarray, zwróć je bezpośrednio lub dopasuj liczbę cech
-        if isinstance(data, np.ndarray):
-            # Jeśli dane są 1D, przekształć je na 2D
-            if data.ndim == 1:
-                data = data.reshape(-1, 1)
-                
-            # Jeśli znamy oczekiwaną liczbę cech i dane mają inną szerokość
-            if expected_features is not None and data.shape[1] != expected_features and data.shape[0] > 0:
-                logger.warning(f"Dopasowuję liczbę cech: {data.shape[1]} -> {expected_features}")
-                # Jeśli mamy za dużo cech, obcinamy
-                if data.shape[1] > expected_features:
-                    return data[:, :expected_features]
-                # Jeśli mamy za mało cech, wypełniamy zerami
-                elif data.shape[1] < expected_features:
-                    padding = np.zeros((data.shape[0], expected_features - data.shape[1]))
-                    return np.hstack((data, padding))
-            return data
-
-        # Jeśli dane są w formacie DataFrame, konwertuj na ndarray
-        if isinstance(data, pd.DataFrame):
-            values = data.values
-            # Dopasuj liczbę cech jeśli potrzeba
-            if expected_features is not None and values.shape[1] != expected_features and values.shape[0] > 0:
-                logger.warning(f"Dopasowuję liczbę cech DataFrame: {values.shape[1]} -> {expected_features}")
-                if values.shape[1] > expected_features:
-                    return values[:, :expected_features]
-                elif values.shape[1] < expected_features:
-                    padding = np.zeros((values.shape[0], expected_features - values.shape[1]))
-                    return np.hstack((values, padding))
-            return values
-
-        # Jeśli dane są listą, konwertuj na ndarray
-        if isinstance(data, list):
-            array_data = np.array(data)
-            # Jeśli to lista skalarów, przekształć na kolumnę
-            if array_data.ndim == 1:
-                array_data = array_data.reshape(-1, 1)
-
-            # Dopasuj liczbę cech jeśli potrzeba
-            if expected_features is not None and array_data.shape[1] != expected_features and array_data.shape[0] > 0:
-                logger.warning(f"Dopasowuję liczbę cech listy: {array_data.shape[1]} -> {expected_features}")
-                if array_data.shape[1] > expected_features:
-                    return array_data[:, :expected_features]
-                elif array_data.shape[1] < expected_features:
-                    padding = np.zeros((array_data.shape[0], expected_features - array_data.shape[1]))
-                    return np.hstack((array_data, padding))
-            return array_data
-
-        # Jeśli dane są w formacie dict z kluczami OHLCV
         if isinstance(data, dict):
-            if all(k in data for k in ['open', 'high', 'low', 'close', 'volume']):
-                # Utwórz DataFrame z danych OHLCV
-                df = pd.DataFrame({
-                    'open': data['open'],
-                    'high': data['high'],
-                    'low': data['low'],
-                    'close': data['close'],
-                    'volume': data['volume']
-                })
-                values = df.values
-                # Dopasuj liczbę cech jeśli potrzeba
-                if expected_features is not None and values.shape[1] != expected_features and values.shape[0] > 0:
-                    logger.warning(f"Dopasowuję liczbę cech OHLCV: {values.shape[1]} -> {expected_features}")
-                    if values.shape[1] > expected_features:
-                        return values[:, :expected_features]
-                    elif values.shape[1] < expected_features:
-                        padding = np.zeros((values.shape[0], expected_features - values.shape[1]))
-                        return np.hstack((values, padding))
-                return values
-            elif 'close' in data:
-                # Jeśli mamy przynajmniej dane zamknięcia
-                close_data = np.array(data['close']).reshape(-1, 1)
-                if expected_features is not None and expected_features > 1:
-                    padding = np.zeros((close_data.shape[0], expected_features - 1))
-                    return np.hstack((close_data, padding))
-                return close_data
-            elif len(data) > 0:
-                # Próba użycia pierwszej dostępnej serii danych
-                first_key = list(data.keys())[0]
-                if isinstance(data[first_key], (list, np.ndarray)):
-                    logger.info(f"Używam danych z klucza '{first_key}' jako wejścia")
-                    key_data = np.array(data[first_key]).reshape(-1, 1)
-                    if expected_features is not None and expected_features > 1:
-                        padding = np.zeros((key_data.shape[0], expected_features - 1))
-                        return np.hstack((key_data, padding))
-                    return key_data
+            # Jeśli dane są słownikiem, konwertuj na DataFrame lub numpy array
+            if "close" in data and "open" in data:
+                # Tworzenie prostych cech na podstawie dostępnych kolumn
+                X = np.column_stack((
+                    np.array(data['close']),
+                    np.array(data['open']),
+                ))
 
-        # Jeśli format nie jest rozpoznany, zgłoś błąd
-        logger.error(f"Nierozpoznany format danych: {type(data)}")
-        # Jeśli znamy oczekiwaną liczbę cech, zwróć pustą tablicę o poprawnym kształcie
-        if expected_features is not None:
-            return np.zeros((1, expected_features))
-        return np.array([[]])  # Zwróć pustą tablicę zamiast zgłaszania błędu
+                # Jeśli określono features_count, dopasuj liczbę cech
+                if features_count is not None and X.shape[1] != features_count:
+                    logging.warning(f"Dopasowuję liczbę cech: {X.shape[1]} -> {features_count}")
+                    if X.shape[1] > features_count:
+                        # Jeśli mamy za dużo cech, wybierz pierwsze features_count
+                        X = X[:, :features_count]
+                    else:
+                        # Jeśli mamy za mało cech, dodaj kolumny z zerami
+                        padding = np.zeros((X.shape[0], features_count - X.shape[1]))
+                        X = np.hstack((X, padding))
+                return X
+            else:
+                # Gdy nie ma typowych kolumn OHLC, konwertujemy wszystkie wartości
+                features = []
+                for key, values in data.items():
+                    if isinstance(values, (list, np.ndarray)):
+                        features.append(np.array(values).reshape(-1, 1))
 
+                result = np.hstack(features) if features else None
+
+                # Dopasuj liczę cech jeśli potrzeba
+                if features_count is not None and result is not None and result.shape[1] != features_count:
+                    logging.warning(f"Dopasowuję liczbę cech: {result.shape[1]} -> {features_count}")
+                    if result.shape[1] > features_count:
+                        result = result[:, :features_count]
+                    else:
+                        padding = np.zeros((result.shape[0], features_count - result.shape[1]))
+                        result = np.hstack((result, padding))
+                return result
+
+        elif isinstance(data, pd.DataFrame):
+            # Dla DataFrame wybierz tylko kolumny numeryczne
+            numeric_cols = data.select_dtypes(include=[np.number]).columns
+            result = data[numeric_cols].values
+
+            # Dopasuj liczę cech jeśli potrzeba
+            if features_count is not None and result.shape[1] != features_count:
+                logging.warning(f"Dopasowuję liczbę cech: {result.shape[1]} -> {features_count}")
+                if result.shape[1] > features_count:
+                    result = result[:, :features_count]
+                else:
+                    padding = np.zeros((result.shape[0], features_count - result.shape[1]))
+                    result = np.hstack((result, padding))
+            return result
+
+        elif isinstance(data, np.ndarray):
+            # Już jest w formie numpy array, tylko dopasuj wymiary jeśli potrzeba
+            result = data
+            if features_count is not None and len(result.shape) > 1 and result.shape[1] != features_count:
+                logging.warning(f"Dopasowuję liczbę cech: {result.shape[1]} -> {features_count}")
+                if result.shape[1] > features_count:
+                    result = result[:, :features_count]
+                else:
+                    padding = np.zeros((result.shape[0], features_count - result.shape[1]))
+                    result = np.hstack((result, padding))
+            return result
+
+        elif isinstance(data, list):
+            # Konwertuj listę na numpy array
+            result = np.array(data)
+
+            # Dostosuj wymiar jeśli potrzeba
+            if features_count is not None and len(result.shape) > 1 and result.shape[1] != features_count:
+                logging.warning(f"Dopasowuję liczbę cech: {result.shape[1]} -> {features_count}")
+                if result.shape[1] > features_count:
+                    result = result[:, :features_count]
+                else:
+                    padding = np.zeros((result.shape[0], features_count - result.shape[1]))
+                    result = np.hstack((result, padding))
+            return result
+
+        else:
+            logging.warning(f"Nieznany format danych: {type(data)}")
+            return None
     except Exception as e:
-        logger.error(f"Błąd podczas przygotowywania danych: {e}")
-        # Jeśli znamy oczekiwaną liczbę cech, zwróć pustą tablicę o poprawnym kształcie
-        if expected_features is not None:
-            return np.zeros((1, expected_features))
-        return np.array([[]])  # Zwróć pustą tablicę w przypadku błędu
+        logging.error(f"Błąd podczas przygotowania danych: {e}")
+        return None
 
 
 class ModelTrainer:
