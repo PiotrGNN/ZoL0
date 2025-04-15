@@ -28177,3 +28177,9 @@ AttributeError: 'NoneType' object has no attribute 'get_portfolio'
 2025-04-15 00:58:12,796 [INFO] 172.31.128.36 - - [15/Apr/2025 00:58:12] "GET /api/component-status HTTP/1.1" 200 -
 2025-04-15 00:58:14,846 [INFO]  * Detected change in '/home/runner/workspace/.main.py.156516588~', reloading
 2025-04-15 00:58:15,762 [INFO]  * Restarting with watchdog (inotify)
+2025-04-15 01:13:02,651 [INFO] Zainicjalizowano zarządcę ryzyka portfela. Max ryzyko: 0.05, Max rozmiar pozycji: 0.2, Max drawdown: 0.1
+2025-04-15 01:13:02,667 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-15 01:13:02,671 [INFO] Cache zainicjalizowany z domyślnymi parametrami
+2025-04-15 01:13:02,673 [WARNING] Pomijam podpakiet 'utils' z powodu błędu: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-15 01:13:02,687 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 01:13:02,688 [INFO] SimulationManager zainicjalizowany. Katalogi: reports=reports, charts=static/img
