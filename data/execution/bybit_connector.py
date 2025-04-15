@@ -1519,7 +1519,8 @@ class BybitConnector:
                                             self.logger.debug(f"Dodano saldo dla {coin}: {result['balances'][coin]}")
                                         elif isinstance(coin, list) and coin:
                                             # Jeśli coin jest listą, iteruj po jej elementach
-                                            self.logger.warning(f"Otrzymano listę coin zamiast stringa: {coin}")                                            for single_coin in coin:
+                                            self.logger.warning(f"Otrzymano listę coin zamiast stringa: {coin}")
+                                            for single_coin in coin:
                                                 if isinstance(single_coin, str) and single_coin:
                                                     result["balances"][single_coin] = {
                                                         "equity": float(account_data.get("equity", 0)),
