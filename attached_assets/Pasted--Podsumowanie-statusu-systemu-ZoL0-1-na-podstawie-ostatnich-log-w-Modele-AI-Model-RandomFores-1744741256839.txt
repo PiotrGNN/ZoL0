@@ -1,0 +1,85 @@
+✅ Podsumowanie statusu systemu ZoL0-1 (na podstawie ostatnich logów):
+📈 Modele AI
+Model RandomForestRegressor:
+
+Za każdym testem trenuje się od zera (not fitted), ale działa i zapisuje metadane.
+
+Ulepszenie: dodać zapis .pkl po treningu i wczytanie, jeśli plik istnieje.
+
+Model Sequential (Keras):
+
+❌ Błąd: You must call compile() before using the model. — brak wywołania model.compile(...) przed fit().
+
+Model SentimentAnalyzer:
+
+Trenuje się i osiąga accuracy 80–83%, wszystko OK.
+
+ModelRecognizer / AnomalyDetector:
+
+Działają poprawnie, potrafią rozpoznać np. „Double Top”, „Head & Shoulders”.
+
+🧠 Pipeline modeli
+Wszystkie testy pipeline’u przebiegają bez błędów krytycznych.
+
+model_tests.log pokazuje poprawne ładowanie, testowanie i logowanie.
+
+Dane są konwertowane i logi wskazują na poprawne wywołania klas.
+
+🔐 Połączenie z Bybit
+⚠️ System łączy się jednocześnie z testnetem i produkcyjnym API, co może prowadzić do niepożądanych operacji handlowych.
+
+W logach: !!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit.
+
+✔️ Połączenie działa, czas serwera wczytany, klient działa w trybie spot.
+
+🧭 Cache & rate limiter
+CacheManager działa, inicjalizuje się poprawnie.
+
+Parametry rate limiter są ustawiane dynamicznie (np. max_calls_per_minute=6).
+
+Używany jest cache’owany czas serwera – OK.
+
+✅ Sugestie kolejnych kroków
+🔧 Modele:
+RandomForestRegressor:
+
+✅ Dodaj zapis .pkl po trenowaniu + wczytanie istniejącego modelu przy starcie.
+
+Przykład:
+
+python
+Kopiuj
+Edytuj
+if os.path.exists("random_forest.pkl"):
+    with open("random_forest.pkl", "rb") as f:
+        model = pickle.load(f)
+else:
+    model.fit(X, y)
+    with open("random_forest.pkl", "wb") as f:
+        pickle.dump(model, f)
+Sequential (Keras):
+
+🔥 Przed fit() zawsze wywołuj model.compile(...).
+
+Dodaj sprawdzenie: if not model._is_compiled: model.compile(...).
+
+Zapis metadanych:
+
+Upewnij się, że katalog do zapisu (model_metadata.json) istnieje.
+
+🔐 Bezpieczeństwo API:
+Dodaj flagę force_testnet_only=True w configu, by wymusić używanie wyłącznie testnetu w środowisku deweloperskim.
+
+Dodaj warning blockera przed realnymi operacjami (np. input("Czy na pewno?")).
+
+📊 Dashboard (sugestie):
+Możesz teraz podłączyć panel do danych z logów/testów:
+
+Status każdego modelu (czy wytrenowany, czy plik .pkl istnieje).
+
+Ostatnia rozpoznana formacja.
+
+Wynik modelu sentymentu.
+
+Saldo portfolio + ostatnia decyzja.
+

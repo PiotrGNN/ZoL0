@@ -1,7 +1,7 @@
 {
   "name": "ReinforcementLearner",
-  "train_date": "2025-04-15T17:12:09.800793",
+  "train_date": "2025-04-15T17:29:56.444606",
   "train_samples": 100,
-  "data_hash": "54e9665afeceddf0911c3c1acab83ac9796189c53d85c6f5110b909934cc84dafbc79b41c2a14064e82d1b2cb5d0ee287a98a08689cb4e8dc56d1fa1b4fdec95",
-  "fit_time": 0.7120575904846191
+  "data_hash": "6cbc5118e499c741c24f6f757851fe2d99ef927537e6284b0c1b9ed6394581e2a572c67562e6d06eb8a1db5553b074898b3b1c4baae0a757ced7fbf1838644b0",
+  "fit_time": 1.0020947456359863
 }
