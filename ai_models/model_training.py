@@ -222,22 +222,22 @@ class ModelTrainer:
                 )
 
                 if tf is not None and isinstance(self.model, tf.keras.Model):
-                    # Sprawdzenie czy model ma warstwy
-                    if not self.model.layers:
-                        logging.error("Model Sequential nie ma warstw! Anulowanie zapisu.")
-                        return
+                # Sprawdzenie czy model ma warstwy
+                if not self.model.layers:
+                    logging.error("Model Sequential nie ma warstw! Anulowanie zapisu.")
+                    return
 
-                    model_filename += ".h5"
-                    self.model.save(model_filename)
-                else:
-                    model_filename += ".pkl"
-                    with open(model_filename, "wb") as f:
-                        pickle.dump(self.model, f)
-
-                logging.info("Model zapisany w: %s", model_filename)
+                model_filename += ".h5"
+                self.model.save(model_filename)
             else:
-                logging.error("Model %s nie został wytrenowany lub nie ma warstw! Anulowanie zapisu.", 
-                            self.model_name)
+                model_filename += ".pkl"
+                with open(model_filename, "wb") as f:
+                    pickle.dump(self.model, f)
+
+            logging.info("Model zapisany w: %s", model_filename)
+        else:
+            logging.error("Model %s nie został wytrenowany lub nie ma warstw! Anulowanie zapisu.", 
+                        self.model_name)
 
         except Exception as e:
             logging.error("Błąd podczas zapisywania modelu: %s", e)
