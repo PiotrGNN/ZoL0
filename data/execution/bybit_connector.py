@@ -122,7 +122,7 @@ class BybitConnector:
             f"BybitConnector zainicjalizowany. Testnet: {self.use_testnet}, Lazy connect: {lazy_connect}, Market type: {self.market_type}"
         )
 
-        # Sprawdź, czy już mamy informację o przekroczeniu limitów w cache
+        # Sprawdź czy już mamy informację o przekroczeniu limitów w cache
         try:
             from data.utils.cache_manager import get_cached_data
             rate_limited_data, found = get_cached_data("api_rate_limited")
@@ -838,94 +838,6 @@ class BybitConnector:
                     "source": "testnet_simulation"
                 }
 
-    def get_ticker(self, symbol: str) -> Dict[str, Any]:
-        """
-        Pobiera aktualną cenę i informacje o tickerze dla danego symbolu.
-
-        Parameters:
-            symbol (str): Symbol pary handlowej (np. BTCUSDT).
-
-        Returns:
-            Dict[str, Any]: Informacje o tickerze zawierające aktualną cenę, wolumen itp.
-        """
-        try:
-            self._apply_rate_limit()
-
-            # Próba pobrania informacji przez API V5
-            try:
-                endpoint = f"{self.base_url}/v5/market/tickers"
-                params = {"category": "spot", "symbol": symbol}
-
-                self.logger.debug(f"Pobieranie danych tickera dla {symbol} z API V5")
-                response = requests.get(endpoint, params=params, timeout=10)
-
-                if response.status_code == 200:
-                    data = response.json()
-                    if data.get("retCode") == 0 and "result" in data:
-                        if "list" in data["result"] and len(data["result"]["list"]) > 0:
-                            ticker_data = data["result"]["list"][0]
-                            return {
-                                "symbol": symbol,
-                                "bid": float(ticker_data.get("bid1Price", 0)),
-                                "ask": float(ticker_data.get("ask1Price", 0)),
-                                "last_price": float(ticker_data.get("lastPrice", 0)),
-                                "volume_24h": float(ticker_data.get("volume24h", 0)),
-                                "timestamp": int(time.time() * 1000),
-                                "datetime": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                            }
-            except Exception as e:
-                self.logger.warning(f"Błąd podczas pobierania tickera z API V5: {e}")
-
-            # Fallback - użyj danych z księgi zleceń
-            order_book = self.get_order_book(symbol, limit=1)
-            if order_book and "bids" in order_book and "asks" in order_book:
-                # Oblicz średnią cenę z najlepszych ofert kupna i sprzedaży
-                bid = order_book["bids"][0][0] if order_book["bids"] else 0
-                ask = order_book["asks"][0][0] if order_book["asks"] else 0
-                last_price = (bid + ask) / 2 if bid and ask else (bid or ask or 0)
-
-                return {
-                    "symbol": symbol,
-                    "bid": bid,
-                    "ask": ask,
-                    "last_price": last_price,
-                    "volume_24h": 0,  # Brak informacji o wolumenie w tym przypadku
-                    "timestamp": order_book.get("timestamp", int(time.time() * 1000)),
-                    "datetime": order_book.get("datetime", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-                }
-
-            # Ostateczny fallback - symulacja danych
-            base_price = 50000.0 if "BTC" in symbol else 3000.0
-            # Dodajemy losową zmianę ceny w zakresie ±0.5%
-            change = random.uniform(-0.005, 0.005)
-            price = base_price * (1 + change)
-
-            self.logger.info(f"Używam symulowanych danych tickera dla {symbol} (cena: {price:.2f})")
-
-            return {
-                "symbol": symbol,
-                "bid": price * 0.999,  # Bid nieznacznie niższy
-                "ask": price * 1.001,  # Ask nieznacznie wyższy
-                "last_price": price,
-                "volume_24h": random.uniform(1000, 5000),
-                "timestamp": int(time.time() * 1000),
-                "datetime": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            }
-        except Exception as e:
-            self.logger.error(f"Błąd podczas pobierania tickera dla {symbol}: {e}")
-            # Zwróć awaryjne dane w przypadku błędu
-            return {
-                "symbol": symbol,
-                "bid": 0,
-                "ask": 0,
-                "last_price": 0,
-                "volume_24h": 0,
-                "timestamp": int(time.time() * 1000),
-                "datetime": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                "error": str(e)
-            }
-
-
             # Bezpośrednie zapytanie HTTP do V5 API z obsługą HMAC auth
             endpoint = f"{self.base_url}/v5/account/wallet-balance"
 
@@ -1619,6 +1531,36 @@ class BybitConnector:
                                                         "wallet_balance": float(account_data.get("walletBalance", 0))
                                                     }
                                                     self.logger.debug(f"Dodano saldo dla coin z listy: {single_coin}")
+                                    # Obsługa przypadku gdy coin jest bezpośrednio w danych konta
+                                    elif isinstance(account_data, dict):
+                                        coin = account_data.get("coin")
+                                        # Upewnienie się że coin jest stringiem, a nie listą
+                                        if isinstance(coin, str) and coin:
+                                            result["balances"][coin] = {
+                                                "equity": float(account_data.get("equity", 0)),
+                                                "available_balance": float(
+                                                    account_data.get(
+                                                        "availableBalance", 0) or 
+                                                    account_data.get(
+                                                        "availableToWithdraw", 0)
+                                                ),
+                                                "wallet_balance": float(account_data.get("walletBalance", 0))
+                                            }
+                                            self.logger.debug(f"Dodano saldo dla {coin}: {result['balances'][coin]}")
+                                        elif isinstance(coin, list) and coin:
+                                            # Jeśli coin jest listą, iteruj po jej elementach
+                                            self.logger.warning(f"Otrzymano listę coin zamiast stringa: {coin}")
+                                            for single_coin in coin:
+                                                if isinstance(single_coin, str) and single_coin:
+                                                    result["balances"][single_coin] = {
+                                                        "equity": float(account_data.get("equity", 0)),
+                                                        "available_balance": float(
+                                                            account_data.get("availableBalance", 0) or 
+                                                            account_data.get("availableToWithdraw", 0)
+                                                        ),
+                                                        "wallet_balance": float(account_data.get("walletBalance", 0))
+                                                    }
+                                                    self.logger.debug(f"Dodano saldo dla coin z listy: {single_coin}")
                         elif wallet and "result" in wallet and isinstance(
                                 wallet["result"], dict):
                             # Starsza struktura API ByBit lub format usdt_perpetual
@@ -1795,7 +1737,7 @@ class BybitConnector:
 
     def get_ticker(self, symbol: str) -> Dict[str, Any]:
         """
-        Pobiera aktualną cenę i informacje o tickerze dla danego symbolu.
+        Pobiera dane tickera (ostatnia cena, zmienność itd.) z Bybit.
 
         Parameters:
             symbol (str): Symbol pary handlowej (np. BTCUSDT).
@@ -1879,6 +1821,7 @@ class BybitConnector:
                 "datetime": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                 "error": str(e)
             }
+
 
     def place_order(self,
                     symbol: str,
