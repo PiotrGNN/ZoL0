@@ -96,7 +96,8 @@ class DQNAgent:
                 model.add(Dense(128, activation="relu"))
                 model.add(Dense(128, activation="relu"))
                 model.add(Dense(self.action_size, activation="linear"))
-                model.compile(optimizer=Adam(learning_rate=self.learning_rate), loss="mse") #Added compilation here
+                # Dodanie kompilacji modelu - kluczowe dla poprawnego działania
+                model.compile(optimizer=Adam(learning_rate=self.learning_rate), loss="mse")
         except Exception as e:
             logging.error(f"Błąd podczas budowania modelu Sequential: {e}")
             # Fallback do prostszego modelu w razie błędu
@@ -112,6 +113,11 @@ class DQNAgent:
     def update_target_model(self):
         """Aktualizuje wagi modelu docelowego."""
         self.target_model.set_weights(self.model.get_weights())
+        
+        # Upewnienie się, że model docelowy jest skompilowany
+        if not hasattr(self.target_model, 'optimizer') or self.target_model.optimizer is None:
+            self.target_model.compile(optimizer=Adam(learning_rate=self.learning_rate), loss="mse")
+            
         logging.info("Wagi modelu docelowego zaktualizowane.")
 
     def remember(self, state, action, reward, next_state, done):

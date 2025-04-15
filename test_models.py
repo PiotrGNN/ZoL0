@@ -256,9 +256,15 @@ def test_models() -> Dict[str, Any]:
             # Sprawdź czy model Sequential ma warstwy
             try:
                 import tensorflow as tf
-                if tf is not None and isinstance(instance, tf.keras.Sequential) and len(instance.layers) == 0:
-                    print(f"⚠️ Model {model_name} (Sequential) nie ma warstw, pomijam test")
-                    continue
+                if tf is not None and isinstance(instance, tf.keras.Sequential):
+                    if len(instance.layers) == 0:
+                        print(f"⚠️ Model {model_name} (Sequential) nie ma warstw, pomijam test")
+                        continue
+                    # Kompilacja modelu Sequential jeśli nie został skompilowany
+                    if not hasattr(instance, 'optimizer'):
+                        print(f"🔧 Kompiluję model {model_name} (Sequential)")
+                        from tensorflow.keras.optimizers import Adam
+                        instance.compile(optimizer=Adam(learning_rate=0.001), loss="mse")
             except ImportError:
                 pass # Ignore if tensorflow is not installed
 
@@ -622,9 +628,15 @@ def test_models(models_to_test: Optional[List[str]] = None) -> Dict[str, Any]:
 
             try:
                 import tensorflow as tf
-                if tf is not None and isinstance(instance, tf.keras.Sequential) and len(instance.layers) == 0:
-                    print(f"⚠️ Model {model_name} (Sequential) nie ma warstw, pomijam test")
-                    continue
+                if tf is not None and isinstance(instance, tf.keras.Sequential):
+                    if len(instance.layers) == 0:
+                        print(f"⚠️ Model {model_name} (Sequential) nie ma warstw, pomijam test")
+                        continue
+                    # Kompilacja modelu Sequential jeśli nie został skompilowany
+                    if not hasattr(instance, 'optimizer'):
+                        print(f"🔧 Kompiluję model {model_name} (Sequential)")
+                        from tensorflow.keras.optimizers import Adam
+                        instance.compile(optimizer=Adam(learning_rate=0.001), loss="mse")
             except ImportError:
                 pass # Ignore if tensorflow is not installed
 
