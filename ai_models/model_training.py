@@ -132,6 +132,57 @@ def prepare_data_for_model(data, features_count=None, expected_features=None):
         logging.error(f"Błąd podczas przygotowania danych: {e}")
         return None
 
+def compute_data_hash(X, y=None):
+    """
+    Oblicza hash dla danych wejściowych, który można wykorzystać do sprawdzenia 
+    czy dane treningowe się zmieniły.
+    
+    Args:
+        X: Dane wejściowe (features)
+        y: Dane wyjściowe (target), opcjonalne
+        
+    Returns:
+        str: Hash reprezentujący dane
+    """
+    import hashlib
+    import numpy as np
+    
+    try:
+        # Oblicz statystyki dla X
+        if hasattr(X, 'shape'):
+            x_shape = str(X.shape)
+            x_mean = str(np.mean(X) if X.size > 0 else 0)
+            x_std = str(np.std(X) if X.size > 0 else 0)
+        else:
+            x_shape = str(len(X))
+            x_mean = "unknown"
+            x_std = "unknown"
+            
+        # Oblicz statystyki dla y, jeśli zostało podane
+        if y is not None:
+            if hasattr(y, 'shape'):
+                y_shape = str(y.shape)
+                y_mean = str(np.mean(y) if y.size > 0 else 0)
+                y_std = str(np.std(y) if y.size > 0 else 0)
+            else:
+                y_shape = str(len(y))
+                y_mean = "unknown"
+                y_std = "unknown"
+            
+            # Połącz statystyki X i y
+            data_repr = f"{x_shape}_{x_mean}_{x_std}_{y_shape}_{y_mean}_{y_std}"
+        else:
+            # Użyj tylko statystyk X
+            data_repr = f"{x_shape}_{x_mean}_{x_std}"
+        
+        # Oblicz hash MD5
+        return hashlib.md5(data_repr.encode()).hexdigest()
+    except Exception as e:
+        logging.error(f"Błąd podczas obliczania hasha danych: {e}")
+        # W przypadku błędu zwróć losowy hash
+        import time
+        return hashlib.md5(str(time.time()).encode()).hexdigest()
+
 
 class ModelTrainer:
     def __init__(
@@ -149,11 +200,82 @@ class ModelTrainer:
         self.online_learning = online_learning
         self.use_gpu = use_gpu
         self.early_stopping_params = early_stopping_params or {}
-        os.makedirs(self.saved_model_dir, exist_ok=True)
         self.history = {}
+        self.model_metadata = {}
+        self.last_data_hash = None
+        
+        # Upewnij się, że katalog istnieje
+        os.makedirs(self.saved_model_dir, exist_ok=True)
+        
+        # Upewnij się, że katalog models istnieje (do zapisywania modeli w nowym formacie)
+        os.makedirs("models", exist_ok=True)
 
         if tf is not None and isinstance(model, tf.keras.Model) and use_gpu:
             logging.info("Trening z wykorzystaniem GPU/TPU (o ile jest dostępne).")
+            
+        # Spróbuj załadować istniejący model zamiast trenować od zera
+        self._try_load_existing_model()
+
+    def _try_load_existing_model(self) -> bool:
+        """
+        Próbuje załadować wcześniej zapisany model o tej samej nazwie.
+        
+        Returns:
+            bool: True jeśli udało się załadować model, False w przeciwnym przypadku
+        """
+        try:
+            # Sprawdź najpierw w katalogu models/
+            model_path = os.path.join("models", f"{self.model_name.lower()}_model.pkl")
+            
+            if os.path.exists(model_path):
+                logging.info(f"Znaleziono zapisany model {self.model_name} w {model_path}")
+                
+                with open(model_path, 'rb') as f:
+                    model_data = pickle.load(f)
+                    
+                if 'model' in model_data and 'metadata' in model_data:
+                    self.model = model_data['model']
+                    self.model_metadata = model_data['metadata']
+                    self.last_data_hash = self.model_metadata.get('data_hash')
+                    
+                    logging.info(f"Załadowano model {self.model_name} (trenowany: {self.model_metadata.get('train_date', 'nieznany')})")
+                    return True
+                else:
+                    logging.warning(f"Plik modelu {model_path} nie zawiera wymaganych danych")
+            
+            # Sprawdź również w standardowym katalogu saved_model_dir
+            # Znajdź najnowszy plik modelu
+            model_files = []
+            for file in os.listdir(self.saved_model_dir):
+                if file.startswith(f"{self.model_name}_") and (file.endswith(".pkl") or file.endswith(".h5")):
+                    file_path = os.path.join(self.saved_model_dir, file)
+                    model_files.append((file_path, os.path.getmtime(file_path)))
+            
+            if model_files:
+                # Sortuj po czasie modyfikacji (od najnowszego)
+                model_files.sort(key=lambda x: x[1], reverse=True)
+                latest_model_path = model_files[0][0]
+                
+                logging.info(f"Znaleziono zapisany model {self.model_name} w {latest_model_path}")
+                
+                # Załaduj model
+                if latest_model_path.endswith(".pkl"):
+                    with open(latest_model_path, 'rb') as f:
+                        # Stary format - sam model bez metadanych
+                        self.model = pickle.load(f)
+                        self.model_metadata = {'train_date': datetime.fromtimestamp(model_files[0][1]).isoformat()}
+                elif latest_model_path.endswith(".h5") and tf is not None:
+                    self.model = tf.keras.models.load_model(latest_model_path)
+                    self.model_metadata = {'train_date': datetime.fromtimestamp(model_files[0][1]).isoformat()}
+                
+                logging.info(f"Załadowano model {self.model_name} (trenowany: {self.model_metadata.get('train_date', 'nieznany')})")
+                return True
+            
+            return False
+            
+        except Exception as e:
+            logging.warning(f"Nie można załadować zapisanego modelu {self.model_name}: {e}")
+            return False
 
     def walk_forward_split(
         self, X: pd.DataFrame, y: pd.Series, n_splits: int = 5
@@ -173,8 +295,38 @@ class ModelTrainer:
         n_splits: int = 5,
         epochs: int = 50,
         batch_size: int = 32,
-    ) -> Dict[str, List[float]]:
+        force_train: bool = False,
+    ) -> Dict[str, Any]:
+        """
+        Trenuje model na danych, z inteligentnym cachingiem.
+        
+        Args:
+            X: Dane wejściowe
+            y: Dane wyjściowe
+            n_splits: Liczba podziałów danych w walidacji krzyżowej
+            epochs: Liczba epok dla modeli głębokiego uczenia
+            batch_size: Rozmiar partii danych dla modeli głębokiego uczenia
+            force_train: Czy wymusić trenowanie modelu nawet jeśli istnieje zapisany model
+            
+        Returns:
+            Dict[str, Any]: Wyniki treningu
+        """
         try:
+            # Oblicz hash danych treningowych
+            current_data_hash = compute_data_hash(X, y)
+            
+            # Sprawdź czy model już istnieje i czy dane się zmieniły
+            if not force_train and self.last_data_hash == current_data_hash and self.model_metadata:
+                logging.info(f"Model {self.model_name} jest aktualny (hash danych się nie zmienił)")
+                return {
+                    "success": True,
+                    "message": "Model jest aktualny (dane nie zmieniły się)",
+                    "is_updated": False,
+                    "metrics": self.model_metadata.get("metrics", {}),
+                    "accuracy": self.model_metadata.get("accuracy", 0.0)
+                }
+            
+            # Jeśli dane się zmieniły lub wymuszono trening, trenuj model
             splits = self.walk_forward_split(X, y, n_splits=n_splits)
             metrics = {"mse": [], "mae": []}
 
@@ -238,15 +390,48 @@ class ModelTrainer:
 
             avg_mse = float(np.mean(metrics["mse"]))
             avg_mae = float(np.mean(metrics["mae"]))
-            logging.info("Średnie MSE: %.4f, Średnie MAE: %.4f", avg_mse, avg_mae)
-            self.save_model()
-            return metrics
+            accuracy = 1.0 / (1.0 + avg_mse)
+            logging.info("Średnie MSE: %.4f, Średnie MAE: %.4f, Accuracy: %.4f", avg_mse, avg_mae, accuracy)
+            
+            # Zapisz metadane modelu
+            self.model_metadata = {
+                "train_date": datetime.now().isoformat(),
+                "data_hash": current_data_hash,
+                "metrics": {
+                    "mse": avg_mse,
+                    "mae": avg_mae
+                },
+                "accuracy": accuracy,
+                "features_shape": X.shape if hasattr(X, 'shape') else None,
+                "target_shape": y.shape if hasattr(y, 'shape') else None,
+                "name": self.model_name,
+                "model_type": str(type(self.model)),
+            }
+            
+            # Dodaj parametry modelu do metadanych, jeśli model je posiada
+            if hasattr(self.model, 'get_params'):
+                self.model_metadata["params"] = self.model.get_params()
+            
+            # Zapisz model w starym i nowym formacie
+            self._save_model_old_format()
+            self._save_model_new_format()
+            
+            self.last_data_hash = current_data_hash
+            
+            return {
+                "success": True,
+                "is_updated": True,
+                "metrics": metrics,
+                "accuracy": accuracy,
+                "model_metadata": self.model_metadata
+            }
 
         except Exception as e:
             logging.error("Błąd podczas treningu modelu: %s", e)
-            raise
+            return {"success": False, "error": str(e)}
 
-    def save_model(self) -> None:
+    def _save_model_old_format(self) -> None:
+        """Zapisuje model w starym formacie (dla kompatybilności)"""
         try:
             # Sprawdzenie, czy model został wytrenowany
             if hasattr(self.model, 'n_features_in_') or hasattr(self.model, 'feature_importances_') or \
@@ -276,14 +461,46 @@ class ModelTrainer:
                     with open(model_filename, "wb") as f:
                         pickle.dump(self.model, f)
 
-                logging.info("Model zapisany w: %s", model_filename)
+                logging.info("Model zapisany w starym formacie: %s", model_filename)
             else:
                 logging.error("Model %s nie został wytrenowany lub nie ma warstw! Anulowanie zapisu.", 
                             self.model_name)
 
         except Exception as e:
-            logging.error("Błąd podczas zapisywania modelu: %s", e)
-            raise
+            logging.error("Błąd podczas zapisywania modelu w starym formacie: %s", e)
+    
+    def _save_model_new_format(self) -> None:
+        """Zapisuje model w nowym formacie z metadanymi"""
+        try:
+            # Sprawdzenie, czy model został wytrenowany
+            if hasattr(self.model, 'n_features_in_') or hasattr(self.model, 'feature_importances_') or \
+               (tf is not None and isinstance(self.model, tf.keras.Model) and len(self.model.layers) > 0):
+                
+                # Przygotuj ścieżkę do zapisu modelu
+                model_filename = os.path.join("models", f"{self.model_name.lower()}_model.pkl")
+                
+                # Przygotuj dane modelu z metadanymi
+                model_data = {
+                    "model": self.model,
+                    "metadata": self.model_metadata
+                }
+                
+                # Zapisz model z metadanymi
+                with open(model_filename, "wb") as f:
+                    pickle.dump(model_data, f)
+                
+                logging.info("Model zapisany w nowym formacie z metadanymi: %s", model_filename)
+            else:
+                logging.error("Model %s nie został wytrenowany lub nie ma warstw! Anulowanie zapisu.", 
+                            self.model_name)
+                            
+        except Exception as e:
+            logging.error("Błąd podczas zapisywania modelu w nowym formacie: %s", e)
+            
+    def save_model(self) -> None:
+        """Zapisuje model w obu formatach (stary i nowy)"""
+        self._save_model_old_format()
+        self._save_model_new_format()
 
 
 def get_example_data():

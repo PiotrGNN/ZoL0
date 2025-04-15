@@ -1,2 +1,4 @@
 
 # Ten plik zapewnia, że katalog models będzie śledzony przez git
+# Ten plik służy do śledzenia pustego katalogu w repozytorium Git.
+# Katalog models jest używany do przechowywania wytrenowanych modeli ML.

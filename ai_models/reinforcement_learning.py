@@ -116,7 +116,7 @@ class DQNAgent:
         if not hasattr(self.model, 'optimizer') or self.model.optimizer is None:
             self.model.compile(optimizer=Adam(learning_rate=self.learning_rate), loss="mse")
             logging.info("Skompilowano model źródłowy")
-            
+
         self.target_model.set_weights(self.model.get_weights())
 
         # Upewnienie się, że model docelowy jest skompilowany
@@ -253,39 +253,295 @@ if __name__ == "__main__":
         raise
 
 class ReinforcementLearner:
-    """Klasa implementująca uczenie ze wzmocnieniem dla handlu."""
+    """
+    Klasa implementująca uczenie przez wzmacnianie z użyciem sieci neuronowej.
+    """
 
-    def __init__(self, input_dim=10, num_actions=3):
+    def __init__(self, state_size=10, action_size=3, learning_rate=0.001, gamma=0.95, epsilon=1.0):
         """
-        Inicjalizuje model uczenia ze wzmocnieniem.
+        Inicjalizacja modelu uczenia przez wzmacnianie.
 
         Args:
-            input_dim: Wymiar wejścia (liczba cech)
-            num_actions: Liczba możliwych akcji (1: kupno, 2: sprzedaż, 0: nic)
+            state_size: Wymiar przestrzeni stanów
+            action_size: Liczba możliwych akcji
+            learning_rate: Współczynnik uczenia
+            gamma: Współczynnik dyskontowania nagród
+            epsilon: Prawdopodobieństwo eksploracji
         """
-        self.input_dim = input_dim
-        self.num_actions = num_actions
-        self.model = Sequential([
-            Dense(64, activation='relu', input_shape=(input_dim,)),
-            Dense(32, activation='relu'),
-            Dense(num_actions, activation='linear')
-        ])
+        self.state_size = state_size
+        self.action_size = action_size
+        self.learning_rate = learning_rate
+        self.gamma = gamma
+        self.epsilon = epsilon
+        self.epsilon_min = 0.01
+        self.epsilon_decay = 0.995
+        self.memory = []
+        self.model = self._build_model()
+        self.model_path = "models/reinforcement_learner_model.pkl"
 
-        # Kompilacja modelu
-        self.model.compile(
-            optimizer=Adam(learning_rate=0.001),
-            loss='mse',
-            metrics=['accuracy']
-        )
+        # Spróbuj załadować zapisany model, jeśli istnieje
+        self._try_load_model()
 
-        # Utwórz katalog dla zapisywania modeli, jeśli nie istnieje
-        os.makedirs('saved_models/checkpoints', exist_ok=True)
+    def _build_model(self):
+        """
+        Buduje model sieci neuronowej.
 
-        # Konfiguracja loggera
-        self.logger = logging.getLogger('ReinforcementLearning')
-        self.logger.setLevel(logging.INFO)
+        Returns:
+            Model Sequential
+        """
+        try:
+            from tensorflow.keras.models import Sequential
+            from tensorflow.keras.layers import Dense
+            from tensorflow.keras.optimizers import Adam
 
-        # Upewnij się, że katalog logów istnieje
-        os.makedirs('logs', exist_ok=True)
+            model = Sequential()
+            model.add(Dense(24, input_dim=self.state_size, activation='relu'))
+            model.add(Dense(24, activation='relu'))
+            model.add(Dense(self.action_size, activation='linear'))
+            model.compile(loss='mse', optimizer=Adam(learning_rate=self.learning_rate))
+            return model
+        except ImportError:
+            print("TensorFlow nie jest zainstalowany. Używanie pustego modelu.")
+            class DummyModel:
+                def predict(self, state):
+                    import numpy as np
+                    return np.random.random((1, 3))
+                def fit(self, states, target, epochs=1, verbose=0):
+                    pass
+            return DummyModel()
 
-# Usunięto nadpisanie klasy ReinforcementLearner
+    def _try_load_model(self):
+        """
+        Próbuje załadować wcześniej zapisany model.
+        """
+        import os
+        import pickle
+        import logging
+
+        if os.path.exists(self.model_path):
+            try:
+                with open(self.model_path, 'rb') as f:
+                    model_data = pickle.load(f)
+
+                if 'model' in model_data and 'metadata' in model_data:
+                    # Jeśli model ma zdefiniowane warstwy, użyj go
+                    if hasattr(model_data['model'], 'layers') and len(model_data['model'].layers) > 0:
+                        self.model = model_data['model']
+                        metadata = model_data['metadata']
+
+                        # Aktualizuj parametry na podstawie metadanych
+                        if 'epsilon' in metadata:
+                            self.epsilon = metadata['epsilon']
+                        if 'gamma' in metadata:
+                            self.gamma = metadata['gamma']
+                        if 'learning_rate' in metadata:
+                            self.learning_rate = metadata['learning_rate']
+
+                        logging.info(f"Załadowano zapisany model ReinforcementLearner z {self.model_path}")
+                    else:
+                        logging.warning("Zapisany model nie ma warstw, tworzę nowy model")
+            except Exception as e:
+                logging.error(f"Błąd podczas ładowania modelu ReinforcementLearner: {e}")
+
+    def save_model(self, force=False):
+        """
+        Zapisuje model wraz z metadanymi.
+
+        Args:
+            force: Czy wymusić zapisanie modelu nawet jeśli nie ma warstw
+        """
+        import os
+        import pickle
+        import logging
+        import datetime
+
+        try:
+            # Sprawdź czy model ma warstwy (czy jest to model Sequential)
+            if hasattr(self.model, 'layers') and (len(self.model.layers) > 0 or force):
+                # Upewnij się, że katalog istnieje
+                os.makedirs(os.path.dirname(self.model_path), exist_ok=True)
+
+                # Przygotuj metadane
+                metadata = {
+                    'state_size': self.state_size,
+                    'action_size': self.action_size,
+                    'epsilon': self.epsilon,
+                    'gamma': self.gamma,
+                    'learning_rate': self.learning_rate,
+                    'save_date': datetime.datetime.now().isoformat(),
+                    'model_type': 'ReinforcementLearner'
+                }
+
+                # Przygotuj dane do zapisu
+                model_data = {
+                    'model': self.model,
+                    'metadata': metadata
+                }
+
+                # Zapisz model z metadanymi
+                with open(self.model_path, 'wb') as f:
+                    pickle.dump(model_data, f)
+
+                logging.info(f"Model ReinforcementLearner zapisany do {self.model_path}")
+                return True
+            else:
+                logging.warning("Model nie ma warstw, nie można zapisać")
+                return False
+        except Exception as e:
+            logging.error(f"Błąd podczas zapisywania modelu ReinforcementLearner: {e}")
+            return False
+
+    def remember(self, state, action, reward, next_state, done):
+        """
+        Zapisuje doświadczenie w pamięci.
+
+        Args:
+            state: Obecny stan
+            action: Wykonana akcja
+            reward: Otrzymana nagroda
+            next_state: Następny stan
+            done: Czy epizod się zakończył
+        """
+        self.memory.append((state, action, reward, next_state, done))
+
+    def act(self, state):
+        """
+        Wybiera akcję na podstawie stanu.
+
+        Args:
+            state: Obecny stan
+
+        Returns:
+            int: Wybrana akcja
+        """
+        import numpy as np
+
+        if np.random.random() <= self.epsilon:
+            return np.random.choice(self.action_size)
+
+        act_values = self.predict(state)
+        return np.argmax(act_values[0])
+
+    def replay(self, batch_size=32):
+        """
+        Trenuje model na podstawie doświadczeń.
+
+        Args:
+            batch_size: Rozmiar partii danych
+
+        Returns:
+            float: Wartość funkcji straty
+        """
+        import numpy as np
+        import logging
+
+        if len(self.memory) < batch_size:
+            return 0
+
+        minibatch = np.random.choice(self.memory, batch_size, replace=False)
+
+        states = np.array([i[0] for i in minibatch])
+        actions = np.array([i[1] for i in minibatch])
+        rewards = np.array([i[2] for i in minibatch])
+        next_states = np.array([i[3] for i in minibatch])
+        dones = np.array([i[4] for i in minibatch])
+
+        states = np.squeeze(states)
+        next_states = np.squeeze(next_states)
+
+        targets = rewards + self.gamma * (np.amax(self.predict(next_states), axis=1)) * (1 - dones)
+        targets_full = self.predict(states)
+
+        ind = np.array([i for i in range(batch_size)])
+        targets_full[ind, actions] = targets
+
+        history = self.fit(states, targets_full, epochs=1, verbose=0)
+        loss = history.history['loss'][0] if hasattr(history, 'history') else 0
+
+        if self.epsilon > self.epsilon_min:
+            self.epsilon *= self.epsilon_decay
+
+        # Po każdym treningu, zapisz model
+        self.save_model()
+
+        return loss
+
+    def predict(self, state):
+        """
+        Przewiduje wartości Q dla danego stanu.
+
+        Args:
+            state: Obecny stan
+
+        Returns:
+            numpy.ndarray: Przewidywane wartości Q
+        """
+        import numpy as np
+        import logging
+
+        # Rozszerz wymiar, jeśli potrzeba
+        if len(np.array(state).shape) == 1:
+            state = np.array(state).reshape(1, -1)
+
+        # Sprawdź czy model jest inicjalizowany
+        if not hasattr(self.model, 'predict'):
+            logging.error("Model nie ma metody predict, tworzę nowy model")
+            self.model = self._build_model()
+
+        # Sprawdź czy model ma warstwy (dla Sequential)
+        if hasattr(self.model, 'layers') and not self.model.layers:
+            logging.error("Model Sequential nie ma warstw, tworzę nowy model")
+            self.model = self._build_model()
+
+        # Sprawdź czy model jest skompilowany (dla Sequential)
+        if hasattr(self.model, '_is_compiled') and not self.model._is_compiled:
+            logging.warning("Model Sequential nie jest skompilowany, kompiluję model")
+            try:
+                from tensorflow.keras.optimizers import Adam
+                self.model.compile(loss='mse', optimizer=Adam(learning_rate=self.learning_rate))
+            except Exception as e:
+                logging.error(f"Błąd podczas kompilacji modelu: {e}")
+
+        # Dopasuj wymiary danych wejściowych
+        if hasattr(self.model, 'input_shape') and state.shape[1] != self.model.input_shape[1]:
+            logging.warning(f"Wymiary danych wejściowych nie pasują: {state.shape[1]} != {self.model.input_shape[1]}")
+            if state.shape[1] < self.model.input_shape[1]:
+                # Dodaj brakujące kolumny z zerami
+                padding = np.zeros((state.shape[0], self.model.input_shape[1] - state.shape[1]))
+                state = np.hstack((state, padding))
+            else:
+                # Ogranicz liczbę kolumn
+                state = state[:, :self.model.input_shape[1]]
+
+        return self.model.predict(state)
+
+    def fit(self, X, y, epochs=1, verbose=0):
+        """
+        Trenuje model na danych.
+
+        Args:
+            X: Dane wejściowe
+            y: Dane wyjściowe
+            epochs: Liczba epok
+            verbose: Poziom informacji o treningu
+
+        Returns:
+            history: Historia treningu
+        """
+        import logging
+
+        # Sprawdź czy model jest skompilowany (dla Sequential)
+        if hasattr(self.model, '_is_compiled') and not self.model._is_compiled:
+            logging.warning("Model Sequential nie jest skompilowany, kompiluję model")
+            try:
+                from tensorflow.keras.optimizers import Adam
+                self.model.compile(loss='mse', optimizer=Adam(learning_rate=self.learning_rate))
+            except Exception as e:
+                logging.error(f"Błąd podczas kompilacji modelu: {e}")
+
+        history = self.model.fit(X, y, epochs=epochs, verbose=verbose)
+
+        # Po treningu zapisz model
+        self.save_model()
+
+        return history

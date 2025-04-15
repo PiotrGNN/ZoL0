@@ -241,10 +241,14 @@ def test_models() -> Dict[str, Any]:
     """
     print("🔍 Rozpoczęcie testowania modeli AI...")
 
-    # Inicjalizuj tester modeli
-    model_tester = ModelTester(models_path='ai_models', log_path='logs/model_tests.log')
+    # Inicjalizuj tester modeli z określoną ścieżką zapisywania modeli
+    model_tester = ModelTester(
+        models_path='ai_models', 
+        log_path='logs/model_tests.log',
+        models_save_path='models'
+    )
 
-    # Uruchom testy
+    # Uruchom testy - załaduje zarówno modele z kodu jak i zapisane modele z plików .pkl
     results = model_tester.run_tests()
 
     # Pobierz załadowane modele
@@ -253,47 +257,46 @@ def test_models() -> Dict[str, Any]:
     # Wygeneruj dane testowe
     X_train, X_test, y_train, y_test = generate_test_data()
 
-    # Specjalne traktowanie dla RandomForestRegressor - zawsze trenuj od zera i zapisz
-    random_forest_trained = False
-    for model_info in models:
-        if model_info['name'] == 'RandomForestRegressor':
-            print("🌲 Trenuję model RandomForestRegressor od zera...")
-            rf_result = model_tester.train_and_save_random_forest(X_train, y_train, force_train=True)
-            
-            if rf_result['success']:
-                print(f"✅ Model RandomForestRegressor został wytrenowany i zapisany do {rf_result['model_path']}")
-                random_forest_trained = True
-            else:
-                print(f"❌ Błąd podczas trenowania RandomForestRegressor: {rf_result.get('error', 'Nieznany błąd')}")
-            
-            break
+    # Przygotowanie danych dla modeli
+    try:
+        from ai_models.model_training import prepare_data_for_model
+        X_train_prepared = prepare_data_for_model(X_train)
+        X_test_prepared = prepare_data_for_model(X_test)
+    except ImportError:
+        print("⚠️ Nie znaleziono funkcji prepare_data_for_model, używam surowych danych")
+        X_train_prepared = X_train
+        X_test_prepared = X_test
+
+    # Specjalne traktowanie dla RandomForestRegressor - inteligentne zarządzanie treningiem
+    force_retrain_rf = False  # Domyślnie nie wymuszamy retreningu, jeśli żądamy retrainingu, ustawiamy na True
     
-    # Jeśli nie znaleziono modelu RandomForestRegressor wśród załadowanych modeli, utwórz go
-    if not random_forest_trained:
-        print("🌲 Tworzę i trenuję nowy model RandomForestRegressor...")
-        try:
-            from sklearn.ensemble import RandomForestRegressor
-            rf_model = RandomForestRegressor(n_estimators=100, random_state=42)
-            
-            # Dodaj model do listy
-            models.append({
-                'name': 'RandomForestRegressor',
-                'type': str(type(rf_model)),
-                'instance': rf_model,
-                'module': 'sklearn.ensemble',
-                'has_fit': True,
-                'has_predict': True
-            })
-            
-            # Trenuj i zapisz model
-            rf_result = model_tester.train_and_save_random_forest(X_train, y_train, force_train=True)
-            
-            if rf_result['success']:
+    rf_info = next((m for m in models if m['name'] == 'RandomForestRegressor'), None)
+    
+    # Jeśli RF istnieje i był już wczytany z pliku, nie musimy go trenować ponownie (chyba że force_retrain)
+    if rf_info and rf_info.get('from_file') and not force_retrain_rf:
+        print(f"🌲 Użycie zapisanego modelu RandomForestRegressor z {rf_info['from_file']}")
+        rf_result = {
+            'success': True,
+            'model_path': rf_info['from_file'],
+            'is_updated': False,
+            'message': "Użyto zapisanego modelu"
+        }
+    else:
+        # Trenuj RF i zapisz (z inteligentnym cachingiem, który sprawdza czy dane się zmieniły)
+        print("🌲 Sprawdzanie/Trenowanie modelu RandomForestRegressor...")
+        rf_result = model_tester.train_and_save_random_forest(
+            X_train_prepared, 
+            y_train, 
+            force_train=force_retrain_rf
+        )
+        
+        if rf_result['success']:
+            if rf_result.get('is_updated', False):
                 print(f"✅ Model RandomForestRegressor został wytrenowany i zapisany do {rf_result['model_path']}")
             else:
-                print(f"❌ Błąd podczas trenowania RandomForestRegressor: {rf_result.get('error', 'Nieznany błąd')}")
-        except Exception as e:
-            print(f"❌ Błąd podczas tworzenia i trenowania RandomForestRegressor: {e}")
+                print(f"ℹ️ Użyto istniejącego modelu RandomForestRegressor (dane się nie zmieniły)")
+        else:
+            print(f"❌ Błąd podczas trenowania RandomForestRegressor: {rf_result.get('error', 'Nieznany błąd')}")
 
     # Testuj pozostałe modele typu ML z metodami fit/predict
     ml_results = {}
@@ -313,7 +316,7 @@ def test_models() -> Dict[str, Any]:
         if model_info.get('has_fit', False) and model_info.get('has_predict', False):
             print(f"⏳ Testowanie modelu ML: {model_name}...")
 
-            # Sprawdź czy model Sequential ma warstwy
+            # Sprawdź czy model Sequential ma warstwy i jest skompilowany
             try:
                 import tensorflow as tf
                 if tf is not None and isinstance(instance, tf.keras.Sequential):
@@ -332,75 +335,80 @@ def test_models() -> Dict[str, Any]:
                 pass # Ignore if tensorflow is not installed
 
             try:
-                # Przygotuj dane dla określonego modelu
-                try:
-                    from ai_models.model_training import prepare_data_for_model
+                # Sprawdź czy model był już trenowany i zapisany wcześniej
+                # Jeśli model ma metadane, oznacza to, że został załadowany z pliku .pkl
+                if model_info.get('from_file') and model_info.get('metadata'):
+                    print(f"ℹ️ Model {model_name} został wcześniej wytrenowany i zapisany - użycie istniejącego")
                     
-                    # Dostosuj liczbę cech dla modelu, jeśli potrzeba
-                    X_train_prepared = prepare_data_for_model(X_train)
-                    X_test_prepared = prepare_data_for_model(X_test)
-                except ImportError:
-                    X_train_prepared = X_train
-                    X_test_prepared = X_test
-                
-                # Trenuj model
-                instance.fit(X_train_prepared, y_train)
-
-                # Ocena modelu
-                try:
+                    # Ocena modelu na danych testowych bez ponownego treningu
                     evaluation = model_tester.evaluate_model(model_name, X_test_prepared, y_test)
                     ml_results[model_name] = evaluation
-
-                    # Zapisz accuracy w informacjach o modelu
+                    
+                    # Wyświetl dokładność
                     if isinstance(evaluation, dict) and 'accuracy' in evaluation:
                         print(f"✅ Model {model_name}: accuracy = {evaluation['accuracy']:.4f}")
                     else:
                         print(f"⚠️ Model {model_name}: brak metryki accuracy")
-                except Exception as eval_error:
-                    print(f"⚠️ Błąd podczas ewaluacji modelu {model_name}: {eval_error}")
-                    # Prostsza ocena - tylko sprawdzamy, czy model działa
-                    try:
-                        predictions = instance.predict(X_test_prepared)
-                        print(f"✅ Model {model_name} działa (wykonano predict)")
-                        ml_results[model_name] = {"success": True, "basic_test": "passed"}
-                    except Exception as pred_error:
-                        print(f"❌ Błąd predict dla modelu {model_name}: {pred_error}")
-                        ml_results[model_name] = {"success": False, "error": str(pred_error)}
+                else:
+                    # Model nie był wcześniej trenowany lub wymaga retreningu
+                    print(f"🔄 Trenuję model {model_name}...")
+                    
+                    # Inteligentny trening i zapisywanie modelu
+                    train_result = model_tester.train_and_save_model(
+                        model_name, 
+                        X_train_prepared, 
+                        y_train, 
+                        force_train=False  # Nie wymuszamy retreningu jeśli dane się nie zmieniły
+                    )
+                    
+                    if train_result['success']:
+                        ml_results[model_name] = train_result
+                        if 'accuracy' in train_result:
+                            print(f"✅ Model {model_name}: accuracy = {train_result['accuracy']:.4f}")
+                        print(f"✅ Model {model_name} {'zaktualizowany' if train_result.get('is_updated', False) else 'użyto istniejącego'}")
+                    else:
+                        print(f"❌ Błąd podczas trenowania modelu {model_name}: {train_result.get('error', 'Nieznany błąd')}")
+                        ml_results[model_name] = {"success": False, "error": train_result.get('error', 'Nieznany błąd')}
                 
             except Exception as e:
                 print(f"❌ Błąd podczas testowania modelu {model_name}: {e}")
                 ml_results[model_name] = {"success": False, "error": str(e)}
 
-    # Dodaj wyniki RandomForestRegressor
-    if random_forest_trained:
+    # Sprawdź wyniki RandomForestRegressor
+    if rf_result['success']:
         # Sprawdź działanie zapisanego modelu
         try:
-            model_path = "models/random_forest_model.pkl"
-            rf_model = model_tester.load_model_from_file(model_path)
-            if rf_model is not None:
-                # Przygotuj dane testowe
-                try:
-                    from ai_models.model_training import prepare_data_for_model
-                    X_test_prepared = prepare_data_for_model(X_test, expected_features=2)
-                except ImportError:
-                    X_test_prepared = X_test
+            # Sprawdź czy mamy już załadowany model z metadanymi
+            rf_info = next((m for m in models if m['name'] == 'RandomForestRegressor'), None)
+            
+            if rf_info and rf_info.get('instance'):
+                # Użyj załadowanego modelu RandomForestRegressor
+                rf_model = rf_info['instance']
                 
                 # Ocena modelu
                 predictions = rf_model.predict(X_test_prepared)
                 mse = ((predictions - y_test) ** 2).mean()
-                print(f"✅ Zapisany model RandomForestRegressor: MSE = {mse:.4f}")
+                accuracy = 1.0 / (1.0 + mse)
+                
+                print(f"✅ Model RandomForestRegressor: MSE = {mse:.4f}, Accuracy = {accuracy:.4f}")
                 ml_results['RandomForestRegressor'] = {
                     "success": True, 
                     "mse": mse,
+                    "accuracy": accuracy,
                     "saved_model_test": "passed"
                 }
+            else:
+                print("⚠️ Nie znaleziono załadowanego modelu RandomForestRegressor")
         except Exception as e:
-            print(f"❌ Błąd podczas testowania zapisanego modelu RandomForestRegressor: {e}")
+            print(f"❌ Błąd podczas testowania modelu RandomForestRegressor: {e}")
             ml_results['RandomForestRegressor'] = {"success": False, "error": str(e)}
 
     # Zapisz metadane modeli
     try:
-        model_tester.save_model_metadata("model_metadata.json")
+        metadata_path = os.path.join("logs", "model_metadata.json")
+        os.makedirs(os.path.dirname(metadata_path), exist_ok=True)
+        model_tester.save_model_metadata(metadata_path)
+        print(f"📝 Metadane modeli zapisane do {metadata_path}")
     except Exception as e:
         print(f"⚠️ Nie można zapisać metadanych modeli: {e}")
 
@@ -409,8 +417,10 @@ def test_models() -> Dict[str, Any]:
     print(f"- Załadowano {results.get('models_loaded', 0) or len(models)} modeli")
     print(f"- Przetestowano {len(ml_results)} modeli ML")
     
-    if random_forest_trained:
-        print(f"- RandomForestRegressor został wytrenowany od zera i zapisany do models/random_forest_model.pkl")
+    # Sprawdź, ile modeli było załadowanych z plików .pkl
+    cached_models = sum(1 for m in models if m.get('from_file'))
+    if cached_models > 0:
+        print(f"- Użyto {cached_models} wcześniej zapisanych modeli (.pkl)")
 
     if results.get('errors', []):
         print("\n⚠️ Problemy podczas testów:")
