@@ -766,3 +766,447 @@ class StrategyManager:
         except Exception as e:
             self.logger.error(f"Błąd podczas wykonywania strategii {strategy_id}: {e}")
             return []
+"""
+simplified_strategy.py - Uproszczone strategie tradingowe
+"""
+
+import logging
+import random
+from typing import Dict, List, Any, Optional
+
+class Strategy:
+    """Bazowa klasa strategii."""
+    
+    def __init__(self, name: str):
+        """
+        Inicjalizacja strategii.
+        
+        Args:
+            name: Nazwa strategii
+        """
+        self.name = name
+        self.logger = logging.getLogger(f"Strategy.{name}")
+        self.enabled = True
+        self.parameters = {}
+        
+        self.logger.info(f"Zainicjalizowano strategię: {name}")
+    
+    def generate_signals(self, market_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        Generuje sygnały handlowe na podstawie danych rynkowych.
+        
+        Args:
+            market_data: Dane rynkowe
+            
+        Returns:
+            List[Dict[str, Any]]: Lista sygnałów handlowych
+        """
+        self.logger.warning(f"Metoda generate_signals nie została zaimplementowana w {self.name}")
+        return []
+    
+    def update_parameters(self, parameters: Dict[str, Any]) -> bool:
+        """
+        Aktualizuje parametry strategii.
+        
+        Args:
+            parameters: Nowe parametry
+            
+        Returns:
+            bool: Czy operacja się powiodła
+        """
+        try:
+            for key, value in parameters.items():
+                self.parameters[key] = value
+            
+            self.logger.info(f"Zaktualizowano parametry strategii {self.name}: {parameters}")
+            return True
+        except Exception as e:
+            self.logger.error(f"Błąd podczas aktualizacji parametrów strategii {self.name}: {e}")
+            return False
+    
+    def enable(self):
+        """Włącza strategię."""
+        self.enabled = True
+        self.logger.info(f"Strategia {self.name} została włączona")
+    
+    def disable(self):
+        """Wyłącza strategię."""
+        self.enabled = False
+        self.logger.info(f"Strategia {self.name} została wyłączona")
+    
+    def is_enabled(self) -> bool:
+        """
+        Sprawdza, czy strategia jest włączona.
+        
+        Returns:
+            bool: Czy strategia jest włączona
+        """
+        return self.enabled
+
+class TrendFollowingStrategy(Strategy):
+    """Strategia podążająca za trendem."""
+    
+    def __init__(self):
+        """Inicjalizacja strategii podążającej za trendem."""
+        super().__init__("Trend Following")
+        
+        # Domyślne parametry
+        self.parameters = {
+            "short_period": 10,
+            "long_period": 30,
+            "signal_threshold": 0.01,
+            "position_size": 0.1
+        }
+    
+    def generate_signals(self, market_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        Generuje sygnały handlowe na podstawie danych rynkowych.
+        
+        Args:
+            market_data: Dane rynkowe
+            
+        Returns:
+            List[Dict[str, Any]]: Lista sygnałów handlowych
+        """
+        if not self.enabled:
+            return []
+        
+        signals = []
+        
+        try:
+            # Pobierz dane
+            symbol = market_data.get("symbol", "BTCUSDT")
+            
+            # Symulacja logiki strategii
+            # W rzeczywistej implementacji używalibyśmy tu odpowiednich wskaźników
+            
+            # Generowanie losowego sygnału dla celów demonstracyjnych
+            if random.random() < 0.2:  # 20% szans na sygnał
+                side = "BUY" if random.random() > 0.5 else "SELL"
+                
+                signal = {
+                    "symbol": symbol,
+                    "side": side,
+                    "type": "LIMIT",
+                    "quantity": round(random.uniform(0.001, 0.01), 4),
+                    "price": round(random.uniform(30000, 40000), 2),
+                    "strategy": self.name,
+                    "reason": f"Wykryto trend {'wzrostowy' if side == 'BUY' else 'spadkowy'}"
+                }
+                
+                signals.append(signal)
+                self.logger.info(f"Wygenerowano sygnał {side} dla {symbol}")
+        except Exception as e:
+            self.logger.error(f"Błąd podczas generowania sygnałów dla {self.name}: {e}")
+        
+        return signals
+
+class MeanReversionStrategy(Strategy):
+    """Strategia powrotu do średniej."""
+    
+    def __init__(self):
+        """Inicjalizacja strategii powrotu do średniej."""
+        super().__init__("Mean Reversion")
+        
+        # Domyślne parametry
+        self.parameters = {
+            "lookback_period": 20,
+            "std_dev_threshold": 2.0,
+            "position_size": 0.05
+        }
+    
+    def generate_signals(self, market_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        Generuje sygnały handlowe na podstawie danych rynkowych.
+        
+        Args:
+            market_data: Dane rynkowe
+            
+        Returns:
+            List[Dict[str, Any]]: Lista sygnałów handlowych
+        """
+        if not self.enabled:
+            return []
+        
+        signals = []
+        
+        try:
+            # Pobierz dane
+            symbol = market_data.get("symbol", "BTCUSDT")
+            
+            # Symulacja logiki strategii
+            # W rzeczywistej implementacji używalibyśmy tu odpowiednich wskaźników
+            
+            # Generowanie losowego sygnału dla celów demonstracyjnych
+            if random.random() < 0.15:  # 15% szans na sygnał
+                is_overbought = random.random() > 0.5
+                side = "SELL" if is_overbought else "BUY"
+                
+                signal = {
+                    "symbol": symbol,
+                    "side": side,
+                    "type": "LIMIT",
+                    "quantity": round(random.uniform(0.001, 0.01), 4),
+                    "price": round(random.uniform(30000, 40000), 2),
+                    "strategy": self.name,
+                    "reason": f"Rynek {'wykupiony' if is_overbought else 'wyprzedany'}"
+                }
+                
+                signals.append(signal)
+                self.logger.info(f"Wygenerowano sygnał {side} dla {symbol}")
+        except Exception as e:
+            self.logger.error(f"Błąd podczas generowania sygnałów dla {self.name}: {e}")
+        
+        return signals
+
+class BreakoutStrategy(Strategy):
+    """Strategia breakout."""
+    
+    def __init__(self):
+        """Inicjalizacja strategii breakout."""
+        super().__init__("Breakout")
+        
+        # Domyślne parametry
+        self.parameters = {
+            "lookback_period": 50,
+            "breakout_threshold": 0.03,
+            "position_size": 0.07
+        }
+    
+    def generate_signals(self, market_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        Generuje sygnały handlowe na podstawie danych rynkowych.
+        
+        Args:
+            market_data: Dane rynkowe
+            
+        Returns:
+            List[Dict[str, Any]]: Lista sygnałów handlowych
+        """
+        if not self.enabled:
+            return []
+        
+        signals = []
+        
+        try:
+            # Pobierz dane
+            symbol = market_data.get("symbol", "BTCUSDT")
+            
+            # Symulacja logiki strategii
+            # W rzeczywistej implementacji używalibyśmy tu odpowiednich wskaźników
+            
+            # Generowanie losowego sygnału dla celów demonstracyjnych
+            if random.random() < 0.1:  # 10% szans na sygnał
+                is_upper_breakout = random.random() > 0.5
+                side = "BUY" if is_upper_breakout else "SELL"
+                
+                signal = {
+                    "symbol": symbol,
+                    "side": side,
+                    "type": "MARKET",  # Breakout to zwykle zlecenia rynkowe
+                    "quantity": round(random.uniform(0.001, 0.01), 4),
+                    "strategy": self.name,
+                    "reason": f"Wykryto breakout {'powyżej oporu' if is_upper_breakout else 'poniżej wsparcia'}"
+                }
+                
+                signals.append(signal)
+                self.logger.info(f"Wygenerowano sygnał {side} dla {symbol}")
+        except Exception as e:
+            self.logger.error(f"Błąd podczas generowania sygnałów dla {self.name}: {e}")
+        
+        return signals
+
+class StrategyManager:
+    """Menedżer strategii tradingowych."""
+    
+    def __init__(self, strategies: Dict[str, Dict[str, Any]] = None, exposure_limits: Dict[str, float] = None):
+        """
+        Inicjalizacja menedżera strategii.
+        
+        Args:
+            strategies: Słownik z konfiguracją strategii
+            exposure_limits: Limity ekspozycji dla każdej strategii
+        """
+        self.logger = logging.getLogger("StrategyManager")
+        
+        # Inicjalizacja dostępnych strategii
+        self.available_strategies = {}
+        self.active_strategies = {}
+        self.exposure_limits = exposure_limits or {}
+        
+        # Dodanie wbudowanych strategii
+        self._add_builtin_strategies()
+        
+        # Konfiguracja na podstawie parametrów
+        if strategies:
+            self._configure_strategies(strategies)
+        
+        self.logger.info(f"Zainicjalizowano StrategyManager z {len(self.available_strategies)} strategiami")
+    
+    def _add_builtin_strategies(self):
+        """Dodaje wbudowane strategie."""
+        self.available_strategies["trend_following"] = TrendFollowingStrategy()
+        self.available_strategies["mean_reversion"] = MeanReversionStrategy()
+        self.available_strategies["breakout"] = BreakoutStrategy()
+        
+        # Domyślne limity ekspozycji
+        if not self.exposure_limits:
+            self.exposure_limits = {
+                "trend_following": 0.5,
+                "mean_reversion": 0.3,
+                "breakout": 0.4
+            }
+    
+    def _configure_strategies(self, strategies: Dict[str, Dict[str, Any]]):
+        """
+        Konfiguruje strategie na podstawie słownika konfiguracji.
+        
+        Args:
+            strategies: Słownik z konfiguracją strategii
+        """
+        for strategy_id, config in strategies.items():
+            if strategy_id in self.available_strategies:
+                # Aktualizuj istniejącą strategię
+                if config.get("enabled", False):
+                    self.available_strategies[strategy_id].enable()
+                else:
+                    self.available_strategies[strategy_id].disable()
+                
+                # Aktualizuj parametry, jeśli są
+                if "parameters" in config:
+                    self.available_strategies[strategy_id].update_parameters(config["parameters"])
+            else:
+                self.logger.warning(f"Nieznana strategia: {strategy_id}")
+    
+    def activate_strategy(self, strategy_id: str) -> bool:
+        """
+        Aktywuje strategię o podanym ID.
+        
+        Args:
+            strategy_id: ID strategii
+            
+        Returns:
+            bool: Czy operacja się powiodła
+        """
+        if strategy_id in self.available_strategies:
+            self.available_strategies[strategy_id].enable()
+            self.active_strategies[strategy_id] = self.available_strategies[strategy_id]
+            self.logger.info(f"Aktywowano strategię: {strategy_id}")
+            return True
+        else:
+            self.logger.warning(f"Próba aktywacji nieznanej strategii: {strategy_id}")
+            return False
+    
+    def deactivate_strategy(self, strategy_id: str) -> bool:
+        """
+        Dezaktywuje strategię o podanym ID.
+        
+        Args:
+            strategy_id: ID strategii
+            
+        Returns:
+            bool: Czy operacja się powiodła
+        """
+        if strategy_id in self.active_strategies:
+            self.available_strategies[strategy_id].disable()
+            del self.active_strategies[strategy_id]
+            self.logger.info(f"Dezaktywowano strategię: {strategy_id}")
+            return True
+        else:
+            self.logger.warning(f"Próba dezaktywacji nieaktywnej lub nieznanej strategii: {strategy_id}")
+            return False
+    
+    def get_active_strategies(self) -> Dict[str, Strategy]:
+        """
+        Zwraca słownik aktywnych strategii.
+        
+        Returns:
+            Dict[str, Strategy]: Aktywne strategie
+        """
+        # Aktualizuj listę aktywnych strategii
+        self.active_strategies = {
+            strategy_id: strategy 
+            for strategy_id, strategy in self.available_strategies.items() 
+            if strategy.is_enabled()
+        }
+        
+        return self.active_strategies
+    
+    def get_strategy_info(self, strategy_id: str) -> Optional[Dict[str, Any]]:
+        """
+        Zwraca informacje o strategii o podanym ID.
+        
+        Args:
+            strategy_id: ID strategii
+            
+        Returns:
+            Optional[Dict[str, Any]]: Informacje o strategii lub None, jeśli nie znaleziono
+        """
+        if strategy_id in self.available_strategies:
+            strategy = self.available_strategies[strategy_id]
+            return {
+                "id": strategy_id,
+                "name": strategy.name,
+                "enabled": strategy.is_enabled(),
+                "parameters": strategy.parameters,
+                "exposure_limit": self.exposure_limits.get(strategy_id, 0.0)
+            }
+        else:
+            return None
+    
+    def get_all_strategies_info(self) -> List[Dict[str, Any]]:
+        """
+        Zwraca informacje o wszystkich dostępnych strategiach.
+        
+        Returns:
+            List[Dict[str, Any]]: Lista informacji o strategiach
+        """
+        return [
+            {
+                "id": strategy_id,
+                "name": strategy.name,
+                "enabled": strategy.is_enabled(),
+                "parameters": strategy.parameters,
+                "exposure_limit": self.exposure_limits.get(strategy_id, 0.0)
+            }
+            for strategy_id, strategy in self.available_strategies.items()
+        ]
+    
+    def update_strategy_parameters(self, strategy_id: str, parameters: Dict[str, Any]) -> bool:
+        """
+        Aktualizuje parametry strategii o podanym ID.
+        
+        Args:
+            strategy_id: ID strategii
+            parameters: Nowe parametry
+            
+        Returns:
+            bool: Czy operacja się powiodła
+        """
+        if strategy_id in self.available_strategies:
+            success = self.available_strategies[strategy_id].update_parameters(parameters)
+            if success:
+                self.logger.info(f"Zaktualizowano parametry strategii {strategy_id}: {parameters}")
+            return success
+        else:
+            self.logger.warning(f"Próba aktualizacji parametrów nieznanej strategii: {strategy_id}")
+            return False
+    
+    def update_exposure_limit(self, strategy_id: str, limit: float) -> bool:
+        """
+        Aktualizuje limit ekspozycji dla strategii.
+        
+        Args:
+            strategy_id: ID strategii
+            limit: Nowy limit ekspozycji
+            
+        Returns:
+            bool: Czy operacja się powiodła
+        """
+        if strategy_id in self.available_strategies:
+            self.exposure_limits[strategy_id] = limit
+            self.logger.info(f"Zaktualizowano limit ekspozycji dla strategii {strategy_id}: {limit}")
+            return True
+        else:
+            self.logger.warning(f"Próba aktualizacji limitu ekspozycji nieznanej strategii: {strategy_id}")
+            return False

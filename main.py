@@ -976,33 +976,53 @@ def get_ai_thoughts():
 
         # Pobierz przemyślenia z analizatora sentymentu
         if sentiment_analyzer:
-            sentiment_data = sentiment_analyzer.analyze()
-            thoughts.append({
-                'model': 'SentimentAnalyzer',
-                'thought': f"Analiza sentymentu wskazuje na {sentiment_data['analysis']} nastawienie rynku (wartość: {sentiment_data['value']:.2f})",
-                'confidence': min(abs(sentiment_data['value']) * 100 + 50, 95),
-                'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                'type': 'sentiment'
-            })
+            try:
+                sentiment_data = sentiment_analyzer.analyze()
+                thoughts.append({
+                    'model': 'SentimentAnalyzer',
+                    'thought': f"Analiza sentymentu wskazuje na {sentiment_data['analysis']} nastawienie rynku (wartość: {sentiment_data['value']:.2f})",
+                    'confidence': min(abs(sentiment_data['value']) * 100 + 50, 95),
+                    'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                    'type': 'sentiment'
+                })
+            except Exception as e:
+                logging.error(f"Błąd podczas analizy sentymentu: {e}")
+                thoughts.append({
+                    'model': 'SentimentAnalyzer',
+                    'thought': "Nie można obecnie analizować sentymentu rynkowego",
+                    'confidence': 50,
+                    'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                    'type': 'sentiment'
+                })
 
         # Pobierz przemyślenia z detektora anomalii
         if anomaly_detector:
-            # Generowanie losowych danych
-            test_data = [random.normalvariate(0, 1) for _ in range(10)]
-            max_value = max(test_data)
-            if max_value > 2:
+            try:
+                # Generowanie losowych danych
+                test_data = [random.normalvariate(0, 1) for _ in range(10)]
+                max_value = max(test_data)
+                if max_value > 2:
+                    thoughts.append({
+                        'model': 'AnomalyDetector',
+                        'thought': f"Wykryto potencjalną anomalię w danych (wartość: {max_value:.2f})",
+                        'confidence': min(max_value * 20, 90),
+                        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                        'type': 'anomaly'
+                    })
+                else:
+                    thoughts.append({
+                        'model': 'AnomalyDetector',
+                        'thought': "Nie wykryto anomalii w obecnych danych rynkowych",
+                        'confidence': 85,
+                        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                        'type': 'anomaly'
+                    })
+            except Exception as e:
+                logging.error(f"Błąd podczas wykrywania anomalii: {e}")
                 thoughts.append({
                     'model': 'AnomalyDetector',
-                    'thought': f"Wykryto potencjalną anomalię w danych (wartość: {max_value:.2f})",
-                    'confidence': min(max_value * 20, 90),
-                    'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                    'type': 'anomaly'
-                })
-            else:
-                thoughts.append({
-                    'model': 'AnomalyDetector',
-                    'thought': "Nie wykryto anomalii w obecnych danych rynkowych",
-                    'confidence': 85,
+                    'thought': "Nie można obecnie wykrywać anomalii",
+                    'confidence': 50,
                     'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                     'type': 'anomaly'
                 })
@@ -1011,19 +1031,37 @@ def get_ai_thoughts():
         if 'model_recognizer' in globals() and model_recognizer:
             try:
                 model_info = model_recognizer.identify_model_type(None)
-                if model_info and isinstance(model_info, dict) and 'type' in model_info and 'name' in model_info:
+                
+                if model_info and isinstance(model_info, dict):
+                    if 'type' in model_info and 'name' in model_info:
+                        thoughts.append({
+                            'model': 'ModelRecognizer',
+                            'thought': f"Obecne dane rynkowe pasują do modelu typu {model_info['type']} ({model_info['name']})",
+                            'confidence': model_info.get('confidence', 0.8) * 100,
+                            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                            'type': 'model_recognition'
+                        })
+                    elif 'error' in model_info:
+                        thoughts.append({
+                            'model': 'ModelRecognizer',
+                            'thought': f"Analiza modelu: {model_info.get('error', 'Brak wystarczających danych')}",
+                            'confidence': 60,
+                            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                            'type': 'model_recognition'
+                        })
+                    else:
+                        thoughts.append({
+                            'model': 'ModelRecognizer',
+                            'thought': "Analizator modeli zwrócił niekompletne dane",
+                            'confidence': 50,
+                            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                            'type': 'model_recognition'
+                        })
+                else:
                     thoughts.append({
                         'model': 'ModelRecognizer',
-                        'thought': f"Obecne dane rynkowe pasują do modelu typu {model_info['type']} ({model_info['name']})",
-                        'confidence': model_info.get('confidence', 0.8) * 100,
-                        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                        'type': 'model_recognition'
-                    })
-                elif model_info and isinstance(model_info, dict) and 'error' in model_info:
-                    thoughts.append({
-                        'model': 'ModelRecognizer',
-                        'thought': f"Analiza modelu: {model_info.get('error', 'Brak wystarczających danych')}",
-                        'confidence': 60,
+                        'thought': "Nie można obecnie rozpoznać modelu rynkowego (brak danych)",
+                        'confidence': 40,
                         'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                         'type': 'model_recognition'
                     })

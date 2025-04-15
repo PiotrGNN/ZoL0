@@ -1,12 +1,17 @@
-run = "python3 main.py"
-entrypoint = "main.py"
+run = "python main.py"
+modules = ["python-3.10:v18-20230807-322e88b"]
+
+hidden = [".pythonlibs"]
 
 [nix]
-channel = "stable-22_11"
+channel = "stable-23_11"
 
 [env]
 PYTHONPATH = "${PYTHONPATH}:${REPL_HOME}"
-PYTHONUNBUFFERED = "1"
+FLASK_APP = "main.py"
+FLASK_ENV = "development"
+PORT = "5000"
+HOST = "0.0.0.0"
 
 [packager]
 language = "python3"
@@ -59,23 +64,17 @@ program = "main.py"
 request = "launch"
 type = "python"
 
-hidden = [".config", "**/__pycache__", "**/.mypy_cache", "**/*.pyc"]
-
 [languages]
 
-[languages.python3]
+[languages.python]
 pattern = "**/*.py"
 
-[languages.python3.languageServer]
+[languages.python.languageServer]
 start = "pylsp"
 
 [deployment]
-run = ["sh", "-c", "python install_replit.py && python main.py"]
-
-
-[auth]
-pageEnabled = false
-buttonEnabled = false
+run = ["sh", "-c", "python main.py"]
+deploymentTarget = "cloudrun"
 
 [workflows]
 runButton = "Naprawiony System"
@@ -401,6 +400,36 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python install_replit.py"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python main.py"
+
+[[workflows.workflow]]
+name = "Pełna Naprawa"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python install_replit.py"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python -m pip install --user -r requirements.txt"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python main.py"
+
+[[workflows.workflow]]
+name = "Instaluj i Uruchom"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python -m pip install --user -r requirements.txt"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"

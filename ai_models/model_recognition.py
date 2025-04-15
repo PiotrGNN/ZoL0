@@ -16,6 +16,15 @@ class ModelRecognizer:
 
     def __init__(self):
         """Inicjalizuje rozpoznawacz modeli."""
+        self.logger = logging.getLogger("ModelRecognizer")
+        self.logger.info("ModelRecognizer zainicjalizowany")
+        self.known_patterns = {
+            "trend": {"name": "Trend Following", "confidence": 0.85, "type": "trend"},
+            "reversal": {"name": "Mean Reversion", "confidence": 0.78, "type": "reversal"},
+            "breakout": {"name": "Breakout", "confidence": 0.82, "type": "breakout"},
+            "volatility": {"name": "Volatility", "confidence": 0.75, "type": "volatility"}
+        }
+
         self.model_types = [
             {
                 "id": "trending_market",
@@ -52,16 +61,15 @@ class ModelRecognizer:
         self.accuracy = 78.5
         self.model_type = "Pattern Recognition System"
         self.status = "Active"
-        
-        logger.info("Zainicjalizowano ModelRecognizer")
-        
+
+
     def predict(self, data: Optional[Dict[str, Any]]) -> Dict[str, Any]:
         """
         Przewiduje typ modelu rynkowego na podstawie danych.
-        
+
         Parameters:
             data (Optional[Dict[str, Any]]): Dane rynkowe
-            
+
         Returns:
             Dict[str, Any]: Rozpoznany model
         """
@@ -81,18 +89,18 @@ class ModelRecognizer:
         if data is None or not isinstance(data, dict) or 'price_data' not in data:
             logging.warning("Brak wymaganych danych cenowych dla rozpoznania modelu rynkowego")
             return {"error": "Niewystarczające dane do analizy", "timestamp": time.time()}
-            
+
         price_data = data['price_data']
-        
+
         # Analiza trendu
         is_trending = False
         trend_direction = 0
-        
+
         if len(price_data) >= 10:
             # Prosta analiza trendu - kierunek ruchu ostatnich 10 świec
             up_moves = sum(1 for i in range(1, len(price_data)) if price_data[i] > price_data[i-1])
             down_moves = sum(1 for i in range(1, len(price_data)) if price_data[i] < price_data[i-1])
-            
+
             # Jeśli ponad 70% ruchów w jednym kierunku - mamy trend
             if up_moves / len(price_data) > 0.7:
                 is_trending = True
@@ -100,15 +108,15 @@ class ModelRecognizer:
             elif down_moves / len(price_data) > 0.7:
                 is_trending = True
                 trend_direction = -1  # spadkowy
-        
+
         # Analiza zmienności
         volatility = 0
         if len(price_data) >= 2:
             returns = [abs(price_data[i] / price_data[i-1] - 1) for i in range(1, len(price_data))]
             volatility = sum(returns) / len(returns)
-        
+
         high_volatility = volatility > 0.01  # 1% zmienności jako próg
-        
+
         # Określenie typu rynku
         if is_trending and trend_direction > 0:
             selected_model = next(m for m in self.model_types if m["id"] == "trending_market")
@@ -195,7 +203,7 @@ if __name__ == "__main__":
     recognizer = ModelRecognizer()
 
     # Identyfikacja typu modelu
-    model_type = recognizer.identify_model_type(None)
+    model_type = recognizer.identify_model_type({"price_data":[1,2,3,4,5,6,7,8,9,10]})
     print(f"Rozpoznany model: {model_type['name']} (typ: {model_type['type']}) z pewnością {model_type['confidence']:.2f}")
 
     # Analiza akcji cenowej

@@ -416,3 +416,198 @@ class SimplifiedRiskManager:
             Dict[str, Dict[str, Any]]: Otwarte pozycje
         """
         return self.open_positions
+"""
+simplified_risk_manager.py - Uproszczony manager ryzyka
+"""
+
+import logging
+from typing import Dict, List, Any, Optional
+
+class SimplifiedRiskManager:
+    """
+    Uproszczony manager ryzyka dla platformy tradingowej.
+    """
+    
+    def __init__(self, max_risk: float = 0.02, max_position_size: float = 0.1, max_drawdown: float = 0.05):
+        """
+        Inicjalizacja managera ryzyka.
+        
+        Args:
+            max_risk: Maksymalne ryzyko na pojedynczą transakcję jako % kapitału
+            max_position_size: Maksymalny rozmiar pozycji jako % kapitału
+            max_drawdown: Maksymalny dopuszczalny drawdown jako % kapitału
+        """
+        self.logger = logging.getLogger("SimplifiedRiskManager")
+        self.max_risk = max_risk
+        self.max_position_size = max_position_size
+        self.max_drawdown = max_drawdown
+        
+        self.current_drawdown = 0.0
+        self.peak_capital = 0.0
+        self.active_positions = {}
+        
+        self.logger.info(f"Zainicjalizowano SimplifiedRiskManager (max_risk={max_risk}, max_position_size={max_position_size}, max_drawdown={max_drawdown})")
+    
+    def check_trade_risk(self, symbol: str, side: str, quantity: float, price: Optional[float] = None) -> Dict[str, Any]:
+        """
+        Sprawdza ryzyko związane z potencjalną transakcją.
+        
+        Args:
+            symbol: Symbol instrumentu
+            side: Strona transakcji ('buy', 'sell')
+            quantity: Ilość instrumentu
+            price: Cena transakcji
+            
+        Returns:
+            Dict[str, Any]: Wynik sprawdzenia
+        """
+        try:
+            # Wymagane parametry
+            if not symbol or not side or quantity <= 0:
+                return {
+                    "success": False,
+                    "error": "Nieprawidłowe parametry transakcji",
+                    "allowed": False
+                }
+            
+            # Sprawdź czy drawdown nie jest przekroczony
+            if self.current_drawdown > self.max_drawdown:
+                return {
+                    "success": True,
+                    "error": f"Przekroczony maksymalny drawdown ({self.current_drawdown:.2%} > {self.max_drawdown:.2%})",
+                    "allowed": False
+                }
+            
+            # Symulacja sprawdzenia dla uproszczonego managera
+            position_size_ok = quantity * (price or 1.0) <= self.max_position_size * 10000  # Założenie kapitału 10000
+            
+            # Uproszczona logika
+            if position_size_ok:
+                return {
+                    "success": True,
+                    "allowed": True,
+                    "risk_level": "medium",
+                    "max_loss": quantity * (price or 1.0) * self.max_risk
+                }
+            else:
+                return {
+                    "success": True,
+                    "error": "Przekroczony maksymalny rozmiar pozycji",
+                    "allowed": False
+                }
+        except Exception as e:
+            self.logger.error(f"Błąd podczas sprawdzania ryzyka transakcji: {e}")
+            return {
+                "success": False,
+                "error": str(e),
+                "allowed": False
+            }
+    
+    def filter_signals(self, signals: List[Dict[str, Any]], symbol: str, market_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        Filtruje sygnały handlowe na podstawie kryteriów ryzyka.
+        
+        Args:
+            signals: Lista sygnałów handlowych
+            symbol: Symbol instrumentu
+            market_data: Dane rynkowe
+            
+        Returns:
+            List[Dict[str, Any]]: Przefiltrowane sygnały
+        """
+        filtered_signals = []
+        
+        for signal in signals:
+            # Sprawdź podstawowe parametry
+            if "side" not in signal or "quantity" not in signal:
+                self.logger.warning(f"Pominięto sygnał z powodu braku wymaganych parametrów: {signal}")
+                continue
+            
+            # Sprawdź ryzyko
+            risk_check = self.check_trade_risk(
+                symbol=symbol,
+                side=signal["side"],
+                quantity=signal["quantity"],
+                price=signal.get("price")
+            )
+            
+            if risk_check["allowed"]:
+                # Dodaj informacje o ryzyku do sygnału
+                signal["risk_level"] = risk_check.get("risk_level", "medium")
+                signal["max_loss"] = risk_check.get("max_loss", 0.0)
+                signal["risk_checked"] = True
+                
+                filtered_signals.append(signal)
+            else:
+                self.logger.info(f"Odrzucono sygnał z powodu ryzyka: {risk_check.get('error', 'Nieznany powód')}")
+        
+        self.logger.info(f"Przefiltrowano sygnały: {len(signals)} -> {len(filtered_signals)}")
+        return filtered_signals
+    
+    def update_drawdown(self, current_capital: float):
+        """
+        Aktualizuje stan drawdown.
+        
+        Args:
+            current_capital: Aktualny kapitał
+        """
+        # Aktualizuj peak
+        if current_capital > self.peak_capital:
+            self.peak_capital = current_capital
+        
+        # Oblicz drawdown
+        if self.peak_capital > 0:
+            self.current_drawdown = (self.peak_capital - current_capital) / self.peak_capital
+            
+            if self.current_drawdown > self.max_drawdown:
+                self.logger.warning(f"Przekroczono maksymalny drawdown: {self.current_drawdown:.2%} > {self.max_drawdown:.2%}")
+    
+    def register_position(self, position_id: str, position_data: Dict[str, Any]) -> bool:
+        """
+        Rejestruje nową pozycję.
+        
+        Args:
+            position_id: ID pozycji
+            position_data: Dane pozycji
+            
+        Returns:
+            bool: Czy operacja się powiodła
+        """
+        try:
+            self.active_positions[position_id] = position_data
+            self.logger.info(f"Zarejestrowano pozycję {position_id}")
+            return True
+        except Exception as e:
+            self.logger.error(f"Błąd podczas rejestracji pozycji: {e}")
+            return False
+    
+    def close_position(self, position_id: str) -> bool:
+        """
+        Zamyka pozycję.
+        
+        Args:
+            position_id: ID pozycji
+            
+        Returns:
+            bool: Czy operacja się powiodła
+        """
+        try:
+            if position_id in self.active_positions:
+                del self.active_positions[position_id]
+                self.logger.info(f"Zamknięto pozycję {position_id}")
+                return True
+            else:
+                self.logger.warning(f"Próba zamknięcia nieistniejącej pozycji {position_id}")
+                return False
+        except Exception as e:
+            self.logger.error(f"Błąd podczas zamykania pozycji: {e}")
+            return False
+    
+    def get_active_positions(self) -> Dict[str, Dict[str, Any]]:
+        """
+        Zwraca aktywne pozycje.
+        
+        Returns:
+            Dict[str, Dict[str, Any]]: Aktywne pozycje
+        """
+        return self.active_positions
