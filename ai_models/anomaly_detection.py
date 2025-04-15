@@ -1,218 +1,187 @@
-
 """
-anomaly_detection.py
---------------------
-Moduł wykrywający anomalie w danych tradingowych.
-
-Funkcjonalności:
-- Wykrywanie anomalii w danych rynkowych
-- Wsparcie dla różnych metod detekcji (z-score, isolation forest)
-- Generowanie alertów przy wykryciu podejrzanych wzorców
+anomaly_detection.py - Moduł do wykrywania anomalii w danych rynkowych
 """
 
 import logging
 import time
-import random
+from typing import Dict, Any, List, Optional
 import numpy as np
-from typing import Dict, List, Any, Optional, Tuple, Union
 
-# Konfiguracja logowania
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s"
-)
-logger = logging.getLogger(__name__)
+__all__ = ["AnomalyDetector"]
 
 class AnomalyDetector:
     """
-    Klasa wykrywająca anomalie w danych rynkowych przy użyciu różnych metod statystycznych.
+    Klasa do wykrywania anomalii w danych rynkowych.
+    Wykorzystuje różne metody detekcji anomalii, takie jak Z-score, IQR, itp.
     """
-    def __init__(self, method: str = "z_score", threshold: float = 2.5, window_size: int = 20):
+
+    def __init__(self, method: str = "z_score", threshold: float = 3.0):
         """
-        Inicjalizuje detektor anomalii.
-        
-        Args:
-            method (str): Metoda detekcji ('z_score', 'isolation_forest', 'kmeans')
+        Inicjalizacja detektora anomalii.
+
+        Parameters:
+            method (str): Metoda wykrywania anomalii ('z_score', 'iqr', 'local_outlier')
             threshold (float): Próg uznania obserwacji za anomalię
-            window_size (int): Wielkość okna analizy
         """
         self.method = method
         self.threshold = threshold
-        self.window_size = window_size
-        self.historical_data = []
-        self.detected_anomalies = []
-        
-        logger.info(f"AnomalyDetector zainicjalizowany (metoda: {method}, próg: {threshold})")
-    
-    def detect(self, data: Union[List, Dict, np.ndarray]) -> List[Dict[str, Any]]:
+        self.anomalies = []
+        self.detection_method = method
+        logging.info(f"Zainicjalizowano AnomalyDetector (metoda: {method}, próg: {threshold})")
+
+    def detect(self, data, column=None):
         """
         Wykrywa anomalie w danych.
-        
-        Args:
-            data: Dane do analizy - lista, słownik lub tablica numpy
-            
+
+        Parameters:
+            data: Dane do analizy (np. numpy array, pandas DataFrame, lista)
+            column: Opcjonalna nazwa kolumny, jeśli data to DataFrame
+
         Returns:
-            List[Dict]: Lista wykrytych anomalii
+            List[int]: Indeksy wykrytych anomalii
         """
-        # Konwersja różnych formatów danych do listy wartości
-        values = self._convert_input_to_values(data)
-        
-        # Sprawdzenie czy mamy wystarczająco danych
-        if len(values) < 3:
-            logger.warning("Za mało danych do wykrycia anomalii")
-            return []
-        
-        anomalies = []
-        timestamps = [time.time()] * len(values) if isinstance(data, (list, np.ndarray)) else None
-        
-        # Analiza danych odpowiednią metodą
         if self.method == "z_score":
-            anomalies = self._detect_with_zscore(values, timestamps)
+            return self._detect_zscore(data, column)
+        elif self.method == "iqr":
+            return self._detect_iqr(data, column)
         else:
-            # Domyślnie używamy z-score jeśli metoda nie jest obsługiwana
-            logger.warning(f"Metoda {self.method} nie jest zaimplementowana, użycie z-score")
-            anomalies = self._detect_with_zscore(values, timestamps)
-        
-        # Dodaj wykryte anomalie do historii
-        self.detected_anomalies.extend(anomalies)
-        
-        # Zachowaj tylko ostatnie 100 anomalii
-        if len(self.detected_anomalies) > 100:
-            self.detected_anomalies = self.detected_anomalies[-100:]
-        
-        return anomalies
-    
-    def _convert_input_to_values(self, data: Union[List, Dict, np.ndarray]) -> List[float]:
+            logging.warning(f"Nieznana metoda detekcji anomalii: {self.method}. Użycie domyślnej z_score.")
+            return self._detect_zscore(data, column)
+
+    def _detect_zscore(self, data, column=None):
         """
-        Konwertuje różne formaty danych wejściowych do listy wartości.
-        
-        Args:
-            data: Dane wejściowe (lista, słownik, np.ndarray)
-            
-        Returns:
-            List[float]: Lista wartości
-        """
-        if isinstance(data, list):
-            # Jeśli to lista słowników, spróbuj wyciągnąć wartości
-            if all(isinstance(item, dict) for item in data) and len(data) > 0:
-                if 'value' in data[0]:
-                    return [item.get('value', 0.0) for item in data]
-                elif 'close' in data[0]:
-                    return [item.get('close', 0.0) for item in data]
-                else:
-                    # Bierzemy pierwszą wartość liczbową z każdego słownika
-                    return [next((v for v in item.values() if isinstance(v, (int, float))), 0.0) for item in data]
-            # Jeśli to zwykła lista
-            else:
-                return [float(x) if isinstance(x, (int, float)) else 0.0 for x in data]
-        
-        elif isinstance(data, dict):
-            # Jeśli słownik zawiera szeregi czasowe
-            if any(key in data for key in ['close', 'open', 'high', 'low']):
-                return data.get('close', [])
-            # Inaczej bierzemy wszystkie wartości liczbowe
-            else:
-                return [v for v in data.values() if isinstance(v, (int, float))]
-        
-        elif isinstance(data, np.ndarray):
-            # Konwersja z numpy array
-            if data.ndim == 1:
-                return data.tolist()
-            elif data.ndim == 2:
-                # Dla 2D bierzemy ostatnią kolumnę (zakładamy, że to ceny close)
-                return data[:, -1].tolist()
-        
-        # W razie niepowodzenia zwracamy pustą listę
-        logger.warning(f"Nieobsługiwany format danych: {type(data)}")
-        return []
-    
-    def _detect_with_zscore(self, values: List[float], timestamps: Optional[List[float]] = None) -> List[Dict[str, Any]]:
-        """
-        Wykrywa anomalie metodą z-score.
-        
-        Args:
-            values: Lista wartości do analizy
-            timestamps: Lista timestampów dla każdej wartości
-            
-        Returns:
-            List[Dict]: Lista wykrytych anomalii
-        """
-        if not timestamps:
-            timestamps = [time.time()] * len(values)
-        
-        # Obliczamy statystyki
-        mean = np.mean(values)
-        std = np.std(values) if len(values) > 1 else 1.0
-        
-        # Zabezpieczenie przed dzieleniem przez zero
-        if std == 0:
-            std = 1.0
-        
-        anomalies = []
-        
-        # Szukamy anomalii
-        for i, value in enumerate(values):
-            z_score = abs((value - mean) / std)
-            
-            if z_score > self.threshold:
-                anomaly = {
-                    "timestamp": timestamps[i],
-                    "value": value,
-                    "score": z_score,
-                    "threshold": self.threshold,
-                    "method": self.method,
-                    "detection_time": time.time()
-                }
-                anomalies.append(anomaly)
-                logger.info(f"Wykryto anomalię: wartość {value}, z-score {z_score:.2f}")
-        
-        return anomalies
-    
-    def predict(self, data: Union[List, Dict, np.ndarray]) -> Dict[str, Any]:
-        """
-        Przewiduje czy nowe dane zawierają anomalie.
-        
-        Args:
+        Wykrywa anomalie metodą Z-score.
+
+        Parameters:
             data: Dane do analizy
-            
+            column: Opcjonalna nazwa kolumny
+
         Returns:
-            Dict: Wynik predykcji
+            List[int]: Indeksy wykrytych anomalii
         """
-        anomalies = self.detect(data)
-        
-        return {
-            "anomalies_detected": len(anomalies) > 0,
-            "anomaly_count": len(anomalies),
-            "anomalies": anomalies,
-            "detection_method": self.method,
-            "threshold": self.threshold
-        }
-    
-    def get_detected_anomalies(self, limit: int = 10) -> List[Dict[str, Any]]:
+        try:
+            # Konwersja na numpy array
+            if column is not None and hasattr(data, 'loc'):
+                values = data[column].values
+            else:
+                values = np.array(data)
+
+            # Obliczenie Z-score
+            mean = np.mean(values)
+            std = np.std(values)
+
+            if std == 0:
+                return []
+
+            z_scores = np.abs((values - mean) / std)
+
+            # Znalezienie anomalii
+            anomaly_indices = np.where(z_scores > self.threshold)[0]
+
+            # Logowanie wykrytych anomalii
+            if len(anomaly_indices) > 0:
+                logging.info(f"Wykryto {len(anomaly_indices)} anomalii metodą Z-score")
+                for idx in anomaly_indices:
+                    self.log_anomaly({
+                        'index': int(idx),
+                        'value': float(values[idx]),
+                        'z_score': float(z_scores[idx]),
+                        'method': 'z_score'
+                    })
+
+            return anomaly_indices.tolist()
+        except Exception as e:
+            logging.error(f"Błąd podczas detekcji anomalii metodą Z-score: {e}")
+            return []
+
+    def _detect_iqr(self, data, column=None):
         """
-        Zwraca listę wykrytych anomalii.
-        
-        Args:
-            limit: Maksymalna liczba zwracanych anomalii
-            
+        Wykrywa anomalie metodą IQR (Interquartile Range).
+
+        Parameters:
+            data: Dane do analizy
+            column: Opcjonalna nazwa kolumny
+
         Returns:
-            List[Dict]: Lista wykrytych anomalii
+            List[int]: Indeksy wykrytych anomalii
         """
-        # Sortuj anomalie od najnowszych
-        sorted_anomalies = sorted(
-            self.detected_anomalies, 
-            key=lambda x: x["detection_time"], 
-            reverse=True
-        )
-        return sorted_anomalies[:limit]
-    
-    def clear_anomalies(self) -> int:
+        try:
+            # Konwersja na numpy array
+            if column is not None and hasattr(data, 'loc'):
+                values = data[column].values
+            else:
+                values = np.array(data)
+
+            # Obliczenie IQR
+            q1 = np.percentile(values, 25)
+            q3 = np.percentile(values, 75)
+            iqr = q3 - q1
+
+            lower_bound = q1 - (self.threshold * iqr)
+            upper_bound = q3 + (self.threshold * iqr)
+
+            # Znalezienie anomalii
+            anomalies_lower = values < lower_bound
+            anomalies_upper = values > upper_bound
+            anomaly_indices = np.where(anomalies_lower | anomalies_upper)[0]
+
+            # Logowanie wykrytych anomalii
+            if len(anomaly_indices) > 0:
+                logging.info(f"Wykryto {len(anomaly_indices)} anomalii metodą IQR")
+                for idx in anomaly_indices:
+                    value = values[idx]
+                    bound_type = "lower" if value < lower_bound else "upper"
+                    bound_value = lower_bound if bound_type == "lower" else upper_bound
+                    self.log_anomaly({
+                        'index': int(idx),
+                        'value': float(value),
+                        'bound_type': bound_type,
+                        'bound_value': float(bound_value),
+                        'method': 'iqr'
+                    })
+
+            return anomaly_indices.tolist()
+        except Exception as e:
+            logging.error(f"Błąd podczas detekcji anomalii metodą IQR: {e}")
+            return []
+
+    def analyze_market_data(self, data: Dict[str, Any]) -> List[Dict[str, Any]]:
         """
-        Czyści listę wykrytych anomalii i zwraca ich liczbę.
-        
+        Analizuje dane rynkowe w poszukiwaniu anomalii.
+
+        Parameters:
+            data (Dict[str, Any]): Dane do analizy.
+
         Returns:
-            int: Liczba usuniętych anomalii
+            List[Dict[str, Any]]: Lista wykrytych anomalii.
         """
-        count = len(self.detected_anomalies)
-        self.detected_anomalies = []
-        return count
+        # Implementacja detekcji anomalii
+        # W szablonie zwracamy pustą listę
+        return []
+
+    def get_detected_anomalies(self) -> List[Dict[str, Any]]:
+        """
+        Zwraca wykryte anomalie z pamięci podręcznej.
+
+        Returns:
+            List[Dict[str, Any]]: Lista wykrytych anomalii.
+        """
+        return self.anomalies
+
+    def log_anomaly(self, anomaly: Dict[str, Any]) -> None:
+        """
+        Loguje wykrytą anomalię.
+
+        Parameters:
+            anomaly (Dict[str, Any]): Dane anomalii.
+        """
+        logging.warning(f"Wykryto anomalię: {anomaly}")
+        self.anomalies.append({
+            **anomaly,
+            "timestamp": time.time(),
+            "detection_method": self.detection_method
+        })
+
+        # Ograniczamy liczbę przechowywanych anomalii do 100
+        if len(self.anomalies) > 100:
+            self.anomalies = self.anomalies[-100:]

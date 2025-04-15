@@ -195,3 +195,34 @@ Wszystkie operacje są rejestrowane w folderze `logs/`:
 - `trade.log` - Historia transakcji
 - `model_tests.log` - Testy modeli AI
 - `detailed_trades.json` - Szczegółowa historia w formacie JSON
+
+## Uruchomienie systemu
+
+W celu uruchomienia systemu, wykonaj:
+
+```bash
+python main.py
+```
+
+### Zarządzanie modelami AI
+
+Projekt zawiera narzędzie do zarządzania modelami AI dostępne przez:
+
+```bash
+python manage_ai_models.py [OPCJE]
+```
+
+Dostępne komendy:
+- `list` - Wyświetla listę dostępnych modeli
+- `test` - Testuje wszystkie modele
+- `clean` - Usuwa uszkodzone modele
+- `backup` - Tworzy kopię zapasową modeli
+- `details MODEL` - Wyświetla szczegółowe informacje o modelu
+
+Przykłady użycia:
+```bash
+python manage_ai_models.py list          # Lista modeli
+python manage_ai_models.py test          # Test wszystkich modeli
+python manage_ai_models.py clean --force # Usunięcie uszkodzonych modeli bez potwierdzenia
+python manage_ai_models.py backup        # Backup modeli
+python manage_ai_models.py details reinforcement_learner # Szczegóły wybranego modelu
