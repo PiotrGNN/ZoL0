@@ -96,7 +96,7 @@ class DQNAgent:
                 model.add(Dense(128, activation="relu"))
                 model.add(Dense(128, activation="relu"))
                 model.add(Dense(self.action_size, activation="linear"))
-                model.compile(optimizer=Adam(learning_rate=self.learning_rate), loss="mse")
+                model.compile(optimizer=Adam(learning_rate=self.learning_rate), loss="mse") #Added compilation here
         except Exception as e:
             logging.error(f"Błąd podczas budowania modelu Sequential: {e}")
             # Fallback do prostszego modelu w razie błędu
@@ -104,7 +104,7 @@ class DQNAgent:
             model.add(Dense(64, input_shape=(self.state_size,), activation="relu"))
             model.add(Dense(64, activation="relu"))
             model.add(Dense(self.action_size, activation="linear"))
-            model.compile(optimizer=Adam(learning_rate=self.learning_rate), loss="mse")
+            model.compile(optimizer=Adam(learning_rate=self.learning_rate), loss="mse") #Added compilation here
 
         logging.info("Model sieci Q został zbudowany.")
         return model
@@ -210,8 +210,8 @@ def train_dqn(agent, env, episodes=1000, max_steps=500):
         agent.model.add(Dense(64, input_shape=(agent.state_size,), activation="relu"))
         agent.model.add(Dense(64, activation="relu"))
         agent.model.add(Dense(agent.action_size, activation="linear"))
-        agent.model.compile(optimizer=Adam(learning_rate=agent.learning_rate), loss="mse")
-    
+        agent.model.compile(optimizer=Adam(learning_rate=agent.learning_rate), loss="mse") #Added compilation here
+
     agent.save("dqn_trained_model.h5")
 
 

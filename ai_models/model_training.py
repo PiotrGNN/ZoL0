@@ -82,7 +82,7 @@ def prepare_data_for_model(data: Union[Dict, List, np.ndarray, pd.DataFrame], ex
             # Jeśli to lista skalarów, przekształć na kolumnę
             if array_data.ndim == 1:
                 array_data = array_data.reshape(-1, 1)
-            
+
             # Dopasuj liczbę cech jeśli potrzeba
             if expected_features is not None and array_data.shape[1] != expected_features and array_data.shape[0] > 0:
                 logger.warning(f"Dopasowuję liczbę cech listy: {array_data.shape[1]} -> {expected_features}")
@@ -196,8 +196,8 @@ class ModelTrainer:
                 logging.info("Rozpoczynam trening (fold %d / %d)", fold, n_splits)
 
                 # Prepare data for the model (handling different data types)
-                X_train_prepared = prepare_data_for_model(X_train)
-                X_val_prepared = prepare_data_for_model(X_val)
+                X_train_prepared = prepare_data_for_model(X_train, expected_features=2) # Specifying expected features
+                X_val_prepared = prepare_data_for_model(X_val, expected_features=2) # Specifying expected features
                 y_train_prepared = prepare_data_for_model(y_train)
                 y_val_prepared = prepare_data_for_model(y_val)
 
@@ -303,7 +303,7 @@ class ModelTrainer:
 def get_example_data():
     """
     Tworzy i zwraca przykładowe dane do treningu modeli.
-    
+
     Returns:
         Tuple[pd.DataFrame, pd.Series]: X_train (cechy) i y_train (wartości docelowe)
     """

@@ -122,7 +122,8 @@ def test_data_conversion():
         logger.info(f"Format danych testowych: {type(test_rf_features)}, kształt: {test_rf_features.shape if hasattr(test_rf_features, 'shape') else 'N/A'}")
 
         # Konwersja z zachowaniem odpowiedniej liczby cech
-        converted_rf_data = prepare_data_for_model(test_rf_features)
+        # Jawnie podajemy expected_features=2, aby zachować zgodność z modelem
+        converted_rf_data = prepare_data_for_model(test_rf_features, expected_features=2)
         logger.info(f"Wynik konwersji dla RF: Tablica o kształcie {converted_rf_data.shape}")
 
         # Sprawdzenie poprawności formatu
