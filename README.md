@@ -1,21 +1,67 @@
-# ZoL0-1 Trading System
+# ZoL0-1: System Tradingowy z AI
 
-System tradingowy oparty o uczenie maszynowe i sztuczną inteligencję
+## 🔍 Opis Projektu
+ZoL0-1 to zaawansowany system tradingowy wykorzystujący sztuczną inteligencję do analizy rynków finansowych, rozpoznawania formacji cenowych i podejmowania decyzji inwestycyjnych.
 
-## Instalacja
+## 🚀 Główne Funkcjonalności
+- **Modele AI**: Głębokie uczenie, rozpoznawanie wzorców, analiza sentymentu
+- **Trading Algorytmiczny**: Strategie bazujące na analizie technicznej i AI
+- **Zarządzanie Ryzykiem**: Zaawansowane algorytmy kontroli ryzyka
+- **Dashboard**: Interaktywny interfejs do monitorowania rynku i wyników
 
-```bash
-pip install -r requirements.txt
+## 📚 Architektura Systemu
+- **ai_models/**: Modele uczenia maszynowego i głębokiego
+- **data/**: Obsługa danych rynkowych i wykonywania zleceń
+- **python_libs/**: Podstawowe komponenty systemowe
+- **static/**: Zasoby dla interfejsu webowego
+- **templates/**: Szablony HTML dla dashboardu
+
+## 🛠️ Instalacja i Uruchomienie
+
+### Wymagania
+- Python 3.8+
+- TensorFlow 2.x
+- Pandas, NumPy, scikit-learn
+- Flask
+
+### Polecenia
+1. Instalacja zależności: `pip install -r requirements.txt`
+2. Uruchomienie systemu: `python main.py`
+3. Testowanie modeli: `python test_models.py`
+4. Czyszczenie cache: `python -c "from data.utils.cache_manager import clean_old_data; clean_old_data()"`
+
+### Tryby Pracy
+- **Symulacja**: Domyślny tryb bez realnych transakcji
+- **Testnet**: Połączenie z API ByBit Testnet
+- **Produkcja**: ⚠️ Rzeczywiste transakcje z portfelem
+
+## 📊 Dashboard
+
+Dashboard jest dostępny po uruchomieniu systemu pod adresem:
+```
+http://localhost:5000/
 ```
 
-## Uruchomienie
+## 🧠 Modele AI
 
-```bash
-python main.py
-```
+System wykorzystuje następujące modele AI:
+- **ReinforcementLearner**: Uczenie ze wzmocnieniem dla decyzji tradingowych
+- **SentimentAnalyzer**: Analiza nastrojów rynkowych
+- **ModelRecognizer**: Rozpoznawanie formacji cenowych
+- **AnomalyDetector**: Wykrywanie anomalii rynkowych
+
+## 🔐 Bezpieczeństwo
+
+⚠️ **WAŻNE**: Przed użyciem w trybie produkcyjnym:
+1. Zabezpiecz klucze API w pliku `.env`
+2. Ustaw odpowiednie limity środków
+3. Rozpocznij od małych transakcji testowych
+
+## 📝 Licencja
+
+Ten projekt jest dostępny na licencji MIT.
 
 ## Zarządzanie modelami AI
-
 System zawiera narzędzia do zarządzania i testowania modeli AI:
 
 ```bash
@@ -32,85 +78,7 @@ python manage_ai_models.py backup  # Utwórz backup modeli
 python manage_ai_models.py test    # Szybki test modeli
 ```
 
-## Funkcjonalności
-- Analiza rynków kryptowalutowych
-- Automatyczne generowanie strategii
-- Backtesting
-- Panel monitorowania
-- Rozpoznawanie wzorców rynkowych
-- Analiza sentymentu
-- Wykrywanie anomalii
-
-## Rozwiązane problemy
-- Naprawiono błąd 'tolist()' w modelach AI poprzez dodanie bezpiecznej konwersji danych
-- Poprawiono zapisywanie i odczytywanie modeli z plików .pkl
-- Dodano obsługę niezgodnych kształtów danych w ReinforcementLearner
-- Usprawniono walidację danych wejściowych do modeli
-- Dodano narzędzia do zarządzania modelami AI i tworzenia kopii zapasowych
-
-## 🚀 Funkcjonalność
-
-- **Modele AI i uczenie maszynowe**: Przewidywanie ruchu cen i rozpoznawanie wzorców cenowych
-- **Zarządzanie Ryzykiem**: Dynamiczny mechanizm zarządzania ryzykiem i portfelem
-- **Analiza Techniczna**: Wskaźniki techniczne i analiza wolumenu
-- **Dashboard Web**: Wizualizacja portfela, transakcji i rezultatów modeli AI
-- **API Giełdowe**: Integracja z ByBit i możliwość dodania innych giełd
-- **Symulacje**: Możliwość uruchomienia w trybie symulowanym z rzeczywistymi danymi
-
-## 📋 Wymagania
-
-- Python 3.8 lub nowszy
-- Pakiety wymienione w `requirements.txt`
-- Klucze API giełdy (opcjonalnie dla trybu rzeczywistego)
-
-## 🔧 Instalacja
-
-1. Sklonuj repozytorium:
-```bash
-git clone https://github.com/twój-użytkownik/ZoL0-1.git
-cd ZoL0-1
-```
-
-2. Zainstaluj zależności:
-```bash
-pip install -r requirements.txt
-```
-
-3. Skonfiguruj zmienne środowiskowe:
-```bash
-cp .env.example .env
-# Edytuj plik .env, aby dodać klucze API
-```
-
-## 🖥 Uruchomienie
-
-### Tryb Symulowany (domyślny)
-```bash
-python main.py
-```
-
-### Tryb Rzeczywisty (wymaga kluczy API)
-```bash
-python main.py --mode real
-```
-
-### Uruchomienie Testów
-```bash
-python test_models.py  # Test modeli AI
-python test_environment.py  # Sprawdzenie środowiska
-python test_data_conversion.py  # Test konwersji danych
-```
-
-## 🔍 Dashboard i Monitoring
-
-System posiada wbudowany dashboard dostępny pod adresem http://localhost:5000 po uruchomieniu programu. Dashboard zawiera:
-
-- Podsumowanie portfela i pozycji
-- Wizualizacje transakcji i zysków/strat
-- Status modeli AI
-- Analityki w czasie rzeczywistym
-
-## 🏗 Struktura Projektu
+## Struktura Projektu
 
 ```
 ZoL0-1/
@@ -138,7 +106,7 @@ ZoL0-1/
 └── templates/            # Szablony HTML dla dashboardu
 ```
 
-## 📊 Zarządzanie Portfelem
+## Zarządzanie Portfelem
 
 System oferuje:
 
@@ -147,7 +115,7 @@ System oferuje:
 - Szczegółowe metryki wydajności (ROI, drawdown, profit factor)
 - Śledzenie wszystkich transakcji w logach
 
-## 📃 Logi i Historia Transakcji
+## Logi i Historia Transakcji
 
 Wszystkie operacje są rejestrowane w folderze `logs/`:
 
@@ -157,13 +125,13 @@ Wszystkie operacje są rejestrowane w folderze `logs/`:
 - `model_tests.log` - Testy modeli AI
 - `detailed_trades.json` - Szczegółowa historia w formacie JSON
 
-## 🔐 Bezpieczeństwo
+## Bezpieczeństwo
 
 - Klucze API są przechowywane tylko w pliku `.env` (niewersjonowanym)
 - Domyślnie używany jest tryb symulowany, który nie wymaga kluczy API
 - Tryb rzeczywisty wymaga dodatkowego potwierdzenia
 
-## 🛠 Konfiguracja
+## Konfiguracja
 
 Główna konfiguracja znajduje się w `config/settings.py`. Możesz dostosować:
 
@@ -171,7 +139,3 @@ Główna konfiguracja znajduje się w `config/settings.py`. Możesz dostosować:
 - Ustawienia handlowe (prowizje, limity zleceń)
 - Ustawienia modeli AI
 - API i środowisko
-
-## 📜 Licencja
-
-[MIT License](LICENSE)

@@ -1,20 +1,16 @@
 run = "python main.py"
-
-[env]
-PYTHONPATH = "${REPL_HOME}"
+entrypoint = "main.py"
 
 [nix]
 channel = "stable-22_11"
 
 [deployment]
-run = "python main.py"
+run = ["sh", "-c", "python main.py"]
 deploymentTarget = "cloudrun"
 
-[unitTest]
-language = "python3"
-
-[gitHubImport]
-requiredFiles = [".replit", "replit.nix"]
+[env]
+PYTHONPATH = "."
+FLASK_APP = "main.py"
 
 [languages]
 
@@ -24,32 +20,23 @@ pattern = "**/*.py"
 [languages.python3.languageServer]
 start = "pylsp"
 
-[auth]
-pageEnabled = false
-buttonEnabled = false
+[unitTest]
+language = "python3"
+
+[gitHubImport]
+requiredFiles = [".replit", "replit.nix", "requirements.txt"]
 
 [packager]
 language = "python3"
-ignoredPackages = ["unit_tests"]
 
 [packager.features]
-enabledForHosting = false
 packageSearch = true
 guessImports = true
-
-[languages.python3.nix]
-channel = "stable-22_11"
-
-[workspaces]
-init = "clear;echo 'Loading environment...';python init_project.py"
+enabledForHosting = false
 
 [interpreter]
-command = ["python", "-m", "console"]
+command = ["python", "-u"]
 
-[hostFeatures]
-webview = true
-
-# Workflows
 [workflow.Test\ Modeli]
 name = "Test Modeli"
 description = "Uruchamia testy modeli AI"

@@ -562,21 +562,76 @@ class ReinforcementLearner:
 
             # Rozgłoszenie wymiarów (broadcast) może być problematyczne, więc upewnijmy się, że y ma odpowiedni kształt
             if len(X.shape) > 1 and len(y.shape) == 1:
-                # Jeśli X ma kształt (n,m), a y ma kształt (n,), to potrzebujemy dopasować y
-                if X.shape[1] == 1:
-                    # Jeśli X to (n,1), możemy użyć y jako (n,)
-                    pass
-                elif X.shape[1] == 3 and len(y.shape) == 1:
-                    # Jeśli mamy problem z kształtami (n,3) vs (n,), rozszerz y
-                    y = np.repeat(y.reshape(-1, 1), 3, axis=1)
-                    logging.info(f"Rozszerzono y do kształtu {y.shape} dla dopasowania z X {X.shape}")
+                # Sprawdźmy wymiary X i odpowiednio sformatujmy y
+                if hasattr(self.model, 'output_shape'):
+                    output_dim = self.model.output_shape[-1]
+                    if output_dim > 1:
+                        # Jeśli model ma wiele wyjść, utwórz macierz one-hot
+                        y_reshaped = np.zeros((len(y), output_dim))
+                        for i, val in enumerate(y):
+                            if isinstance(val, (int, np.integer)) and 0 <= val < output_dim:
+                                y_reshaped[i, int(val)] = 1.0
+                            else:
+                                # Fallback dla innych wartości
+                                y_reshaped[i, 0] = val
+                        y = y_reshaped
+                        logging.info(f"Przekształcono y do formatu one-hot o kształcie {y.shape}")
+                    else:
+                        # Dla modelu z jednym wyjściem, zachowaj wektor
+                        y = y.reshape(-1, 1)
+                        logging.info(f"Przekształcono y do kształtu {y.shape}")
+                else:
+                    # Jeśli nie znamy wymiarów wyjścia, użyjmy heurystyki
+                    if X.shape[1] == 1:
+                        # Jeśli X to (n,1), możemy użyć y jako (n,)
+                        pass
+                    elif X.shape[1] > 1 and len(y.shape) == 1:
+                        # Dla modeli wielowymiarowych, przekształć y na macierz
+                        if hasattr(self.model, 'layers') and len(self.model.layers) > 0:
+                            last_layer = self.model.layers[-1]
+                            if hasattr(last_layer, 'units'):
+                                output_units = last_layer.units
+                                if output_units > 1:
+                                    # Dla wielu jednostek wyjściowych
+                                    y = np.repeat(y.reshape(-1, 1), output_units, axis=1)
+                                    logging.info(f"Rozszerzono y do kształtu {y.shape} na podstawie ostatniej warstwy")
+                                else:
+                                    # Dla jednej jednostki wyjściowej
+                                    y = y.reshape(-1, 1)
+                            else:
+                                # Użyj prostego przekształcenia wektora
+                                y = y.reshape(-1, 1)
+                        else:
+                            # Fallback - spłaszcz X do dopasowania z y
+                            X = X[:, 0].reshape(-1, 1)
+                            logging.info(f"Uproszczono X do kształtu {X.shape} dla dopasowania z y {y.shape}")
 
             # Kompilacja modelu, jeśli nie został wcześniej skompilowany
             if not self.model_compiled:
-                from tensorflow.keras.optimizers import Adam
-                self.model.compile(optimizer='adam', loss='mse', metrics=['mae'])
-                self.model_compiled = True
-                logging.info("Model został skompilowany")
+                try:
+                    from tensorflow.keras.optimizers import Adam
+                    # Sprawdź czy model jest już skompilowany (dla Keras)
+                    if hasattr(self.model, '_is_compiled') and not self.model._is_compiled:
+                        self.model.compile(optimizer='adam', loss='mse', metrics=['mae', 'accuracy'])
+                        logging.info("Model został skompilowany z optimizer='adam', loss='mse'")
+                    elif not hasattr(self.model, '_is_compiled'):
+                        # Dla starszych wersji Keras lub innych obiektów
+                        if hasattr(self.model, 'compile'):
+                            self.model.compile(optimizer='adam', loss='mse', metrics=['mae', 'accuracy'])
+                            logging.info("Model został skompilowany (starszy format)")
+                    self.model_compiled = True
+                except ImportError:
+                    logging.warning("Nie można zaimportować TensorFlow/Keras - używam modelu bez kompilacji")
+                except Exception as e:
+                    logging.error(f"Błąd podczas kompilacji modelu: {e}")
+                    # Utwórz nowy model, jeśli obecny nie działa
+                    if hasattr(self, '_build_model'):
+                        logging.info("Próba zbudowania nowego modelu...")
+                        self.model = self._build_model()
+                        if hasattr(self.model, 'compile'):
+                            self.model.compile(optimizer='adam', loss='mse', metrics=['mae', 'accuracy'])
+                            self.model_compiled = True
+                            logging.info("Zbudowano i skompilowano nowy model")
 
             # Logowanie informacji o kształtach danych przed treningiem
             logging.info(f"Rozpoczęcie treningu. Kształty danych: X: {X.shape}, y: {y.shape}")

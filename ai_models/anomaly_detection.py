@@ -45,20 +45,37 @@ class AnomalyDetector:
         if isinstance(data, dict):
             # Sprawdź obecność kluczy 'close' lub 'price'
             if 'close' in data and isinstance(data['close'], (list, np.ndarray)):
-                numeric_data = data['close']
+                numeric_data = np.array(data['close'])
             elif 'price' in data and isinstance(data['price'], (list, np.ndarray)):
-                numeric_data = data['price']
+                numeric_data = np.array(data['price'])
             elif 'values' in data and isinstance(data['values'], (list, np.ndarray)):
-                numeric_data = data['values']
+                numeric_data = np.array(data['values'])
             else:
                 # Pobierz pierwsze pole numeryczne znalezione w słowniku
                 for key, value in data.items():
                     if isinstance(value, (list, np.ndarray)) and len(value) > 0:
-                        numeric_data = value
+                        numeric_data = np.array(value)
                         self.logger.info(f"Używam pola '{key}' do detekcji anomalii")
                         break
+                    
+                # Jeśli nadal nie mamy danych, spróbuj skonwertować sam słownik
+                if len(numeric_data) == 0:
+                    try:
+                        # Spróbuj pobrać numeryczne wartości ze słownika
+                        numeric_values = [v for k, v in data.items() 
+                                        if isinstance(v, (int, float, np.number))]
+                        if numeric_values:
+                            numeric_data = np.array(numeric_values)
+                            self.logger.info(f"Używam {len(numeric_values)} wartości numerycznych ze słownika")
+                    except Exception as convert_error:
+                        self.logger.warning(f"Błąd podczas konwersji słownika: {convert_error}")
         else:
-            numeric_data = data
+            # Upewnij się, że dane są tablicą numpy
+            try:
+                numeric_data = np.array(data)
+            except Exception as arr_error:
+                self.logger.error(f"Błąd podczas konwersji danych do tablicy numpy: {arr_error}")
+                return {"detected": False, "score": 0, "message": f"Błąd formatu danych: {arr_error}"}
 
         # Sprawdź czy mamy wystarczającą ilość danych
         if len(numeric_data) < 2:

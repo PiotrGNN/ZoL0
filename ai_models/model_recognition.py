@@ -494,6 +494,46 @@ class ModelRecognizer:
             if data is None:
                 return self.identify_model_type(None)
 
+            # Konwersja słownika na format tablicy numpy
+            if isinstance(data, dict):
+                # Zabezpieczamy przed błędem 'dict' object has no attribute tolist
+                import numpy as np
+                price_data = None
+                
+                # Szukamy danych cenowych w różnych formatach
+                if 'close' in data and isinstance(data['close'], (list, np.ndarray)):
+                    price_data = np.array(data['close'])
+                elif 'price' in data and isinstance(data['price'], (list, np.ndarray)):
+                    price_data = np.array(data['price'])
+                elif 'price_data' in data:
+                    if isinstance(data['price_data'], (list, np.ndarray)):
+                        price_data = np.array(data['price_data'])
+                    elif isinstance(data['price_data'], dict):
+                        # Konwertujemy zagnieżdżony słownik na tablicę
+                        values = []
+                        for key in ['open', 'high', 'low', 'close', 'volume']:
+                            if key in data['price_data']:
+                                values.append(data['price_data'][key])
+                        if values:
+                            price_data = np.array(values).T
+                else:
+                    # Szukamy pierwszej numerycznej listy w słowniku
+                    for key, value in data.items():
+                        if isinstance(value, (list, np.ndarray)) and len(value) > 0:
+                            price_data = np.array(value)
+                            break
+                    
+                    # Jeśli nie znaleziono, użyj wartości słownika jako danych
+                    if price_data is None:
+                        numeric_keys = [key for key, val in data.items() 
+                                       if isinstance(val, (int, float, np.number))]
+                        if numeric_keys:
+                            price_data = np.array([data[key] for key in numeric_keys])
+
+                if price_data is not None:
+                    self.logger.info(f"Przekształcono dane słownikowe do tablicy o kształcie {price_data.shape}")
+                    return self.identify_model_type({"price_data": price_data})
+            
             # Przygotowujemy dane przed użyciem
             try:
                 # Importujemy funkcję prepare_data_for_model z model_training
@@ -516,9 +556,10 @@ class ModelRecognizer:
             except ImportError:
                 # Jeśli nie możemy zaimportować funkcji prepare_data_for_model
                 return self.identify_model_type(data)
-            except Exception as prep_erroror:
-                logging.warning(f"Błąd podczas przygotowania danych: {prep_error}")
+            except Exception as prep_error:
+                self.logger.warning(f"Błąd podczas przygotowania danych: {prep_error}")
                 return self.identify_model_type(data)
 
         except Exception as e:
+            self.logger.error(f"Błąd podczas predykcji modelu: {e}")
             return {"error": f"Błąd podczas predykcji: {e}", "success": False}
