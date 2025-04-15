@@ -1,0 +1,352 @@
+(venv) PS C:\Users\piotr\Desktop\ZoL0-o1> python test_models.py
+Dodano katalog python_libs do ścieżki Pythona.
+🔍 Rozpoczynam testowanie modeli w ai_models...
+2025-04-15 16:47:25,441 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_check.log
+2025-04-15 16:47:25,441 [INFO] SentimentAnalyzer zainicjalizowany
+2025-04-15 16:47:27,043 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_loader.log
+2025-04-15 16:47:27,043 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_loader.log
+2025-04-15 16:47:27,043 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_loader.log
+2025-04-15 16:47:27,043 [INFO] Inicjalizacja ModelLoader dla ścieżki: ai_models
+2025-04-15 16:47:27,045 [INFO] Rozpoczęcie ładowania modeli...
+2025-04-15 16:47:27,045 [INFO] AnomalyDetector zainicjalizowany (metoda: z_score, próg: 2.5)
+2025-04-15 16:47:27,045 [INFO] Załadowano model AnomalyDetector z modułu anomaly_detection
+2025-04-15 16:47:27,045 [INFO] Załadowano model AnomalyDetector z modułu anomaly_detection
+2025-04-15 16:47:27,045 [INFO] Załadowano model AnomalyDetector z modułu anomaly_detection
+2025-04-15 16:47:27,045 [INFO] ModelRecognizer zainicjalizowany z 5 modelami w bazie
+2025-04-15 16:47:27,045 [INFO] ModelRecognizer zainicjalizowany z 5 modelami w bazie
+2025-04-15 16:47:27,045 [INFO] Załadowano model ModelRecognizer z modułu model_recognition
+2025-04-15 16:47:27,045 [INFO] Załadowano model ModelRecognizer z modułu model_recognition
+2025-04-15 16:47:27,045 [INFO] Załadowano model ModelRecognizer z modułu model_recognition
+2025-04-15 16:47:31.607311: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-04-15 16:47:39.543283: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-04-15 16:47:58,843 [INFO] Załadowano model RandomForestRegressor z modułu model_training
+2025-04-15 16:47:58,843 [INFO] Załadowano model RandomForestRegressor z modułu model_training
+2025-04-15 16:47:58,843 [INFO] Załadowano model RandomForestRegressor z modułu model_training
+2025-04-15 16:47:58,854 [INFO] Załadowano model Sequential z modułu reinforcement_learning
+2025-04-15 16:47:58,854 [INFO] Załadowano model Sequential z modułu reinforcement_learning
+2025-04-15 16:47:58,854 [INFO] Załadowano model Sequential z modułu reinforcement_learning
+2025-04-15 16:47:58,854 [INFO] SentimentAnalyzer zainicjalizowany
+2025-04-15 16:47:58,854 [INFO] Załadowano model SentimentAnalyzer z modułu sentiment_ai
+2025-04-15 16:47:58,854 [INFO] Załadowano model SentimentAnalyzer z modułu sentiment_ai
+2025-04-15 16:47:58,854 [INFO] Załadowano model SentimentAnalyzer z modułu sentiment_ai
+2025-04-15 16:47:58,854 [INFO] Dane wejściowe przekonwertowane dla modelu AnomalyDetector
+2025-04-15 16:47:58,854 [INFO] Dane wejściowe przekonwertowane dla modelu AnomalyDetector
+2025-04-15 16:47:58,854 [INFO] Dane wejściowe przekonwertowane dla modelu AnomalyDetector
+2025-04-15 16:47:58,854 [INFO] Dane wejściowe przekonwertowane dla modelu ModelRecognizer
+2025-04-15 16:47:58,854 [INFO] Dane wejściowe przekonwertowane dla modelu ModelRecognizer
+2025-04-15 16:47:58,854 [INFO] Dane wejściowe przekonwertowane dla modelu ModelRecognizer
+2025-04-15 16:47:58,854 [INFO] Rozpoznano model: Double Top z pewnością 0.94
+2025-04-15 16:47:58,854 [INFO] Rozpoznano model: Double Top z pewnością 0.94
+2025-04-15 16:47:58,854 [INFO] Dane wejściowe przekonwertowane dla modelu RandomForestRegressor
+2025-04-15 16:47:58,854 [INFO] Dane wejściowe przekonwertowane dla modelu RandomForestRegressor
+2025-04-15 16:47:58,854 [INFO] Dane wejściowe przekonwertowane dla modelu RandomForestRegressor
+2025-04-15 16:47:58,854 [WARNING] Model RandomForestRegressor nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:58,854 [WARNING] Model RandomForestRegressor nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:58,854 [WARNING] Model RandomForestRegressor nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:58,985 [INFO] Model RandomForestRegressor został wytrenowany.
+2025-04-15 16:47:58,985 [INFO] Model RandomForestRegressor został wytrenowany.
+2025-04-15 16:47:58,985 [INFO] Model RandomForestRegressor został wytrenowany.
+C:\Users\piotr\Desktop\ZoL0-o1\venv\lib\site-packages\sklearn\utils\validation.py:2739: UserWarning: X does not have valid feature names, but RandomForestRegressor was fitted with feature names
+  warnings.warn(
+2025-04-15 16:47:59,025 [ERROR] Błąd podczas predykcji modelu RandomForestRegressor: X has 5 features, but RandomForestRegressor is expecting 2 features as input.
+2025-04-15 16:47:59,025 [ERROR] Błąd podczas predykcji modelu RandomForestRegressor: X has 5 features, but RandomForestRegressor is expecting 2 features as input.
+2025-04-15 16:47:59,025 [ERROR] Błąd podczas predykcji modelu RandomForestRegressor: X has 5 features, but RandomForestRegressor is expecting 2 features as input.
+2025-04-15 16:47:59,027 [INFO] Dane wejściowe przekonwertowane dla modelu Sequential
+2025-04-15 16:47:59,027 [INFO] Dane wejściowe przekonwertowane dla modelu Sequential
+2025-04-15 16:47:59,027 [INFO] Dane wejściowe przekonwertowane dla modelu Sequential
+2025-04-15 16:47:59,028 [WARNING] Model Sequential nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,028 [WARNING] Model Sequential nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,028 [WARNING] Model Sequential nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,028 [ERROR] Błąd podczas trenowania modelu Sequential: You must call `compile()` before using the model.
+2025-04-15 16:47:59,028 [ERROR] Błąd podczas trenowania modelu Sequential: You must call `compile()` before using the model.
+2025-04-15 16:47:59,028 [ERROR] Błąd podczas trenowania modelu Sequential: You must call `compile()` before using the model.
+2025-04-15 16:47:59,028 [INFO] Dane wejściowe przekonwertowane dla modelu SentimentAnalyzer
+2025-04-15 16:47:59,028 [INFO] Dane wejściowe przekonwertowane dla modelu SentimentAnalyzer
+2025-04-15 16:47:59,028 [INFO] Dane wejściowe przekonwertowane dla modelu SentimentAnalyzer
+2025-04-15 16:47:59,028 [WARNING] Model SentimentAnalyzer nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,028 [WARNING] Model SentimentAnalyzer nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,028 [WARNING] Model SentimentAnalyzer nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,028 [INFO] Model sentymentu wytrenowany. Nowa dokładność: 82.61%
+2025-04-15 16:47:59,028 [INFO] Model SentimentAnalyzer został wytrenowany.
+2025-04-15 16:47:59,028 [INFO] Model SentimentAnalyzer został wytrenowany.
+2025-04-15 16:47:59,028 [INFO] Model SentimentAnalyzer został wytrenowany.
+2025-04-15 16:47:59,028 [INFO] Zakończono testy 5 modeli
+2025-04-15 16:47:59,028 [INFO] Zakończono testy 5 modeli
+2025-04-15 16:47:59,028 [INFO] Zakończono testy 5 modeli
+2025-04-15 16:47:59,028 [INFO] Załadowano model: AnomalyDetector
+2025-04-15 16:47:59,028 [INFO] Załadowano model: ModelRecognizer
+2025-04-15 16:47:59,028 [INFO] Załadowano model: RandomForestRegressor
+2025-04-15 16:47:59,028 [INFO] Załadowano model: Sequential
+2025-04-15 16:47:59,028 [INFO] Załadowano model: SentimentAnalyzer
+2025-04-15 16:47:59,028 [INFO] Załadowano 5 modeli
+2025-04-15 16:47:59,028 [INFO] Znaleziono 13 modeli
+2025-04-15 16:47:59,028 [INFO] ai_models: Znaleziono 13 modeli AI
+2025-04-15 16:47:59,028 [INFO] AnomalyDetector zainicjalizowany (metoda: z_score, próg: 2.5)
+2025-04-15 16:47:59,028 [INFO] Załadowano model AnomalyDetector z modułu anomaly_detection
+2025-04-15 16:47:59,028 [INFO] Załadowano model AnomalyDetector z modułu anomaly_detection
+2025-04-15 16:47:59,028 [INFO] Załadowano model AnomalyDetector z modułu anomaly_detection
+2025-04-15 16:47:59,028 [INFO] ModelRecognizer zainicjalizowany z 5 modelami w bazie
+2025-04-15 16:47:59,028 [INFO] ModelRecognizer zainicjalizowany z 5 modelami w bazie
+2025-04-15 16:47:59,028 [INFO] ModelRecognizer zainicjalizowany z 5 modelami w bazie
+2025-04-15 16:47:59,028 [INFO] Załadowano model ModelRecognizer z modułu model_recognition
+2025-04-15 16:47:59,028 [INFO] Załadowano model ModelRecognizer z modułu model_recognition
+2025-04-15 16:47:59,028 [INFO] Załadowano model ModelRecognizer z modułu model_recognition
+2025-04-15 16:47:59,028 [INFO] Załadowano model RandomForestRegressor z modułu model_training
+2025-04-15 16:47:59,028 [INFO] Załadowano model RandomForestRegressor z modułu model_training
+2025-04-15 16:47:59,028 [INFO] Załadowano model RandomForestRegressor z modułu model_training
+2025-04-15 16:47:59,028 [INFO] Załadowano model Sequential z modułu reinforcement_learning
+2025-04-15 16:47:59,028 [INFO] Załadowano model Sequential z modułu reinforcement_learning
+2025-04-15 16:47:59,028 [INFO] Załadowano model Sequential z modułu reinforcement_learning
+2025-04-15 16:47:59,028 [INFO] SentimentAnalyzer zainicjalizowany
+2025-04-15 16:47:59,028 [INFO] Załadowano model SentimentAnalyzer z modułu sentiment_ai
+2025-04-15 16:47:59,028 [INFO] Załadowano model SentimentAnalyzer z modułu sentiment_ai
+2025-04-15 16:47:59,028 [INFO] Załadowano model SentimentAnalyzer z modułu sentiment_ai
+2025-04-15 16:47:59,028 [INFO] Dane wejściowe przekonwertowane dla modelu AnomalyDetector
+2025-04-15 16:47:59,028 [INFO] Dane wejściowe przekonwertowane dla modelu AnomalyDetector
+2025-04-15 16:47:59,028 [INFO] Dane wejściowe przekonwertowane dla modelu AnomalyDetector
+2025-04-15 16:47:59,035 [INFO] Dane wejściowe przekonwertowane dla modelu ModelRecognizer
+2025-04-15 16:47:59,035 [INFO] Dane wejściowe przekonwertowane dla modelu ModelRecognizer
+2025-04-15 16:47:59,035 [INFO] Dane wejściowe przekonwertowane dla modelu ModelRecognizer
+2025-04-15 16:47:59,035 [INFO] Rozpoznano model: Head and Shoulders z pewnością 0.77
+2025-04-15 16:47:59,035 [INFO] Rozpoznano model: Head and Shoulders z pewnością 0.77
+2025-04-15 16:47:59,035 [INFO] Rozpoznano model: Head and Shoulders z pewnością 0.77
+2025-04-15 16:47:59,035 [INFO] Dane wejściowe przekonwertowane dla modelu RandomForestRegressor
+2025-04-15 16:47:59,035 [INFO] Dane wejściowe przekonwertowane dla modelu RandomForestRegressor
+2025-04-15 16:47:59,035 [INFO] Dane wejściowe przekonwertowane dla modelu RandomForestRegressor
+2025-04-15 16:47:59,035 [WARNING] Model RandomForestRegressor nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,035 [WARNING] Model RandomForestRegressor nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,035 [WARNING] Model RandomForestRegressor nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,158 [INFO] Model RandomForestRegressor został wytrenowany.
+2025-04-15 16:47:59,158 [INFO] Model RandomForestRegressor został wytrenowany.
+2025-04-15 16:47:59,158 [INFO] Model RandomForestRegressor został wytrenowany.
+C:\Users\piotr\Desktop\ZoL0-o1\venv\lib\site-packages\sklearn\utils\validation.py:2739: UserWarning: X does not have valid feature names, but RandomForestRegressor was fitted with feature names
+  warnings.warn(
+2025-04-15 16:47:59,158 [ERROR] Błąd podczas predykcji modelu RandomForestRegressor: X has 5 features, but RandomForestRegressor is expecting 2 features as input.
+2025-04-15 16:47:59,158 [ERROR] Błąd podczas predykcji modelu RandomForestRegressor: X has 5 features, but RandomForestRegressor is expecting 2 features as input.
+2025-04-15 16:47:59,158 [ERROR] Błąd podczas predykcji modelu RandomForestRegressor: X has 5 features, but RandomForestRegressor is expecting 2 features as input.
+2025-04-15 16:47:59,158 [INFO] Dane wejściowe przekonwertowane dla modelu Sequential
+2025-04-15 16:47:59,158 [INFO] Dane wejściowe przekonwertowane dla modelu Sequential
+2025-04-15 16:47:59,158 [INFO] Dane wejściowe przekonwertowane dla modelu Sequential
+2025-04-15 16:47:59,160 [WARNING] Model Sequential nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,160 [WARNING] Model Sequential nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,160 [WARNING] Model Sequential nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,160 [ERROR] Błąd podczas trenowania modelu Sequential: You must call `compile()` before using the model.
+2025-04-15 16:47:59,160 [ERROR] Błąd podczas trenowania modelu Sequential: You must call `compile()` before using the model.
+2025-04-15 16:47:59,160 [ERROR] Błąd podczas trenowania modelu Sequential: You must call `compile()` before using the model.
+2025-04-15 16:47:59,160 [INFO] Dane wejściowe przekonwertowane dla modelu SentimentAnalyzer
+2025-04-15 16:47:59,160 [INFO] Dane wejściowe przekonwertowane dla modelu SentimentAnalyzer
+2025-04-15 16:47:59,160 [INFO] Dane wejściowe przekonwertowane dla modelu SentimentAnalyzer
+2025-04-15 16:47:59,160 [WARNING] Model SentimentAnalyzer nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,160 [WARNING] Model SentimentAnalyzer nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,160 [WARNING] Model SentimentAnalyzer nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,160 [INFO] Model sentymentu wytrenowany. Nowa dokładność: 82.33%
+2025-04-15 16:47:59,160 [INFO] Model SentimentAnalyzer został wytrenowany.
+2025-04-15 16:47:59,160 [INFO] Model SentimentAnalyzer został wytrenowany.
+2025-04-15 16:47:59,160 [INFO] Model SentimentAnalyzer został wytrenowany.
+2025-04-15 16:47:59,160 [INFO] Zakończono testy 5 modeli
+2025-04-15 16:47:59,160 [INFO] Zakończono testy 5 modeli
+2025-04-15 16:47:59,160 [INFO] Zakończono testy 5 modeli
+
+📊 Podsumowanie testów:
+- Przeskanowano plików .py: brak danych
+- Przeskanowano plików .pkl: brak danych
+- Logi zapisano do: logs/model_check.log
+
+✅ Testowanie zakończone.
+
+===== TEST MODELI AI =====
+
+2025-04-15 16:47:59,160 [INFO] Znaleziono 13 plików .py w katalogu ai_models
+2025-04-15 16:47:59,160 [INFO] Rozpoczęcie ładowania modeli...
+2025-04-15 16:47:59,160 [INFO] Dane wejściowe przekonwertowane dla modelu AnomalyDetector
+2025-04-15 16:47:59,160 [INFO] Dane wejściowe przekonwertowane dla modelu AnomalyDetector
+2025-04-15 16:47:59,160 [INFO] Dane wejściowe przekonwertowane dla modelu AnomalyDetector
+2025-04-15 16:47:59,160 [INFO] Dane wejściowe przekonwertowane dla modelu ModelRecognizer
+2025-04-15 16:47:59,160 [INFO] Dane wejściowe przekonwertowane dla modelu ModelRecognizer
+2025-04-15 16:47:59,160 [INFO] Dane wejściowe przekonwertowane dla modelu ModelRecognizer
+2025-04-15 16:47:59,160 [INFO] Rozpoznano model: Triangle z pewnością 0.87
+2025-04-15 16:47:59,160 [INFO] Rozpoznano model: Triangle z pewnością 0.87
+2025-04-15 16:47:59,160 [INFO] Rozpoznano model: Triangle z pewnością 0.87
+2025-04-15 16:47:59,160 [INFO] Dane wejściowe przekonwertowane dla modelu RandomForestRegressor
+2025-04-15 16:47:59,160 [INFO] Dane wejściowe przekonwertowane dla modelu RandomForestRegressor
+2025-04-15 16:47:59,160 [INFO] Dane wejściowe przekonwertowane dla modelu RandomForestRegressor
+C:\Users\piotr\Desktop\ZoL0-o1\venv\lib\site-packages\sklearn\utils\validation.py:2739: UserWarning: X does not have valid feature names, but RandomForestRegressor was fitted with feature names
+  warnings.warn(
+2025-04-15 16:47:59,160 [ERROR] Błąd podczas predykcji modelu RandomForestRegressor: X has 5 features, but RandomForestRegressor is expecting 2 features as input.
+2025-04-15 16:47:59,160 [ERROR] Błąd podczas predykcji modelu RandomForestRegressor: X has 5 features, but RandomForestRegressor is expecting 2 features as input.
+2025-04-15 16:47:59,160 [ERROR] Błąd podczas predykcji modelu RandomForestRegressor: X has 5 features, but RandomForestRegressor is expecting 2 features as input.
+2025-04-15 16:47:59,160 [INFO] Dane wejściowe przekonwertowane dla modelu Sequential
+2025-04-15 16:47:59,160 [INFO] Dane wejściowe przekonwertowane dla modelu Sequential
+2025-04-15 16:47:59,160 [INFO] Dane wejściowe przekonwertowane dla modelu Sequential
+2025-04-15 16:47:59,160 [WARNING] Model Sequential nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,160 [WARNING] Model Sequential nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,160 [WARNING] Model Sequential nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,160 [ERROR] Błąd podczas trenowania modelu Sequential: You must call `compile()` before using the model.
+2025-04-15 16:47:59,160 [ERROR] Błąd podczas trenowania modelu Sequential: You must call `compile()` before using the model.
+2025-04-15 16:47:59,160 [ERROR] Błąd podczas trenowania modelu Sequential: You must call `compile()` before using the model.
+2025-04-15 16:47:59,160 [INFO] Dane wejściowe przekonwertowane dla modelu SentimentAnalyzer
+2025-04-15 16:47:59,160 [INFO] Dane wejściowe przekonwertowane dla modelu SentimentAnalyzer
+2025-04-15 16:47:59,160 [INFO] Dane wejściowe przekonwertowane dla modelu SentimentAnalyzer
+2025-04-15 16:47:59,160 [INFO] Zakończono testy 5 modeli
+2025-04-15 16:47:59,160 [INFO] Zakończono testy 5 modeli
+2025-04-15 16:47:59,160 [INFO] Zakończono testy 5 modeli
+2025-04-15 16:47:59,160 [INFO] Załadowano model: AnomalyDetector
+2025-04-15 16:47:59,160 [INFO] Załadowano model: ModelRecognizer
+2025-04-15 16:47:59,160 [INFO] Załadowano model: RandomForestRegressor
+2025-04-15 16:47:59,160 [INFO] Załadowano model: Sequential
+2025-04-15 16:47:59,160 [INFO] Załadowano model: SentimentAnalyzer
+2025-04-15 16:47:59,160 [INFO] Załadowano 5 modeli
+2025-04-15 16:47:59,160 [INFO] Model loader działa poprawnie. Załadowano 5 modeli
+2025-04-15 16:47:59,160 [INFO]   - AnomalyDetector (AnomalyDetector)
+2025-04-15 16:47:59,160 [INFO]   - ModelRecognizer (ModelRecognizer)
+2025-04-15 16:47:59,160 [INFO]   - RandomForestRegressor (RandomForestRegressor)
+2025-04-15 16:47:59,160 [INFO]   - Sequential (Sequential)
+2025-04-15 16:47:59,160 [INFO]   - SentimentAnalyzer (SentimentAnalyzer)
+2025-04-15 16:47:59,160 [INFO] ✅ Zaimportowano moduł: ai_models.anomaly_detection
+2025-04-15 16:47:59,160 [INFO]    Znalezione klasy: datetime, AnomalyDetector
+2025-04-15 16:47:59,160 [INFO] ✅ Zaimportowano moduł: ai_models.environment
+2025-04-15 16:47:59,160 [INFO]    Znalezione klasy: MarketEnvironment
+2025-04-15 16:47:59,160 [INFO] ✅ Zaimportowano moduł: ai_models.feature_engineering
+2025-04-15 16:47:59,160 [INFO] ✅ Zaimportowano moduł: ai_models.market_dummy_env
+2025-04-15 16:47:59,160 [INFO]    Znalezione klasy: MarketDummyEnv
+2025-04-15 16:47:59,160 [INFO] ✅ Zaimportowano moduł: ai_models.model_loader
+2025-04-15 16:47:59,168 [INFO]    Znalezione klasy: ModelTester, ModelLoader
+2025-04-15 16:47:59,168 [INFO] ✅ Zaimportowano moduł: ai_models.model_recognition
+2025-04-15 16:47:59,168 [INFO]    Znalezione klasy: ModelRecognizer, datetime
+2025-04-15 16:47:59,168 [INFO] ✅ Zaimportowano moduł: ai_models.model_training
+2025-04-15 16:47:59,168 [INFO]    Znalezione klasy: datetime, EarlyStopping, ModelCheckpoint, TimeSeriesSplit, RandomForestRegressor, ModelTrainer
+2025-04-15 16:47:59,168 [INFO] ✅ Zaimportowano moduł: ai_models.model_tuner
+2025-04-15 16:47:59,168 [INFO]    Znalezione klasy: KFold, ModelTuner
+2025-04-15 16:47:59,168 [INFO] ✅ Zaimportowano moduł: ai_models.real_exchange_env
+2025-04-15 16:47:59,168 [INFO]    Znalezione klasy: datetime, RealExchangeEnv
+2025-04-15 16:47:59,168 [INFO] ✅ Zaimportowano moduł: ai_models.reinforcement_learning
+2025-04-15 16:47:59,168 [INFO]    Znalezione klasy: deque, Sequential, Dense, Adam, DQNAgent, ReinforcementLearner
+2025-04-15 16:47:59,168 [INFO] ✅ Zaimportowano moduł: ai_models.ropmer_temp
+2025-04-15 16:47:59,168 [INFO]    Znalezione klasy: datetime, ExperimentManager
+2025-04-15 16:47:59,168 [INFO] ✅ Zaimportowano moduł: ai_models.scalar
+2025-04-15 16:47:59,168 [INFO]    Znalezione klasy: MinMaxScaler, RobustScaler, StandardScaler, DataScaler
+2025-04-15 16:47:59,168 [INFO] ✅ Zaimportowano moduł: ai_models.sentiment_ai
+2025-04-15 16:47:59,168 [INFO]    Znalezione klasy: datetime, SentimentAnalyzer
+
+===== PODSUMOWANIE =====
+Znaleziono 13 modułów w katalogu ai_models
+Pomyślnie zaimportowano: 13
+Błędy importu: 0
+Model loader: OK
+
+✅ Wszystkie modele AI są prawidłowo ładowane!
+🔍 Rozpoczęcie testowania modeli AI...
+2025-04-15 16:47:59,485 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 16:47:59,485 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 16:47:59,485 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 16:47:59,485 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 16:47:59,486 [INFO] AnomalyDetector zainicjalizowany (metoda: z_score, próg: 2.5)
+2025-04-15 16:47:59,486 [INFO] Załadowano model AnomalyDetector z modułu anomaly_detection
+2025-04-15 16:47:59,486 [INFO] Załadowano model AnomalyDetector z modułu anomaly_detection
+2025-04-15 16:47:59,486 [INFO] Załadowano model AnomalyDetector z modułu anomaly_detection
+2025-04-15 16:47:59,486 [INFO] Załadowano model AnomalyDetector z modułu anomaly_detection
+2025-04-15 16:47:59,486 [INFO] ModelRecognizer zainicjalizowany z 5 modelami w bazie
+2025-04-15 16:47:59,486 [INFO] ModelRecognizer zainicjalizowany z 5 modelami w bazie
+2025-04-15 16:47:59,486 [INFO] ModelRecognizer zainicjalizowany z 5 modelami w bazie
+2025-04-15 16:47:59,486 [INFO] ModelRecognizer zainicjalizowany z 5 modelami w bazie
+2025-04-15 16:47:59,486 [INFO] Załadowano model ModelRecognizer z modułu model_recognition
+2025-04-15 16:47:59,486 [INFO] Załadowano model ModelRecognizer z modułu model_recognition
+2025-04-15 16:47:59,486 [INFO] Załadowano model ModelRecognizer z modułu model_recognition
+2025-04-15 16:47:59,486 [INFO] Załadowano model ModelRecognizer z modułu model_recognition
+2025-04-15 16:47:59,486 [INFO] Załadowano model RandomForestRegressor z modułu model_training
+2025-04-15 16:47:59,486 [INFO] Załadowano model RandomForestRegressor z modułu model_training
+2025-04-15 16:47:59,486 [INFO] Załadowano model RandomForestRegressor z modułu model_training
+2025-04-15 16:47:59,486 [INFO] Załadowano model RandomForestRegressor z modułu model_training
+2025-04-15 16:47:59,486 [INFO] Załadowano model Sequential z modułu reinforcement_learning
+2025-04-15 16:47:59,486 [INFO] Załadowano model Sequential z modułu reinforcement_learning
+2025-04-15 16:47:59,486 [INFO] Załadowano model Sequential z modułu reinforcement_learning
+2025-04-15 16:47:59,486 [INFO] Załadowano model Sequential z modułu reinforcement_learning
+2025-04-15 16:47:59,486 [INFO] SentimentAnalyzer zainicjalizowany
+2025-04-15 16:47:59,486 [INFO] Załadowano model SentimentAnalyzer z modułu sentiment_ai
+2025-04-15 16:47:59,486 [INFO] Załadowano model SentimentAnalyzer z modułu sentiment_ai
+2025-04-15 16:47:59,486 [INFO] Załadowano model SentimentAnalyzer z modułu sentiment_ai
+2025-04-15 16:47:59,486 [INFO] Załadowano model SentimentAnalyzer z modułu sentiment_ai
+2025-04-15 16:47:59,486 [INFO] Dane wejściowe przekonwertowane dla modelu AnomalyDetector
+2025-04-15 16:47:59,486 [INFO] Dane wejściowe przekonwertowane dla modelu AnomalyDetector
+2025-04-15 16:47:59,486 [INFO] Dane wejściowe przekonwertowane dla modelu AnomalyDetector
+2025-04-15 16:47:59,486 [INFO] Dane wejściowe przekonwertowane dla modelu AnomalyDetector
+2025-04-15 16:47:59,492 [INFO] Dane wejściowe przekonwertowane dla modelu ModelRecognizer
+2025-04-15 16:47:59,492 [INFO] Dane wejściowe przekonwertowane dla modelu ModelRecognizer
+2025-04-15 16:47:59,492 [INFO] Dane wejściowe przekonwertowane dla modelu ModelRecognizer
+2025-04-15 16:47:59,492 [INFO] Dane wejściowe przekonwertowane dla modelu ModelRecognizer
+2025-04-15 16:47:59,493 [INFO] Rozpoznano model: Double Top z pewnością 0.74
+2025-04-15 16:47:59,493 [INFO] Rozpoznano model: Double Top z pewnością 0.74
+2025-04-15 16:47:59,493 [INFO] Rozpoznano model: Double Top z pewnością 0.74
+2025-04-15 16:47:59,493 [INFO] Rozpoznano model: Double Top z pewnością 0.74
+2025-04-15 16:47:59,493 [INFO] Dane wejściowe przekonwertowane dla modelu RandomForestRegressor
+2025-04-15 16:47:59,493 [INFO] Dane wejściowe przekonwertowane dla modelu RandomForestRegressor
+2025-04-15 16:47:59,493 [INFO] Dane wejściowe przekonwertowane dla modelu RandomForestRegressor
+2025-04-15 16:47:59,493 [INFO] Dane wejściowe przekonwertowane dla modelu RandomForestRegressor
+2025-04-15 16:47:59,493 [WARNING] Model RandomForestRegressor nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,493 [WARNING] Model RandomForestRegressor nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,493 [WARNING] Model RandomForestRegressor nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,493 [WARNING] Model RandomForestRegressor nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,616 [INFO] Model RandomForestRegressor został wytrenowany.
+2025-04-15 16:47:59,616 [INFO] Model RandomForestRegressor został wytrenowany.
+2025-04-15 16:47:59,616 [INFO] Model RandomForestRegressor został wytrenowany.
+2025-04-15 16:47:59,616 [INFO] Model RandomForestRegressor został wytrenowany.
+C:\Users\piotr\Desktop\ZoL0-o1\venv\lib\site-packages\sklearn\utils\validation.py:2739: UserWarning: X does not have valid feature names, but RandomForestRegressor was fitted with feature names
+  warnings.warn(
+2025-04-15 16:47:59,616 [ERROR] Błąd podczas predykcji modelu RandomForestRegressor: X has 5 features, but RandomForestRegressor is expecting 2 features as input.
+2025-04-15 16:47:59,616 [ERROR] Błąd podczas predykcji modelu RandomForestRegressor: X has 5 features, but RandomForestRegressor is expecting 2 features as input.
+2025-04-15 16:47:59,616 [ERROR] Błąd podczas predykcji modelu RandomForestRegressor: X has 5 features, but RandomForestRegressor is expecting 2 features as input.
+2025-04-15 16:47:59,616 [ERROR] Błąd podczas predykcji modelu RandomForestRegressor: X has 5 features, but RandomForestRegressor is expecting 2 features as input.
+2025-04-15 16:47:59,616 [INFO] Dane wejściowe przekonwertowane dla modelu Sequential
+2025-04-15 16:47:59,616 [INFO] Dane wejściowe przekonwertowane dla modelu Sequential
+2025-04-15 16:47:59,616 [INFO] Dane wejściowe przekonwertowane dla modelu Sequential
+2025-04-15 16:47:59,616 [INFO] Dane wejściowe przekonwertowane dla modelu Sequential
+2025-04-15 16:47:59,616 [WARNING] Model Sequential nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,616 [WARNING] Model Sequential nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,616 [WARNING] Model Sequential nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,616 [WARNING] Model Sequential nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,616 [ERROR] Błąd podczas trenowania modelu Sequential: You must call `compile()` before using the model.
+2025-04-15 16:47:59,616 [ERROR] Błąd podczas trenowania modelu Sequential: You must call `compile()` before using the model.
+2025-04-15 16:47:59,616 [ERROR] Błąd podczas trenowania modelu Sequential: You must call `compile()` before using the model.
+2025-04-15 16:47:59,616 [ERROR] Błąd podczas trenowania modelu Sequential: You must call `compile()` before using the model.
+2025-04-15 16:47:59,616 [INFO] Dane wejściowe przekonwertowane dla modelu SentimentAnalyzer
+2025-04-15 16:47:59,616 [INFO] Dane wejściowe przekonwertowane dla modelu SentimentAnalyzer
+2025-04-15 16:47:59,616 [INFO] Dane wejściowe przekonwertowane dla modelu SentimentAnalyzer
+2025-04-15 16:47:59,616 [INFO] Dane wejściowe przekonwertowane dla modelu SentimentAnalyzer
+2025-04-15 16:47:59,616 [WARNING] Model SentimentAnalyzer nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,616 [WARNING] Model SentimentAnalyzer nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,616 [WARNING] Model SentimentAnalyzer nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,616 [WARNING] Model SentimentAnalyzer nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:47:59,616 [INFO] Model sentymentu wytrenowany. Nowa dokładność: 82.57%
+2025-04-15 16:47:59,616 [INFO] Model SentimentAnalyzer został wytrenowany.
+2025-04-15 16:47:59,616 [INFO] Model SentimentAnalyzer został wytrenowany.
+2025-04-15 16:47:59,616 [INFO] Model SentimentAnalyzer został wytrenowany.
+2025-04-15 16:47:59,616 [INFO] Model SentimentAnalyzer został wytrenowany.
+2025-04-15 16:47:59,616 [INFO] Zakończono testy 5 modeli
+2025-04-15 16:47:59,616 [INFO] Zakończono testy 5 modeli
+2025-04-15 16:47:59,616 [INFO] Zakończono testy 5 modeli
+2025-04-15 16:47:59,616 [INFO] Zakończono testy 5 modeli
+⏳ Testowanie modelu ML: RandomForestRegressor...
+2025-04-15 16:47:59,616 [WARNING] Dopasowuję liczbę cech: 20 -> 2
+2025-04-15 16:47:59,616 [WARNING] Dopasowuję liczbę cech: 20 -> 2
+2025-04-15 16:47:59,801 [WARNING] Dopasowuję liczbę cech: 2 -> 2
+2025-04-15 16:47:59,801 [WARNING] Dopasowuję liczbę cech: 2 -> 2
+2025-04-15 16:47:59,801 [WARNING] Dopasowuję liczbę cech: 2 -> 2
+2025-04-15 16:47:59,801 [WARNING] Dopasowuję liczbę cech: 2 -> 2
+✅ Model RandomForestRegressor: accuracy = -0.1878
+⏳ Testowanie modelu ML: Sequential...
+⚠️ Model Sequential (Sequential) nie ma warstw, pomijam test
+⏳ Testowanie modelu ML: SentimentAnalyzer...
+2025-04-15 16:47:59,812 [INFO] Model sentymentu wytrenowany. Nowa dokładność: 82.72%
+✅ Model SentimentAnalyzer: accuracy = 0.8000
+2025-04-15 16:47:59,812 [ERROR] Błąd podczas zapisywania metadanych modeli: [WinError 3] System nie może odnaleźć określonej ścieżki: ''
+2025-04-15 16:47:59,812 [ERROR] Błąd podczas zapisywania metadanych modeli: [WinError 3] System nie może odnaleźć określonej ścieżki: ''
+2025-04-15 16:47:59,812 [ERROR] Błąd podczas zapisywania metadanych modeli: [WinError 3] System nie może odnaleźć określonej ścieżki: ''
+2025-04-15 16:47:59,812 [ERROR] Błąd podczas zapisywania metadanych modeli: [WinError 3] System nie może odnaleźć określonej ścieżki: ''
+
+📋 Podsumowanie testów modeli:
+- Wykryto 5 modeli
+- Załadowano 5 modeli
+- Przetestowano 2 modeli ML
+
+✅ Testowanie modeli zakończone pomyślnie!
+(venv) PS C:\Users\piotr\Desktop\ZoL0-o1>
