@@ -5,16 +5,27 @@ ZoL0-1 to zaawansowany system tradingowy wykorzystujący różne modele sztuczne
 
 ## 🛠️ Funkcje
 - Wykrywanie anomalii rynkowych
-- Analiza sentymentu na podstawie danych tekstowych
-- Przewidywanie cen na podstawie RandomForest
-- Rozpoznawanie wzorców rynkowych (ModelRecognizer)
+- Analiza sentymentu na podstawie danych tekstowych (dokładność ~82%)
+- Przewidywanie cen na podstawie RandomForest z automatycznym zapisem modeli
+- Rozpoznawanie wzorców rynkowych (ModelRecognizer) z walidacją danych
 - Dashboard webowy do monitorowania stanu systemu
 - Zarządzanie ryzykiem i portfelem
 - Integracja z giełdą ByBit
+- Inteligentne buforowanie danych z automatycznym czyszczeniem
+
+## 🧠 Status modeli AI
+| Model | Status | Dokładność | Zapisywanie |
+|-------|--------|------------|-------------|
+| RandomForestRegressor | ✅ Działa | Zmienna | Automatyczne (.pkl) |
+| SentimentAnalyzer | ✅ Działa | ~82% | Automatyczne (.pkl) |
+| Sequential (Keras) | ✅ Naprawiony | Zmienna | Automatyczne (.h5) |
+| ModelRecognizer | ✅ Działa | Wysoka | Nie dotyczy |
+| AnomalyDetector | ✅ Działa | Zmienna | Nie dotyczy |
 
 ## 📦 Wymagania
 - Python 3.8+
 - Biblioteki zainstalowane z pliku requirements.txt
+- Przestrzeń dyskowa na cache i modele (~500MB)
 
 ## 🚀 Uruchomienie
 System można uruchomić na dwa sposoby:

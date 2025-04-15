@@ -101,3 +101,19 @@ args = "python test_data_conversion.py"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python test_models.py"
+
+[[workflows.workflow]]
+name = "Czyszczenie Cache"
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python -c \"from data.utils.cache_manager import clean_old_data; clean_old_data(); print('✅ Cache wyczyszczone!')\""
+
+[[workflows.workflow]]
+name = "Zarządzanie Modelami AI"
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python manage_ai_models.py"

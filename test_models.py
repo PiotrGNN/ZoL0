@@ -287,16 +287,24 @@ def test_models(force_retrain: bool = False) -> Dict[str, Any]:
                     model_data = {
                         "model": instance,
                         "metadata": {
-                            "train_date": datetime.now().isoformat(),
+                            "train_date": datetime.datetime.now().isoformat(),
                             "features_shape": X_train.shape,
-                            "accuracy": instance.score(X_test, y_test)
+                            "accuracy": instance.score(X_test, y_test),
+                            "trained_from_scratch": True,
+                            "training_samples": len(X_train)
                         }
                     }
                     
-                    # Zapisz do pliku
-                    with open(model_path, 'wb') as f:
-                        pickle.dump(model_data, f)
-                    print(f"💾 Model {model_name} zapisany do {model_path}")
+                    try:
+                        # Utwórz katalog models jeśli nie istnieje
+                        os.makedirs(os.path.dirname(model_path), exist_ok=True)
+                        
+                        # Zapisz do pliku
+                        with open(model_path, 'wb') as f:
+                            pickle.dump(model_data, f)
+                        print(f"💾 Model {model_name} zapisany do {model_path}")
+                    except Exception as e:
+                        print(f"❌ Błąd podczas zapisywania modelu {model_name}: {e}")
                 else:
                     # Ładuj model z pliku
                     try:
@@ -304,10 +312,31 @@ def test_models(force_retrain: bool = False) -> Dict[str, Any]:
                             model_data = pickle.load(f)
                             if "model" in model_data:
                                 instance = model_data["model"]
+                                meta = model_data.get("metadata", {})
+                                train_date = meta.get("train_date", "nieznana data")
+                                accuracy = meta.get("accuracy", "nieznana")
                                 print(f"📂 Załadowano model {model_name} z pliku {model_path}")
+                                print(f"   📊 Data treningu: {train_date}, Dokładność: {accuracy}")
                     except Exception as e:
                         print(f"❌ Błąd podczas ładowania modelu {model_name}: {e}")
+                        print(f"   🔄 Trenuję model od nowa...")
                         instance.fit(X_train, y_train)
+                        
+                        # Zapisz nowo wytrenowany model po błędzie ładowania
+                        try:
+                            model_data = {
+                                "model": instance,
+                                "metadata": {
+                                    "train_date": datetime.datetime.now().isoformat(),
+                                    "features_shape": X_train.shape,
+                                    "accuracy": instance.score(X_test, y_test),
+                                    "retrained_after_error": True
+                                }
+                            }
+                            os.makedirs(os.path.dirname(model_path), exist_ok=True)
+                            with open(model_path, 'wb') as f:
+                                pickle.dump(model_data, f)
+                            print(f"💾 Model {model_name} zapisany do {model_path} po ponownym treningu")
             print(f"⏳ Testowanie modelu ML: {model_name}...")
 
             try:

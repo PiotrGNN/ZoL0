@@ -572,15 +572,18 @@ def safe_cache_get(key: str, default_value=None, expected_keys: List[str] = None
         logging.error(f"Error in safe_cache_get for key {key}: {e}")
         return default_value
 
-def clean_old_data(max_age_hours=24):
+def clean_old_data(max_age_hours=24, max_cache_size_mb=500):
     """
-    Czyści stare dane z cache.
+    Czyści stare dane z cache na podstawie wieku i limituje całkowity rozmiar cache.
 
     Args:
         max_age_hours (int): Maksymalny wiek danych w godzinach
+        max_cache_size_mb (int): Maksymalny rozmiar cache w MB
     """
     now = datetime.now()
     files_removed = 0
+    size_before = 0
+    size_after = 0
 
     try:
         cache_folder = os.path.join('data', 'cache')
@@ -589,21 +592,90 @@ def clean_old_data(max_age_hours=24):
             os.makedirs(cache_folder, exist_ok=True)
             return
 
+        # Zbierz informacje o plikach (ścieżka, rozmiar, wiek)
+        files_info = []
         for filename in os.listdir(cache_folder):
             file_path = os.path.join(cache_folder, filename)
 
             # Sprawdź, czy to plik (nie katalog)
             if not os.path.isfile(file_path):
                 continue
-
-            # Sprawdź, czy plik jest starszy niż max_age_hours
+                
+            # Pobierz rozmiar pliku w bajtach
+            file_size = os.path.getsize(file_path)
+            size_before += file_size
+            
+            # Sprawdź wiek pliku
             file_mod_time = datetime.fromtimestamp(os.path.getmtime(file_path))
             age_hours = (now - file_mod_time).total_seconds() / 3600
-
+            
+            files_info.append((file_path, file_size, age_hours))
+            
+        # Usuń stare pliki
+        for file_path, file_size, age_hours in files_info:
             if age_hours > max_age_hours:
                 os.remove(file_path)
                 files_removed += 1
+            else:
+                size_after += file_size
+                
+        # Jeśli rozmiar cache nadal przekracza limit
+        if size_after > max_cache_size_mb * 1024 * 1024:
+            # Posortuj pozostałe pliki według wieku (od najstarszego)
+            remaining_files = [(p, s, a) for p, s, a in files_info if a <= max_age_hours]
+            remaining_files.sort(key=lambda x: x[2], reverse=True)
+            
+            # Usuń najstarsze pliki aż do osiągnięcia limitu rozmiaru
+            for file_path, file_size, _ in remaining_files:
+                if size_after <= max_cache_size_mb * 1024 * 1024:
+                    break
+                    
+                if os.path.exists(file_path):  # Sprawdź czy plik nadal istnieje
+                    os.remove(file_path)
+                    size_after -= file_size
+                    files_removed += 1
 
-        logging.info(f"Cache czyszczenie: usunięto {files_removed} starych plików cache")
+        # Raportuj wyniki czyszczenia
+        mb_before = size_before / (1024 * 1024)
+        mb_after = size_after / (1024 * 1024)
+        logging.info(f"Cache czyszczenie: usunięto {files_removed} plików")
+        logging.info(f"Rozmiar cache przed: {mb_before:.2f} MB, po: {mb_after:.2f} MB")
+        
+        return files_removed
     except Exception as e:
         logging.error(f"Błąd podczas czyszczenia cache: {e}")
+        return 0
+
+# Funkcja do automatycznego czyszczenia cache co określony czas
+def setup_auto_cleanup(interval_hours=6):
+    """
+    Konfiguruje automatyczne czyszczenie cache w regularnych odstępach czasu.
+    
+    Args:
+        interval_hours (int): Częstotliwość czyszczenia w godzinach
+    """
+    import threading
+    import time
+    
+    def cleanup_thread():
+        while True:
+            # Czyszczenie cache
+            try:
+                files_removed = clean_old_data()
+                logging.info(f"Automatyczne czyszczenie cache: usunięto {files_removed} plików")
+            except Exception as e:
+                logging.error(f"Błąd podczas automatycznego czyszczenia cache: {e}")
+                
+            # Czekaj określony czas
+            time.sleep(interval_hours * 3600)
+    
+    # Uruchom wątek czyszczenia w tle
+    cleanup_thread = threading.Thread(target=cleanup_thread, daemon=True)
+    cleanup_thread.start()
+    logging.info(f"Skonfigurowano automatyczne czyszczenie cache co {interval_hours} godzin")
+
+# Uruchom automatyczne czyszczenie przy imporcie
+try:
+    setup_auto_cleanup()
+except Exception as e:
+    logging.error(f"Nie udało się skonfigurować automatycznego czyszczenia cache: {e}")

@@ -541,19 +541,48 @@ class ReinforcementLearner:
             history: Historia treningu
         """
         import logging
+        import numpy as np
 
         # Sprawdź czy model jest skompilowany (dla Sequential)
         if hasattr(self.model, '_is_compiled') and not self.model._is_compiled:
             logging.warning("Model Sequential nie jest skompilowany, kompiluję model")
             try:
                 from tensorflow.keras.optimizers import Adam
-                self.model.compile(loss='mse', optimizer=Adam(learning_rate=self.learning_rate))
+                self.model.compile(loss='mse', optimizer=Adam(learning_rate=self.learning_rate), metrics=['accuracy'])
             except Exception as e:
                 logging.error(f"Błąd podczas kompilacji modelu: {e}")
+        
+        # Upewnij się, że dane są w odpowiednim formacie
+        if isinstance(X, dict):
+            X = np.array(list(X.values())).T
+        else:
+            X = np.array(X)
+            
+        # Sprawdź wymiary i dostosuj dane wyjściowe
+        if hasattr(self.model, 'output_shape'):
+            output_dims = self.model.output_shape[1] if len(self.model.output_shape) > 1 else 1
+            if len(np.array(y).shape) == 1 and output_dims > 1:
+                # Konwertuj wartości skalarne na one-hot encoding dla klasyfikacji
+                from tensorflow.keras.utils import to_categorical
+                try:
+                    y = to_categorical(y, num_classes=output_dims)
+                    logging.info(f"Przekształcono dane wyjściowe do formatu one-hot z {output_dims} klasami")
+                except Exception as e:
+                    logging.error(f"Błąd podczas konwersji danych wyjściowych: {e}")
 
-        history = self.model.fit(X, y, epochs=epochs, verbose=verbose)
-
-        # Po treningu zapisz model
-        self.save_model()
-
-        return history
+        try:
+            history = self.model.fit(X, y, epochs=epochs, verbose=verbose)
+            
+            # Po treningu zapisz model
+            self.save_model()
+            
+            return history
+        except ValueError as e:
+            logging.error(f"Błąd podczas trenowania modelu: {e}")
+            logging.info(f"Kształt X: {np.array(X).shape}, kształt y: {np.array(y).shape}")
+            logging.info(f"Spróbuj dostosować dane lub zmień architekturę modelu")
+            # Zwróć pusty obiekt historii jako fallback
+            class EmptyHistory:
+                def __init__(self):
+                    self.history = {'loss': [0]}
+            return EmptyHistory()

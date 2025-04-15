@@ -8,6 +8,7 @@ import logging
 import random
 import time
 from typing import Dict, Any, List, Optional
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -151,12 +152,38 @@ class ModelRecognizer:
         Returns:
             Dict[str, Any]: Rozpoznany model
         """
-        # Rzeczywiste rozpoznawanie modeli rynkowych na podstawie danych
+        # Walidacja danych wejściowych
         if data is None or not isinstance(data, dict) or 'price_data' not in data:
             logging.warning("Brak wymaganych danych cenowych dla rozpoznania modelu rynkowego")
             return {"error": "Niewystarczające dane do analizy", "timestamp": time.time()}
 
         price_data = data['price_data']
+
+        # Sprawdź typ danych
+        if isinstance(price_data, dict):
+            # Sprawdź czy są wymagane klucze OHLCV
+            required_keys = ['open', 'high', 'low', 'close']
+            if not all(key in price_data for key in required_keys):
+                missing_keys = [key for key in required_keys if key not in price_data]
+                logging.warning(f"Brak wymaganych kluczy w danych cenowych: {missing_keys}")
+                return {"error": "Błędny format danych", "timestamp": time.time()}
+
+            # Sprawdź długość danych
+            if len(price_data['close']) < 10:
+                logging.warning(f"Za mało danych cenowych ({len(price_data['close'])} punktów) dla rozpoznania modelu rynkowego")
+                return {"error": "Za mało danych", "timestamp": time.time()}
+            price_data = price_data['close'] # Use close prices for analysis
+
+        elif isinstance(price_data, (list, np.ndarray)):
+            # Sprawdź długość danych
+            if len(price_data) < 10:
+                logging.warning(f"Za mało danych cenowych ({len(price_data)} punktów) dla rozpoznania modelu rynkowego")
+                return {"error": "Za mało danych", "timestamp": time.time()}
+        else:
+            logging.warning(f"Nieprawidłowy format danych cenowych: {type(price_data)}")
+            return {"error": "Błędny format danych", "timestamp": time.time()}
+
+
 
         # Analiza trendu
         is_trending = False
@@ -422,7 +449,7 @@ class ModelRecognizer:
             else:
                 # Dynamiczny próg - niską pewność zalogujmy szczegółowo dla analizy
                 log_threshold = 0.4  # Poniżej tego progu logujemy szczegóły dla przyszłej analizy
-                
+
                 if confidence >= log_threshold:
                     self.logger.info(f"Niepewne rozpoznanie modelu: {model['name']} z pewnością {confidence:.2f} (próg: {self.confidence_threshold})")
                 else:
@@ -432,7 +459,7 @@ class ModelRecognizer:
                         f"Dane wejściowe: {market_data[:200] if market_data else 'brak'}\n"
                         f"Typ modelu: {model['type']}, ID: {model['id']}"
                     )
-                
+
                 return {
                     'success': False,
                     'error': 'Niska pewność rozpoznania',
@@ -471,10 +498,10 @@ class ModelRecognizer:
             try:
                 # Importujemy funkcję prepare_data_for_model z model_training
                 from ai_models.model_training import prepare_data_for_model
-                
+
                 # Konwertujemy dane wejściowe do odpowiedniego formatu
                 prepared_data = prepare_data_for_model(data)
-                
+
                 # Sprawdzamy czy dane są niepuste
                 if prepared_data is not None and len(prepared_data) > 0:
                     if hasattr(self, 'model') and self.model is not None:
