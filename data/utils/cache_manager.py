@@ -10,6 +10,7 @@ import logging
 import os
 import time
 from typing import Any, Dict, List, Optional, Tuple, Union
+from datetime import datetime
 
 # Konfiguracja logowania - Ulepszona wersja z oryginalnego kodu i edytora
 logger = logging.getLogger("cache_manager")
@@ -570,3 +571,39 @@ def safe_cache_get(key: str, default_value=None, expected_keys: List[str] = None
     except Exception as e:
         logging.error(f"Error in safe_cache_get for key {key}: {e}")
         return default_value
+
+def clean_old_data(max_age_hours=24):
+    """
+    Czyści stare dane z cache.
+
+    Args:
+        max_age_hours (int): Maksymalny wiek danych w godzinach
+    """
+    now = datetime.now()
+    files_removed = 0
+
+    try:
+        cache_folder = os.path.join('data', 'cache')
+
+        if not os.path.exists(cache_folder):
+            os.makedirs(cache_folder, exist_ok=True)
+            return
+
+        for filename in os.listdir(cache_folder):
+            file_path = os.path.join(cache_folder, filename)
+
+            # Sprawdź, czy to plik (nie katalog)
+            if not os.path.isfile(file_path):
+                continue
+
+            # Sprawdź, czy plik jest starszy niż max_age_hours
+            file_mod_time = datetime.fromtimestamp(os.path.getmtime(file_path))
+            age_hours = (now - file_mod_time).total_seconds() / 3600
+
+            if age_hours > max_age_hours:
+                os.remove(file_path)
+                files_removed += 1
+
+        logging.info(f"Cache czyszczenie: usunięto {files_removed} starych plików cache")
+    except Exception as e:
+        logging.error(f"Błąd podczas czyszczenia cache: {e}")

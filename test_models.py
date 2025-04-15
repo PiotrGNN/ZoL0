@@ -245,6 +245,13 @@ def test_models(force_retrain: bool = False) -> Dict[str, Any]:
     Returns:
         Dict[str, Any]: Wyniki testów
     """
+    import os
+    import pickle
+    import joblib
+    
+    # Upewnij się, że katalog models istnieje
+    os.makedirs('models', exist_ok=True)
+    
     print("🔍 Rozpoczęcie testowania modeli AI...")
 
     # Inicjalizuj tester modeli
@@ -267,6 +274,40 @@ def test_models(force_retrain: bool = False) -> Dict[str, Any]:
 
         # Sprawdź czy model ma metody fit i predict
         if instance and model_info.get('has_fit') and model_info.get('has_predict'):
+            # Sprawdź czy to RandomForestRegressor
+            if model_name == "RandomForestRegressor":
+                model_path = f"models/randomforest_model.pkl"
+                
+                # Jeśli wymuszamy retrenowanie lub plik nie istnieje
+                if force_retrain or not os.path.exists(model_path):
+                    print(f"📊 Trenowanie modelu {model_name} od zera...")
+                    instance.fit(X_train, y_train)
+                    
+                    # Zapisz wytrenowany model
+                    model_data = {
+                        "model": instance,
+                        "metadata": {
+                            "train_date": datetime.now().isoformat(),
+                            "features_shape": X_train.shape,
+                            "accuracy": instance.score(X_test, y_test)
+                        }
+                    }
+                    
+                    # Zapisz do pliku
+                    with open(model_path, 'wb') as f:
+                        pickle.dump(model_data, f)
+                    print(f"💾 Model {model_name} zapisany do {model_path}")
+                else:
+                    # Ładuj model z pliku
+                    try:
+                        with open(model_path, 'rb') as f:
+                            model_data = pickle.load(f)
+                            if "model" in model_data:
+                                instance = model_data["model"]
+                                print(f"📂 Załadowano model {model_name} z pliku {model_path}")
+                    except Exception as e:
+                        print(f"❌ Błąd podczas ładowania modelu {model_name}: {e}")
+                        instance.fit(X_train, y_train)
             print(f"⏳ Testowanie modelu ML: {model_name}...")
 
             try:

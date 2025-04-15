@@ -299,13 +299,13 @@ class ReinforcementLearner:
             model.add(Dense(24, activation='relu'))
             model.add(Dense(self.action_size, activation='linear'))
 
-            # Automatyczna kompilacja modelu
+            # Zawsze kompiluj model - kluczowe dla rozwiązania błędu "call compile() before using the model"
             model.compile(
-                optimizer='adam',
+                optimizer=Adam(learning_rate=self.learning_rate),
                 loss='mse',
                 metrics=['accuracy']
             )
-            logging.info("Model Sequential zbudowany i skompilowany")
+            logging.info("Model Sequential zbudowany i skompilowany poprawnie")
             return model
         except ImportError:
             print("TensorFlow nie jest zainstalowany. Używanie pustego modelu.")

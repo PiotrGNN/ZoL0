@@ -75,3 +75,29 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python test_models.py --force-retrain"
+
+[[workflows.workflow]]
+name = "Uruchom Dashboard"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python main.py"
+
+[[workflows.workflow]]
+name = "Testy Pełne"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python test_environment.py"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python test_data_conversion.py"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python test_models.py"

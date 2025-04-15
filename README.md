@@ -1,10 +1,53 @@
+# 🚀 ZoL0-1: System Tradingowy z AI
 
-# Inteligentny System Tradingowy
+## 📋 Opis projektu
+ZoL0-1 to zaawansowany system tradingowy wykorzystujący różne modele sztucznej inteligencji do analizy rynków finansowych. System integruje analizę techniczną, sentiment oraz algorytmy uczenia maszynowego do generowania sygnałów tradingowych.
 
-Kompleksowy system do analizy rynku, zarządzania ryzykiem i automatycznego tradingu z wykorzystaniem API Bybit.
+## 🛠️ Funkcje
+- Wykrywanie anomalii rynkowych
+- Analiza sentymentu na podstawie danych tekstowych
+- Przewidywanie cen na podstawie RandomForest
+- Rozpoznawanie wzorców rynkowych (ModelRecognizer)
+- Dashboard webowy do monitorowania stanu systemu
+- Zarządzanie ryzykiem i portfelem
+- Integracja z giełdą ByBit
 
-## 📋 Struktura projektu
+## 📦 Wymagania
+- Python 3.8+
+- Biblioteki zainstalowane z pliku requirements.txt
 
+## 🚀 Uruchomienie
+System można uruchomić na dwa sposoby:
+
+### 1. Uruchomienie pełnego systemu
+```bash
+python main.py
+```
+Uruchamia backend wraz z API webowym.
+
+### 2. Uruchomienie testów modeli
+```bash
+python test_models.py
+```
+Testuje modele AI w systemie.
+
+### 3. Uruchomienie testów konwersji danych
+```bash
+python test_data_conversion.py
+```
+Testuje poprawność konwersji danych między różnymi formatami.
+
+## 📊 Dashboard
+System udostępnia dashboard webowy dostępny pod adresem: `http://localhost:5000`
+
+## 🧪 Modele AI
+- **RandomForestRegressor** - przewidywanie cen
+- **Sequential (Keras)** - uczenie ze wzmocnieniem
+- **SentimentAnalyzer** - analiza sentymentu
+- **AnomalyDetector** - wykrywanie anomalii
+- **ModelRecognizer** - rozpoznawanie wzorców rynkowych
+
+## 📁 Struktura projektu
 ```
 ├── ai_models/            # Modele AI do analizy rynku
 ├── data/                 # Komponenty przetwarzania danych
@@ -22,119 +65,21 @@ Kompleksowy system do analizy rynku, zarządzania ryzykiem i automatycznego trad
 ├── static/               # Statyczne zasoby web
 ├── templates/            # Szablony HTML
 ├── main.py               # Główny punkt wejścia aplikacji
-└── requirements.txt      # Zależności projektu
-```
-
-## 🛠️ Wymagania systemowe
-
-- Python 3.8 lub nowszy
-- Pip (menedżer pakietów Python)
-- Konto w serwisie Bybit oraz klucze API (opcjonalnie)
-
-## 🚀 Lokalne uruchomienie projektu
-
-### 1. Klonowanie repozytorium
-
-```bash
-git clone [adres-repozytorium]
-cd inteligentny-system-tradingowy
-```
-
-### 2. Instalacja zależności
-
-```bash
-pip install -r requirements.txt
-```
-
-### 3. Konfiguracja środowiska
-
-Utwórz plik `.env` na podstawie `.env.example`:
-
-```bash
-cp .env.example .env
-```
-
-Edytuj plik `.env` i ustaw swoje klucze API:
+├── models/               # Zapisane modele w formacie .pkl
+├── config/               # Pliki konfiguracyjne
+├── requirements.txt      # Zależności projektu
+└── test_data_conversion.py # Testy konwersji danych
 
 ```
-BYBIT_API_KEY=twoj_klucz_api
-BYBIT_API_SECRET=twoj_sekret_api
-BYBIT_TESTNET=false
-MARKET_TYPE=spot
-```
 
-### 4. Uruchomienie aplikacji
+## 🔧 Konfiguracja
+Ustawienia znajdują się w katalogu `config/`. Skopiuj `.env.example` do `.env` i dostosuj parametry.
 
-```bash
-python main.py
-```
+## 📝 Logi
+Logi systemu zapisywane są w katalogu `logs/`.
 
-Aplikacja będzie dostępna pod adresem: http://127.0.0.1:5000
+## 🤝 Autorzy
+- ZoL0-1 Team
 
-## 📊 Funkcje i możliwości
-
-- Dashboard z pełnym interfejsem użytkownika
-- Handel automatyczny i półautomatyczny
-- Zaawansowane zarządzanie ryzykiem
-- Wielostrategiowe podejście
-- Analiza techniczna i sentymentalna
-- Backtesting i optymalizacja strategii
-- Integracja z API Bybit
-
-## 🛡️ Tryby działania
-
-Aplikacja może działać w dwóch trybach:
-
-1. **Tryb symulowany** (domyślny) - dane są generowane na podstawie symulacji, bez rzeczywistych transakcji
-2. **Tryb produkcyjny** - połączenie z API Bybit, rzeczywiste transakcje
-
-Aby przełączyć na tryb produkcyjny, upewnij się, że masz skonfigurowane klucze API w pliku `.env`.
-
-## 🧪 Uruchamianie testów
-
-```bash
-# Testy jednostkowe
-python -m pytest data/tests/
-
-# Test połączenia z API Bybit
-python test_bybit_connection.py
-
-# Test modeli AI
-python test_models.py
-```
-
-## ⚙️ Konfiguracja modeli AI
-
-System wspiera wiele modeli analizy AI:
-
-- **XGBoost** - model predykcji cenowej
-- **Sentiment Analyzer** - analiza sentymentu rynkowego
-- **Anomaly Detector** - wykrywanie anomalii na rynku
-
-## 🔧 Rozwiązywanie problemów
-
-1. **Problem z połączeniem API**:
-   - Sprawdź poprawność kluczy API w pliku `.env`
-   - Upewnij się, że masz dostęp do internetu
-   - Sprawdź uprawnienia kluczy API w panelu Bybit
-
-2. **Błędy importu modułów**:
-   - Upewnij się, że wszystkie zależności zostały zainstalowane (`pip install -r requirements.txt`)
-   - Usuń i zainstaluj ponownie problematyczny pakiet
-
-3. **Błędy z dostępem do portu**:
-   - Zmień port w pliku `.env` (np. na 8080) i uruchom ponownie
-
-## 📝 Rozszerzenie systemu
-
-Aby dodać nową strategię handlową, utwórz nowy plik w katalogu `data/strategies/` i zaimplementuj interfejs strategii. Przykładowo:
-
-```python
-class MyNewStrategy:
-    def __init__(self, params):
-        self.params = params
-
-    def analyze(self, data):
-        # Implementacja logiki strategii
-        return signals
-```
+## 📄 Licencja
+Copyright © 2025
