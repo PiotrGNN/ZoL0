@@ -1,6 +1,66 @@
-# ZoL0-1 Trading System
+# ZoL0-1
+Zautomatyzowany system tradingowy z elementami AI.
 
-## 📊 System AI Trading z analizą rynku i inteligentnym zarządzaniem portfelem
+## Funkcjonalności
+- Wczytywanie i analiza danych rynkowych
+- Modele AI do przewidywania zmian cen i wykrywania wzorców
+- Zarządzanie ryzykiem i portfelem
+- Dashboard do monitorowania statusu systemu
+
+## Struktura systemu
+System składa się z następujących kluczowych komponentów:
+- `ai_models/` - Implementacje modeli AI (rozpoznawanie wzorców, wykrywanie anomalii)
+- `python_libs/` - Biblioteki pomocnicze do zarządzania modelami i testowania
+- `data/` - Moduły do przetwarzania i analizy danych rynkowych
+- `models/` - Zapisane modele AI (pliki .pkl i metadane .json)
+- `logs/` - Logi systemu
+
+## Dostępne modele AI
+- **ModelRecognizer** - Rozpoznawanie wzorców cenowych
+- **AnomalyDetector** - Wykrywanie anomalii w danych
+- **SentimentAnalyzer** - Analiza sentymentu rynkowego
+- **ReinforcementLearner** - Model uczenia ze wzmocnieniem
+
+## Instrukcja uruchomienia
+1. Sklonuj repozytorium
+2. Zainstaluj zależności: `pip install -r requirements.txt`
+3. Uruchom aplikację: `python main.py`
+
+## Zarządzanie modelami
+System zawiera narzędzie do zarządzania modelami AI, które można uruchomić:
+```
+python manage_ai_models.py [KOMENDA]
+```
+
+Dostępne komendy:
+- `list` - Wyświetl listę dostępnych modeli
+- `backup` - Utwórz kopię zapasową modeli
+- `test` - Testuj wszystkie modele
+- `retrain [MODEL]` - Trenuj wybrane modele (użyj "all" dla wszystkich)
+- `details [MODEL]` - Wyświetl szczegóły modelu
+
+Przykłady:
+```bash
+# Wyświetl listę modeli
+python manage_ai_models.py list
+
+# Testuj wszystkie modele
+python manage_ai_models.py test
+
+# Trenuj wybrany model
+python manage_ai_models.py retrain AnomalyDetector
+```
+
+## Testy modeli
+Możesz uruchomić testy wszystkich modeli za pomocą:
+```
+python test_models.py
+```
+
+Opcjonalnie, możesz wymusić ponowne trenowanie podczas testów:
+```
+python test_models.py --force-retrain
+```
 
 ### 🔧 Zoptymalizowane moduły
 
