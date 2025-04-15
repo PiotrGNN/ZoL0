@@ -298,7 +298,13 @@ class ReinforcementLearner:
             model.add(Dense(24, input_dim=self.state_size, activation='relu'))
             model.add(Dense(24, activation='relu'))
             model.add(Dense(self.action_size, activation='linear'))
-            model.compile(loss='mse', optimizer=Adam(learning_rate=self.learning_rate))
+
+            # Automatyczna kompilacja modelu
+            model.compile(
+                optimizer='adam',
+                loss='mse',
+                metrics=['accuracy']
+            )
             return model
         except ImportError:
             print("TensorFlow nie jest zainstalowany. Używanie pustego modelu.")

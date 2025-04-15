@@ -420,12 +420,28 @@ class ModelRecognizer:
                     'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 }
             else:
-                self.logger.info(f"Pewność rozpoznania modelu ({confidence:.2f}) poniżej progu ({self.confidence_threshold})")
+                # Dynamiczny próg - niską pewność zalogujmy szczegółowo dla analizy
+                log_threshold = 0.4  # Poniżej tego progu logujemy szczegóły dla przyszłej analizy
+                
+                if confidence >= log_threshold:
+                    self.logger.info(f"Niepewne rozpoznanie modelu: {model['name']} z pewnością {confidence:.2f} (próg: {self.confidence_threshold})")
+                else:
+                    # Szczegółowe logowanie dla bardzo niepewnych rozpoznań
+                    self.logger.warning(
+                        f"Bardzo niepewne rozpoznanie modelu: {model['name']} (pewność: {confidence:.2f})\n"
+                        f"Dane wejściowe: {market_data[:200] if market_data else 'brak'}\n"
+                        f"Typ modelu: {model['type']}, ID: {model['id']}"
+                    )
+                
                 return {
                     'success': False,
                     'error': 'Niska pewność rozpoznania',
                     'message': 'Nie można jednoznacznie rozpoznać modelu',
                     'confidence': confidence,
+                    'possible_model': {
+                        'name': model['name'],
+                        'type': model['type']
+                    },
                     'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 }
         except Exception as e:
