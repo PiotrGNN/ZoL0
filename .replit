@@ -78,7 +78,7 @@ pageEnabled = false
 buttonEnabled = false
 
 [workflows]
-runButton = "Napraw Modele AI i Dashboard"
+runButton = "Naprawiony System"
 
 [[workflows.workflow]]
 name = "Run"
@@ -357,6 +357,15 @@ args = "python fix_imports.py"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python main.py"
+
+[[workflows.workflow]]
+name = "Naprawiony System"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python3 main.py"
 
 [[ports]]
 localPort = 5000

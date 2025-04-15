@@ -1,3 +1,4 @@
+
 import logging
 import os
 import sys
@@ -39,109 +40,12 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
-@app.route('/api/ai-models-status')
-def get_ai_models_status():
-    """Endpoint do pobierania statusu modeli AI"""
-    try:
-        models = []
-        
-        # Próba załadowania modeli AI
-        from ai_models.model_loader import model_loader
-        loaded_models = model_loader.get_models_summary()
-        
-        if loaded_models and len(loaded_models) > 0:
-            for model in loaded_models:
-                # Symulacja dokładności dla demonstracji (w rzeczywistym systemie pobieramy z modelu)
-                import random
-                accuracy = round(random.uniform(65.0, 92.0), 1)
-                
-                models.append({
-                    'name': model['name'],
-                    'status': model['status'],
-                    'type': model['type'],
-                    'accuracy': accuracy
-                })
-        else:
-            # Sprawdź inne dostępne modele w folderze ai_models
-            import os
-            import importlib
-            import inspect
-            
-            ai_models_dir = "ai_models"
-            model_files = [f[:-3] for f in os.listdir(ai_models_dir) 
-                          if f.endswith('.py') and f != '__init__.py']
-            
-            for model_file in model_files:
-                try:
-                    module = importlib.import_module(f'ai_models.{model_file}')
-                    
-                    # Znajdź klasy w module
-                    for name, obj in inspect.getmembers(module):
-                        if inspect.isclass(obj) and obj.__module__ == f'ai_models.{model_file}':
-                            # Sprawdź czy klasa ma metody predict lub analyze
-                            has_predict = hasattr(obj, 'predict')
-                            has_analyze = hasattr(obj, 'analyze') or hasattr(obj, 'analyse')
-                            has_detect = hasattr(obj, 'detect')
-                            
-                            if has_predict or has_analyze or has_detect:
-                                # To prawdopodobnie model AI
-                                try:
-                                    model_instance = obj()
-                                    import random
-                                    accuracy = round(random.uniform(65.0, 92.0), 1)
-                                    
-                                    models.append({
-                                        'name': name,
-                                        'status': 'Active',
-                                        'type': obj.__name__,
-                                        'accuracy': accuracy
-                                    })
-                                except Exception as e:
-                                    logging.warning(f"Nie można utworzyć instancji modelu {name}: {e}")
-                except Exception as e:
-                    logging.warning(f"Nie można załadować modułu {model_file}: {e}")
-        
-        # Jeśli nadal nie mamy modeli, dodaj przykładowy SentimentAnalyzer
-        if not models and hasattr(sys.modules, 'ai_models.sentiment_ai'):
-            try:
-                from ai_models.sentiment_ai import SentimentAnalyzer
-                models.append({
-                    'name': 'Sentiment Analyzer',
-                    'status': 'Active',
-                    'type': 'SentimentAnalyzer',
-                    'accuracy': 82.3
-                })
-            except Exception:
-                pass
-        
-        # Jeśli nadal nie mamy modeli, dodaj przykładowy AnomalyDetector
-        if not models and hasattr(sys.modules, 'ai_models.anomaly_detection'):
-            try:
-                from ai_models.anomaly_detection import AnomalyDetector
-                models.append({
-                    'name': 'Anomaly Detector',
-                    'status': 'Active',
-                    'type': 'AnomalyDetector',
-                    'accuracy': 78.9
-                })
-            except Exception:
-                pass
-                
-        return jsonify({
-            'success': True,
-            'models': models
-        })
-    except Exception as e:
-        logging.error(f"Błąd podczas pobierania statusu modeli AI: {e}", exc_info=True)
-        return jsonify({
-            'success': False,
-            'error': str(e),
-            'models': []
-        })
-
 # Ładowanie zmiennych środowiskowych
 load_dotenv()
+
+# Inicjalizacja aplikacji Flask - PRZESUNIĘTO TUTAJ
+app = Flask(__name__)
+app.secret_key = os.getenv("FLASK_SECRET_KEY", os.urandom(24))
 
 # Import klienta ByBit
 try:
@@ -160,10 +64,6 @@ except ImportError as e:
     logging.warning(f"Nie udało się zaimportować SimulationManager: {e}")
     simulation_import_success = False
     simulation_manager = None
-
-# Inicjalizacja aplikacji Flask
-app = Flask(__name__)
-app.secret_key = os.getenv("FLASK_SECRET_KEY", os.urandom(24))
 
 # Deklaracja zmiennych globalnych
 global bybit_client, notification_system, sentiment_analyzer, anomaly_detector, strategy_manager, trading_engine, portfolio_manager
@@ -586,9 +486,107 @@ def initialize_system():
         logging.error(f"Błąd podczas inicjalizacji systemu: {e}", exc_info=True)
         return False
 
-# Trasy aplikacji
-# Ta funkcja jest zduplikowana - usunięto ją, ponieważ istnieje druga implementacja poniżej
+@app.route('/api/ai-models-status')
+def get_ai_models_status():
+    """Endpoint do pobierania statusu modeli AI"""
+    try:
+        models = []
+        
+        # Próba załadowania modeli AI
+        from ai_models.model_loader import model_loader
+        loaded_models = model_loader.get_models_summary()
+        
+        if loaded_models and len(loaded_models) > 0:
+            for model in loaded_models:
+                # Symulacja dokładności dla demonstracji (w rzeczywistym systemie pobieramy z modelu)
+                import random
+                accuracy = round(random.uniform(65.0, 92.0), 1)
+                
+                models.append({
+                    'name': model['name'],
+                    'status': model['status'],
+                    'type': model['type'],
+                    'accuracy': accuracy
+                })
+        else:
+            # Sprawdź inne dostępne modele w folderze ai_models
+            import os
+            import importlib
+            import inspect
+            
+            ai_models_dir = "ai_models"
+            model_files = [f[:-3] for f in os.listdir(ai_models_dir) 
+                          if f.endswith('.py') and f != '__init__.py']
+            
+            for model_file in model_files:
+                try:
+                    module = importlib.import_module(f'ai_models.{model_file}')
+                    
+                    # Znajdź klasy w module
+                    for name, obj in inspect.getmembers(module):
+                        if inspect.isclass(obj) and obj.__module__ == f'ai_models.{model_file}':
+                            # Sprawdź czy klasa ma metody predict lub analyze
+                            has_predict = hasattr(obj, 'predict')
+                            has_analyze = hasattr(obj, 'analyze') or hasattr(obj, 'analyse')
+                            has_detect = hasattr(obj, 'detect')
+                            
+                            if has_predict or has_analyze or has_detect:
+                                # To prawdopodobnie model AI
+                                try:
+                                    model_instance = obj()
+                                    import random
+                                    accuracy = round(random.uniform(65.0, 92.0), 1)
+                                    
+                                    models.append({
+                                        'name': name,
+                                        'status': 'Active',
+                                        'type': obj.__name__,
+                                        'accuracy': accuracy
+                                    })
+                                except Exception as e:
+                                    logging.warning(f"Nie można utworzyć instancji modelu {name}: {e}")
+                except Exception as e:
+                    logging.warning(f"Nie można załadować modułu {model_file}: {e}")
+        
+        # Jeśli nadal nie mamy modeli, dodaj przykładowy SentimentAnalyzer
+        if not models and hasattr(sys.modules, 'ai_models.sentiment_ai'):
+            try:
+                from ai_models.sentiment_ai import SentimentAnalyzer
+                models.append({
+                    'name': 'Sentiment Analyzer',
+                    'status': 'Active',
+                    'type': 'SentimentAnalyzer',
+                    'accuracy': 82.3
+                })
+            except Exception:
+                pass
+        
+        # Jeśli nadal nie mamy modeli, dodaj przykładowy AnomalyDetector
+        if not models and hasattr(sys.modules, 'ai_models.anomaly_detection'):
+            try:
+                from ai_models.anomaly_detection import AnomalyDetector
+                models.append({
+                    'name': 'Anomaly Detector',
+                    'status': 'Active',
+                    'type': 'AnomalyDetector',
+                    'accuracy': 78.9
+                })
+            except Exception:
+                pass
+                
+        return jsonify({
+            'success': True,
+            'models': models
+        })
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania statusu modeli AI: {e}", exc_info=True)
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'models': []
+        })
 
+# Trasy aplikacji
 @app.route('/')
 def dashboard():
     # Przykładowe ustawienia dla szablonu
