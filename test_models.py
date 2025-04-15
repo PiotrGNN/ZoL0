@@ -268,7 +268,10 @@ def test_models() -> Dict[str, Any]:
                     if not hasattr(instance, 'optimizer') or instance.optimizer is None:
                         print(f"🔧 Kompiluję model {model_name} (Sequential)")
                         from tensorflow.keras.optimizers import Adam
-                        instance.compile(optimizer=Adam(learning_rate=0.001), loss="mse")
+                        instance.compile(optimizer=Adam(learning_rate=0.001), 
+                                         loss="mse", 
+                                         metrics=["accuracy"])
+                        print(f"✅ Model {model_name} (Sequential) został skompilowany")
             except ImportError:
                 pass # Ignore if tensorflow is not installed
 

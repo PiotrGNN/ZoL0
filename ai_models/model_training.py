@@ -49,8 +49,35 @@ def prepare_data_for_model(data: Union[Dict, List, np.ndarray, pd.DataFrame], ex
             logger.warning("Otrzymano None jako dane wejściowe")
             return np.array([])
 
+        # Przypadek: expected_features, ale data nie jest tablicą
+        if expected_features is not None and not isinstance(data, (np.ndarray, pd.DataFrame)):
+            # Konwertujemy do numpy.array i dostosowujemy wymiar
+            if isinstance(data, dict):
+                if 'close' in data:
+                    values = np.array(data['close']).reshape(-1, 1)
+                elif len(data) > 0:
+                    first_key = list(data.keys())[0]
+                    values = np.array(data[first_key]).reshape(-1, 1)
+                else:
+                    values = np.zeros((1, 1))
+            elif isinstance(data, list):
+                values = np.array(data).reshape(-1, 1)
+            else:
+                values = np.zeros((1, 1))
+                
+            # Teraz tworzymy tablicę o oczekiwanej liczbie cech
+            if values.shape[1] < expected_features:
+                padding = np.zeros((values.shape[0], expected_features - values.shape[1]))
+                return np.hstack((values, padding))
+            else:
+                return values[:, :expected_features]
+
         # Jeśli dane są już typu ndarray, zwróć je bezpośrednio lub dopasuj liczbę cech
         if isinstance(data, np.ndarray):
+            # Jeśli dane są 1D, przekształć je na 2D
+            if data.ndim == 1:
+                data = data.reshape(-1, 1)
+                
             # Jeśli znamy oczekiwaną liczbę cech i dane mają inną szerokość
             if expected_features is not None and data.shape[1] != expected_features and data.shape[0] > 0:
                 logger.warning(f"Dopasowuję liczbę cech: {data.shape[1]} -> {expected_features}")
