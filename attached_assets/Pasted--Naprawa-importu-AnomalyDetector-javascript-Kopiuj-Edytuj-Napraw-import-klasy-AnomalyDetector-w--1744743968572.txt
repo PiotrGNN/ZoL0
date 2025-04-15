@@ -1,0 +1,41 @@
+🔧 Naprawa importu AnomalyDetector
+javascript
+Kopiuj
+Edytuj
+Napraw import klasy `AnomalyDetector` w pliku `ai_models/anomaly_detection.py`, tak aby można ją było poprawnie zaimportować z zewnątrz (`from ai_models.anomaly_detection import AnomalyDetector`). Upewnij się, że klasa jest poprawnie zdefiniowana i dodana do `__all__` lub dostępna bezpośrednio.
+🧪 Naprawa importu ModelTester
+javascript
+Kopiuj
+Edytuj
+Upewnij się, że klasa `ModelTester` w pliku `python_libs/model_tester.py` jest poprawnie zaimplementowana i możliwa do importowania z `from python_libs.model_tester import ModelTester`. Jeśli nie jest, popraw eksport tej klasy.
+🧠 Dodanie compile() do modelu Keras Sequential
+css
+Kopiuj
+Edytuj
+W pliku `ai_models/reinforcement_learning.py`, znajdź klasę, która tworzy model `Sequential`, i dodaj metodę `compile()` z odpowiednimi parametrami (np. loss, optimizer). Zrób to przed wywołaniem `fit()`, aby uniknąć błędu: "You must call compile() before using the model."
+💾 Zapis / odczyt .pkl dla RandomForestRegressor
+go
+Kopiuj
+Edytuj
+W pliku `model_training.py`, dodaj logikę:
+1. Jeśli istnieje zapisany model `.pkl`, załaduj go.
+2. Jeśli nie, wytrenuj model, zapisz do `.pkl` i użyj go.
+Zadbaj o przechowywanie modelu z timestampem i opcjonalnie dopasowanie cech (`feature_names_in_`).
+🕒 Retraining tylko przy nowych danych
+css
+Kopiuj
+Edytuj
+Dodaj porównanie timestampu danych (np. pliku .csv / cache / danych z API) z timestampem modelu (np. z pliku `.pkl`). Jeśli dane są nowsze – trenuj model i nadpisz `.pkl`. W przeciwnym wypadku załaduj istniejący model. Ułatwi to automatyczne, oszczędne aktualizacje.
+🧹 Dodanie trybu --clean i --backup do CLI
+markdown
+Kopiuj
+Edytuj
+W `manage_ai_models.py`, dodaj wsparcie dla trybów CLI:
+- `--clean` – usuwa uszkodzone lub nieczytelne pliki modeli (`.pkl`).
+- `--backup` – kopiuje wszystkie modele `.pkl` do folderu `backups/` z timestampem.
+Użyj argparse i modułu os/pathlib.
+📊 Wyświetlanie accuracy w tabeli --list
+javascript
+Kopiuj
+Edytuj
+W trybie `--list` w `manage_ai_models.py`, dodaj odczyt pliku `model_metadata.json` i dołącz `accuracy` dla każdego modelu w tabeli wyników. Wyświetl też rozmiar pliku i datę ostatniej modyfikacji. Jeśli brak `accuracy` – pokaż `N/A`.
