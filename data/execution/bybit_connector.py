@@ -1510,8 +1510,7 @@ class BybitConnector:
                                     break
                                 except Exception as method_error:
                                     self.logger.warning(
-                                        f"Błąd podczas używania metody {method_name}: {method_error}"
-                                    )
+                                        f"Błąd podczas używania metody {methodname}: {method_error}")
 
                         if wallet is None:
                             self.logger.error(

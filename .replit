@@ -30,7 +30,7 @@ localPort = 5000
 externalPort = 80
 
 [workflows]
-runButton = "Run"
+runButton = "Naprawiony System"
 
 [[workflows.workflow]]
 name = "Naprawiony System"
