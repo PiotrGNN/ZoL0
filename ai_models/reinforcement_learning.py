@@ -305,6 +305,7 @@ class ReinforcementLearner:
                 loss='mse',
                 metrics=['accuracy']
             )
+            logging.info("Model Sequential zbudowany i skompilowany")
             return model
         except ImportError:
             print("TensorFlow nie jest zainstalowany. Używanie pustego modelu.")
@@ -504,7 +505,12 @@ class ReinforcementLearner:
             logging.warning("Model Sequential nie jest skompilowany, kompiluję model")
             try:
                 from tensorflow.keras.optimizers import Adam
-                self.model.compile(loss='mse', optimizer=Adam(learning_rate=self.learning_rate))
+                self.model.compile(
+                    optimizer=Adam(learning_rate=self.learning_rate), 
+                    loss='mse',
+                    metrics=['accuracy']
+                )
+                logging.info("Model Sequential został pomyślnie skompilowany")
             except Exception as e:
                 logging.error(f"Błąd podczas kompilacji modelu: {e}")
 
