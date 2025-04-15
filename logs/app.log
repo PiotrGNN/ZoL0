@@ -28183,3 +28183,206 @@ AttributeError: 'NoneType' object has no attribute 'get_portfolio'
 2025-04-15 01:13:02,673 [WARNING] Pomijam podpakiet 'utils' z powodu błędu: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
 2025-04-15 01:13:02,687 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
 2025-04-15 01:13:02,688 [INFO] SimulationManager zainicjalizowany. Katalogi: reports=reports, charts=static/img
+2025-04-15 01:14:22,437 [INFO] Zainicjalizowano zarządcę ryzyka portfela. Max ryzyko: 0.05, Max rozmiar pozycji: 0.2, Max drawdown: 0.1
+2025-04-15 01:14:22,439 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-15 01:14:22,441 [INFO] Cache zainicjalizowany z domyślnymi parametrami
+2025-04-15 01:14:22,442 [WARNING] Pomijam podpakiet 'utils' z powodu błędu: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-15 01:14:22,449 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 01:14:22,449 [INFO] SimulationManager zainicjalizowany. Katalogi: reports=reports, charts=static/img
+2025-04-15 01:14:22,462 [INFO] Uruchamianie aplikacji w środowisku lokalnym
+2025-04-15 01:14:22,462 [WARNING] ❌ OSTRZEŻENIE: .env wskazuje na testnet (BYBIT_TESTNET=True). Ustaw BYBIT_TESTNET=False, jeśli chcesz realny rynek!
+2025-04-15 01:14:22,470 [INFO] Zainicjalizowano system powiadomień z 2 kanałami
+2025-04-15 01:14:22,473 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 01:14:22,473 [INFO] Zainicjalizowano ModelTester z biblioteki python_libs.model_tester
+2025-04-15 01:14:22,473 [INFO] Załadowano konfigurację AI z python_libs/ai_config.json
+2025-04-15 01:14:22,475 [INFO] SentimentAnalyzer zainicjalizowany
+2025-04-15 01:14:22,483 [INFO] Załadowano model: SentimentAnalyzer
+2025-04-15 01:14:22,484 [INFO] Załadowano model: AnomalyDetector
+2025-04-15 01:14:22,484 [INFO] Załadowano model: ModelRecognizer
+2025-04-15 01:14:22,484 [INFO] Łącznie załadowano 3 modeli
+2025-04-15 01:14:22,484 [INFO] ai_models: Znaleziono 3 modeli AI
+2025-04-15 01:14:22,484 [INFO]   - sentiment_analyzer: SentimentAnalyzer
+2025-04-15 01:14:22,484 [INFO]   - anomaly_detector: AnomalyDetector
+2025-04-15 01:14:22,484 [INFO]   - model_recognizer: ModelRecognizer
+2025-04-15 01:14:22,484 [ERROR] Błąd podczas inicjalizacji systemu: SentimentAnalyzer.__init__() got an unexpected keyword argument 'sources'
+Traceback (most recent call last):
+  File "/home/runner/workspace/main.py", line 150, in initialize_system
+    sentiment_analyzer = SentimentAnalyzer(sources=sources)
+TypeError: SentimentAnalyzer.__init__() got an unexpected keyword argument 'sources'
+2025-04-15 01:14:22,485 [INFO] Uruchamianie aplikacji Flask na 0.0.0.0:5000
+2025-04-15 01:14:22,507 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.36:5000
+2025-04-15 01:14:22,507 [INFO] [33mPress CTRL+C to quit[0m
+2025-04-15 01:14:22,518 [INFO]  * Restarting with watchdog (inotify)
+2025-04-15 01:14:25,087 [INFO] Zainicjalizowano zarządcę ryzyka portfela. Max ryzyko: 0.05, Max rozmiar pozycji: 0.2, Max drawdown: 0.1
+2025-04-15 01:14:25,089 [INFO] Wykluczam podpakiet 'tests' z automatycznego importu.
+2025-04-15 01:14:25,091 [INFO] Cache zainicjalizowany z domyślnymi parametrami
+2025-04-15 01:14:25,092 [WARNING] Pomijam podpakiet 'utils' z powodu błędu: Nie udało się zaimportować modułu 'performance_monitor' z pakietu 'data.utils'.
+2025-04-15 01:14:25,098 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 01:14:25,099 [INFO] SimulationManager zainicjalizowany. Katalogi: reports=reports, charts=static/img
+2025-04-15 01:14:25,110 [INFO] Uruchamianie aplikacji w środowisku lokalnym
+2025-04-15 01:14:25,110 [WARNING] ❌ OSTRZEŻENIE: .env wskazuje na testnet (BYBIT_TESTNET=True). Ustaw BYBIT_TESTNET=False, jeśli chcesz realny rynek!
+2025-04-15 01:14:25,111 [INFO] Zainicjalizowano system powiadomień z 2 kanałami
+2025-04-15 01:14:25,111 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 01:14:25,112 [INFO] Zainicjalizowano ModelTester z biblioteki python_libs.model_tester
+2025-04-15 01:14:25,112 [INFO] Załadowano konfigurację AI z python_libs/ai_config.json
+2025-04-15 01:14:25,112 [INFO] SentimentAnalyzer zainicjalizowany
+2025-04-15 01:14:25,113 [INFO] Załadowano model: SentimentAnalyzer
+2025-04-15 01:14:25,113 [INFO] Załadowano model: AnomalyDetector
+2025-04-15 01:14:25,113 [INFO] Załadowano model: ModelRecognizer
+2025-04-15 01:14:25,113 [INFO] Łącznie załadowano 3 modeli
+2025-04-15 01:14:25,114 [INFO] ai_models: Znaleziono 3 modeli AI
+2025-04-15 01:14:25,114 [INFO]   - sentiment_analyzer: SentimentAnalyzer
+2025-04-15 01:14:25,114 [INFO]   - anomaly_detector: AnomalyDetector
+2025-04-15 01:14:25,114 [INFO]   - model_recognizer: ModelRecognizer
+2025-04-15 01:14:25,114 [ERROR] Błąd podczas inicjalizacji systemu: SentimentAnalyzer.__init__() got an unexpected keyword argument 'sources'
+Traceback (most recent call last):
+  File "/home/runner/workspace/main.py", line 150, in initialize_system
+    sentiment_analyzer = SentimentAnalyzer(sources=sources)
+TypeError: SentimentAnalyzer.__init__() got an unexpected keyword argument 'sources'
+2025-04-15 01:14:25,115 [INFO] Uruchamianie aplikacji Flask na 0.0.0.0:5000
+2025-04-15 01:14:25,135 [WARNING]  * Debugger is active!
+2025-04-15 01:14:25,137 [INFO]  * Debugger PIN: 132-906-412
+2025-04-15 01:14:26,516 [WARNING] Menadżer portfela nie jest zainicjalizowany, używam danych testowych
+2025-04-15 01:14:26,562 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:26] "GET / HTTP/1.1" 200 -
+2025-04-15 01:14:27,306 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:27] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-04-15 01:14:27,441 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:27] "[36mGET /static/css/ai_monitor.css HTTP/1.1[0m" 304 -
+2025-04-15 01:14:27,634 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:27] "GET /static/js/ai_monitor.js HTTP/1.1" 200 -
+2025-04-15 01:14:27,635 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:27] "[36mGET /static/js/dashboard.js HTTP/1.1[0m" 304 -
+2025-04-15 01:14:28,219 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:28] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-15 01:14:28,232 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 01:14:28,243 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:28] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-15 01:14:28,245 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:28] "GET /api/sentiment HTTP/1.1" 200 -
+2025-04-15 01:14:28,364 [ERROR] portfolio_manager nie jest zainicjalizowany w get_portfolio_data
+2025-04-15 01:14:28,364 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:28] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-15 01:14:28,383 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-15 01:14:28,384 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:28] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 01:14:28,531 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:28] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 01:14:28,538 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 01:14:28,539 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:28] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 01:14:28,724 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 01:14:28,725 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:28] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-15 01:14:28,756 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:28] "[36mGET /static/img/simulation_chart_20250414_214308.png HTTP/1.1[0m" 304 -
+2025-04-15 01:14:28,778 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-15 01:14:28,779 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:28] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 01:14:29,784 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:29] "GET /api/sentiment HTTP/1.1" 200 -
+2025-04-15 01:14:29,787 [ERROR] portfolio_manager nie jest zainicjalizowany w get_portfolio_data
+2025-04-15 01:14:29,787 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:29] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-15 01:14:30,772 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 01:14:30,774 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:30] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-15 01:14:30,790 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 01:14:30,795 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:30] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-15 01:14:31,767 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:31] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 01:14:31,771 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:31] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-15 01:14:44,778 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-15 01:14:44,780 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:44] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 01:14:54,773 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-15 01:14:54,774 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:54] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 01:14:57,977 [WARNING] Menadżer portfela nie jest zainicjalizowany, używam danych testowych
+2025-04-15 01:14:57,978 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:57] "GET / HTTP/1.1" 200 -
+2025-04-15 01:14:58,283 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:58] "GET /static/css/styles.css HTTP/1.1" 200 -
+2025-04-15 01:14:58,285 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:58] "[36mGET /static/css/ai_monitor.css HTTP/1.1[0m" 304 -
+2025-04-15 01:14:58,429 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:58] "GET /static/js/dashboard.js HTTP/1.1" 200 -
+2025-04-15 01:14:58,603 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:58] "GET /static/js/ai_monitor.js HTTP/1.1" 200 -
+2025-04-15 01:14:58,785 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-15 01:14:58,786 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:58] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 01:14:58,913 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:58] "GET /api/sentiment HTTP/1.1" 200 -
+2025-04-15 01:14:58,914 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:58] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 01:14:58,915 [ERROR] portfolio_manager nie jest zainicjalizowany w get_portfolio_data
+2025-04-15 01:14:58,921 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:58] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-15 01:14:58,932 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 01:14:58,941 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:58] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-15 01:14:58,972 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-15 01:14:58,972 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:58] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 01:14:59,062 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:59] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-15 01:14:59,061 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 01:14:59,065 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:59] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-15 01:14:59,073 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 01:14:59,074 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:59] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 01:14:59,286 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:59] "[36mGET /static/img/simulation_chart_20250414_214308.png HTTP/1.1[0m" 304 -
+2025-04-15 01:14:59,400 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-15 01:14:59,401 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:59] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 01:14:59,908 [ERROR] portfolio_manager nie jest zainicjalizowany w get_portfolio_data
+2025-04-15 01:14:59,910 [INFO] 172.31.128.36 - - [15/Apr/2025 01:14:59] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-15 01:15:00,403 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:00] "GET /api/sentiment HTTP/1.1" 200 -
+2025-04-15 01:15:00,909 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 01:15:00,910 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:00] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-15 01:15:01,402 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 01:15:01,407 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:01] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-15 01:15:01,908 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:01] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 01:15:02,413 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:02] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-15 01:15:05,348 [INFO] System zresetowany pomyślnie
+2025-04-15 01:15:05,349 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:05] "POST /api/system/reset HTTP/1.1" 200 -
+2025-04-15 01:15:13,910 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-15 01:15:13,911 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:13] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 01:15:23,897 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 01:15:23,899 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:23] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-15 01:15:23,902 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:23] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 01:15:24,059 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:24] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 01:15:24,058 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 01:15:24,061 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:24] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-15 01:15:24,761 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:24] "GET /api/sentiment HTTP/1.1" 200 -
+2025-04-15 01:15:24,936 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-15 01:15:24,937 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:24] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 01:15:24,949 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:24] "GET /api/sentiment HTTP/1.1" 200 -
+2025-04-15 01:15:25,305 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:25] "[33mGET /api/trades/history HTTP/1.1[0m" 404 -
+2025-04-15 01:15:25,445 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:25] "[33mGET /api/trades/history HTTP/1.1[0m" 404 -
+2025-04-15 01:15:28,777 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-15 01:15:28,778 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:28] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 01:15:28,782 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:28] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 01:15:28,783 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 01:15:28,784 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:28] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-15 01:15:28,793 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 01:15:28,794 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:28] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 01:15:28,903 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:28] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-15 01:15:28,908 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-15 01:15:28,909 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:28] "GET /api/sentiment HTTP/1.1" 200 -
+2025-04-15 01:15:28,916 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:28] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 01:15:28,926 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 01:15:28,935 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:28] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-15 01:15:33,774 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:33] "GET /api/sentiment HTTP/1.1" 200 -
+2025-04-15 01:15:34,783 [ERROR] portfolio_manager nie jest zainicjalizowany w get_portfolio_data
+2025-04-15 01:15:34,784 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:34] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-15 01:15:35,780 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 01:15:35,786 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:35] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-15 01:15:37,781 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:37] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-15 01:15:38,781 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-15 01:15:38,782 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 01:15:38,782 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:38] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 01:15:38,783 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:38] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-15 01:15:49,784 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-15 01:15:49,785 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:49] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 01:15:58,232 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-15 01:15:58,233 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:58] "GET /api/sentiment HTTP/1.1" 200 -
+2025-04-15 01:15:58,235 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:58] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-15 01:15:58,235 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:58] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 01:15:58,243 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 01:15:58,248 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:58] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-15 01:15:59,770 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-15 01:15:59,771 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:59] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 01:15:59,772 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:59] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 01:15:59,773 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 01:15:59,775 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:59] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-15 01:15:59,782 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 01:15:59,782 [INFO] 172.31.128.36 - - [15/Apr/2025 01:15:59] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 01:16:00,774 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-15 01:16:00,775 [INFO] 172.31.128.36 - - [15/Apr/2025 01:16:00] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 01:16:05,768 [ERROR] portfolio_manager nie jest zainicjalizowany w get_portfolio_data
+2025-04-15 01:16:05,769 [INFO] 172.31.128.36 - - [15/Apr/2025 01:16:05] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-15 01:16:11,793 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 01:16:11,794 [INFO] 172.31.128.36 - - [15/Apr/2025 01:16:11] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-15 01:16:11,796 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-15 01:16:11,796 [INFO] 172.31.128.36 - - [15/Apr/2025 01:16:11] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 01:16:22,786 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-15 01:16:22,787 [INFO] 172.31.128.36 - - [15/Apr/2025 01:16:22] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 01:16:28,774 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-15 01:16:28,775 [INFO] 172.31.128.36 - - [15/Apr/2025 01:16:28] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 01:16:28,776 [INFO] 172.31.128.36 - - [15/Apr/2025 01:16:28] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 01:16:28,777 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 01:16:28,779 [INFO] 172.31.128.36 - - [15/Apr/2025 01:16:28] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-15 01:16:28,876 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 01:16:28,877 [INFO] 172.31.128.36 - - [15/Apr/2025 01:16:28] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 01:16:29,777 [INFO] Statusy komponentów: API: offline, Trading: offline
+2025-04-15 01:16:29,778 [INFO] 172.31.128.36 - - [15/Apr/2025 01:16:29] "GET /api/component-status HTTP/1.1" 200 -
