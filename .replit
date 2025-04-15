@@ -78,7 +78,7 @@ pageEnabled = false
 buttonEnabled = false
 
 [workflows]
-runButton = "Naprawiony Trading System"
+runButton = "Rzeczywiste Dane Trading"
 
 [[workflows.workflow]]
 name = "Run"
@@ -384,6 +384,19 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python -m pip install -r requirements.txt"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python main.py"
+
+[[workflows.workflow]]
+name = "Rzeczywiste Dane Trading"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python install_replit.py"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
