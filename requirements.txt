@@ -47,3 +47,4 @@ flask-swagger-ui>=4.11.1
 
 # AI & Machine Learning
 optuna>=2.8.0        # Dla optymalizacji parametrów
+xgboost
