@@ -1263,7 +1263,7 @@ class BybitConnector:
                                 has_cloudfront_error = any(
                                     indicator in error_str_lower
                                     for indicator in [
-                                        'cloudfront', 'distribution', ''403',
+                                        'cloudfront', 'distribution', '403',
                                         'rate limit', '429'
                                     ])
                                 if has_cloudfront_error:
