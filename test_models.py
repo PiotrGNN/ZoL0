@@ -8,8 +8,18 @@ Skanuje folder ai_models/ i testuje modele.
 
 import os
 import sys
+import json
+import logging
+import numpy as np
 import argparse
 from python_libs.model_tester import ModelTester
+
+# Konfiguracja logowania
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 def parse_arguments():
     """Parsowanie argumentów wiersza poleceń."""

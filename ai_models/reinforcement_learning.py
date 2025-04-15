@@ -112,11 +112,17 @@ class DQNAgent:
 
     def update_target_model(self):
         """Aktualizuje wagi modelu docelowego."""
+        # Upewnienie się, że model źródłowy jest skompilowany
+        if not hasattr(self.model, 'optimizer') or self.model.optimizer is None:
+            self.model.compile(optimizer=Adam(learning_rate=self.learning_rate), loss="mse")
+            logging.info("Skompilowano model źródłowy")
+            
         self.target_model.set_weights(self.model.get_weights())
 
         # Upewnienie się, że model docelowy jest skompilowany
         if not hasattr(self.target_model, 'optimizer') or self.target_model.optimizer is None:
             self.target_model.compile(optimizer=Adam(learning_rate=self.learning_rate), loss="mse")
+            logging.info("Skompilowano model docelowy")
 
         logging.info("Wagi modelu docelowego zaktualizowane.")
 

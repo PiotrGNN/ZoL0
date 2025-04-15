@@ -29,17 +29,21 @@ logging.basicConfig(
 )
 
 
-def prepare_data_for_model(data, features_count=None):
+def prepare_data_for_model(data, features_count=None, expected_features=None):
     """
     Przygotowuje dane do formatu akceptowanego przez modele ML.
 
     Args:
         data: Dane wejściowe (np. DataFrame, słownik, lista)
         features_count: Opcjonalna liczba cech do zwrócenia (dopasowanie wymiarów)
+        expected_features: Alias dla features_count, dla wstecznej kompatybilności
 
     Returns:
         Przygotowane dane w formacie numpy array lub DataFrame
     """
+    # Jeśli podano expected_features, użyj go jako features_count
+    if expected_features is not None and features_count is None:
+        features_count = expected_features
     try:
         if isinstance(data, dict):
             # Jeśli dane są słownikiem, konwertuj na DataFrame lub numpy array
