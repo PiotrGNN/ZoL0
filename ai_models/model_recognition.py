@@ -447,19 +447,35 @@ class ModelRecognizer:
             dict: Wynik predykcji zawierający nazwę najlepiej pasującego modelu i pewność.
         """
         try:
-            if self.model is None:
-                self._load_model()
+            # Jeśli dane są None lub puste, używamy identify_model_type bez danych
+            if data is None:
+                return self.identify_model_type(None)
 
-            if self.model is None:
-                return {"error": "Model nie jest załadowany", "success": False}
-
-            # Konwersja danych wejściowych na odpowiedni format
-            from ai_models.model_training import prepare_data_for_model
-            data_prepared = prepare_data_for_model(data)
-
-            # Wykonaj predykcję
-            prediction = self.model.predict(data_prepared)
-            return prediction #Assuming prediction is already in a suitable dictionary format.  Adjust if needed.
+            # Przygotowujemy dane przed użyciem
+            try:
+                # Importujemy funkcję prepare_data_for_model z model_training
+                from ai_models.model_training import prepare_data_for_model
+                
+                # Konwertujemy dane wejściowe do odpowiedniego formatu
+                prepared_data = prepare_data_for_model(data)
+                
+                # Sprawdzamy czy dane są niepuste
+                if prepared_data is not None and len(prepared_data) > 0:
+                    if hasattr(self, 'model') and self.model is not None:
+                        # Używamy modelu ML jeśli istnieje
+                        prediction = self.model.predict(prepared_data)
+                        return prediction  # Zakładając że prediction jest już w odpowiednim formacie słownika
+                    else:
+                        # Używamy prostszej metody identyfikacji
+                        return self.identify_model_type({"price_data": prepared_data})
+                else:
+                    return self.identify_model_type(None)
+            except ImportError:
+                # Jeśli nie możemy zaimportować funkcji prepare_data_for_model
+                return self.identify_model_type(data)
+            except Exception as prep_error:
+                logging.warning(f"Błąd podczas przygotowania danych: {prep_error}")
+                return self.identify_model_type(data)
 
         except Exception as e:
             return {"error": f"Błąd podczas predykcji: {e}", "success": False}

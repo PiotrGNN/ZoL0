@@ -320,3 +320,201 @@ def get_system_stats() -> Dict[str, Any]:
         Dict[str, Any]: Statystyki systemu.
     """
     return performance_monitor.monitor_system()
+"""
+Performance Monitor
+------------------
+Moduł monitorujący wydajność i zużycie zasobów systemu.
+"""
+
+import os
+import time
+import logging
+import platform
+import threading
+import psutil
+from typing import Dict, List, Any, Optional, Tuple
+
+logger = logging.getLogger(__name__)
+
+class PerformanceMonitor:
+    """
+    Klasa do monitorowania wydajności systemu.
+    """
+    
+    def __init__(self, interval: int = 60):
+        """
+        Inicjalizuje monitor wydajności.
+        
+        Args:
+            interval: Interwał w sekundach między pomiarami
+        """
+        self.interval = interval
+        self.running = False
+        self.metrics = {
+            "cpu": [],
+            "memory": [],
+            "disk": [],
+            "network": [],
+            "timestamp": []
+        }
+        self.max_history = 1000  # Maksymalna liczba zapisanych pomiarów
+        self.monitor_thread = None
+        self.logger = logging.getLogger("PerformanceMonitor")
+        self.logger.info(f"PerformanceMonitor zainicjalizowany z interwałem {interval}s")
+    
+    def start(self):
+        """Rozpoczyna monitorowanie w osobnym wątku."""
+        if self.running:
+            self.logger.warning("Monitor już działa")
+            return
+        
+        self.running = True
+        self.monitor_thread = threading.Thread(target=self._monitor_loop)
+        self.monitor_thread.daemon = True
+        self.monitor_thread.start()
+        self.logger.info("Monitoring wydajności uruchomiony")
+    
+    def stop(self):
+        """Zatrzymuje monitorowanie."""
+        self.running = False
+        if self.monitor_thread and self.monitor_thread.is_alive():
+            self.monitor_thread.join(timeout=5)
+        self.logger.info("Monitoring wydajności zatrzymany")
+    
+    def _monitor_loop(self):
+        """Główna pętla monitoringu."""
+        try:
+            while self.running:
+                self._collect_metrics()
+                time.sleep(self.interval)
+        except Exception as e:
+            self.logger.error(f"Błąd w pętli monitoringu: {e}")
+            self.running = False
+    
+    def _collect_metrics(self):
+        """Zbiera metryki systemu."""
+        try:
+            # Pobierz metryki
+            cpu_percent = psutil.cpu_percent()
+            memory = psutil.virtual_memory()
+            disk = psutil.disk_usage('/')
+            
+            # Zapisz metryki
+            self.metrics["cpu"].append(cpu_percent)
+            self.metrics["memory"].append(memory.percent)
+            self.metrics["disk"].append(disk.percent)
+            self.metrics["timestamp"].append(time.time())
+            
+            # Ogranicz historię
+            if len(self.metrics["cpu"]) > self.max_history:
+                for key in self.metrics:
+                    self.metrics[key] = self.metrics[key][-self.max_history:]
+            
+            # Log jeśli wykryto wysokie zużycie
+            if cpu_percent > 80:
+                self.logger.warning(f"Wysokie zużycie CPU: {cpu_percent}%")
+            if memory.percent > 80:
+                self.logger.warning(f"Wysokie zużycie pamięci: {memory.percent}%")
+            if disk.percent > 80:
+                self.logger.warning(f"Niski poziom wolnej przestrzeni dyskowej: {disk.percent}%")
+                
+        except Exception as e:
+            self.logger.error(f"Błąd podczas zbierania metryk: {e}")
+    
+    def get_current_usage(self) -> Dict[str, float]:
+        """
+        Pobiera aktualne zużycie zasobów.
+        
+        Returns:
+            Dict[str, float]: Słownik zawierający bieżące zużycie zasobów
+        """
+        try:
+            cpu_percent = psutil.cpu_percent(interval=0.5)
+            memory = psutil.virtual_memory()
+            disk = psutil.disk_usage('/')
+            
+            return {
+                "cpu": cpu_percent,
+                "memory": memory.percent,
+                "memory_available_mb": memory.available / (1024 * 1024),
+                "disk": disk.percent,
+                "disk_free_gb": disk.free / (1024 * 1024 * 1024),
+                "timestamp": time.time()
+            }
+        except Exception as e:
+            self.logger.error(f"Błąd podczas pobierania bieżącego zużycia: {e}")
+            return {
+                "cpu": 0.0,
+                "memory": 0.0,
+                "memory_available_mb": 0.0,
+                "disk": 0.0,
+                "disk_free_gb": 0.0,
+                "timestamp": time.time(),
+                "error": str(e)
+            }
+    
+    def get_metrics_history(self) -> Dict[str, List[float]]:
+        """
+        Pobiera historię metryk.
+        
+        Returns:
+            Dict[str, List[float]]: Słownik zawierający historię metryk
+        """
+        return self.metrics
+    
+    def get_system_info(self) -> Dict[str, Any]:
+        """
+        Pobiera informacje o systemie.
+        
+        Returns:
+            Dict[str, Any]: Informacje o systemie
+        """
+        try:
+            boot_time = psutil.boot_time()
+            boot_time_str = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(boot_time))
+            
+            return {
+                "platform": platform.platform(),
+                "python_version": platform.python_version(),
+                "processor": platform.processor(),
+                "cpu_count": psutil.cpu_count(logical=True),
+                "physical_cpu_count": psutil.cpu_count(logical=False),
+                "total_memory_gb": psutil.virtual_memory().total / (1024 * 1024 * 1024),
+                "total_disk_gb": psutil.disk_usage('/').total / (1024 * 1024 * 1024),
+                "boot_time": boot_time_str,
+                "uptime_seconds": time.time() - boot_time
+            }
+        except Exception as e:
+            self.logger.error(f"Błąd podczas pobierania informacji o systemie: {e}")
+            return {
+                "error": str(e)
+            }
+
+
+# Globalny instancja monitora
+_performance_monitor = None
+
+def get_performance_monitor(interval: int = 60) -> PerformanceMonitor:
+    """
+    Pobiera globalną instancję monitora wydajności.
+    
+    Args:
+        interval: Interwał w sekundach między pomiarami
+        
+    Returns:
+        PerformanceMonitor: Instancja monitora wydajności
+    """
+    global _performance_monitor
+    if _performance_monitor is None:
+        _performance_monitor = PerformanceMonitor(interval=interval)
+    return _performance_monitor
+
+def get_system_usage() -> Dict[str, float]:
+    """
+    Pobiera aktualne zużycie zasobów systemowych.
+    
+    Returns:
+        Dict[str, float]: Słownik zawierający bieżące zużycie zasobów
+    """
+    monitor = get_performance_monitor()
+    return monitor.get_current_usage()

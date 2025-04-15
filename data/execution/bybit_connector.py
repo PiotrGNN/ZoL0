@@ -729,6 +729,9 @@ class BybitConnector:
                     except ValueError:
                         self.logger.error(f"Nieprawidłowy format interwału: {interval}")
                         return []
+            elif isinstance(interval, int):
+                # Jeśli interwał jest już liczbą, używamy go bezpośrednio
+                interval_value = interval
 
             # Symulacja danych świecowych
             current_time = int(time.time())

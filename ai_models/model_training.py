@@ -1,39 +1,127 @@
 """
-model_training.py
------------------
-Moduł do trenowania modeli AI na danych finansowych.
-
-Funkcjonalności:
-- Pipeline dzielący dane na zbiór treningowy, walidacyjny i testowy z wykorzystaniem walk-forward validation.
-- Automatyczna optymalizacja hiperparametrów (może być integrowana z modułem model_tuner.py).
-- Obsługa trybu online learning (aktualizacja modelu przy napływie nowych danych).
-- Mechanizmy early stopping oraz monitorowanie metryk w czasie treningu (dla modeli Keras/TensorFlow).
-- Skalowalność i wsparcie dla trenowania na GPU/TPU (w przypadku modeli TensorFlow/Keras).
-- Odporny na błędy (logowanie wyjątków, automatyczna próba wznowienia) oraz zapisywanie wyników do folderu saved_models.
+Model Training Module
+--------------------
+This module provides functionality to train and evaluate models 
+for market prediction and analysis.
 """
 
-import logging
 import os
-import pickle
-from datetime import datetime
-from typing import Any, Dict, List, Optional, Union
-
+import logging
 import numpy as np
 import pandas as pd
-from sklearn.metrics import mean_absolute_error, mean_squared_error
-from sklearn.model_selection import TimeSeriesSplit
+from datetime import datetime
+from typing import Dict, Union, List, Any, Optional, Tuple
 
-# Dla modeli Keras (jeśli używasz TensorFlow)
 try:
-    # # # # # # import tensorflow as tf  # Zakomentowano - opcjonalny pakiet  # Zakomentowano - opcjonalny pakiet  # Zakomentowano - opcjonalny pakiet  # Zakomentowano - opcjonalny pakiet
+    import tensorflow as tf
     from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 except ImportError:
     tf = None
 
-# Konfiguracja logowania (opcjonalnie może być zastąpione przez setup_logging w main.py)
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+from sklearn.model_selection import TimeSeriesSplit
+from sklearn.ensemble import RandomForestRegressor # Added for example usage
+
+
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
 )
+
+
+def prepare_data_for_model(data: Union[Dict, List, np.ndarray, pd.DataFrame]) -> np.ndarray:
+    """
+    Konwertuje różne formaty danych do formatu odpowiedniego dla modeli ML/AI.
+
+    Args:
+        data: Dane wejściowe w różnych formatach (słownik, lista, DataFrame, array)
+
+    Returns:
+        np.ndarray: Dane w formacie numpy.ndarray gotowe do użycia w modelach
+    """
+    if data is None:
+        raise ValueError("Dane wejściowe nie mogą być None")
+
+    # Jeśli to słownik OHLCV, konwertujemy na DataFrame
+    if isinstance(data, dict):
+        logging.info("Konwersja słownika danych na DataFrame")
+        try:
+            # Sprawdźmy, czy mamy do czynienia ze słownikiem, który zawiera listy
+            is_dict_of_lists = all(isinstance(v, (list, np.ndarray)) for v in data.values() if v is not None)
+
+            # Jeśli to słownik OHLCV z listami, np. {'open': [1,2,3], 'high': [2,3,4], ...}
+            if is_dict_of_lists:
+                # Usuwamy timestamp jeśli istnieje (nie jest zwykle potrzebny jako cecha)
+                data_without_timestamp = {k: v for k, v in data.items() if k != 'timestamp'}
+
+                # Konwertuj na DataFrame
+                df = pd.DataFrame(data_without_timestamp)
+
+                # Wybieramy kolumny OHLCV jeśli istnieją
+                cols_to_use = []
+                for col in ['open', 'high', 'low', 'close', 'volume']:
+                    if col in df.columns:
+                        cols_to_use.append(col)
+
+                # Jeśli znaleziono odpowiednie kolumny, użyj ich
+                if cols_to_use:
+                    # Sprawdź czy wszystkie wartości są liczbami
+                    for col in cols_to_use:
+                        df[col] = pd.to_numeric(df[col], errors='coerce')
+
+                    # Sprawdź czy jest indeks - jeśli nie, dodaj go
+                    if df.index.name is None:
+                        df.reset_index(drop=True, inplace=True)
+
+                    logging.info(f"Przekształcono słownik na tablicę numpy o kształcie {df[cols_to_use].values.shape}")
+                    return df[cols_to_use].values
+
+                # W przeciwnym razie użyj wszystkich kolumn numerycznych
+                numeric_cols = df.select_dtypes(include=['number']).columns.tolist()
+                if numeric_cols:
+                    logging.info(f"Używam tylko kolumn numerycznych: {numeric_cols}")
+                    return df[numeric_cols].values
+
+                logging.info(f"Używam wszystkich kolumn z DataFrame o kształcie {df.values.shape}")
+                return df.values
+
+            # Jeśli to pojedynczy element (np. dict z pojedynczymi wartościami)
+            else:
+                # Próbujemy utworzyć jednoelementowy DataFrame
+                df = pd.DataFrame([data])
+                numeric_cols = df.select_dtypes(include=['number']).columns.tolist()
+                if numeric_cols:
+                    logging.info(f"Przekształcono słownik pojedynczych wartości na tablicę numpy")
+                    return df[numeric_cols].values
+
+                return df.values
+
+        except Exception as e:
+            logging.error(f"Błąd podczas konwersji słownika: {e}")
+            # Jako fallback, tworzymy tablicę 2D z pierwszych wartości liczbowych, jakie znajdziemy
+            for key, value in data.items():
+                if isinstance(value, (list, np.ndarray)) and len(value) > 0:
+                    if all(isinstance(x, (int, float)) for x in value):
+                        logging.info(f"Używam wartości z klucza {key} jako danych wejściowych")
+                        return np.array(value).reshape(-1, 1)
+
+            raise ValueError(f"Nie można przekonwertować słownika do formatu numerycznego: {data}")
+
+    # Jeśli to DataFrame, konwertujemy na numpy array
+    elif isinstance(data, pd.DataFrame):
+        logging.info("Konwersja DataFrame na numpy array")
+        return data.values
+
+    # Jeśli to lista, konwertujemy na numpy array
+    elif isinstance(data, list):
+        logging.info("Konwersja listy na numpy array")
+        return np.array(data)
+
+    # Jeśli to już numpy array, zwracamy bez zmian
+    elif isinstance(data, np.ndarray):
+        return data
+
+    else:
+        raise TypeError(f"Nieobsługiwany format danych: {type(data)}")
 
 
 class ModelTrainer:
@@ -46,17 +134,6 @@ class ModelTrainer:
         use_gpu: bool = False,
         early_stopping_params: Optional[Dict[str, Any]] = None,
     ):
-        """
-        Inicjalizacja trenera modelu.
-
-        Parameters:
-            model: Instancja modelu (może być scikit-learn lub Keras/TensorFlow).
-            model_name (str): Nazwa modelu, używana do zapisywania wyników.
-            saved_model_dir (str): Folder, w którym zapisywane są wytrenowane modele.
-            online_learning (bool): Jeśli True, model będzie aktualizowany na bieżąco (partial_fit).
-            use_gpu (bool): Jeśli True, trenuj model z wykorzystaniem GPU/TPU (dotyczy głównie Keras).
-            early_stopping_params (dict): Parametry dla early stopping (np. {'monitor': 'val_loss', 'patience': 5}).
-        """
         self.model = model
         self.model_name = model_name
         self.saved_model_dir = saved_model_dir
@@ -64,24 +141,14 @@ class ModelTrainer:
         self.use_gpu = use_gpu
         self.early_stopping_params = early_stopping_params or {}
         os.makedirs(self.saved_model_dir, exist_ok=True)
+        self.history = {}
 
-        # Historia treningu (dla modeli Keras)
-        self.history: Dict[str, List[float]] = {}
-
-        # Jeśli używamy GPU/TPU w TensorFlow
         if tf is not None and isinstance(model, tf.keras.Model) and use_gpu:
             logging.info("Trening z wykorzystaniem GPU/TPU (o ile jest dostępne).")
-            # Możesz tu włączyć strategię tf.distribute.MirroredStrategy() itp.
 
     def walk_forward_split(
         self, X: pd.DataFrame, y: pd.Series, n_splits: int = 5
     ) -> List[tuple]:
-        """
-        Dzieli dane przy użyciu walk-forward validation.
-
-        Returns:
-            List[tuple]: Lista krotek (X_train, y_train, X_val, y_val).
-        """
         splits = []
         tscv = TimeSeriesSplit(n_splits=n_splits)
         for train_index, val_index in tscv.split(X):
@@ -98,19 +165,6 @@ class ModelTrainer:
         epochs: int = 50,
         batch_size: int = 32,
     ) -> Dict[str, List[float]]:
-        """
-        Trenuje model przy użyciu walk-forward validation.
-
-        Parameters:
-            X (pd.DataFrame): Dane wejściowe (cechy).
-            y (pd.Series): Wartości docelowe (target).
-            n_splits (int): Liczba podziałów walk-forward.
-            epochs (int): Liczba epok (dla modeli Keras).
-            batch_size (int): Rozmiar batcha (dla modeli Keras).
-
-        Returns:
-            Dict[str, List[float]]: Metryki walidacyjne z poszczególnych foldów (np. 'mse', 'mae').
-        """
         try:
             splits = self.walk_forward_split(X, y, n_splits=n_splits)
             metrics = {"mse": [], "mae": []}
@@ -118,7 +172,13 @@ class ModelTrainer:
             for fold, (X_train, y_train, X_val, y_val) in enumerate(splits, start=1):
                 logging.info("Rozpoczynam trening (fold %d / %d)", fold, n_splits)
 
-                # Jeśli model to Keras (tf.keras.Model)
+                # Prepare data for the model (handling different data types)
+                X_train_prepared = prepare_data_for_model(X_train)
+                X_val_prepared = prepare_data_for_model(X_val)
+                y_train_prepared = prepare_data_for_model(y_train)
+                y_val_prepared = prepare_data_for_model(y_val)
+
+
                 if tf is not None and isinstance(self.model, tf.keras.Model):
                     callbacks = []
                     if self.early_stopping_params:
@@ -138,48 +198,38 @@ class ModelTrainer:
                     )
 
                     history = self.model.fit(
-                        X_train,
-                        y_train,
-                        validation_data=(X_val, y_val),
+                        X_train_prepared,
+                        y_train_prepared,
+                        validation_data=(X_val_prepared, y_val_prepared),
                         epochs=epochs,
                         batch_size=batch_size,
                         callbacks=callbacks,
                         verbose=1,
                     )
-                    # Zachowujemy historię treningu
                     self.history = history.history
-
-                    # Załaduj najlepszy model z checkpointu
                     self.model = tf.keras.models.load_model(checkpoint_path)
-                    predictions = self.model.predict(X_val)
+                    predictions = self.model.predict(X_val_prepared)
 
                 else:
-                    # Dla modeli scikit-learn
-                    self.model.fit(X_train, y_train)
-                    predictions = self.model.predict(X_val)
+                    self.model.fit(X_train_prepared, y_train_prepared)
+                    predictions = self.model.predict(X_val_prepared)
 
-                # Obliczamy metryki
-                mse = mean_squared_error(y_val, predictions)
-                mae = mean_absolute_error(y_val, predictions)
+                mse = mean_squared_error(y_val_prepared, predictions)
+                mae = mean_absolute_error(y_val_prepared, predictions)
                 metrics["mse"].append(mse)
                 metrics["mae"].append(mae)
 
                 logging.info("Fold %d - MSE: %.4f, MAE: %.4f", fold, mse, mae)
 
-                # Jeśli online learning i model wspiera partial_fit
                 if self.online_learning and hasattr(self.model, "partial_fit"):
                     logging.info(
                         "Aktualizacja modelu metodą partial_fit (online learning)."
                     )
-                    # Przekazujemy dane walidacyjne do partial_fit
-                    self.model.partial_fit(X_val, y_val)
+                    self.model.partial_fit(X_val_prepared, y_val_prepared)
 
-            # Wyliczamy średnie metryki z wszystkich foldów
             avg_mse = float(np.mean(metrics["mse"]))
             avg_mae = float(np.mean(metrics["mae"]))
             logging.info("Średnie MSE: %.4f, Średnie MAE: %.4f", avg_mse, avg_mae)
-
-            # Zapisujemy ostateczny model
             self.save_model()
             return metrics
 
@@ -188,10 +238,6 @@ class ModelTrainer:
             raise
 
     def save_model(self) -> None:
-        """
-        Zapisuje wytrenowany model do folderu saved_models.
-        Dla modeli scikit-learn używa pickle, dla Keras zapisuje w formacie .h5.
-        """
         try:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             model_filename = os.path.join(
@@ -213,10 +259,8 @@ class ModelTrainer:
             raise
 
 
-# -------------------- Przykładowe użycie --------------------
 if __name__ == "__main__":
     try:
-        # Generowanie przykładowych danych (np. dane finansowe)
         np.random.seed(42)
         dates = pd.date_range(start="2022-01-01", periods=500, freq="D")
         X = pd.DataFrame(
@@ -232,11 +276,7 @@ if __name__ == "__main__":
             + np.random.normal(0, 0.5, size=500)
         )
 
-        # Przykład użycia z modelem scikit-learn (np. RandomForestRegressor)
-        from sklearn.ensemble import RandomForestRegressor
-
         model = RandomForestRegressor(n_estimators=100, random_state=42)
-
         trainer = ModelTrainer(
             model=model,
             model_name="RandomForest_Model",
@@ -244,166 +284,7 @@ if __name__ == "__main__":
             early_stopping_params={"monitor": "val_loss", "patience": 5},
         )
         metrics = trainer.train(X, y, n_splits=5)
-
         logging.info("Trening zakończony. Wyniki walidacji: %s", metrics)
     except Exception as e:
         logging.error("Błąd w przykładowym użyciu ModelTrainer: %s", e)
         raise
-"""
-model_training.py
-----------------
-Moduł do trenowania modeli AI w systemie.
-"""
-
-import logging
-import numpy as np
-import pandas as pd
-from typing import Union, Dict, List, Any, Tuple
-
-logger = logging.getLogger(__name__)
-
-def prepare_data_for_model(data: Union[Dict, List, np.ndarray, pd.DataFrame]) -> np.ndarray:
-    """
-    Konwertuje różne formaty danych do formatu odpowiedniego dla modeli ML/AI.
-    
-    Args:
-        data: Dane wejściowe w różnych formatach (słownik, lista, DataFrame, array)
-        
-    Returns:
-        np.ndarray: Dane w formacie numpy.ndarray gotowe do użycia w modelach
-    """
-    if data is None:
-        raise ValueError("Dane wejściowe nie mogą być None")
-        
-    # Jeśli to słownik OHLCV, konwertujemy na DataFrame
-    if isinstance(data, dict):
-        logger.info("Konwersja słownika danych na DataFrame")
-        try:
-            # Sprawdźmy, czy mamy do czynienia ze słownikiem, który zawiera listy
-            is_dict_of_lists = all(isinstance(v, (list, np.ndarray)) for v in data.values() if v is not None)
-            
-            # Jeśli to słownik OHLCV z listami, np. {'open': [1,2,3], 'high': [2,3,4], ...}
-            if is_dict_of_lists:
-                # Usuwamy timestamp jeśli istnieje (nie jest zwykle potrzebny jako cecha)
-                data_without_timestamp = {k: v for k, v in data.items() if k != 'timestamp'}
-                
-                # Konwertuj na DataFrame
-                df = pd.DataFrame(data_without_timestamp)
-                
-                # Wybieramy kolumny OHLCV jeśli istnieją
-                cols_to_use = []
-                for col in ['open', 'high', 'low', 'close', 'volume']:
-                    if col in df.columns:
-                        cols_to_use.append(col)
-                
-                # Jeśli znaleziono odpowiednie kolumny, użyj ich
-                if cols_to_use:
-                    # Sprawdź czy wszystkie wartości są liczbami
-                    for col in cols_to_use:
-                        df[col] = pd.to_numeric(df[col], errors='coerce')
-                    
-                    # Sprawdź czy jest indeks - jeśli nie, dodaj go
-                    if df.index.name is None:
-                        df.reset_index(drop=True, inplace=True)
-                    
-                    logger.info(f"Przekształcono słownik na tablicę numpy o kształcie {df[cols_to_use].values.shape}")
-                    return df[cols_to_use].values
-                
-                # W przeciwnym razie użyj wszystkich kolumn numerycznych
-                numeric_cols = df.select_dtypes(include=['number']).columns.tolist()
-                if numeric_cols:
-                    logger.info(f"Używam tylko kolumn numerycznych: {numeric_cols}")
-                    return df[numeric_cols].values
-                
-                logger.info(f"Używam wszystkich kolumn z DataFrame o kształcie {df.values.shape}")
-                return df.values
-            
-            # Jeśli to pojedynczy element (np. dict z pojedynczymi wartościami)
-            else:
-                # Próbujemy utworzyć jednoelementowy DataFrame
-                df = pd.DataFrame([data])
-                numeric_cols = df.select_dtypes(include=['number']).columns.tolist()
-                if numeric_cols:
-                    logger.info(f"Przekształcono słownik pojedynczych wartości na tablicę numpy")
-                    return df[numeric_cols].values
-                    
-                return df.values
-                
-        except Exception as e:
-            logger.error(f"Błąd podczas konwersji słownika: {e}")
-            # Jako fallback, tworzymy tablicę 2D z pierwszych wartości liczbowych, jakie znajdziemy
-            for key, value in data.items():
-                if isinstance(value, (list, np.ndarray)) and len(value) > 0:
-                    if all(isinstance(x, (int, float)) for x in value):
-                        logger.info(f"Używam wartości z klucza {key} jako danych wejściowych")
-                        return np.array(value).reshape(-1, 1)
-            
-            raise ValueError(f"Nie można przekonwertować słownika do formatu numerycznego: {data}")
-        
-    # Jeśli to DataFrame, konwertujemy na numpy array
-    elif isinstance(data, pd.DataFrame):
-        logger.info("Konwersja DataFrame na numpy array")
-        return data.values
-        
-    # Jeśli to lista, konwertujemy na numpy array
-    elif isinstance(data, list):
-        logger.info("Konwersja listy na numpy array")
-        return np.array(data)
-        
-    # Jeśli to już numpy array, zwracamy bez zmian
-    elif isinstance(data, np.ndarray):
-        return data
-        
-    else:
-        raise TypeError(f"Nieobsługiwany format danych: {type(data)}")
-
-def reshape_for_lstm(data: np.ndarray, time_steps: int = 1, features: int = None) -> np.ndarray:
-    """
-    Przekształca dane do formatu wymaganego przez modele LSTM: [samples, time_steps, features]
-    
-    Args:
-        data: Dane wejściowe jako numpy array
-        time_steps: Liczba kroków czasowych (sequence length)
-        features: Liczba cech (jeśli None, zostanie wywnioskowana z danych)
-        
-    Returns:
-        np.ndarray: Dane w formacie odpowiednim dla LSTM
-    """
-    if features is None:
-        if len(data.shape) > 1:
-            features = data.shape[1]  # liczba kolumn
-        else:
-            features = 1
-            
-    # Jeśli dane są jednowymiarowe, przekształć na 2D
-    if len(data.shape) == 1:
-        data = data.reshape(-1, 1)
-        
-    # Jeśli time_steps > 1, utwórz sekwencje
-    if time_steps > 1:
-        samples = len(data) - time_steps + 1
-        new_data = np.zeros((samples, time_steps, features))
-        
-        for i in range(samples):
-            new_data[i] = data[i:i+time_steps].reshape(time_steps, features)
-        
-        return new_data
-    else:
-        # Dodaj wymiar time_steps
-        return data.reshape(data.shape[0], 1, features)
-
-class ModelTrainer:
-    """
-    Klasa do trenowania modeli AI/ML
-    """
-    
-    def __init__(self, model_type: str = "keras"):
-        """
-        Inicjalizuje trener modeli.
-        
-        Args:
-            model_type: Typ modelu do trenowania (keras, sklearn, xgboost)
-        """
-        self.model_type = model_type
-        self.logger = logging.getLogger(f"ModelTrainer.{model_type}")
-        self.logger.info(f"Inicjalizacja trenera modeli typu {model_type}")
