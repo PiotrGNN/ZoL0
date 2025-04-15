@@ -698,6 +698,15 @@ class BybitConnector:
         """
         try:
             self._apply_rate_limit()
+            # Konwertuj interwał na liczbę minut, jeśli ma format 'Xm'
+            interval_value = interval
+            if isinstance(interval, str) and 'm' in interval:
+                try:
+                    interval_value = int(interval.replace('m', ''))
+                except ValueError:
+                    self.logger.error(f"Nieprawidłowy format interwału: {interval}")
+                    return []
+
             # Symulacja danych świecowych
             current_time = int(time.time())
             klines = []
@@ -705,8 +714,7 @@ class BybitConnector:
             last_price = 50000.0 if "BTC" in symbol else 3000.0  # Przykładowe ceny dla BTC lub innych par
 
             for i in range(limit):
-                timestamp = current_time - (int(interval) * 60 *
-                                            (limit - i - 1))
+                timestamp = current_time - (interval_value * 60 * (limit - i - 1))
 
                 # Symulujemy zmianę ceny
                 price_change = random.uniform(-0.01, 0.01)
@@ -2239,7 +2247,7 @@ if __name__ == "__main__":
                                api_secret="test_secret",
                                use_testnet=True,
                                proxies={
-                                   'http': 'socks5h://127.0.0.1:1080',
+                                   'http':'socks5h://127.0.0.1:1080',
                                    'https': 'socks5h://127.0.0.1:1080'
                                })
 

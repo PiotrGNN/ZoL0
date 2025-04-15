@@ -305,3 +305,45 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
+
+def test_prepare_data_for_model():
+    """
+    Test funkcji prepare_data_for_model z różnymi typami danych wejściowych.
+    """
+    try:
+        from ai_models.model_training import prepare_data_for_model
+        import numpy as np
+        import pandas as pd
+        
+        # Test ze słownikiem OHLCV
+        data_dict = {
+            'open': [100.0, 101.0, 102.0],
+            'high': [105.0, 106.0, 107.0],
+            'low': [98.0, 99.0, 100.0],
+            'close': [103.0, 104.0, 105.0],
+            'volume': [1000, 2000, 3000]
+        }
+        
+        result = prepare_data_for_model(data_dict)
+        print(f"✅ Test ze słownikiem OHLCV: kształt wyniku {result.shape}")
+        
+        # Test z DataFrame
+        df = pd.DataFrame(data_dict)
+        result = prepare_data_for_model(df)
+        print(f"✅ Test z DataFrame: kształt wyniku {result.shape}")
+        
+        # Test z numpy array
+        array = np.random.rand(10, 5)
+        result = prepare_data_for_model(array)
+        print(f"✅ Test z numpy array: kształt wyniku {result.shape}")
+        
+        print("Wszystkie testy funkcji prepare_data_for_model przeszły pomyślnie!")
+        return True
+    except Exception as e:
+        print(f"❌ Błąd podczas testowania prepare_data_for_model: {e}")
+        return False
+
+if __name__ == "__main__":
+    test_prepare_data_for_model()
