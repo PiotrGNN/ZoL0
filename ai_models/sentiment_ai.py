@@ -161,3 +161,134 @@ class SentimentAnalyzer:
 
 # Inicjalizuj analizator sentymentu przy imporcie
 sentiment_analyzer = SentimentAnalyzer()
+"""
+sentiment_ai.py
+-------------
+Moduł do analizy sentymentu rynkowego.
+"""
+
+import logging
+import random
+import time
+from typing import Dict, Any, List, Optional
+
+class SentimentAnalyzer:
+    """Analizator sentymentu rynkowego."""
+    
+    def __init__(self):
+        """Inicjalizacja analizatora sentymentu."""
+        self.logger = logging.getLogger("sentiment_analyzer")
+        self.sources = ["twitter", "news", "forums", "reddit"]
+        self.last_update = time.time()
+        self.last_results = self._generate_random_sentiment()
+        self.update_interval = 300  # 5 minut
+        
+        self.logger.info("Zainicjalizowano analizator sentymentu")
+    
+    def analyze(self) -> Dict[str, Any]:
+        """
+        Analizuje sentyment rynkowy.
+        
+        Returns:
+            Dict[str, Any]: Wynik analizy sentymentu
+        """
+        current_time = time.time()
+        
+        # Aktualizuj wyniki co określony czas
+        if current_time - self.last_update > self.update_interval:
+            self.last_results = self._generate_random_sentiment()
+            self.last_update = current_time
+            self.logger.debug("Zaktualizowano dane sentymentu")
+        
+        return self.last_results
+    
+    def _generate_random_sentiment(self) -> Dict[str, Any]:
+        """
+        Generuje losowy sentyment.
+        
+        Returns:
+            Dict[str, Any]: Dane sentymentu
+        """
+        # Generuj losowy sentyment dla każdego źródła
+        sources_sentiment = {}
+        for source in self.sources:
+            # Wartość sentymentu: od -1.0 (bardzo negatywny) do 1.0 (bardzo pozytywny)
+            sources_sentiment[source] = random.uniform(-1.0, 1.0)
+        
+        # Oblicz średni sentyment
+        avg_sentiment = sum(sources_sentiment.values()) / len(sources_sentiment)
+        
+        # Określ kategorię sentymentu
+        sentiment_category = self._categorize_sentiment(avg_sentiment)
+        
+        return {
+            "value": avg_sentiment,
+            "analysis": sentiment_category,
+            "sources": sources_sentiment,
+            "timestamp": time.time()
+        }
+    
+    def _categorize_sentiment(self, sentiment_value: float) -> str:
+        """
+        Kategoryzuje wartość sentymentu.
+        
+        Args:
+            sentiment_value: Wartość sentymentu
+            
+        Returns:
+            str: Kategoria sentymentu
+        """
+        if sentiment_value < -0.6:
+            return "Bardzo negatywny"
+        elif sentiment_value < -0.2:
+            return "Negatywny"
+        elif sentiment_value < 0.2:
+            return "Neutralny"
+        elif sentiment_value < 0.6:
+            return "Pozytywny"
+        else:
+            return "Bardzo pozytywny"
+    
+    def get_status(self) -> Dict[str, Any]:
+        """
+        Zwraca status analizatora.
+        
+        Returns:
+            Dict[str, Any]: Status analizatora
+        """
+        return {
+            "active": True,
+            "last_update": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.last_update)),
+            "sources": self.sources,
+            "update_interval": self.update_interval
+        }
+    
+    def set_sources(self, sources: List[str]) -> bool:
+        """
+        Ustawia źródła danych sentymentu.
+        
+        Args:
+            sources: Lista źródeł
+            
+        Returns:
+            bool: Czy operacja się powiodła
+        """
+        self.sources = sources
+        self.last_results = self._generate_random_sentiment()
+        self.last_update = time.time()
+        
+        self.logger.info(f"Zaktualizowano źródła sentymentu: {sources}")
+        return True
+    
+    def predict(self, data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """
+        Przewiduje sentyment na podstawie danych.
+        
+        Args:
+            data: Dane wejściowe (opcjonalne)
+            
+        Returns:
+            Dict[str, Any]: Przewidywany sentyment
+        """
+        # W tym przykładzie ignorujemy dane wejściowe i zwracamy losowy sentyment
+        return self.analyze()

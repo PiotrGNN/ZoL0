@@ -1009,12 +1009,30 @@ def get_ai_thoughts():
 
         # Dodaj przemyślenia od ModelRecognizer
         if 'model_recognizer' in globals() and model_recognizer:
-            model_info = model_recognizer.identify_model_type(None)
-            if model_info:
+            try:
+                model_info = model_recognizer.identify_model_type(None)
+                if model_info and isinstance(model_info, dict) and 'type' in model_info and 'name' in model_info:
+                    thoughts.append({
+                        'model': 'ModelRecognizer',
+                        'thought': f"Obecne dane rynkowe pasują do modelu typu {model_info['type']} ({model_info['name']})",
+                        'confidence': model_info.get('confidence', 0.8) * 100,
+                        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                        'type': 'model_recognition'
+                    })
+                elif model_info and isinstance(model_info, dict) and 'error' in model_info:
+                    thoughts.append({
+                        'model': 'ModelRecognizer',
+                        'thought': f"Analiza modelu: {model_info.get('error', 'Brak wystarczających danych')}",
+                        'confidence': 60,
+                        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                        'type': 'model_recognition'
+                    })
+            except Exception as model_error:
+                logging.warning(f"Błąd podczas analizy modelu: {model_error}")
                 thoughts.append({
                     'model': 'ModelRecognizer',
-                    'thought': f"Obecne dane rynkowe pasują do modelu typu {model_info['type']} ({model_info['name']})",
-                    'confidence': model_info['confidence'] * 100,
+                    'thought': "Nie można obecnie rozpoznać modelu rynkowego",
+                    'confidence': 50,
                     'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                     'type': 'model_recognition'
                 })

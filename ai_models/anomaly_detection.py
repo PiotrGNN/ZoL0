@@ -186,3 +186,273 @@ class AnomalyDetector:
                 "confidence": random.uniform(0.7, 0.95)
             }]
         return []
+"""
+anomaly_detection.py
+------------------
+Moduł do wykrywania anomalii w danych rynkowych.
+"""
+
+import logging
+import random
+import time
+import math
+from typing import Dict, List, Any, Optional, Tuple, Union
+import numpy as np
+
+class AnomalyDetector:
+    """Detektor anomalii w danych rynkowych."""
+    
+    def __init__(self, method: str = 'z_score', threshold: float = 2.5):
+        """
+        Inicjalizacja detektora anomalii.
+        
+        Args:
+            method: Metoda wykrywania anomalii ('z_score', 'iqr', 'isolation_forest')
+            threshold: Próg uznania za anomalię
+        """
+        self.logger = logging.getLogger("anomaly_detector")
+        self.method = method
+        self.threshold = threshold
+        
+        self.detected_anomalies = []
+        self.max_anomalies = 50  # Maksymalna liczba przechowywanych anomalii
+        
+        self.logger.info(f"Zainicjalizowano detektor anomalii (metoda: {method}, próg: {threshold})")
+    
+    def detect(self, data: List[float]) -> Dict[str, Any]:
+        """
+        Wykrywa anomalie w danych.
+        
+        Args:
+            data: Lista wartości do analizy
+            
+        Returns:
+            Dict[str, Any]: Wynik detekcji anomalii
+        """
+        if not data or len(data) < 3:
+            return {"anomalies": [], "is_anomaly": False, "score": 0.0}
+        
+        try:
+            # Wybór metody detekcji
+            if self.method == 'z_score':
+                anomalies, scores = self._detect_z_score(data)
+            elif self.method == 'iqr':
+                anomalies, scores = self._detect_iqr(data)
+            else:
+                # Domyślnie z-score
+                anomalies, scores = self._detect_z_score(data)
+            
+            # Czy jest anomalia (indeks ostatniego punktu)
+            is_anomaly = len(data) - 1 in anomalies
+            
+            # Ostatnia wartość score
+            last_score = scores[-1] if scores else 0.0
+            
+            # Zapisz wykryte anomalie
+            if anomalies:
+                for idx in anomalies:
+                    if idx < len(data):
+                        timestamp = time.time()
+                        self._add_anomaly({
+                            "index": idx,
+                            "value": data[idx],
+                            "score": scores[idx] if idx < len(scores) else 0.0,
+                            "timestamp": timestamp,
+                            "datetime": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(timestamp))
+                        })
+            
+            return {
+                "anomalies": anomalies,
+                "scores": scores,
+                "is_anomaly": is_anomaly,
+                "score": last_score
+            }
+        except Exception as e:
+            self.logger.error(f"Błąd podczas wykrywania anomalii: {e}")
+            return {"anomalies": [], "is_anomaly": False, "score": 0.0, "error": str(e)}
+    
+    def _detect_z_score(self, data: List[float]) -> Tuple[List[int], List[float]]:
+        """
+        Wykrywa anomalie metodą z-score.
+        
+        Args:
+            data: Lista wartości do analizy
+            
+        Returns:
+            Tuple[List[int], List[float]]: Indeksy anomalii i wartości z-score
+        """
+        # Konwersja do numpy array
+        try:
+            values = np.array(data, dtype=float)
+        except:
+            # Fallback jeśli numpy nie jest dostępne
+            values = data
+            
+        # Obliczenie średniej i odchylenia standardowego
+        mean = sum(values) / len(values)
+        std_dev = math.sqrt(sum((x - mean) ** 2 for x in values) / len(values))
+        
+        # Obliczenie z-score dla każdego punktu
+        z_scores = [(x - mean) / std_dev if std_dev > 0 else 0 for x in values]
+        
+        # Znalezienie anomalii (z-score przekracza próg)
+        anomalies = [i for i, z in enumerate(z_scores) if abs(z) > self.threshold]
+        
+        return anomalies, z_scores
+    
+    def _detect_iqr(self, data: List[float]) -> Tuple[List[int], List[float]]:
+        """
+        Wykrywa anomalie metodą IQR (Interquartile Range).
+        
+        Args:
+            data: Lista wartości do analizy
+            
+        Returns:
+            Tuple[List[int], List[float]]: Indeksy anomalii i wartości score
+        """
+        # Konwersja do numpy array
+        try:
+            values = np.array(data, dtype=float)
+            
+            # Obliczenie kwartyli
+            q1 = np.percentile(values, 25)
+            q3 = np.percentile(values, 75)
+            
+            # Obliczenie IQR
+            iqr = q3 - q1
+            
+            # Dolna i górna granica
+            lower_bound = q1 - 1.5 * iqr
+            upper_bound = q3 + 1.5 * iqr
+            
+            # Znalezienie anomalii
+            anomalies = [i for i, x in enumerate(values) if x < lower_bound or x > upper_bound]
+            
+            # Obliczenie "score" - jak daleko od granicy
+            scores = []
+            for x in values:
+                if x < lower_bound:
+                    score = (lower_bound - x) / iqr if iqr > 0 else 0
+                elif x > upper_bound:
+                    score = (x - upper_bound) / iqr if iqr > 0 else 0
+                else:
+                    score = 0
+                scores.append(score)
+            
+            return anomalies, scores
+        except:
+            # Fallback jeśli numpy nie jest dostępne
+            # Proste sortowanie i wybór kwartyli
+            sorted_values = sorted(data)
+            n = len(sorted_values)
+            
+            q1_idx = n // 4
+            q3_idx = 3 * n // 4
+            
+            q1 = sorted_values[q1_idx]
+            q3 = sorted_values[q3_idx]
+            
+            iqr = q3 - q1
+            
+            lower_bound = q1 - 1.5 * iqr
+            upper_bound = q3 + 1.5 * iqr
+            
+            anomalies = [i for i, x in enumerate(data) if x < lower_bound or x > upper_bound]
+            
+            scores = []
+            for x in data:
+                if x < lower_bound:
+                    score = (lower_bound - x) / iqr if iqr > 0 else 0
+                elif x > upper_bound:
+                    score = (x - upper_bound) / iqr if iqr > 0 else 0
+                else:
+                    score = 0
+                scores.append(score)
+            
+            return anomalies, scores
+    
+    def _add_anomaly(self, anomaly: Dict[str, Any]):
+        """
+        Dodaje anomalię do listy.
+        
+        Args:
+            anomaly: Informacje o anomalii
+        """
+        self.detected_anomalies.append(anomaly)
+        
+        # Usuń najstarsze anomalie, jeśli przekroczono limit
+        if len(self.detected_anomalies) > self.max_anomalies:
+            self.detected_anomalies = self.detected_anomalies[-self.max_anomalies:]
+    
+    def get_detected_anomalies(self) -> List[Dict[str, Any]]:
+        """
+        Zwraca wykryte anomalie.
+        
+        Returns:
+            List[Dict[str, Any]]: Lista wykrytych anomalii
+        """
+        return self.detected_anomalies
+    
+    def clear_anomalies(self):
+        """Czyści listę wykrytych anomalii."""
+        self.detected_anomalies = []
+        self.logger.info("Wyczyszczono listę anomalii")
+    
+    def set_method(self, method: str) -> bool:
+        """
+        Ustawia metodę wykrywania anomalii.
+        
+        Args:
+            method: Metoda wykrywania anomalii
+            
+        Returns:
+            bool: Czy operacja się powiodła
+        """
+        valid_methods = ['z_score', 'iqr', 'isolation_forest']
+        
+        if method not in valid_methods:
+            self.logger.warning(f"Nieznana metoda wykrywania anomalii: {method}. Użyj jednej z: {valid_methods}")
+            return False
+        
+        self.method = method
+        self.logger.info(f"Ustawiono metodę wykrywania anomalii: {method}")
+        return True
+    
+    def set_threshold(self, threshold: float) -> bool:
+        """
+        Ustawia próg uznania za anomalię.
+        
+        Args:
+            threshold: Próg
+            
+        Returns:
+            bool: Czy operacja się powiodła
+        """
+        if threshold <= 0:
+            self.logger.warning(f"Próg musi być większy od zera: {threshold}")
+            return False
+        
+        self.threshold = threshold
+        self.logger.info(f"Ustawiono próg wykrywania anomalii: {threshold}")
+        return True
+    
+    def generate_test_data(self, size: int = 100, anomaly_count: int = 5) -> List[float]:
+        """
+        Generuje testowe dane z anomaliami.
+        
+        Args:
+            size: Rozmiar danych
+            anomaly_count: Liczba anomalii
+            
+        Returns:
+            List[float]: Wygenerowane dane
+        """
+        # Generuj normalne dane
+        data = [random.normalvariate(0, 1) for _ in range(size)]
+        
+        # Dodaj anomalie
+        for _ in range(anomaly_count):
+            idx = random.randint(0, size - 1)
+            data[idx] = random.normalvariate(0, 5)  # Anomalia ma większe odchylenie
+        
+        return data

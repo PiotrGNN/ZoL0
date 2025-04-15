@@ -460,3 +460,369 @@ class SimplifiedTradingEngine:
             price_data.append(current_price)
 
         return price_data
+"""
+simplified_trading_engine.py
+--------------------------
+Uproszczony silnik handlowy dla platformy tradingowej.
+"""
+
+import logging
+import threading
+import time
+from datetime import datetime
+from typing import Dict, List, Any, Optional
+
+class SimplifiedTradingEngine:
+    """
+    Uproszczony silnik handlowy, który zarządza wykonywaniem strategii tradingowych.
+    """
+    
+    def __init__(self, risk_manager=None, strategy_manager=None, exchange_connector=None):
+        """
+        Inicjalizacja silnika handlowego.
+        
+        Args:
+            risk_manager: Manager ryzyka
+            strategy_manager: Manager strategii
+            exchange_connector: Konektor giełdowy
+        """
+        self.logger = logging.getLogger('trading_engine')
+        self.risk_manager = risk_manager
+        self.strategy_manager = strategy_manager
+        self.exchange_connector = exchange_connector
+        
+        self.running = False
+        self.trading_thread = None
+        self.stop_event = threading.Event()
+        
+        self.symbols = []
+        self.last_status = {
+            'running': False,
+            'timestamp': datetime.now().isoformat(),
+            'last_error': None,
+            'active_symbols': [],
+            'active_strategies': []
+        }
+        
+        self.logger.info("Zainicjalizowano uproszczony silnik handlowy")
+    
+    def start_trading(self, symbols: List[str]) -> bool:
+        """
+        Uruchamia silnik handlowy dla podanych symboli.
+        
+        Args:
+            symbols: Lista symboli do handlu
+            
+        Returns:
+            bool: Czy uruchomienie się powiodło
+        """
+        if self.running:
+            self.logger.warning("Silnik handlowy już działa")
+            return False
+        
+        try:
+            self.symbols = symbols
+            self.stop_event.clear()
+            self.running = True
+            
+            # Aktualizacja statusu
+            self.last_status = {
+                'running': True,
+                'timestamp': datetime.now().isoformat(),
+                'last_error': None,
+                'active_symbols': symbols,
+                'active_strategies': self._get_active_strategies()
+            }
+            
+            # Uruchomienie wątku handlowego
+            self.trading_thread = threading.Thread(target=self._trading_loop)
+            self.trading_thread.daemon = True  # Wątek zostanie zamknięty przy zamknięciu głównego programu
+            self.trading_thread.start()
+            
+            self.logger.info(f"Silnik handlowy uruchomiony dla symboli: {symbols}")
+            return True
+        except Exception as e:
+            self.running = False
+            self.last_status['last_error'] = str(e)
+            self.last_status['running'] = False
+            self.logger.error(f"Błąd podczas uruchamiania silnika handlowego: {e}")
+            return False
+    
+    def stop(self) -> Dict[str, Any]:
+        """
+        Zatrzymuje silnik handlowy.
+        
+        Returns:
+            Dict[str, Any]: Status zatrzymania
+        """
+        if not self.running:
+            return {'success': True, 'message': 'Silnik handlowy nie jest uruchomiony'}
+        
+        try:
+            self.logger.info("Zatrzymywanie silnika handlowego...")
+            self.stop_event.set()
+            
+            # Czekanie na zakończenie wątku
+            if self.trading_thread and self.trading_thread.is_alive():
+                self.trading_thread.join(timeout=5.0)
+            
+            self.running = False
+            
+            # Aktualizacja statusu
+            self.last_status = {
+                'running': False,
+                'timestamp': datetime.now().isoformat(),
+                'last_error': None,
+                'active_symbols': [],
+                'active_strategies': []
+            }
+            
+            self.logger.info("Silnik handlowy zatrzymany")
+            return {'success': True, 'message': 'Silnik handlowy zatrzymany'}
+        except Exception as e:
+            self.last_status['last_error'] = str(e)
+            self.logger.error(f"Błąd podczas zatrzymywania silnika handlowego: {e}")
+            return {'success': False, 'error': str(e)}
+    
+    def reset(self) -> Dict[str, Any]:
+        """
+        Resetuje silnik handlowy.
+        
+        Returns:
+            Dict[str, Any]: Status resetowania
+        """
+        try:
+            # Zatrzymaj silnik jeśli działa
+            if self.running:
+                self.stop()
+            
+            # Resetowanie stanu
+            self.symbols = []
+            self.last_status = {
+                'running': False,
+                'timestamp': datetime.now().isoformat(),
+                'last_error': None,
+                'active_symbols': [],
+                'active_strategies': []
+            }
+            
+            self.logger.info("Silnik handlowy zresetowany")
+            return {'success': True, 'message': 'Silnik handlowy zresetowany'}
+        except Exception as e:
+            self.last_status['last_error'] = str(e)
+            self.logger.error(f"Błąd podczas resetowania silnika handlowego: {e}")
+            return {'success': False, 'error': str(e)}
+    
+    def get_status(self) -> Dict[str, Any]:
+        """
+        Zwraca aktualny status silnika handlowego.
+        
+        Returns:
+            Dict[str, Any]: Status silnika
+        """
+        self.last_status['timestamp'] = datetime.now().isoformat()
+        return self.last_status
+    
+    def _trading_loop(self):
+        """Główna pętla handlowa."""
+        self.logger.info("Rozpoczęcie pętli handlowej")
+        
+        while not self.stop_event.is_set():
+            try:
+                # Wykonaj cykl handlowy
+                for symbol in self.symbols:
+                    if self.stop_event.is_set():
+                        break
+                    
+                    # Pobierz dane rynkowe
+                    market_data = self._get_market_data(symbol)
+                    
+                    # Zastosuj strategie
+                    signals = self._apply_strategies(symbol, market_data)
+                    
+                    # Zastosuj zarządzanie ryzykiem
+                    filtered_signals = self._apply_risk_management(signals, symbol, market_data)
+                    
+                    # Wykonaj sygnały
+                    self._execute_signals(filtered_signals, symbol, market_data)
+                
+                # Poczekaj przed następnym cyklem
+                time.sleep(5)
+            except Exception as e:
+                self.logger.error(f"Błąd w pętli handlowej: {e}")
+                self.last_status['last_error'] = str(e)
+                time.sleep(10)  # Dłuższe czekanie po błędzie
+        
+        self.logger.info("Zakończenie pętli handlowej")
+    
+    def _get_market_data(self, symbol: str) -> Dict[str, Any]:
+        """
+        Pobiera dane rynkowe dla symbolu.
+        
+        Args:
+            symbol: Symbol do pobrania danych
+            
+        Returns:
+            Dict[str, Any]: Dane rynkowe
+        """
+        if not self.exchange_connector:
+            return {'symbol': symbol, 'timestamp': datetime.now().isoformat()}
+        
+        try:
+            # Pobierz aktualny kurs
+            ticker = self.exchange_connector.get_ticker(symbol)
+            
+            # Pobierz świece (opcjonalnie)
+            candles = []
+            try:
+                candles = self.exchange_connector.get_klines(symbol=symbol, interval="15m", limit=20)
+            except:
+                pass
+            
+            # Dodatkowe dane (opcjonalnie)
+            orderbook = {}
+            try:
+                orderbook = self.exchange_connector.get_order_book(symbol=symbol, limit=5)
+            except:
+                pass
+            
+            market_data = {
+                'symbol': symbol,
+                'timestamp': datetime.now().isoformat(),
+                'ticker': ticker,
+                'candles': candles,
+                'orderbook': orderbook
+            }
+            
+            return market_data
+        except Exception as e:
+            self.logger.error(f"Błąd podczas pobierania danych rynkowych dla {symbol}: {e}")
+            return {'symbol': symbol, 'timestamp': datetime.now().isoformat(), 'error': str(e)}
+    
+    def _apply_strategies(self, symbol: str, market_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        Stosuje strategie do danych rynkowych.
+        
+        Args:
+            symbol: Symbol
+            market_data: Dane rynkowe
+            
+        Returns:
+            List[Dict[str, Any]]: Lista sygnałów
+        """
+        signals = []
+        
+        if not self.strategy_manager:
+            return signals
+        
+        try:
+            # Pobierz aktywne strategie
+            active_strategies = self.strategy_manager.get_active_strategies()
+            
+            # Zastosuj każdą strategię
+            for strategy_name, strategy in active_strategies.items():
+                try:
+                    strategy_signals = strategy.generate_signals(market_data)
+                    
+                    # Dodaj informację o strategii
+                    for signal in strategy_signals:
+                        signal['strategy'] = strategy_name
+                        signals.append(signal)
+                except Exception as strategy_error:
+                    self.logger.error(f"Błąd w strategii {strategy_name}: {strategy_error}")
+        except Exception as e:
+            self.logger.error(f"Błąd podczas stosowania strategii: {e}")
+        
+        return signals
+    
+    def _apply_risk_management(self, signals: List[Dict[str, Any]], symbol: str, market_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        Stosuje zarządzanie ryzykiem do sygnałów.
+        
+        Args:
+            signals: Lista sygnałów
+            symbol: Symbol
+            market_data: Dane rynkowe
+            
+        Returns:
+            List[Dict[str, Any]]: Przefiltrowane sygnały
+        """
+        if not self.risk_manager or not signals:
+            return signals
+        
+        try:
+            return self.risk_manager.filter_signals(signals, symbol, market_data)
+        except Exception as e:
+            self.logger.error(f"Błąd podczas zarządzania ryzykiem: {e}")
+            return []
+    
+    def _execute_signals(self, signals: List[Dict[str, Any]], symbol: str, market_data: Dict[str, Any]):
+        """
+        Wykonuje sygnały handlowe.
+        
+        Args:
+            signals: Lista sygnałów
+            symbol: Symbol
+            market_data: Dane rynkowe
+        """
+        if not signals or not self.exchange_connector:
+            return
+        
+        for signal in signals:
+            try:
+                # Wykonaj zlecenie
+                order_type = signal.get('type', 'LIMIT')
+                side = signal.get('side', 'BUY')
+                quantity = signal.get('quantity', 0.0)
+                price = signal.get('price')
+                
+                if quantity <= 0:
+                    continue
+                
+                # Logowanie zamiast rzeczywistego wykonania (symulacja)
+                self.logger.info(f"Symulacja zlecenia: {side} {quantity} {symbol} @ {price} ({order_type})")
+                
+                # W rzeczywistej implementacji:
+                # result = self.exchange_connector.place_order(
+                #     symbol=symbol,
+                #     side=side,
+                #     order_type=order_type,
+                #     quantity=quantity,
+                #     price=price
+                # )
+            except Exception as e:
+                self.logger.error(f"Błąd podczas wykonywania sygnału: {e}")
+    
+    def _get_active_strategies(self) -> List[str]:
+        """
+        Pobiera listę aktywnych strategii.
+        
+        Returns:
+            List[str]: Nazwy aktywnych strategii
+        """
+        if not self.strategy_manager:
+            return []
+        
+        try:
+            strategies = self.strategy_manager.get_active_strategies()
+            return list(strategies.keys())
+        except Exception as e:
+            self.logger.error(f"Błąd podczas pobierania aktywnych strategii: {e}")
+            return []
+    
+    def start(self) -> Dict[str, Any]:
+        """
+        Rozpoczyna trading dla zapisanych symboli.
+        
+        Returns:
+            Dict[str, Any]: Status uruchomienia
+        """
+        if not self.symbols:
+            self.symbols = ["BTCUSDT"]  # Domyślny symbol
+        
+        success = self.start_trading(self.symbols)
+        
+        if success:
+            return {'success': True, 'message': f'Trading uruchomiony dla {self.symbols}'}
+        else:
+            return {'success': False, 'error': self.last_status.get('last_error', 'Nieznany błąd')}

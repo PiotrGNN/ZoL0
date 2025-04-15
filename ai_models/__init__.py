@@ -1,3 +1,4 @@
+
 """
 Pakiet ai_models - zawiera modele AI używane w systemie tradingowym.
 """
@@ -17,55 +18,39 @@ logger = logging.getLogger("ai_models")
 def get_available_models():
     """
     Zwraca słownik dostępnych modeli AI.
-
+    
     Returns:
-        dict: Słownik z nazwami modeli i ich klasami
+        Dict[str, Any]: Słownik z nazwami modeli i ich klasami
     """
     available_models = {}
     
-    # Próba importu i dodania SentimentAnalyzer z obsługą błędów
     try:
-        from .sentiment_ai import SentimentAnalyzer
-        available_models["sentiment_analyzer"] = SentimentAnalyzer
-        logger.info("Załadowano model: SentimentAnalyzer")
-    except ImportError as e:
-        logger.warning(f"Nie można załadować modelu SentimentAnalyzer: {e}")
+        # Ścieżka do bieżącego katalogu
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        
+        # Sprawdź wszystkie pliki .py w katalogu
+        for filename in os.listdir(current_dir):
+            if filename.endswith('.py') and filename != '__init__.py' and not filename.startswith('_'):
+                module_name = filename[:-3]  # Usuń '.py'
+                
+                try:
+                    # Importuj moduł
+                    module = importlib.import_module(f'ai_models.{module_name}')
+                    
+                    # Znajdź klasy w module
+                    for attr_name in dir(module):
+                        attr = getattr(module, attr_name)
+                        
+                        if isinstance(attr, type) and attr.__module__ == f'ai_models.{module_name}':
+                            # Dodaj klasę do słownika
+                            available_models[attr_name.lower()] = attr
+                except ImportError as e:
+                    logger.warning(f"Nie można zaimportować modułu {module_name}: {e}")
     except Exception as e:
-        logger.error(f"Nieoczekiwany błąd podczas ładowania SentimentAnalyzer: {e}")
+        logger.error(f"Błąd podczas wyszukiwania modeli: {e}")
     
-    # Próba importu i dodania AnomalyDetector z obsługą błędów
-    try:
-        from .anomaly_detection import AnomalyDetector
-        available_models["anomaly_detector"] = AnomalyDetector
-        logger.info("Załadowano model: AnomalyDetector")
-    except ImportError as e:
-        logger.warning(f"Nie można załadować modelu AnomalyDetector: {e}")
-    except Exception as e:
-        logger.error(f"Nieoczekiwany błąd podczas ładowania AnomalyDetector: {e}")
-    
-    # Próba importu i dodania ModelRecognizer z obsługą błędów
-    try:
-        from .model_recognition import ModelRecognizer
-        available_models["model_recognizer"] = ModelRecognizer
-        logger.info("Załadowano model: ModelRecognizer")
-    except ImportError as e:
-        logger.warning(f"Nie można załadować modelu ModelRecognizer: {e}")
-    except Exception as e:
-        logger.error(f"Nieoczekiwany błąd podczas ładowania ModelRecognizer: {e}")
-    
-    logger.info(f"Łącznie załadowano {len(available_models)} modeli")
+    logger.info(f"Znaleziono {len(available_models)} modeli")
     return available_models
-
-# Eksportuj nazwy klas do przestrzeni nazw pakietu
-try:
-    from .sentiment_ai import SentimentAnalyzer
-    from .anomaly_detection import AnomalyDetector
-    from .model_recognition import ModelRecognizer
-except ImportError as e:
-    # Wydrukuj ostrzeżenie, ale nie przerywaj importu pakietu
-    import logging
-    logging.warning(f"Ostrzeżenie podczas importowania modeli AI: {e}")
-
 
 def list_model_files() -> List[str]:
     """
@@ -83,8 +68,17 @@ def list_model_files() -> List[str]:
 
     return model_files
 
+# Eksportuj nazwy klas do przestrzeni nazw pakietu
+try:
+    from .sentiment_ai import SentimentAnalyzer
+    from .anomaly_detection import AnomalyDetector
+    from .model_recognition import ModelRecognizer
+except ImportError as e:
+    # Wydrukuj ostrzeżenie, ale nie przerywaj importu pakietu
+    logger.warning(f"Ostrzeżenie podczas importowania modeli AI: {e}")
+
 # Inicjalizacja - wypisanie znalezionych modeli
 available_models = get_available_models()
 logger.info(f"ai_models: Znaleziono {len(available_models)} modeli AI")
 for name, model_class in available_models.items():
-    logger.info(f"  - {name}: {model_class.__name__}")
+    logger.debug(f"Dostępny model: {name} ({model_class.__name__})")
