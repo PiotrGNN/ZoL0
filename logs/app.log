@@ -25284,3 +25284,886 @@ AttributeError: 'NoneType' object has no attribute 'get_portfolio'
 2025-04-14 22:25:53,703 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50210.67)
 2025-04-14 22:25:53,703 [INFO] Statusy komponentów: API: online, Trading: online
 2025-04-14 22:25:53,704 [INFO] 127.0.0.1 - - [14/Apr/2025 22:25:53] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:26:19,855 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49706.3)
+2025-04-14 22:26:19,855 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:26:19,856 [INFO] 127.0.0.1 - - [14/Apr/2025 22:26:19] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:26:32,717 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49896.33)
+2025-04-14 22:26:32,718 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:26:32,718 [INFO] 127.0.0.1 - - [14/Apr/2025 22:26:32] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:26:32,721 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-14 22:26:32,724 [INFO] 127.0.0.1 - - [14/Apr/2025 22:26:32] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-14 22:26:43,705 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50309.44)
+2025-04-14 22:26:43,706 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:26:43,706 [INFO] 127.0.0.1 - - [14/Apr/2025 22:26:43] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:26:49,686 [INFO] 127.0.0.1 - - [14/Apr/2025 22:26:49] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-14 22:26:49,688 [INFO] 127.0.0.1 - - [14/Apr/2025 22:26:49] "[33mGET /api/sentiment/latest HTTP/1.1[0m" 404 -
+2025-04-14 22:26:49,690 [INFO] 127.0.0.1 - - [14/Apr/2025 22:26:49] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-14 22:26:49,692 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 22:26:49,692 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50196.54)
+2025-04-14 22:26:49,693 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:26:49,693 [INFO] 127.0.0.1 - - [14/Apr/2025 22:26:49] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:26:49,699 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:26:49,704 [INFO] 127.0.0.1 - - [14/Apr/2025 22:26:49] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-14 22:26:49,872 [INFO] 127.0.0.1 - - [14/Apr/2025 22:26:49] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:26:49,882 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:26:49,882 [INFO] 127.0.0.1 - - [14/Apr/2025 22:26:49] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:27:19,854 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50154.53)
+2025-04-14 22:27:19,854 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:27:19,855 [INFO] 127.0.0.1 - - [14/Apr/2025 22:27:19] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:27:49,895 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 22:27:49,896 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49683.96)
+2025-04-14 22:27:49,896 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:27:49,897 [INFO] 127.0.0.1 - - [14/Apr/2025 22:27:49] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:27:49,899 [INFO] 127.0.0.1 - - [14/Apr/2025 22:27:49] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:27:49,908 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:27:49,908 [INFO] 127.0.0.1 - - [14/Apr/2025 22:27:49] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:28:49,858 [INFO] 127.0.0.1 - - [14/Apr/2025 22:28:49] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:28:49,869 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:28:49,869 [INFO] 127.0.0.1 - - [14/Apr/2025 22:28:49] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:29:10,932 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 22:29:10,933 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49981.69)
+2025-04-14 22:29:10,933 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:29:10,934 [INFO] 127.0.0.1 - - [14/Apr/2025 22:29:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:30:10,878 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49664.42)
+2025-04-14 22:30:10,879 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:30:10,880 [INFO] 127.0.0.1 - - [14/Apr/2025 22:30:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:30:10,886 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:30:10,887 [INFO] 127.0.0.1 - - [14/Apr/2025 22:30:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:30:10,935 [INFO] 127.0.0.1 - - [14/Apr/2025 22:30:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:31:10,860 [INFO] 127.0.0.1 - - [14/Apr/2025 22:31:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:31:10,861 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 22:31:10,862 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49676.57)
+2025-04-14 22:31:10,863 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:31:10,864 [INFO] 127.0.0.1 - - [14/Apr/2025 22:31:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:31:10,871 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:31:10,871 [INFO] 127.0.0.1 - - [14/Apr/2025 22:31:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:32:10,866 [INFO] 127.0.0.1 - - [14/Apr/2025 22:32:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:32:10,867 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 22:32:10,869 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50136.21)
+2025-04-14 22:32:10,870 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:32:10,870 [INFO] 127.0.0.1 - - [14/Apr/2025 22:32:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:32:10,876 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:32:10,876 [INFO] 127.0.0.1 - - [14/Apr/2025 22:32:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:33:10,861 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49566.64)
+2025-04-14 22:33:10,863 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:33:10,864 [INFO] 127.0.0.1 - - [14/Apr/2025 22:33:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:33:10,866 [INFO] 127.0.0.1 - - [14/Apr/2025 22:33:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:33:10,875 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:33:10,877 [INFO] 127.0.0.1 - - [14/Apr/2025 22:33:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:34:10,870 [INFO] 127.0.0.1 - - [14/Apr/2025 22:34:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:34:10,879 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 22:34:10,881 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49803.49)
+2025-04-14 22:34:10,883 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:34:10,884 [INFO] 127.0.0.1 - - [14/Apr/2025 22:34:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:34:10,889 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:34:10,889 [INFO] 127.0.0.1 - - [14/Apr/2025 22:34:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:35:10,864 [INFO] 127.0.0.1 - - [14/Apr/2025 22:35:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:35:10,930 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 22:35:10,931 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49984.32)
+2025-04-14 22:35:10,932 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:35:10,933 [INFO] 127.0.0.1 - - [14/Apr/2025 22:35:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:35:10,939 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:35:10,939 [INFO] 127.0.0.1 - - [14/Apr/2025 22:35:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:36:10,851 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49675.42)
+2025-04-14 22:36:10,851 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:36:10,852 [INFO] 127.0.0.1 - - [14/Apr/2025 22:36:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:36:10,857 [INFO] 127.0.0.1 - - [14/Apr/2025 22:36:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:36:10,949 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:36:10,950 [INFO] 127.0.0.1 - - [14/Apr/2025 22:36:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:37:10,863 [INFO] 127.0.0.1 - - [14/Apr/2025 22:37:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:37:10,862 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 22:37:10,866 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50411.27)
+2025-04-14 22:37:10,866 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:37:10,867 [INFO] 127.0.0.1 - - [14/Apr/2025 22:37:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:37:10,873 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:37:10,874 [INFO] 127.0.0.1 - - [14/Apr/2025 22:37:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:38:11,249 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 22:38:11,249 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50346.59)
+2025-04-14 22:38:11,250 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:38:11,250 [INFO] 127.0.0.1 - - [14/Apr/2025 22:38:11] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:38:11,397 [INFO] 127.0.0.1 - - [14/Apr/2025 22:38:11] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:38:11,413 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:38:11,414 [INFO] 127.0.0.1 - - [14/Apr/2025 22:38:11] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:39:10,861 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50030.9)
+2025-04-14 22:39:10,863 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:39:10,864 [INFO] 127.0.0.1 - - [14/Apr/2025 22:39:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:39:10,864 [INFO] 127.0.0.1 - - [14/Apr/2025 22:39:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:39:10,872 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:39:10,873 [INFO] 127.0.0.1 - - [14/Apr/2025 22:39:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:40:10,861 [INFO] 127.0.0.1 - - [14/Apr/2025 22:40:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:40:10,868 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 22:40:10,868 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49684.51)
+2025-04-14 22:40:10,870 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:40:10,871 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:40:10,872 [INFO] 127.0.0.1 - - [14/Apr/2025 22:40:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:40:10,872 [INFO] 127.0.0.1 - - [14/Apr/2025 22:40:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:41:10,858 [INFO] 127.0.0.1 - - [14/Apr/2025 22:41:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:41:10,860 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49918.66)
+2025-04-14 22:41:10,861 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:41:10,861 [INFO] 127.0.0.1 - - [14/Apr/2025 22:41:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:41:10,868 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:41:10,869 [INFO] 127.0.0.1 - - [14/Apr/2025 22:41:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:42:10,861 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 22:42:10,861 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50081.75)
+2025-04-14 22:42:10,862 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:42:10,863 [INFO] 127.0.0.1 - - [14/Apr/2025 22:42:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:42:10,872 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:42:10,873 [INFO] 127.0.0.1 - - [14/Apr/2025 22:42:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:42:10,936 [INFO] 127.0.0.1 - - [14/Apr/2025 22:42:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:43:10,859 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49585.13)
+2025-04-14 22:43:10,860 [INFO] 127.0.0.1 - - [14/Apr/2025 22:43:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:43:10,860 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:43:10,862 [INFO] 127.0.0.1 - - [14/Apr/2025 22:43:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:43:10,869 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:43:10,869 [INFO] 127.0.0.1 - - [14/Apr/2025 22:43:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:44:10,851 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:44:10,852 [INFO] 127.0.0.1 - - [14/Apr/2025 22:44:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:44:10,916 [INFO] 127.0.0.1 - - [14/Apr/2025 22:44:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:44:10,920 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 22:44:10,920 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49722.57)
+2025-04-14 22:44:10,920 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:44:10,921 [INFO] 127.0.0.1 - - [14/Apr/2025 22:44:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:45:10,859 [INFO] 127.0.0.1 - - [14/Apr/2025 22:45:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:45:10,861 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49936.9)
+2025-04-14 22:45:10,862 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:45:10,863 [INFO] 127.0.0.1 - - [14/Apr/2025 22:45:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:45:10,869 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:45:10,870 [INFO] 127.0.0.1 - - [14/Apr/2025 22:45:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:46:10,854 [INFO] 127.0.0.1 - - [14/Apr/2025 22:46:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:46:10,856 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 22:46:10,856 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49831.29)
+2025-04-14 22:46:10,856 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:46:10,857 [INFO] 127.0.0.1 - - [14/Apr/2025 22:46:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:46:10,864 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:46:10,864 [INFO] 127.0.0.1 - - [14/Apr/2025 22:46:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:47:10,861 [INFO] 127.0.0.1 - - [14/Apr/2025 22:47:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:47:10,859 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 22:47:10,862 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49827.29)
+2025-04-14 22:47:10,863 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:47:10,863 [INFO] 127.0.0.1 - - [14/Apr/2025 22:47:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:47:10,870 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:47:10,870 [INFO] 127.0.0.1 - - [14/Apr/2025 22:47:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:48:10,857 [INFO] 127.0.0.1 - - [14/Apr/2025 22:48:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:48:10,871 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:48:10,872 [INFO] 127.0.0.1 - - [14/Apr/2025 22:48:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:48:10,923 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 22:48:10,924 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49727.17)
+2025-04-14 22:48:10,925 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:48:10,925 [INFO] 127.0.0.1 - - [14/Apr/2025 22:48:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:49:10,848 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50349.32)
+2025-04-14 22:49:10,849 [INFO] 127.0.0.1 - - [14/Apr/2025 22:49:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:49:10,849 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:49:10,852 [INFO] 127.0.0.1 - - [14/Apr/2025 22:49:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:49:10,859 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:49:10,859 [INFO] 127.0.0.1 - - [14/Apr/2025 22:49:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:50:10,876 [INFO] 127.0.0.1 - - [14/Apr/2025 22:50:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:50:10,944 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 22:50:10,945 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50012.74)
+2025-04-14 22:50:10,946 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:50:10,947 [INFO] 127.0.0.1 - - [14/Apr/2025 22:50:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:50:10,951 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:50:10,952 [INFO] 127.0.0.1 - - [14/Apr/2025 22:50:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:51:10,857 [INFO] 127.0.0.1 - - [14/Apr/2025 22:51:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:51:10,858 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49547.78)
+2025-04-14 22:51:10,858 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:51:10,859 [INFO] 127.0.0.1 - - [14/Apr/2025 22:51:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:51:10,868 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:51:10,869 [INFO] 127.0.0.1 - - [14/Apr/2025 22:51:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:52:10,859 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 22:52:10,861 [INFO] 127.0.0.1 - - [14/Apr/2025 22:52:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:52:10,862 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50007.78)
+2025-04-14 22:52:10,864 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:52:10,864 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:52:10,865 [INFO] 127.0.0.1 - - [14/Apr/2025 22:52:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:52:10,865 [INFO] 127.0.0.1 - - [14/Apr/2025 22:52:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:53:10,855 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49832.7)
+2025-04-14 22:53:10,855 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:53:10,856 [INFO] 127.0.0.1 - - [14/Apr/2025 22:53:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:53:10,857 [INFO] 127.0.0.1 - - [14/Apr/2025 22:53:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:53:10,868 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:53:10,868 [INFO] 127.0.0.1 - - [14/Apr/2025 22:53:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:54:10,860 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 22:54:10,861 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49565.19)
+2025-04-14 22:54:10,861 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:54:10,862 [INFO] 127.0.0.1 - - [14/Apr/2025 22:54:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:54:10,864 [INFO] 127.0.0.1 - - [14/Apr/2025 22:54:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:54:10,945 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:54:10,946 [INFO] 127.0.0.1 - - [14/Apr/2025 22:54:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:55:10,852 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50191.74)
+2025-04-14 22:55:10,853 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:55:10,853 [INFO] 127.0.0.1 - - [14/Apr/2025 22:55:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:55:10,856 [INFO] 127.0.0.1 - - [14/Apr/2025 22:55:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:55:10,862 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:55:10,863 [INFO] 127.0.0.1 - - [14/Apr/2025 22:55:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:56:10,855 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:56:10,856 [INFO] 127.0.0.1 - - [14/Apr/2025 22:56:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:56:10,925 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 22:56:10,925 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50018.59)
+2025-04-14 22:56:10,925 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:56:10,926 [INFO] 127.0.0.1 - - [14/Apr/2025 22:56:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:56:10,941 [INFO] 127.0.0.1 - - [14/Apr/2025 22:56:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:57:10,854 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50447.33)
+2025-04-14 22:57:10,855 [INFO] 127.0.0.1 - - [14/Apr/2025 22:57:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:57:10,855 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:57:10,858 [INFO] 127.0.0.1 - - [14/Apr/2025 22:57:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:57:10,864 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:57:10,865 [INFO] 127.0.0.1 - - [14/Apr/2025 22:57:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:58:10,846 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 22:58:10,849 [INFO] 127.0.0.1 - - [14/Apr/2025 22:58:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:58:10,849 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50000.87)
+2025-04-14 22:58:10,850 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:58:10,851 [INFO] 127.0.0.1 - - [14/Apr/2025 22:58:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:58:10,856 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:58:10,857 [INFO] 127.0.0.1 - - [14/Apr/2025 22:58:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 22:59:10,844 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49836.51)
+2025-04-14 22:59:10,844 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 22:59:10,845 [INFO] 127.0.0.1 - - [14/Apr/2025 22:59:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 22:59:10,847 [INFO] 127.0.0.1 - - [14/Apr/2025 22:59:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 22:59:10,855 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 22:59:10,855 [INFO] 127.0.0.1 - - [14/Apr/2025 22:59:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:00:10,849 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:00:10,850 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50212.35)
+2025-04-14 23:00:10,850 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:00:10,851 [INFO] 127.0.0.1 - - [14/Apr/2025 23:00:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:00:10,853 [INFO] 127.0.0.1 - - [14/Apr/2025 23:00:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:00:10,958 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:00:10,959 [INFO] 127.0.0.1 - - [14/Apr/2025 23:00:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:01:10,848 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50103.22)
+2025-04-14 23:01:10,849 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:01:10,850 [INFO] 127.0.0.1 - - [14/Apr/2025 23:01:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:01:10,854 [INFO] 127.0.0.1 - - [14/Apr/2025 23:01:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:01:10,863 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:01:10,864 [INFO] 127.0.0.1 - - [14/Apr/2025 23:01:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:02:10,855 [INFO] 127.0.0.1 - - [14/Apr/2025 23:02:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:02:10,916 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:02:10,917 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50397.01)
+2025-04-14 23:02:10,917 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:02:10,918 [INFO] 127.0.0.1 - - [14/Apr/2025 23:02:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:02:10,925 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:02:10,926 [INFO] 127.0.0.1 - - [14/Apr/2025 23:02:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:03:10,848 [INFO] 127.0.0.1 - - [14/Apr/2025 23:03:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:03:10,849 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50466.09)
+2025-04-14 23:03:10,850 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:03:10,851 [INFO] 127.0.0.1 - - [14/Apr/2025 23:03:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:03:10,858 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:03:10,858 [INFO] 127.0.0.1 - - [14/Apr/2025 23:03:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:04:10,849 [INFO] 127.0.0.1 - - [14/Apr/2025 23:04:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:04:10,852 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:04:10,853 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50190.53)
+2025-04-14 23:04:10,853 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:04:10,853 [INFO] 127.0.0.1 - - [14/Apr/2025 23:04:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:04:10,860 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:04:10,861 [INFO] 127.0.0.1 - - [14/Apr/2025 23:04:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:05:10,848 [INFO] 127.0.0.1 - - [14/Apr/2025 23:05:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:05:10,851 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50496.82)
+2025-04-14 23:05:10,851 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:05:10,851 [INFO] 127.0.0.1 - - [14/Apr/2025 23:05:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:05:10,877 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:05:10,878 [INFO] 127.0.0.1 - - [14/Apr/2025 23:05:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:06:10,854 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:06:10,855 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49692.55)
+2025-04-14 23:06:10,855 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:06:10,856 [INFO] 127.0.0.1 - - [14/Apr/2025 23:06:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:06:10,866 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:06:10,867 [INFO] 127.0.0.1 - - [14/Apr/2025 23:06:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:06:10,948 [INFO] 127.0.0.1 - - [14/Apr/2025 23:06:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:07:10,854 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49528.24)
+2025-04-14 23:07:10,855 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:07:10,856 [INFO] 127.0.0.1 - - [14/Apr/2025 23:07:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:07:10,858 [INFO] 127.0.0.1 - - [14/Apr/2025 23:07:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:07:10,862 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:07:10,863 [INFO] 127.0.0.1 - - [14/Apr/2025 23:07:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:08:11,287 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:08:11,290 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50017.32)
+2025-04-14 23:08:11,291 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:08:11,291 [INFO] 127.0.0.1 - - [14/Apr/2025 23:08:11] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:08:11,294 [INFO] 127.0.0.1 - - [14/Apr/2025 23:08:11] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:08:11,321 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:08:11,322 [INFO] 127.0.0.1 - - [14/Apr/2025 23:08:11] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:09:10,849 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50375.09)
+2025-04-14 23:09:10,849 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:09:10,850 [INFO] 127.0.0.1 - - [14/Apr/2025 23:09:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:09:10,851 [INFO] 127.0.0.1 - - [14/Apr/2025 23:09:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:09:10,859 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:09:10,859 [INFO] 127.0.0.1 - - [14/Apr/2025 23:09:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:10:10,840 [INFO] 127.0.0.1 - - [14/Apr/2025 23:10:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:10:10,842 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:10:10,843 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50092.33)
+2025-04-14 23:10:10,843 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:10:10,844 [INFO] 127.0.0.1 - - [14/Apr/2025 23:10:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:10:10,850 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:10:10,850 [INFO] 127.0.0.1 - - [14/Apr/2025 23:10:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:11:10,845 [INFO] 127.0.0.1 - - [14/Apr/2025 23:11:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:11:10,850 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:11:10,849 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:11:10,852 [INFO] 127.0.0.1 - - [14/Apr/2025 23:11:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:11:10,852 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50325.47)
+2025-04-14 23:11:10,853 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:11:10,853 [INFO] 127.0.0.1 - - [14/Apr/2025 23:11:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:12:10,849 [INFO] 127.0.0.1 - - [14/Apr/2025 23:12:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:12:10,852 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:12:10,852 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49963.41)
+2025-04-14 23:12:10,853 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:12:10,853 [INFO] 127.0.0.1 - - [14/Apr/2025 23:12:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:12:10,865 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:12:10,866 [INFO] 127.0.0.1 - - [14/Apr/2025 23:12:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:13:10,838 [INFO] 127.0.0.1 - - [14/Apr/2025 23:13:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:13:10,839 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50273.46)
+2025-04-14 23:13:10,839 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:13:10,840 [INFO] 127.0.0.1 - - [14/Apr/2025 23:13:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:13:10,846 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:13:10,847 [INFO] 127.0.0.1 - - [14/Apr/2025 23:13:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:14:10,893 [INFO] 127.0.0.1 - - [14/Apr/2025 23:14:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:14:10,908 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:14:10,909 [INFO] 127.0.0.1 - - [14/Apr/2025 23:14:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:14:10,926 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:14:10,927 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49865.75)
+2025-04-14 23:14:10,927 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:14:10,928 [INFO] 127.0.0.1 - - [14/Apr/2025 23:14:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:15:10,844 [INFO] 127.0.0.1 - - [14/Apr/2025 23:15:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:15:10,845 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50103.94)
+2025-04-14 23:15:10,847 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:15:10,848 [INFO] 127.0.0.1 - - [14/Apr/2025 23:15:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:15:10,854 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:15:10,855 [INFO] 127.0.0.1 - - [14/Apr/2025 23:15:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:16:10,834 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:16:10,834 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50217.27)
+2025-04-14 23:16:10,834 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:16:10,835 [INFO] 127.0.0.1 - - [14/Apr/2025 23:16:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:16:10,836 [INFO] 127.0.0.1 - - [14/Apr/2025 23:16:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:16:10,845 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:16:10,846 [INFO] 127.0.0.1 - - [14/Apr/2025 23:16:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:17:10,846 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:17:10,848 [INFO] 127.0.0.1 - - [14/Apr/2025 23:17:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:17:10,848 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49753.73)
+2025-04-14 23:17:10,849 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:17:10,851 [INFO] 127.0.0.1 - - [14/Apr/2025 23:17:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:17:10,857 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:17:10,857 [INFO] 127.0.0.1 - - [14/Apr/2025 23:17:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:18:10,842 [INFO] 127.0.0.1 - - [14/Apr/2025 23:18:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:18:10,846 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50254.72)
+2025-04-14 23:18:10,846 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:18:10,847 [INFO] 127.0.0.1 - - [14/Apr/2025 23:18:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:18:10,853 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:18:10,854 [INFO] 127.0.0.1 - - [14/Apr/2025 23:18:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:19:10,832 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:19:10,833 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49823.34)
+2025-04-14 23:19:10,834 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:19:10,834 [INFO] 127.0.0.1 - - [14/Apr/2025 23:19:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:19:10,839 [INFO] 127.0.0.1 - - [14/Apr/2025 23:19:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:19:10,845 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:19:10,845 [INFO] 127.0.0.1 - - [14/Apr/2025 23:19:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:20:10,920 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:20:10,922 [INFO] 127.0.0.1 - - [14/Apr/2025 23:20:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:20:10,922 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50176.59)
+2025-04-14 23:20:10,923 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:20:10,923 [INFO] 127.0.0.1 - - [14/Apr/2025 23:20:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:20:10,940 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:20:10,941 [INFO] 127.0.0.1 - - [14/Apr/2025 23:20:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:21:10,837 [INFO] 127.0.0.1 - - [14/Apr/2025 23:21:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:21:10,840 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50478.58)
+2025-04-14 23:21:10,840 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:21:10,841 [INFO] 127.0.0.1 - - [14/Apr/2025 23:21:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:21:10,847 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:21:10,848 [INFO] 127.0.0.1 - - [14/Apr/2025 23:21:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:22:10,832 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:22:10,832 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50477.15)
+2025-04-14 23:22:10,832 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:22:10,833 [INFO] 127.0.0.1 - - [14/Apr/2025 23:22:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:22:10,841 [INFO] 127.0.0.1 - - [14/Apr/2025 23:22:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:22:10,848 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:22:10,848 [INFO] 127.0.0.1 - - [14/Apr/2025 23:22:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:23:10,835 [INFO] 127.0.0.1 - - [14/Apr/2025 23:23:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:23:10,840 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:23:10,841 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49779.1)
+2025-04-14 23:23:10,841 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:23:10,842 [INFO] 127.0.0.1 - - [14/Apr/2025 23:23:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:23:10,849 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:23:10,849 [INFO] 127.0.0.1 - - [14/Apr/2025 23:23:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:24:10,836 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50003.33)
+2025-04-14 23:24:10,836 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:24:10,837 [INFO] 127.0.0.1 - - [14/Apr/2025 23:24:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:24:10,839 [INFO] 127.0.0.1 - - [14/Apr/2025 23:24:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:24:10,895 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:24:10,896 [INFO] 127.0.0.1 - - [14/Apr/2025 23:24:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:25:10,837 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:25:10,838 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50025.12)
+2025-04-14 23:25:10,838 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:25:10,839 [INFO] 127.0.0.1 - - [14/Apr/2025 23:25:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:25:10,842 [INFO] 127.0.0.1 - - [14/Apr/2025 23:25:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:25:10,852 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:25:10,853 [INFO] 127.0.0.1 - - [14/Apr/2025 23:25:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:26:10,904 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:26:10,905 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50136.04)
+2025-04-14 23:26:10,905 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:26:10,905 [INFO] 127.0.0.1 - - [14/Apr/2025 23:26:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:26:10,911 [INFO] 127.0.0.1 - - [14/Apr/2025 23:26:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:26:10,918 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:26:10,919 [INFO] 127.0.0.1 - - [14/Apr/2025 23:26:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:27:10,833 [INFO] 127.0.0.1 - - [14/Apr/2025 23:27:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:27:10,837 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50216.47)
+2025-04-14 23:27:10,837 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:27:10,838 [INFO] 127.0.0.1 - - [14/Apr/2025 23:27:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:27:10,973 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:27:10,974 [INFO] 127.0.0.1 - - [14/Apr/2025 23:27:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:28:10,842 [INFO] 127.0.0.1 - - [14/Apr/2025 23:28:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:28:10,844 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:28:10,844 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50086.16)
+2025-04-14 23:28:10,845 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:28:10,845 [INFO] 127.0.0.1 - - [14/Apr/2025 23:28:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:28:10,921 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:28:10,922 [INFO] 127.0.0.1 - - [14/Apr/2025 23:28:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:29:10,829 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50397.91)
+2025-04-14 23:29:10,830 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:29:10,836 [INFO] 127.0.0.1 - - [14/Apr/2025 23:29:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:29:10,837 [INFO] 127.0.0.1 - - [14/Apr/2025 23:29:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:29:10,846 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:29:10,847 [INFO] 127.0.0.1 - - [14/Apr/2025 23:29:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:30:10,829 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:30:10,831 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50137.35)
+2025-04-14 23:30:10,832 [INFO] 127.0.0.1 - - [14/Apr/2025 23:30:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:30:10,833 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:30:10,836 [INFO] 127.0.0.1 - - [14/Apr/2025 23:30:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:30:10,846 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:30:10,847 [INFO] 127.0.0.1 - - [14/Apr/2025 23:30:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:31:10,833 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:31:10,834 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50284.43)
+2025-04-14 23:31:10,834 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:31:10,834 [INFO] 127.0.0.1 - - [14/Apr/2025 23:31:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:31:10,837 [INFO] 127.0.0.1 - - [14/Apr/2025 23:31:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:31:10,845 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:31:10,846 [INFO] 127.0.0.1 - - [14/Apr/2025 23:31:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:32:10,833 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:32:10,834 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50060.43)
+2025-04-14 23:32:10,834 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:32:10,835 [INFO] 127.0.0.1 - - [14/Apr/2025 23:32:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:32:10,903 [INFO] 127.0.0.1 - - [14/Apr/2025 23:32:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:32:10,909 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:32:10,910 [INFO] 127.0.0.1 - - [14/Apr/2025 23:32:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:33:10,830 [INFO] 127.0.0.1 - - [14/Apr/2025 23:33:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:33:10,831 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49681.86)
+2025-04-14 23:33:10,831 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:33:10,832 [INFO] 127.0.0.1 - - [14/Apr/2025 23:33:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:33:10,842 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:33:10,842 [INFO] 127.0.0.1 - - [14/Apr/2025 23:33:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:34:10,833 [INFO] 127.0.0.1 - - [14/Apr/2025 23:34:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:34:10,844 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:34:10,845 [INFO] 127.0.0.1 - - [14/Apr/2025 23:34:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:34:10,895 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:34:10,896 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50447.12)
+2025-04-14 23:34:10,896 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:34:10,897 [INFO] 127.0.0.1 - - [14/Apr/2025 23:34:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:35:10,832 [INFO] 127.0.0.1 - - [14/Apr/2025 23:35:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:35:10,835 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49634.21)
+2025-04-14 23:35:10,835 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:35:10,836 [INFO] 127.0.0.1 - - [14/Apr/2025 23:35:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:35:10,850 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:35:10,851 [INFO] 127.0.0.1 - - [14/Apr/2025 23:35:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:36:10,827 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:36:10,830 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49583.51)
+2025-04-14 23:36:10,831 [INFO] 127.0.0.1 - - [14/Apr/2025 23:36:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:36:10,832 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:36:10,833 [INFO] 127.0.0.1 - - [14/Apr/2025 23:36:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:36:10,839 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:36:10,839 [INFO] 127.0.0.1 - - [14/Apr/2025 23:36:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:37:10,832 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:37:10,832 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50157.7)
+2025-04-14 23:37:10,833 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:37:10,834 [INFO] 127.0.0.1 - - [14/Apr/2025 23:37:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:37:10,838 [INFO] 127.0.0.1 - - [14/Apr/2025 23:37:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:37:10,845 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:37:10,846 [INFO] 127.0.0.1 - - [14/Apr/2025 23:37:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:38:11,214 [INFO] 127.0.0.1 - - [14/Apr/2025 23:38:11] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:38:11,265 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:38:11,266 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49696.9)
+2025-04-14 23:38:11,266 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:38:11,267 [INFO] 127.0.0.1 - - [14/Apr/2025 23:38:11] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:38:11,279 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:38:11,280 [INFO] 127.0.0.1 - - [14/Apr/2025 23:38:11] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:39:10,831 [INFO] 127.0.0.1 - - [14/Apr/2025 23:39:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:39:10,832 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50465.11)
+2025-04-14 23:39:10,833 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:39:10,833 [INFO] 127.0.0.1 - - [14/Apr/2025 23:39:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:39:10,840 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:39:10,840 [INFO] 127.0.0.1 - - [14/Apr/2025 23:39:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:40:10,826 [INFO] 127.0.0.1 - - [14/Apr/2025 23:40:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:40:10,836 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:40:10,836 [INFO] 127.0.0.1 - - [14/Apr/2025 23:40:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:40:10,895 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:40:10,896 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49738.77)
+2025-04-14 23:40:10,896 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:40:10,897 [INFO] 127.0.0.1 - - [14/Apr/2025 23:40:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:41:10,843 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50371.54)
+2025-04-14 23:41:10,845 [INFO] 127.0.0.1 - - [14/Apr/2025 23:41:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:41:10,846 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:41:10,849 [INFO] 127.0.0.1 - - [14/Apr/2025 23:41:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:41:10,855 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:41:10,856 [INFO] 127.0.0.1 - - [14/Apr/2025 23:41:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:42:10,825 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:42:10,827 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50300.11)
+2025-04-14 23:42:10,828 [INFO] 127.0.0.1 - - [14/Apr/2025 23:42:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:42:10,829 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:42:10,830 [INFO] 127.0.0.1 - - [14/Apr/2025 23:42:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:42:10,837 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:42:10,837 [INFO] 127.0.0.1 - - [14/Apr/2025 23:42:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:43:10,818 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49822.84)
+2025-04-14 23:43:10,818 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:43:10,819 [INFO] 127.0.0.1 - - [14/Apr/2025 23:43:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:43:10,826 [INFO] 127.0.0.1 - - [14/Apr/2025 23:43:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:43:10,833 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:43:10,834 [INFO] 127.0.0.1 - - [14/Apr/2025 23:43:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:44:10,821 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:44:10,821 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49774.02)
+2025-04-14 23:44:10,822 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:44:10,822 [INFO] 127.0.0.1 - - [14/Apr/2025 23:44:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:44:10,885 [INFO] 127.0.0.1 - - [14/Apr/2025 23:44:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:44:10,901 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:44:10,901 [INFO] 127.0.0.1 - - [14/Apr/2025 23:44:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:45:10,824 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:45:10,824 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50078.52)
+2025-04-14 23:45:10,825 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:45:10,826 [INFO] 127.0.0.1 - - [14/Apr/2025 23:45:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:45:10,829 [INFO] 127.0.0.1 - - [14/Apr/2025 23:45:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:45:10,836 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:45:10,836 [INFO] 127.0.0.1 - - [14/Apr/2025 23:45:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:46:10,836 [INFO] 127.0.0.1 - - [14/Apr/2025 23:46:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:46:10,845 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:46:10,846 [INFO] 127.0.0.1 - - [14/Apr/2025 23:46:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:46:10,896 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:46:10,896 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49959.34)
+2025-04-14 23:46:10,897 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:46:10,897 [INFO] 127.0.0.1 - - [14/Apr/2025 23:46:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:47:10,829 [INFO] 127.0.0.1 - - [14/Apr/2025 23:47:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:47:10,830 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49832.43)
+2025-04-14 23:47:10,831 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:47:10,832 [INFO] 127.0.0.1 - - [14/Apr/2025 23:47:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:47:10,839 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:47:10,839 [INFO] 127.0.0.1 - - [14/Apr/2025 23:47:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:48:10,828 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:48:10,828 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49796.13)
+2025-04-14 23:48:10,829 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:48:10,841 [INFO] 127.0.0.1 - - [14/Apr/2025 23:48:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:48:10,842 [INFO] 127.0.0.1 - - [14/Apr/2025 23:48:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:48:10,856 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:48:10,857 [INFO] 127.0.0.1 - - [14/Apr/2025 23:48:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:49:10,826 [INFO] 127.0.0.1 - - [14/Apr/2025 23:49:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:49:10,833 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:49:10,836 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50491.67)
+2025-04-14 23:49:10,836 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:49:10,837 [INFO] 127.0.0.1 - - [14/Apr/2025 23:49:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:49:10,846 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:49:10,847 [INFO] 127.0.0.1 - - [14/Apr/2025 23:49:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:50:10,836 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:50:10,837 [INFO] 127.0.0.1 - - [14/Apr/2025 23:50:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:50:10,883 [INFO] 127.0.0.1 - - [14/Apr/2025 23:50:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:50:10,894 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:50:10,894 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49974.0)
+2025-04-14 23:50:10,895 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:50:10,895 [INFO] 127.0.0.1 - - [14/Apr/2025 23:50:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:51:10,824 [INFO] 127.0.0.1 - - [14/Apr/2025 23:51:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:51:10,826 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49911.78)
+2025-04-14 23:51:10,827 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:51:10,828 [INFO] 127.0.0.1 - - [14/Apr/2025 23:51:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:51:10,834 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:51:10,835 [INFO] 127.0.0.1 - - [14/Apr/2025 23:51:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:52:10,830 [INFO] 127.0.0.1 - - [14/Apr/2025 23:52:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:52:10,838 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:52:10,839 [INFO] 127.0.0.1 - - [14/Apr/2025 23:52:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:52:10,878 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:52:10,879 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49726.91)
+2025-04-14 23:52:10,879 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:52:10,879 [INFO] 127.0.0.1 - - [14/Apr/2025 23:52:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:53:10,830 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50410.04)
+2025-04-14 23:53:10,831 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:53:10,833 [INFO] 127.0.0.1 - - [14/Apr/2025 23:53:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:53:10,834 [INFO] 127.0.0.1 - - [14/Apr/2025 23:53:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:53:10,842 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:53:10,842 [INFO] 127.0.0.1 - - [14/Apr/2025 23:53:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:54:10,822 [INFO] 127.0.0.1 - - [14/Apr/2025 23:54:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:54:10,822 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:54:10,824 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50324.29)
+2025-04-14 23:54:10,824 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:54:10,824 [INFO] 127.0.0.1 - - [14/Apr/2025 23:54:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:54:10,835 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:54:10,836 [INFO] 127.0.0.1 - - [14/Apr/2025 23:54:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:55:10,824 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:55:10,828 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49964.82)
+2025-04-14 23:55:10,828 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:55:10,829 [INFO] 127.0.0.1 - - [14/Apr/2025 23:55:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:55:10,833 [INFO] 127.0.0.1 - - [14/Apr/2025 23:55:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:55:10,839 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:55:10,839 [INFO] 127.0.0.1 - - [14/Apr/2025 23:55:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:56:10,834 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:56:10,836 [INFO] 127.0.0.1 - - [14/Apr/2025 23:56:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:56:10,872 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:56:10,873 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50023.58)
+2025-04-14 23:56:10,874 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:56:10,875 [INFO] 127.0.0.1 - - [14/Apr/2025 23:56:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:56:10,875 [INFO] 127.0.0.1 - - [14/Apr/2025 23:56:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:57:10,822 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50390.86)
+2025-04-14 23:57:10,824 [INFO] 127.0.0.1 - - [14/Apr/2025 23:57:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:57:10,824 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:57:10,827 [INFO] 127.0.0.1 - - [14/Apr/2025 23:57:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:57:10,834 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:57:10,834 [INFO] 127.0.0.1 - - [14/Apr/2025 23:57:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:58:10,828 [INFO] 127.0.0.1 - - [14/Apr/2025 23:58:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:58:10,837 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:58:10,838 [INFO] 127.0.0.1 - - [14/Apr/2025 23:58:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-14 23:58:10,892 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-14 23:58:10,892 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49622.11)
+2025-04-14 23:58:10,892 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:58:10,893 [INFO] 127.0.0.1 - - [14/Apr/2025 23:58:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:59:10,818 [INFO] 127.0.0.1 - - [14/Apr/2025 23:59:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-14 23:59:10,820 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50009.63)
+2025-04-14 23:59:10,820 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-14 23:59:10,822 [INFO] 127.0.0.1 - - [14/Apr/2025 23:59:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-14 23:59:10,831 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-14 23:59:10,832 [INFO] 127.0.0.1 - - [14/Apr/2025 23:59:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:00:10,828 [INFO] 127.0.0.1 - - [15/Apr/2025 00:00:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:00:10,827 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-15 00:00:10,830 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49978.18)
+2025-04-15 00:00:10,830 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:00:10,831 [INFO] 127.0.0.1 - - [15/Apr/2025 00:00:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:00:10,837 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:00:10,838 [INFO] 127.0.0.1 - - [15/Apr/2025 00:00:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:01:10,819 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49631.0)
+2025-04-15 00:01:10,821 [INFO] 127.0.0.1 - - [15/Apr/2025 00:01:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:01:10,822 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:01:10,829 [INFO] 127.0.0.1 - - [15/Apr/2025 00:01:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:01:10,840 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:01:10,841 [INFO] 127.0.0.1 - - [15/Apr/2025 00:01:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:02:10,824 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-15 00:02:10,825 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49802.79)
+2025-04-15 00:02:10,825 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:02:10,826 [INFO] 127.0.0.1 - - [15/Apr/2025 00:02:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:02:11,075 [INFO] 127.0.0.1 - - [15/Apr/2025 00:02:11] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:02:11,082 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:02:11,083 [INFO] 127.0.0.1 - - [15/Apr/2025 00:02:11] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:03:10,816 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50348.62)
+2025-04-15 00:03:10,818 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:03:10,819 [INFO] 127.0.0.1 - - [15/Apr/2025 00:03:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:03:10,820 [INFO] 127.0.0.1 - - [15/Apr/2025 00:03:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:03:10,828 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:03:10,828 [INFO] 127.0.0.1 - - [15/Apr/2025 00:03:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:04:10,825 [INFO] 127.0.0.1 - - [15/Apr/2025 00:04:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:04:10,832 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:04:10,832 [INFO] 127.0.0.1 - - [15/Apr/2025 00:04:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:04:10,897 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-15 00:04:10,897 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49833.53)
+2025-04-15 00:04:10,898 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:04:10,899 [INFO] 127.0.0.1 - - [15/Apr/2025 00:04:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:05:10,824 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50305.51)
+2025-04-15 00:05:10,825 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:05:10,829 [INFO] 127.0.0.1 - - [15/Apr/2025 00:05:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:05:10,828 [INFO] 127.0.0.1 - - [15/Apr/2025 00:05:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:05:10,842 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:05:10,845 [INFO] 127.0.0.1 - - [15/Apr/2025 00:05:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:06:10,819 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-15 00:06:10,820 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50380.52)
+2025-04-15 00:06:10,820 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:06:10,821 [INFO] 127.0.0.1 - - [15/Apr/2025 00:06:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:06:10,825 [INFO] 127.0.0.1 - - [15/Apr/2025 00:06:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:06:10,847 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:06:10,847 [INFO] 127.0.0.1 - - [15/Apr/2025 00:06:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:07:10,810 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49919.97)
+2025-04-15 00:07:10,811 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:07:10,811 [INFO] 127.0.0.1 - - [15/Apr/2025 00:07:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:07:10,813 [INFO] 127.0.0.1 - - [15/Apr/2025 00:07:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:07:10,830 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:07:10,831 [INFO] 127.0.0.1 - - [15/Apr/2025 00:07:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:08:11,393 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:08:11,394 [INFO] 127.0.0.1 - - [15/Apr/2025 00:08:11] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:08:11,445 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-15 00:08:11,446 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50276.19)
+2025-04-15 00:08:11,446 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:08:11,446 [INFO] 127.0.0.1 - - [15/Apr/2025 00:08:11] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:08:11,455 [INFO] 127.0.0.1 - - [15/Apr/2025 00:08:11] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:09:10,814 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50263.2)
+2025-04-15 00:09:10,815 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:09:10,816 [INFO] 127.0.0.1 - - [15/Apr/2025 00:09:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:09:10,818 [INFO] 127.0.0.1 - - [15/Apr/2025 00:09:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:09:10,830 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:09:10,831 [INFO] 127.0.0.1 - - [15/Apr/2025 00:09:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:10:10,824 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-15 00:10:10,825 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49695.22)
+2025-04-15 00:10:10,825 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:10:10,829 [INFO] 127.0.0.1 - - [15/Apr/2025 00:10:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:10:10,837 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:10:10,837 [INFO] 127.0.0.1 - - [15/Apr/2025 00:10:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:10:10,890 [INFO] 127.0.0.1 - - [15/Apr/2025 00:10:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:11:10,820 [INFO] 127.0.0.1 - - [15/Apr/2025 00:11:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:11:10,821 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50497.03)
+2025-04-15 00:11:10,824 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:11:10,824 [INFO] 127.0.0.1 - - [15/Apr/2025 00:11:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:11:10,832 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:11:10,833 [INFO] 127.0.0.1 - - [15/Apr/2025 00:11:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:12:10,811 [INFO] 127.0.0.1 - - [15/Apr/2025 00:12:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:12:10,812 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-15 00:12:10,813 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49791.65)
+2025-04-15 00:12:10,814 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:12:10,816 [INFO] 127.0.0.1 - - [15/Apr/2025 00:12:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:12:10,823 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:12:10,826 [INFO] 127.0.0.1 - - [15/Apr/2025 00:12:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:13:10,815 [INFO] 127.0.0.1 - - [15/Apr/2025 00:13:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:13:10,813 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-15 00:13:10,817 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50246.93)
+2025-04-15 00:13:10,817 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:13:10,818 [INFO] 127.0.0.1 - - [15/Apr/2025 00:13:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:13:10,824 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:13:10,824 [INFO] 127.0.0.1 - - [15/Apr/2025 00:13:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:14:10,806 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50164.67)
+2025-04-15 00:14:10,806 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:14:10,807 [INFO] 127.0.0.1 - - [15/Apr/2025 00:14:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:14:10,882 [INFO] 127.0.0.1 - - [15/Apr/2025 00:14:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:14:10,889 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:14:10,891 [INFO] 127.0.0.1 - - [15/Apr/2025 00:14:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:15:10,816 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-15 00:15:10,816 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50379.56)
+2025-04-15 00:15:10,817 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:15:10,818 [INFO] 127.0.0.1 - - [15/Apr/2025 00:15:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:15:10,822 [INFO] 127.0.0.1 - - [15/Apr/2025 00:15:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:15:10,828 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:15:10,829 [INFO] 127.0.0.1 - - [15/Apr/2025 00:15:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:16:10,812 [INFO] 127.0.0.1 - - [15/Apr/2025 00:16:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:16:10,824 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:16:10,824 [INFO] 127.0.0.1 - - [15/Apr/2025 00:16:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:16:10,876 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-15 00:16:10,877 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49545.28)
+2025-04-15 00:16:10,878 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:16:10,878 [INFO] 127.0.0.1 - - [15/Apr/2025 00:16:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:17:10,812 [INFO] 127.0.0.1 - - [15/Apr/2025 00:17:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:17:10,815 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49967.48)
+2025-04-15 00:17:10,820 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:17:10,821 [INFO] 127.0.0.1 - - [15/Apr/2025 00:17:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:17:10,831 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:17:10,832 [INFO] 127.0.0.1 - - [15/Apr/2025 00:17:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:18:10,819 [INFO] 127.0.0.1 - - [15/Apr/2025 00:18:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:18:10,817 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-15 00:18:10,820 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50477.71)
+2025-04-15 00:18:10,820 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:18:10,821 [INFO] 127.0.0.1 - - [15/Apr/2025 00:18:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:18:10,829 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:18:10,829 [INFO] 127.0.0.1 - - [15/Apr/2025 00:18:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:19:10,804 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49772.91)
+2025-04-15 00:19:10,804 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:19:10,805 [INFO] 127.0.0.1 - - [15/Apr/2025 00:19:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:19:10,807 [INFO] 127.0.0.1 - - [15/Apr/2025 00:19:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:19:10,816 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:19:10,816 [INFO] 127.0.0.1 - - [15/Apr/2025 00:19:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:20:10,812 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-15 00:20:10,813 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49760.12)
+2025-04-15 00:20:10,813 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:20:10,814 [INFO] 127.0.0.1 - - [15/Apr/2025 00:20:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:20:10,881 [INFO] 127.0.0.1 - - [15/Apr/2025 00:20:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:20:10,889 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:20:10,890 [INFO] 127.0.0.1 - - [15/Apr/2025 00:20:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:21:10,808 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49845.4)
+2025-04-15 00:21:10,809 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:21:10,810 [INFO] 127.0.0.1 - - [15/Apr/2025 00:21:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:21:10,811 [INFO] 127.0.0.1 - - [15/Apr/2025 00:21:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:21:10,818 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:21:10,819 [INFO] 127.0.0.1 - - [15/Apr/2025 00:21:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:22:10,814 [INFO] 127.0.0.1 - - [15/Apr/2025 00:22:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:22:10,821 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:22:10,822 [INFO] 127.0.0.1 - - [15/Apr/2025 00:22:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:22:10,865 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-15 00:22:10,865 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49982.98)
+2025-04-15 00:22:10,866 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:22:10,866 [INFO] 127.0.0.1 - - [15/Apr/2025 00:22:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:23:10,812 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49911.22)
+2025-04-15 00:23:10,814 [INFO] 127.0.0.1 - - [15/Apr/2025 00:23:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:23:10,816 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:23:10,819 [INFO] 127.0.0.1 - - [15/Apr/2025 00:23:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:23:10,826 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:23:10,827 [INFO] 127.0.0.1 - - [15/Apr/2025 00:23:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:24:10,810 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-15 00:24:10,811 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50111.18)
+2025-04-15 00:24:10,811 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:24:10,812 [INFO] 127.0.0.1 - - [15/Apr/2025 00:24:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:24:10,817 [INFO] 127.0.0.1 - - [15/Apr/2025 00:24:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:24:10,829 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:24:10,830 [INFO] 127.0.0.1 - - [15/Apr/2025 00:24:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:25:10,822 [INFO] 127.0.0.1 - - [15/Apr/2025 00:25:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:25:10,820 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-15 00:25:10,829 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49745.34)
+2025-04-15 00:25:10,830 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:25:10,831 [INFO] 127.0.0.1 - - [15/Apr/2025 00:25:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:25:10,881 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:25:10,883 [INFO] 127.0.0.1 - - [15/Apr/2025 00:25:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:26:10,811 [INFO] 127.0.0.1 - - [15/Apr/2025 00:26:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:26:10,872 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-15 00:26:10,873 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50216.55)
+2025-04-15 00:26:10,873 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:26:10,874 [INFO] 127.0.0.1 - - [15/Apr/2025 00:26:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:26:10,902 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:26:10,903 [INFO] 127.0.0.1 - - [15/Apr/2025 00:26:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:27:10,808 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49751.02)
+2025-04-15 00:27:10,808 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:27:10,809 [INFO] 127.0.0.1 - - [15/Apr/2025 00:27:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:27:10,817 [INFO] 127.0.0.1 - - [15/Apr/2025 00:27:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:27:10,831 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:27:10,832 [INFO] 127.0.0.1 - - [15/Apr/2025 00:27:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:28:10,813 [INFO] 127.0.0.1 - - [15/Apr/2025 00:28:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:28:10,821 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:28:10,822 [INFO] 127.0.0.1 - - [15/Apr/2025 00:28:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:28:10,873 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-15 00:28:10,873 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50067.1)
+2025-04-15 00:28:10,873 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:28:10,874 [INFO] 127.0.0.1 - - [15/Apr/2025 00:28:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:29:10,807 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50082.75)
+2025-04-15 00:29:10,807 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:29:10,808 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:10] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:29:10,815 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:10] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:29:10,822 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:29:10,823 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:10] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:29:16,143 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-15 00:29:16,144 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50113.12)
+2025-04-15 00:29:16,145 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:29:16,145 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:16] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:29:19,642 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:19] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-15 00:29:19,644 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:19] "[33mGET /api/sentiment/latest HTTP/1.1[0m" 404 -
+2025-04-15 00:29:19,652 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:29:19,657 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:19] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-15 00:29:21,146 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50221.39)
+2025-04-15 00:29:21,146 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:29:21,147 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:21] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:29:23,074 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-15 00:29:23,077 [INFO] Ustawiono parametry rate limitera: max_calls_per_minute=6, min_interval=10.0s
+2025-04-15 00:29:23,086 [INFO] Zapisano stan portfela do data/cache/portfolio_state.json
+2025-04-15 00:29:23,086 [INFO] Pobrano portfolio: {'success': True, 'balances': {'USDT': {'equity': 9806.79895785, 'available_balance': 9596.57434557, 'wallet_balance': 9806.79895785}, 'BTC': {'equity': 0.1478313, 'available_balance': 0.13575293, 'wallet_balance': 0.1478313}, 'ETH': {'equity': 1.21804936, 'available_balance': 1.10795115, 'wallet_balance': 1.21804936}}, 'total_value': 9808.164838510002, 'source': 'simulation', 'base_currency': 'USDT', 'mode': 'hybrid'}
+2025-04-15 00:29:23,087 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:23] "GET / HTTP/1.1" 200 -
+2025-04-15 00:29:23,261 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:23] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-04-15 00:29:23,392 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:23] "[36mGET /static/css/ai_monitor.css HTTP/1.1[0m" 304 -
+2025-04-15 00:29:23,604 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:23] "[36mGET /static/js/ai_monitor.js HTTP/1.1[0m" 304 -
+2025-04-15 00:29:23,615 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:23] "[36mGET /static/js/dashboard.js HTTP/1.1[0m" 304 -
+2025-04-15 00:29:24,343 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:24] "GET /api/dashboard/data HTTP/1.1" 200 -
+2025-04-15 00:29:24,348 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:24] "[33mGET /api/sentiment/latest HTTP/1.1[0m" 404 -
+2025-04-15 00:29:24,351 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-15 00:29:24,353 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:24] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:29:24,360 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:29:24,367 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:24] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-15 00:29:24,482 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:29:24,483 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:24] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 00:29:24,820 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:24] "[36mGET /static/img/simulation_chart_20250414_214308.png HTTP/1.1[0m" 304 -
+2025-04-15 00:29:25,864 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:25] "GET /api/sentiment HTTP/1.1" 200 -
+2025-04-15 00:29:26,149 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49747.35)
+2025-04-15 00:29:26,150 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:29:26,151 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:26] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:29:26,358 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 00:29:26,375 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:26] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-15 00:29:26,860 [INFO] Załadowano 14 raportów. Najnowszy: 20250414_214308
+2025-04-15 00:29:26,866 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:26] "GET /api/simulation-results HTTP/1.1" 200 -
+2025-04-15 00:29:27,351 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:27] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 00:29:27,859 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:27] "GET /api/chart-data HTTP/1.1" 200 -
+2025-04-15 00:29:28,082 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:28] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-15 00:29:28,211 [INFO] Próba pobrania danych portfela z API ByBit
+2025-04-15 00:29:31,154 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49549.48)
+2025-04-15 00:29:31,154 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:29:31,156 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:31] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:29:33,086 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:33] "GET /api/portfolio HTTP/1.1" 200 -
+2025-04-15 00:29:36,158 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50328.11)
+2025-04-15 00:29:36,158 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:29:36,159 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:36] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 00:29:41,159 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 50356.66)
+2025-04-15 00:29:41,159 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 00:29:41,160 [INFO] 127.0.0.1 - - [15/Apr/2025 00:29:41] "GET /api/component-status HTTP/1.1" 200 -
