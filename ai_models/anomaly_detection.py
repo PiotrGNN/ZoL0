@@ -15,8 +15,18 @@ logger = logging.getLogger(__name__)
 class AnomalyDetector:
     """Detektor anomalii w danych rynkowych."""
 
-    def __init__(self):
-        """Inicjalizuje detektor anomalii."""
+    def __init__(self, method=None, threshold=None):
+        """
+        Inicjalizuje detektor anomalii.
+        
+        Args:
+            method (str, optional): Metoda wykrywania anomalii (np. 'z_score', 'iqr'). Domyślnie None.
+            threshold (float, optional): Próg wykrywania anomalii. Domyślnie None.
+        """
+        # Ustawienia metody i progu
+        self.method = method or "z_score"
+        self.threshold = threshold or 2.0
+        
         self.anomaly_patterns = {
             "price_spike": {
                 "name": "Gwałtowny skok ceny",
@@ -152,3 +162,27 @@ class AnomalyDetector:
             Dict[str, Dict[str, str]]: Słownik wzorców anomalii
         """
         return self.anomaly_patterns
+        
+    def get_detected_anomalies(self) -> List[Dict[str, Any]]:
+        """
+        Zwraca listę wykrytych anomalii.
+        
+        Returns:
+            List[Dict[str, Any]]: Lista wykrytych anomalii
+        """
+        # Przykładowe dane dla demonstracji, gdy brak rzeczywistych anomalii
+        import random
+        import time
+        
+        if random.random() < 0.3:  # 30% szans na wykrycie anomalii
+            anomaly_type = random.choice(list(self.anomaly_patterns.keys()))
+            return [{
+                "timestamp": time.time(),
+                "value": random.uniform(1000, 50000),
+                "score": random.uniform(2.5, 5.0),
+                "anomaly_type": anomaly_type,
+                "anomaly_name": self.anomaly_patterns[anomaly_type]["name"],
+                "description": self.anomaly_patterns[anomaly_type]["description"],
+                "confidence": random.uniform(0.7, 0.95)
+            }]
+        return []

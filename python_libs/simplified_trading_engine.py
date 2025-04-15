@@ -322,7 +322,16 @@ class SimplifiedTradingEngine:
         Returns:
             Dict[str, Any]: Wynik operacji
         """
-        success = self.start_trading(self.status["active_symbols"] or ["BTCUSDT"])
+        symbols = self.status["active_symbols"] or ["BTCUSDT"]
+        logger.info(f"Uruchamianie silnika handlowego dla symboli: {symbols}")
+        success = self.start_trading(symbols)
+        
+        if success:
+            logger.info("Silnik handlowy uruchomiony pomyślnie")
+            self.settings["enable_auto_trading"] = True
+        else:
+            logger.error(f"Nie udało się uruchomić silnika handlowego: {self.status.get('last_error', 'Nieznany błąd')}")
+            
         return {"success": success, "status": self.get_status()}
 
     def stop(self) -> Dict[str, Any]:
@@ -332,7 +341,15 @@ class SimplifiedTradingEngine:
         Returns:
             Dict[str, Any]: Wynik operacji
         """
+        logger.info("Zatrzymywanie silnika handlowego...")
         success = self.stop_trading()
+        
+        if success:
+            logger.info("Silnik handlowy zatrzymany pomyślnie")
+            self.settings["enable_auto_trading"] = False
+        else:
+            logger.error(f"Nie udało się zatrzymać silnika handlowego: {self.status.get('last_error', 'Nieznany błąd')}")
+            
         return {"success": success, "status": self.get_status()}
 
     def reset(self) -> Dict[str, Any]:
