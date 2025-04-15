@@ -1,0 +1,66 @@
+🔍 Podsumowanie logów systemu ZoL0-1 (15.04.2025):
+✅ Co działa:
+Wszystkie moduły AI są ładowane poprawnie (model_loader.log).
+
+Modele SentimentAnalyzer i RandomForest są trenowane i testowane, SentimentAnalyzer osiąga ok. 80% accuracy.
+
+ModelRecognizer rozpoznaje formacje z wysoką pewnością (np. Double Top 0.73, Bull Flag 0.84)​
+.
+
+System loguje metadane, inicjalizuje środowiska (Dummy, Real), cache działa stabilnie.
+
+❌ Problemy:
+1. dict object has no attribute tolist
+Dotyczy modeli: AnomalyDetector, ModelRecognizer, SentimentAnalyzer.
+
+Prawdopodobna przyczyna: dane wejściowe w formacie dict zamiast np. np.array.
+
+Fix: Upewnij się, że dane wejściowe są tablicą numpy:
+
+python
+Kopiuj
+Edytuj
+np.array(data).tolist() if isinstance(data, dict) else data
+2. Model ReinforcementLearner — błąd trenowania (Keras):
+Graph execution error z powodu niezgodnych kształtów [32] vs [32, 3].
+
+Fix:
+
+Zbadaj y_true i y_pred w funkcji fit() — muszą mieć ten sam shape.
+
+Możliwe: model regresji (1D) vs klasyfikacja (3D softmax).
+
+3. Brak danych wejściowych w ModelRecognizer
+Brak wymaganych danych cenowych dla rozpoznania modelu rynkowego.
+
+Fix:
+
+Sprawdź, czy pipeline ładuje dane OHLCV poprawnie przed rozpoznaniem.
+
+Dodaj walidację: jeśli danych brakuje — loguj i pomiń, nie testuj.
+
+4. Błędy inicjalizacji klas:
+ModelTrainer, ModelTuner, RealExchangeEnv, DQNAgent – brak wymaganych argumentów.
+
+Fix:
+
+W model_tester.py lub loaderze dodaj mock/init-args albo wyłącz testy tych klas jeśli nieużywane.
+
+📋 Sugestie dalszych kroków:
+Napraw błąd tolist w testach modeli.
+
+Zabezpiecz ReinforcementLearner — sprawdź dane treningowe (kształt i compile()).
+
+Zapisuj modele .pkl po treningu, by unikać ciągłego fit() — dotyczy RF i Sentiment.
+
+Dodaj walidację danych wejściowych przed rozpoznaniem/modelingiem.
+
+Zainicjalizuj poprawnie klasy Trainer, Tuner — np. przez mocki lub rejestr fabryki modeli.
+
+Zbuduj Dashboard lub GUI, aby:
+
+Przeglądać status modeli, logi, metadane
+
+Przełączać tryby test/produkcyjny
+
+Uruchamiać trenowanie ręcznie lub cyklicznie
