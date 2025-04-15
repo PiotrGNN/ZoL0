@@ -1,4 +1,3 @@
-
 import logging
 import os
 import sys
@@ -742,7 +741,7 @@ def get_notifications():
             },
             {
                 'id': 2,
-                'type': 'warning',
+                'type':'warning',
                 'message': 'Wykryto zwiększoną zmienność na rynku BTC/USDT.',
                 'timestamp': (datetime.now() - timedelta(minutes=10)).strftime('%Y-%m-%d %H:%M:%S')
             },

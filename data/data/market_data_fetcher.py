@@ -116,6 +116,20 @@ class MarketDataFetcher:
                         'volume': float(item[5]),
                     })
                 df = pd.DataFrame(processed_data)
+            elif 'result' in data and isinstance(data['result'], list):
+                # Inny możliwy format Bybit API
+                raw_data = data['result']
+                processed_data = []
+                for item in raw_data:
+                    processed_data.append({
+                        'timestamp': int(item['time']) if 'time' in item else int(item['timestamp']),
+                        'open': float(item['open']),
+                        'high': float(item['high']),
+                        'low': float(item['low']),
+                        'close': float(item['close']),
+                        'volume': float(item['volume']),
+                    })
+                df = pd.DataFrame(processed_data)
             else:
                 # Fallback dla innych formatów API
                 df = pd.DataFrame(data)
