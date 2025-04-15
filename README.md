@@ -1,20 +1,73 @@
-# ZoL0-1: System Tradingowy z AI
+# ZoL0-1 Trading System
 
-## 🔍 Opis Projektu
-ZoL0-1 to zaawansowany system tradingowy wykorzystujący sztuczną inteligencję do analizy rynków finansowych, rozpoznawania formacji cenowych i podejmowania decyzji inwestycyjnych.
+## 📊 System AI Trading z analizą rynku i inteligentnym zarządzaniem portfelem
 
-## 🚀 Główne Funkcjonalności
-- **Modele AI**: Głębokie uczenie, rozpoznawanie wzorców, analiza sentymentu
-- **Trading Algorytmiczny**: Strategie bazujące na analizie technicznej i AI
-- **Zarządzanie Ryzykiem**: Zaawansowane algorytmy kontroli ryzyka
-- **Dashboard**: Interaktywny interfejs do monitorowania rynku i wyników
+### 🔧 Zoptymalizowane moduły
 
-## 📚 Architektura Systemu
-- **ai_models/**: Modele uczenia maszynowego i głębokiego
-- **data/**: Obsługa danych rynkowych i wykonywania zleceń
-- **python_libs/**: Podstawowe komponenty systemowe
-- **static/**: Zasoby dla interfejsu webowego
-- **templates/**: Szablony HTML dla dashboardu
+System został znacząco zoptymalizowany w następujących obszarach:
+
+#### ✅ Naprawione problemy
+- **Naprawiono błędy tolist()** w ModelRecognizer i AnomalyDetector
+- **Rozwiązano problemy z kompilacją modelu Keras** w ReinforcementLearner
+- **Naprawiono niezgodności wymiarów** w danych treningowych
+- **Dodano automatyczne zapisywanie modeli** po trenowaniu
+
+#### 🧠 Rozszerzenia AI i zarządzanie modelami
+- Dodano narzędzia do **zarządzania modelami** (zapisywanie, ładowanie, checkpointy)
+- Wdrożono **automatyczną walidację danych** przed trenowaniem
+- Usprawniony `ModelTester` z obsługą cache - modele nie są retrenowane zbyt często
+- Dodano funkcje bezpieczeństwa dla ładowania i zapisywania modeli
+
+### 🚀 Jak używać
+
+1. **Uruchomienie całego systemu:**
+   ```
+   python main.py
+   ```
+
+2. **Testowanie/trenowanie modeli AI:**
+   ```
+   python test_models.py
+   ```
+
+3. **Zarządzanie modelami AI:**
+   ```
+   python manage_ai_models.py list
+   python manage_ai_models.py retrain
+   python manage_ai_models.py backup
+   python manage_ai_models.py details <nazwa_modelu>
+   ```
+
+### 📊 Dostępne modele AI
+
+- **ModelRecognizer** - Rozpoznaje formacje rynkowe (np. "Head and Shoulders", "Bull Flag")
+- **AnomalyDetector** - Wykrywa anomalie cenowe i wolumenowe
+- **ReinforcementLearner** - Model uczenia przez wzmocnienie do optymalizacji decyzji
+- **SentimentAnalyzer** - Analizuje sentyment rynkowy z różnych źródeł
+
+### 📋 Instrukcja instalacji
+
+1. Zainstaluj wymagane pakiety:
+   ```
+   pip install -r requirements.txt
+   ```
+
+2. Upewnij się, że katalogi istnieją:
+   ```
+   mkdir -p models logs saved_models/checkpoints
+   ```
+
+3. Uruchom system:
+   ```
+   python main.py
+   ```
+
+### 📝 Uwagi
+
+- System używa cache do ograniczenia liczby wywołań API i unikania zbyt częstego trenowania
+- Modele są zapisywane po trenowaniu wraz z metadanymi (accuracy, timestamp, itp.)
+- Dashboard jest dostępny pod adresem http://0.0.0.0:5000/ po uruchomieniu systemu
+
 
 ## 🛠️ Instalacja i Uruchomienie
 
@@ -24,31 +77,6 @@ ZoL0-1 to zaawansowany system tradingowy wykorzystujący sztuczną inteligencję
 - Pandas, NumPy, scikit-learn
 - Flask
 
-### Polecenia
-1. Instalacja zależności: `pip install -r requirements.txt`
-2. Uruchomienie systemu: `python main.py`
-3. Testowanie modeli: `python test_models.py`
-4. Czyszczenie cache: `python -c "from data.utils.cache_manager import clean_old_data; clean_old_data()"`
-
-### Tryby Pracy
-- **Symulacja**: Domyślny tryb bez realnych transakcji
-- **Testnet**: Połączenie z API ByBit Testnet
-- **Produkcja**: ⚠️ Rzeczywiste transakcje z portfelem
-
-## 📊 Dashboard
-
-Dashboard jest dostępny po uruchomieniu systemu pod adresem:
-```
-http://localhost:5000/
-```
-
-## 🧠 Modele AI
-
-System wykorzystuje następujące modele AI:
-- **ReinforcementLearner**: Uczenie ze wzmocnieniem dla decyzji tradingowych
-- **SentimentAnalyzer**: Analiza nastrojów rynkowych
-- **ModelRecognizer**: Rozpoznawanie formacji cenowych
-- **AnomalyDetector**: Wykrywanie anomalii rynkowych
 
 ## 🔐 Bezpieczeństwo
 
@@ -60,23 +88,6 @@ System wykorzystuje następujące modele AI:
 ## 📝 Licencja
 
 Ten projekt jest dostępny na licencji MIT.
-
-## Zarządzanie modelami AI
-System zawiera narzędzia do zarządzania i testowania modeli AI:
-
-```bash
-# Uruchomienie pełnych testów modeli
-python test_models.py
-
-# Wymuszenie ponownego trenowania podczas testów
-python test_models.py --force-retrain
-
-# Zarządzanie modelami AI
-python manage_ai_models.py list    # Lista dostępnych modeli
-python manage_ai_models.py clean   # Usuń uszkodzone modele
-python manage_ai_models.py backup  # Utwórz backup modeli
-python manage_ai_models.py test    # Szybki test modeli
-```
 
 ## Struktura Projektu
 
@@ -124,18 +135,3 @@ Wszystkie operacje są rejestrowane w folderze `logs/`:
 - `trade.log` - Historia transakcji
 - `model_tests.log` - Testy modeli AI
 - `detailed_trades.json` - Szczegółowa historia w formacie JSON
-
-## Bezpieczeństwo
-
-- Klucze API są przechowywane tylko w pliku `.env` (niewersjonowanym)
-- Domyślnie używany jest tryb symulowany, który nie wymaga kluczy API
-- Tryb rzeczywisty wymaga dodatkowego potwierdzenia
-
-## Konfiguracja
-
-Główna konfiguracja znajduje się w `config/settings.py`. Możesz dostosować:
-
-- Parametry ryzyka
-- Ustawienia handlowe (prowizje, limity zleceń)
-- Ustawienia modeli AI
-- API i środowisko
