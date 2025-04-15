@@ -90,6 +90,12 @@ class ModelRecognizer:
                     return {'price_data': data['prices']}
                 elif 'data' in data and isinstance(data['data'], (list, np.ndarray)):
                     return {'price_data': data['data']}
+                # Jeśli nie znaleziono odpowiedniego pola, użyj pierwszego pola liczbowego
+                for key, value in data.items():
+                    if isinstance(value, (list, np.ndarray)) and len(value) > 0:
+                        if all(isinstance(x, (int, float)) for x in value):
+                            self.logger.info(f"Używam pola '{key}' jako danych cenowych")
+                            return {'price_data': value}
             return data
             
         # Jeśli dane są array lub listą, uznaj za price_data
@@ -102,9 +108,21 @@ class ModelRecognizer:
                 if 'close' in data.columns:
                     return {'price_data': data['close'].tolist()}
                 else:
+                    # Znajdź pierwszą kolumnę liczbową
+                    numeric_cols = data.select_dtypes(include=['number']).columns
+                    if len(numeric_cols) > 0:
+                        return {'price_data': data[numeric_cols[0]].tolist()}
                     return {'price_data': data.iloc[:, 0].tolist()}
             except Exception as e:
                 self.logger.warning(f"Nie udało się przekonwertować DataFrame na słownik: {e}")
+                
+        # Jeśli nic nie pasuje, spróbuj skonwertować dane do postaci numpy
+        try:
+            array_data = np.array(data)
+            if array_data.size > 0:
+                return {'price_data': array_data.flatten().tolist()}
+        except:
+            pass
                 
         return {'error': 'Nieobsługiwany format danych wejściowych'}
             

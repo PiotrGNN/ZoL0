@@ -278,19 +278,49 @@ def prepare_data_for_model(data: Union[Dict, List, np.ndarray, pd.DataFrame]) ->
     # Jeśli to słownik OHLCV, konwertujemy na DataFrame
     if isinstance(data, dict):
         logger.info("Konwersja słownika danych na DataFrame")
-        df = pd.DataFrame(data)
-        
-        # Wybieramy kolumny OHLCV jeśli istnieją
-        cols_to_use = []
-        for col in ['open', 'high', 'low', 'close', 'volume']:
-            if col in df.columns:
-                cols_to_use.append(col)
-        
-        # Jeśli znaleziono odpowiednie kolumny, użyj ich
-        if cols_to_use:
-            return df[cols_to_use].values
-        # W przeciwnym razie użyj wszystkich kolumn
-        return df.values
+        try:
+            # Usuwamy timestamp jeśli istnieje (nie jest zwykle potrzebny jako cecha)
+            if 'timestamp' in data:
+                data_without_timestamp = {k: v for k, v in data.items() if k != 'timestamp'}
+            else:
+                data_without_timestamp = data
+                
+            # Konwertuj na DataFrame
+            df = pd.DataFrame(data_without_timestamp)
+            
+            # Wybieramy kolumny OHLCV jeśli istnieją
+            cols_to_use = []
+            for col in ['open', 'high', 'low', 'close', 'volume']:
+                if col in df.columns:
+                    cols_to_use.append(col)
+            
+            # Jeśli znaleziono odpowiednie kolumny, użyj ich
+            if cols_to_use:
+                # Sprawdź czy wszystkie wartości są liczbami
+                for col in cols_to_use:
+                    df[col] = pd.to_numeric(df[col], errors='coerce')
+                
+                # Sprawdź czy jest indeks - jeśli nie, dodaj go
+                if df.index.name is None:
+                    df.reset_index(drop=True, inplace=True)
+                
+                return df[cols_to_use].values
+            
+            # W przeciwnym razie użyj wszystkich kolumn numerycznych
+            numeric_cols = df.select_dtypes(include=['number']).columns.tolist()
+            if numeric_cols:
+                return df[numeric_cols].values
+            
+            return df.values
+        except Exception as e:
+            logger.error(f"Błąd podczas konwersji słownika: {e}")
+            # Jako fallback, tworzymy tablicę 2D z pierwszych wartości liczbowych, jakie znajdziemy
+            for key, value in data.items():
+                if isinstance(value, (list, np.ndarray)) and len(value) > 0:
+                    if all(isinstance(x, (int, float)) for x in value):
+                        return np.array(value).reshape(-1, 1)
+            
+            raise ValueError(f"Nie można przekonwertować słownika do formatu numerycznego: {data}")
         
     # Jeśli to DataFrame, konwertujemy na numpy array
     elif isinstance(data, pd.DataFrame):

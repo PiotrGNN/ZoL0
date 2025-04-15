@@ -683,18 +683,18 @@ class BybitConnector:
 
     def get_klines(self,
                    symbol: str,
-                   interval: str = "15",
-                   limit: int = 10) -> List[Dict[str, Any]]:
+                   interval: str = "15m",
+                   limit: int = 200) -> List[Dict[str, Any]]:
         """
-        Pobiera dane świecowe (klines) dla danego symbolu.
+        Pobiera świece (dane OHLCV) dla danego symbolu i interwału.
 
-        Parameters:
-            symbol (str): Symbol pary handlowej.
-            interval (str): Interwał czasowy ('1', '5', '15', '30', '60', 'D').
-            limit (int): Liczba świec do pobrania.
+        Args:
+            symbol: Symbol pary handlowej (np. BTCUSDT)
+            interval: Interwał czasowy (1m, 5m, 15m, 1h, 4h, 1d itd.)
+            limit: Maksymalna liczba świec do pobrania (max 1000)
 
         Returns:
-            List[Dict[str, Any]]: Lista świec.
+            Dict[str, Any]: Dane świecowe w formacie OHLCV
         """
         try:
             self._apply_rate_limit()
@@ -764,7 +764,7 @@ class BybitConnector:
             asks = []
 
             for i in range(limit):
-                bid_price = base_price * (1 - 0.001 * (i + 1))
+                bid_price = base_price * (1 - 0.00001 * (i + 1))
                 ask_price = base_price * (1 +0.0001* (i + 1))
 
                 bid_amount = random.uniform(
@@ -1519,8 +1519,7 @@ class BybitConnector:
                                             self.logger.debug(f"Dodano saldo dla {coin}: {result['balances'][coin]}")
                                         elif isinstance(coin, list) and coin:
                                             # Jeśli coin jest listą, iteruj po jej elementach
-                                            self.logger.warning(f"Otrzymano listę coin zamiast stringa: {coin}")
-                                            for single_coin in coin:
+                                            self.logger.warning(f"Otrzymano listę coin zamiast stringa: {coin}")                                            for single_coin in coin:
                                                 if isinstance(single_coin, str) and single_coin:
                                                     result["balances"][single_coin] = {
                                                         "equity": float(account_data.get("equity", 0)),
