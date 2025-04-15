@@ -89,15 +89,21 @@ class DQNAgent:
         Returns:
             tf.keras.Model: Model sieci.
         """
-        with strategy.scope() if strategy else tf.device("/CPU:0"):
-            model = Sequential(
-                [
-                    Input(shape=(self.state_size,)),
-                    Dense(128, activation="relu"),
-                    Dense(128, activation="relu"),
-                    Dense(self.action_size, activation="linear"),
-                ]
-            )
+        try:
+            with strategy.scope() if strategy else tf.device("/CPU:0"):
+                model = Sequential()
+                model.add(Input(shape=(self.state_size,)))
+                model.add(Dense(128, activation="relu"))
+                model.add(Dense(128, activation="relu"))
+                model.add(Dense(self.action_size, activation="linear"))
+                model.compile(optimizer=Adam(learning_rate=self.learning_rate), loss="mse")
+        except Exception as e:
+            logging.error(f"Błąd podczas budowania modelu Sequential: {e}")
+            # Fallback do prostszego modelu w razie błędu
+            model = Sequential()
+            model.add(Dense(64, input_shape=(self.state_size,), activation="relu"))
+            model.add(Dense(64, activation="relu"))
+            model.add(Dense(self.action_size, activation="linear"))
             model.compile(optimizer=Adam(learning_rate=self.learning_rate), loss="mse")
 
         logging.info("Model sieci Q został zbudowany.")
