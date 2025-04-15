@@ -8,7 +8,8 @@ const AI_CONFIG = {
 const aiMonitorState = {
     lastThoughts: [],
     lastLearningStatus: null,
-    isTraining: false
+    isTraining: false,
+    models: []
 };
 
 // Inicjalizacja po załadowaniu dokumentu
@@ -22,13 +23,100 @@ function initializeAIMonitor() {
     // Pobierz początkowe dane
     fetchAIThoughts();
     fetchAILearningStatus();
+    fetchAIModelsStatus(); // Dodane pobieranie statusu modeli
 
     // Ustaw regularną aktualizację danych
     setInterval(fetchAIThoughts, AI_CONFIG.updateInterval);
     setInterval(fetchAILearningStatus, AI_CONFIG.updateInterval);
+    setInterval(fetchAIModelsStatus, AI_CONFIG.updateInterval);
 
     // Podłącz przyciski
     setupAIControlButtons();
+}
+
+// Funkcja do pobierania statusu modeli AI
+function fetchAIModelsStatus() {
+    fetch('/api/ai-models-status')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Nie można pobrać statusu modeli AI');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                aiMonitorState.models = data.models;
+                updateAIModelsTable(data.models);
+            } else {
+                console.error('Błąd podczas pobierania statusu modeli AI:', data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Błąd podczas pobierania danych sentymentu:', error);
+        });
+}
+
+// Funkcja aktualizująca tabelę modeli AI
+function updateAIModelsTable(models) {
+    const tableBody = document.querySelector('#ai-models-table tbody');
+    if (!tableBody) return;
+    
+    // Wyczyść tabelę
+    tableBody.innerHTML = '';
+    
+    if (models && models.length > 0) {
+        // Dodaj wiersze modeli
+        models.forEach(model => {
+            const row = document.createElement('tr');
+            
+            // Nazwa modelu
+            const nameCell = document.createElement('td');
+            nameCell.textContent = model.name;
+            row.appendChild(nameCell);
+            
+            // Status modelu
+            const statusCell = document.createElement('td');
+            const statusSpan = document.createElement('span');
+            statusSpan.textContent = model.status;
+            statusSpan.className = model.status.toLowerCase() === 'active' ? 'status-online' : 'status-offline';
+            statusCell.appendChild(statusSpan);
+            row.appendChild(statusCell);
+            
+            // Typ modelu
+            const typeCell = document.createElement('td');
+            typeCell.textContent = model.type;
+            row.appendChild(typeCell);
+            
+            // Metryki modelu
+            const metricsCell = document.createElement('td');
+            if (model.accuracy !== undefined) {
+                const accuracySpan = document.createElement('span');
+                accuracySpan.textContent = `Dokładność: ${model.accuracy}%`;
+                
+                if (model.accuracy >= 70) {
+                    accuracySpan.className = 'positive';
+                } else if (model.accuracy >= 50) {
+                    accuracySpan.className = 'neutral';
+                } else {
+                    accuracySpan.className = 'negative';
+                }
+                
+                metricsCell.appendChild(accuracySpan);
+            }
+            row.appendChild(metricsCell);
+            
+            tableBody.appendChild(row);
+        });
+    } else {
+        // Brak modeli
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+        cell.colSpan = 4;
+        cell.className = 'text-center';
+        cell.textContent = 'Brak dostępnych modeli AI';
+        row.appendChild(cell);
+        tableBody.appendChild(row);
+    }
 }
 
 // Pobieranie myśli AI

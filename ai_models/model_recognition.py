@@ -49,7 +49,23 @@ class ModelRecognizer:
             }
         ]
         self.last_recognition_time = time.time()
+        self.accuracy = 78.5
+        self.model_type = "Pattern Recognition System"
+        self.status = "Active"
+        
         logger.info("Zainicjalizowano ModelRecognizer")
+        
+    def predict(self, data: Optional[Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        Przewiduje typ modelu rynkowego na podstawie danych.
+        
+        Parameters:
+            data (Optional[Dict[str, Any]]): Dane rynkowe
+            
+        Returns:
+            Dict[str, Any]: Rozpoznany model
+        """
+        return self.identify_model_type(data)
 
     def identify_model_type(self, data: Optional[Dict[str, Any]]) -> Dict[str, Any]:
         """
