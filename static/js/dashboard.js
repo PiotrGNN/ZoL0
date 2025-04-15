@@ -400,7 +400,22 @@ function updatePortfolioData() {
 
             if (!portfolioContainer) {
                 console.error("Element portfolio-container ani portfolio-data nie istnieje");
-                return;
+                
+                // Stwórz element portfolio-container, jeśli nie istnieje
+                const mainContent = document.querySelector('.dashboard-grid');
+                if (mainContent) {
+                    const newContainer = document.createElement('div');
+                    newContainer.id = 'portfolio-container';
+                    newContainer.className = 'portfolio-data';
+                    
+                    const firstCard = mainContent.querySelector('.card');
+                    if (firstCard) {
+                        firstCard.appendChild(newContainer);
+                        portfolioContainer = newContainer;
+                    }
+                }
+                
+                if (!portfolioContainer) return;
             }
 
             if (data && data.success === true && data.balances && Object.keys(data.balances).length > 0) {
@@ -504,7 +519,7 @@ function updateDashboardData() {
 
 // Funkcja do aktualizacji danych sentymentu
 function updateSentimentData() {
-    fetch('/api/sentiment/latest')
+    fetch('/api/sentiment')
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -562,6 +577,19 @@ function updateSentimentData() {
             const sentimentContainer = document.getElementById('sentiment-container');
             if (sentimentContainer) {
                 sentimentContainer.innerHTML = '<div class="error-message">Błąd podczas pobierania danych sentymentu</div>';
+                
+                // Wyświetl dane zastępcze
+                setTimeout(() => {
+                    sentimentContainer.innerHTML = `
+                        <div class="sentiment-score">
+                            <div class="sentiment-label">Ogólny sentyment (dane zastępcze):</div>
+                            <div class="sentiment-value neutral">Neutralny</div>
+                        </div>
+                        <div class="sentiment-details">
+                            <p>Serwer sentymentu jest niedostępny. Wyświetlam dane testowe.</p>
+                        </div>
+                    `;
+                }, 3000);
             }
         });
 }

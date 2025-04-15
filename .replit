@@ -78,7 +78,7 @@ pageEnabled = false
 buttonEnabled = false
 
 [workflows]
-runButton = "Uruchom Z Naprawami"
+runButton = "Napraw Dashboard i Uruchom"
 
 [[workflows.workflow]]
 name = "Run"
@@ -319,6 +319,23 @@ args = "python install_replit.py"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python fix_imports.py"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python main.py"
+
+[[workflows.workflow]]
+name = "Napraw Dashboard i Uruchom"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python fix_dashboard.py"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python install_replit.py"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"

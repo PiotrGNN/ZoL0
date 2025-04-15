@@ -1150,6 +1150,7 @@ def get_component_status():
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/sentiment', methods=['GET'])
+@app.route('/api/sentiment/latest', methods=['GET'])
 def get_sentiment_data():
     """Endpoint API do pobierania danych sentymentu rynkowego."""
     try:
