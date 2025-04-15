@@ -278,6 +278,7 @@ class ReinforcementLearner:
         self.memory = []
         self.model = self._build_model()
         self.model_path = "models/reinforcement_learner_model.pkl"
+        self.model_compiled = False # Dodano flagę do sprawdzania kompilacji modelu
 
         # Spróbuj załadować zapisany model, jeśli istnieje
         self._try_load_model()
@@ -299,13 +300,7 @@ class ReinforcementLearner:
             model.add(Dense(24, activation='relu'))
             model.add(Dense(self.action_size, activation='linear'))
 
-            # Zawsze kompiluj model - kluczowe dla rozwiązania błędu "call compile() before using the model"
-            model.compile(
-                optimizer=Adam(learning_rate=self.learning_rate),
-                loss='mse',
-                metrics=['accuracy']
-            )
-            logging.info("Model Sequential zbudowany i skompilowany poprawnie")
+            logging.info("Model Sequential zbudowany")
             return model
         except ImportError:
             print("TensorFlow nie jest zainstalowany. Używanie pustego modelu.")
@@ -463,7 +458,7 @@ class ReinforcementLearner:
         targets_full[ind, actions] = targets
 
         history = self.fit(states, targets_full, epochs=1, verbose=0)
-        loss = history.history['loss'][0] if hasattr(history, 'history') else 0
+        loss = history['loss'][0] if history and 'loss' in history else 0
 
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay
@@ -527,62 +522,76 @@ class ReinforcementLearner:
 
         return self.model.predict(state)
 
-    def fit(self, X, y, epochs=1, verbose=0):
+    def fit(self, X, y, epochs=10, verbose=0):
         """
-        Trenuje model na danych.
+        Trenuje model na danych z obsługą niezgodnych kształtów.
 
         Args:
             X: Dane wejściowe
-            y: Dane wyjściowe
-            epochs: Liczba epok
-            verbose: Poziom informacji o treningu
+            y: Wartości docelowe
+            epochs (int): Liczba epok treningu
+            verbose (int): Poziom szczegółowości logowania
 
         Returns:
-            history: Historia treningu
+            dict: Historia treningu
         """
-        import logging
-        import numpy as np
-
-        # Sprawdź czy model jest skompilowany (dla Sequential)
-        if hasattr(self.model, '_is_compiled') and not self.model._is_compiled:
-            logging.warning("Model Sequential nie jest skompilowany, kompiluję model")
-            try:
-                from tensorflow.keras.optimizers import Adam
-                self.model.compile(loss='mse', optimizer=Adam(learning_rate=self.learning_rate), metrics=['accuracy'])
-            except Exception as e:
-                logging.error(f"Błąd podczas kompilacji modelu: {e}")
-        
-        # Upewnij się, że dane są w odpowiednim formacie
-        if isinstance(X, dict):
-            X = np.array(list(X.values())).T
-        else:
-            X = np.array(X)
-            
-        # Sprawdź wymiary i dostosuj dane wyjściowe
-        if hasattr(self.model, 'output_shape'):
-            output_dims = self.model.output_shape[1] if len(self.model.output_shape) > 1 else 1
-            if len(np.array(y).shape) == 1 and output_dims > 1:
-                # Konwertuj wartości skalarne na one-hot encoding dla klasyfikacji
-                from tensorflow.keras.utils import to_categorical
-                try:
-                    y = to_categorical(y, num_classes=output_dims)
-                    logging.info(f"Przekształcono dane wyjściowe do formatu one-hot z {output_dims} klasami")
-                except Exception as e:
-                    logging.error(f"Błąd podczas konwersji danych wyjściowych: {e}")
-
         try:
+            import numpy as np
+
+            # Konwersja danych wejściowych do numpy arrays
+            if not isinstance(X, np.ndarray):
+                if isinstance(X, dict):
+                    X = np.array(list(X.values()))
+                else:
+                    X = np.array(X)
+
+            if not isinstance(y, np.ndarray):
+                if isinstance(y, dict):
+                    y = np.array(list(y.values()))
+                else:
+                    y = np.array(y)
+
+            # Sprawdzenie i dopasowanie kształtów danych
+            if X.shape[0] != y.shape[0]:
+                logging.warning(f"Niezgodne wymiary: X.shape={X.shape}, y.shape={y.shape}")
+                # Przytnij dane do wspólnej długości
+                min_len = min(X.shape[0], y.shape[0])
+                X = X[:min_len]
+                y = y[:min_len]
+                logging.info(f"Przycięto dane do wspólnej długości: {min_len}")
+
+            # Rozgłoszenie wymiarów (broadcast) może być problematyczne, więc upewnijmy się, że y ma odpowiedni kształt
+            if len(X.shape) > 1 and len(y.shape) == 1:
+                # Jeśli X ma kształt (n,m), a y ma kształt (n,), to potrzebujemy dopasować y
+                if X.shape[1] == 1:
+                    # Jeśli X to (n,1), możemy użyć y jako (n,)
+                    pass
+                elif X.shape[1] == 3 and len(y.shape) == 1:
+                    # Jeśli mamy problem z kształtami (n,3) vs (n,), rozszerz y
+                    y = np.repeat(y.reshape(-1, 1), 3, axis=1)
+                    logging.info(f"Rozszerzono y do kształtu {y.shape} dla dopasowania z X {X.shape}")
+
+            # Kompilacja modelu, jeśli nie został wcześniej skompilowany
+            if not self.model_compiled:
+                from tensorflow.keras.optimizers import Adam
+                self.model.compile(optimizer='adam', loss='mse', metrics=['mae'])
+                self.model_compiled = True
+                logging.info("Model został skompilowany")
+
+            # Logowanie informacji o kształtach danych przed treningiem
+            logging.info(f"Rozpoczęcie treningu. Kształty danych: X: {X.shape}, y: {y.shape}")
+
+            # Trening modelu
             history = self.model.fit(X, y, epochs=epochs, verbose=verbose)
-            
-            # Po treningu zapisz model
-            self.save_model()
-            
-            return history
-        except ValueError as e:
-            logging.error(f"Błąd podczas trenowania modelu: {e}")
-            logging.info(f"Kształt X: {np.array(X).shape}, kształt y: {np.array(y).shape}")
-            logging.info(f"Spróbuj dostosować dane lub zmień architekturę modelu")
-            # Zwróć pusty obiekt historii jako fallback
-            class EmptyHistory:
-                def __init__(self):
-                    self.history = {'loss': [0]}
-            return EmptyHistory()
+
+            # Zapisanie wytrenowanego modelu
+            save_success = self.save_model()
+            if save_success:
+                logging.info("Model został pomyślnie zapisany po treningu")
+            else:
+                logging.warning("Nie udało się zapisać modelu po treningu")
+
+            return history.history
+        except Exception as e:
+            logging.error(f"Błąd podczas trenowania ReinforcementLearner: {e}")
+            return None

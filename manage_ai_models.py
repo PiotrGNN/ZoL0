@@ -390,3 +390,221 @@ def main():
 
 if __name__ == "__main__":
     main()
+#!/usr/bin/env python
+"""
+manage_ai_models.py
+------------------
+Skrypt do zarządzania modelami AI - sprawdzanie statusu, czyszczenie, wymuszanie retreningu.
+"""
+
+import os
+import sys
+import json
+import time
+import logging
+import argparse
+import shutil
+from datetime import datetime
+
+# Konfiguracja logowania
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    handlers=[
+        logging.FileHandler('logs/ai_models_management.log'),
+        logging.StreamHandler()
+    ]
+)
+
+# Upewnij się, że katalog logów istnieje
+os.makedirs('logs', exist_ok=True)
+
+def list_models():
+    """Wyświetla listę dostępnych modeli."""
+    models_dir = 'models'
+    if not os.path.exists(models_dir):
+        print("Katalog modeli nie istnieje!")
+        return
+
+    model_files = [f for f in os.listdir(models_dir) if f.endswith('_model.pkl')]
+    
+    if not model_files:
+        print("Brak zapisanych modeli.")
+        return
+    
+    print(f"\nZnaleziono {len(model_files)} modeli:\n")
+    
+    for model_file in model_files:
+        model_name = model_file.replace('_model.pkl', '')
+        model_path = os.path.join(models_dir, model_file)
+        
+        # Podstawowe informacje o pliku
+        size_kb = os.path.getsize(model_path) / 1024
+        modified_time = datetime.fromtimestamp(os.path.getmtime(model_path))
+        
+        # Sprawdź czy istnieją metadane
+        metadata_path = os.path.join(models_dir, f"{model_name}_metadata.json")
+        metadata_info = ""
+        
+        if os.path.exists(metadata_path):
+            try:
+                with open(metadata_path, 'r') as f:
+                    metadata = json.load(f)
+                
+                if isinstance(metadata, dict) and 'accuracy' in metadata:
+                    metadata_info = f", Dokładność: {metadata['accuracy']:.2f}"
+                elif isinstance(metadata, dict) and 'version' in metadata:
+                    metadata_info = f", Wersja: {metadata['version']}"
+            except json.JSONDecodeError:
+                metadata_info = " (Błąd odczytu metadanych)"
+        
+        print(f"- {model_name:<20} | {size_kb:6.1f} KB | {modified_time.strftime('%Y-%m-%d %H:%M:%S')}{metadata_info}")
+
+def clean_models(force=False):
+    """Czyści uszkodzone i niepełne modele."""
+    models_dir = 'models'
+    if not os.path.exists(models_dir):
+        print("Katalog modeli nie istnieje!")
+        return
+    
+    model_files = [f for f in os.listdir(models_dir) if f.endswith('_model.pkl')]
+    metadata_files = [f for f in os.listdir(models_dir) if f.endswith('_metadata.json')]
+    
+    # Wykrywanie uszkodzonych plików modeli
+    removed_count = 0
+    for model_file in model_files:
+        model_path = os.path.join(models_dir, model_file)
+        
+        # Sprawdź czy plik jest pusty lub uszkodzony
+        if os.path.getsize(model_path) == 0:
+            if force or input(f"Model {model_file} jest pusty. Usunąć? [t/N]: ").lower() == 't':
+                os.remove(model_path)
+                print(f"Usunięto pusty model: {model_file}")
+                removed_count += 1
+        else:
+            # Test wczytania modelu
+            try:
+                import pickle
+                with open(model_path, 'rb') as f:
+                    # Próba wczytania tylko nagłówka pliku pickle
+                    pickle.load(f)
+            except (pickle.UnpicklingError, EOFError, AttributeError) as e:
+                if force or input(f"Model {model_file} jest uszkodzony ({str(e)}). Usunąć? [t/N]: ").lower() == 't':
+                    os.remove(model_path)
+                    print(f"Usunięto uszkodzony model: {model_file}")
+                    removed_count += 1
+    
+    # Sprawdź czy są niepasujące pliki metadanych
+    for metadata_file in metadata_files:
+        model_name = metadata_file.replace('_metadata.json', '')
+        model_file = f"{model_name}_model.pkl"
+        
+        if model_file not in model_files:
+            if force or input(f"Plik metadanych {metadata_file} nie ma odpowiadającego modelu. Usunąć? [t/N]: ").lower() == 't':
+                os.remove(os.path.join(models_dir, metadata_file))
+                print(f"Usunięto osierocony plik metadanych: {metadata_file}")
+                removed_count += 1
+    
+    print(f"\nCzyszczenie zakończone. Usunięto {removed_count} plików.")
+
+def backup_models():
+    """Tworzy kopię zapasową modeli."""
+    models_dir = 'models'
+    if not os.path.exists(models_dir):
+        print("Katalog modeli nie istnieje!")
+        return
+    
+    # Utwórz katalog backupu z timestampem
+    timestamp = time.strftime("%Y%m%d_%H%M%S")
+    backup_dir = f"models_backup_{timestamp}"
+    os.makedirs(backup_dir, exist_ok=True)
+    
+    # Kopiuj wszystkie pliki modeli
+    model_files = [f for f in os.listdir(models_dir) if f.endswith(('_model.pkl', '_metadata.json'))]
+    
+    if not model_files:
+        print("Brak modeli do backupu!")
+        os.rmdir(backup_dir)
+        return
+    
+    for file in model_files:
+        src_path = os.path.join(models_dir, file)
+        dst_path = os.path.join(backup_dir, file)
+        shutil.copy2(src_path, dst_path)
+    
+    print(f"Utworzono backup {len(model_files)} plików w katalogu {backup_dir}")
+
+def test_models():
+    """Testuje wszystkie modele."""
+    print("Uruchamianie testów modeli...")
+    
+    # Importuj tester modeli
+    try:
+        sys.path.insert(0, os.getcwd())
+        from python_libs.model_tester import ModelTester
+        
+        # Inicjalizacja testera modeli
+        tester = ModelTester(models_path='ai_models', log_path='logs/model_tests.log')
+        
+        # Ładowanie i testowanie modeli
+        loaded_models = tester.load_models()
+        
+        print(f"\nZaładowano {len(loaded_models)} modeli\n")
+        
+        # Przeprowadź testy
+        success_count = 0
+        for model_info in loaded_models:
+            model_name = model_info.get('name', 'Nieznany model')
+            model_instance = model_info.get('instance')
+            
+            if model_instance:
+                print(f"Testowanie modelu: {model_name}")
+                result = tester.test_model(model_instance, model_name)
+                if result:
+                    success_count += 1
+                    print(f"  ✅ Sukces")
+                else:
+                    print(f"  ❌ Błąd")
+            else:
+                print(f"Nie udało się załadować modelu: {model_name}")
+        
+        print(f"\nWyniki testów: {success_count}/{len(loaded_models)} modeli przeszło testy")
+        
+    except ImportError as e:
+        print(f"Nie można zaimportować testera modeli: {e}")
+        print("Uruchom test_models.py w celu pełnego testowania.")
+
+def main():
+    """Główna funkcja skryptu."""
+    parser = argparse.ArgumentParser(description="Zarządzanie modelami AI")
+    
+    subparsers = parser.add_subparsers(dest='command', help='Polecenie do wykonania')
+    
+    # Polecenie list
+    list_parser = subparsers.add_parser('list', help='Wyświetl listę modeli')
+    
+    # Polecenie clean
+    clean_parser = subparsers.add_parser('clean', help='Usuń uszkodzone modele')
+    clean_parser.add_argument('--force', action='store_true', help='Usuń bez potwierdzenia')
+    
+    # Polecenie backup
+    backup_parser = subparsers.add_parser('backup', help='Utwórz kopię zapasową modeli')
+    
+    # Polecenie test
+    test_parser = subparsers.add_parser('test', help='Testuj modele')
+    
+    args = parser.parse_args()
+    
+    if args.command == 'list':
+        list_models()
+    elif args.command == 'clean':
+        clean_models(args.force)
+    elif args.command == 'backup':
+        backup_models()
+    elif args.command == 'test':
+        test_models()
+    else:
+        parser.print_help()
+
+if __name__ == "__main__":
+    main()

@@ -1,4 +1,94 @@
 run = "python main.py"
+
+[env]
+PYTHONPATH = "${REPL_HOME}"
+
+[nix]
+channel = "stable-22_11"
+
+[deployment]
+run = "python main.py"
+deploymentTarget = "cloudrun"
+
+[unitTest]
+language = "python3"
+
+[gitHubImport]
+requiredFiles = [".replit", "replit.nix"]
+
+[languages]
+
+[languages.python3]
+pattern = "**/*.py"
+
+[languages.python3.languageServer]
+start = "pylsp"
+
+[auth]
+pageEnabled = false
+buttonEnabled = false
+
+[packager]
+language = "python3"
+ignoredPackages = ["unit_tests"]
+
+[packager.features]
+enabledForHosting = false
+packageSearch = true
+guessImports = true
+
+[languages.python3.nix]
+channel = "stable-22_11"
+
+[workspaces]
+init = "clear;echo 'Loading environment...';python init_project.py"
+
+[interpreter]
+command = ["python", "-m", "console"]
+
+[hostFeatures]
+webview = true
+
+# Workflows
+[workflow.Test\ Modeli]
+name = "Test Modeli"
+description = "Uruchamia testy modeli AI"
+command = "python test_models.py"
+
+[workflow.Test\ Modeli\ z\ Retrainingiem]
+name = "Test Modeli z Retrainingiem"
+description = "Uruchamia testy modeli AI z wymuszonym retrenowaniem"
+command = "python test_models.py --force-retrain"
+
+[workflow.Czyszczenie\ Cache]
+name = "Czyszczenie Cache"
+description = "Czyści dane cache"
+command = "python -c \"from data.utils.cache_manager import clean_old_data; clean_old_data(); print('✅ Cache wyczyszczone!')\""
+
+[workflow.Testy\ Pełne]
+name = "Testy Pełne"
+description = "Uruchamia pełne testy środowiska i modeli"
+command = """
+python test_environment.py
+python test_data_conversion.py
+python test_models.py
+"""
+
+[workflow.Test\ Konwersji\ Danych]
+name = "Test Konwersji Danych"
+description = "Testuje konwersję danych"
+command = "python test_data_conversion.py"
+
+[workflow.Uruchom\ Dashboard]
+name = "Uruchom Dashboard"
+description = "Uruchamia dashboard główny aplikacji"
+command = "python main.py"
+
+[workflow.Naprawiony\ System]
+name = "Naprawiony System"
+description = "Uruchamia system po naprawach"
+run = true
+command = "python main.py"
 entrypoint = "main.py"
 modules = ["python-3.10:v18-20230807-322e88b"]
 

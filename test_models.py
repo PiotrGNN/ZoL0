@@ -9,6 +9,7 @@ import logging
 import numpy as np
 import json
 from typing import Dict, Any, List, Optional
+import time
 
 # Konfiguracja logowania
 logging.basicConfig(
@@ -248,10 +249,11 @@ def test_models(force_retrain: bool = False) -> Dict[str, Any]:
     import os
     import pickle
     import joblib
-    
+    import datetime
+
     # Upewnij się, że katalog models istnieje
     os.makedirs('models', exist_ok=True)
-    
+
     print("🔍 Rozpoczęcie testowania modeli AI...")
 
     # Inicjalizuj tester modeli
@@ -277,12 +279,12 @@ def test_models(force_retrain: bool = False) -> Dict[str, Any]:
             # Sprawdź czy to RandomForestRegressor
             if model_name == "RandomForestRegressor":
                 model_path = f"models/randomforest_model.pkl"
-                
+
                 # Jeśli wymuszamy retrenowanie lub plik nie istnieje
                 if force_retrain or not os.path.exists(model_path):
                     print(f"📊 Trenowanie modelu {model_name} od zera...")
                     instance.fit(X_train, y_train)
-                    
+
                     # Zapisz wytrenowany model
                     model_data = {
                         "model": instance,
@@ -294,11 +296,11 @@ def test_models(force_retrain: bool = False) -> Dict[str, Any]:
                             "training_samples": len(X_train)
                         }
                     }
-                    
+
                     try:
                         # Utwórz katalog models jeśli nie istnieje
                         os.makedirs(os.path.dirname(model_path), exist_ok=True)
-                        
+
                         # Zapisz do pliku
                         with open(model_path, 'wb') as f:
                             pickle.dump(model_data, f)
@@ -321,7 +323,7 @@ def test_models(force_retrain: bool = False) -> Dict[str, Any]:
                         print(f"❌ Błąd podczas ładowania modelu {model_name}: {e}")
                         print(f"   🔄 Trenuję model od nowa...")
                         instance.fit(X_train, y_train)
-                        
+
                         # Zapisz nowo wytrenowany model po błędzie ładowania
                         try:
                             model_data = {
@@ -337,6 +339,9 @@ def test_models(force_retrain: bool = False) -> Dict[str, Any]:
                             with open(model_path, 'wb') as f:
                                 pickle.dump(model_data, f)
                             print(f"💾 Model {model_name} zapisany do {model_path} po ponownym treningu")
+                        except Exception as e:
+                            print(f"❌ Błąd podczas zapisywania modelu po retreningu: {e}")
+
             print(f"⏳ Testowanie modelu ML: {model_name}...")
 
             try:
@@ -382,42 +387,127 @@ def test_models(force_retrain: bool = False) -> Dict[str, Any]:
     return final_results
 
 def main():
-    """Główna funkcja testowa."""
-    try:
-        import argparse
+    """
+    Główna funkcja testu modeli z obsługą błędów i raportowaniem.
+    """
+    import argparse
+    import json
+    import time
 
-        # Dodajemy obsługę argumentów wywołania
-        parser = argparse.ArgumentParser(description="Tester modeli AI")
-        parser.add_argument('--force-retrain', action='store_true', help='Wymusza ponowne trenowanie wszystkich modeli')
-        args = parser.parse_args()
+    # Parsowanie argumentów linii poleceń
+    parser = argparse.ArgumentParser(description="Test modeli AI")
+    parser.add_argument('--force-retrain', action='store_true', help='Wymuś ponowne trenowanie modeli')
+    parser.add_argument('--verbose', action='store_true', help='Zwiększona ilość logów')
+    args = parser.parse_args()
 
-        # Uruchamiamy testy modeli z opcjonalnym wymuszeniem retreningu
-        results = test_models(force_retrain=args.force_retrain)
+    # Ustawienie poziomu logowania
+    if args.verbose:
+        logging.basicConfig(level=logging.DEBUG)
 
-        print("\n🔎 Wyniki testów modeli:")
-        for model_name, result in results.items():
-            status = '✅ OK' if result.get('success', False) else '❌ BŁĄD'
-            accuracy = result.get('accuracy', 'N/A')
-            print(f"  {model_name}: {status} (accuracy: {accuracy})")
+    # Inicjalizacja testera modeli
+    tester = ModelTester(models_path='ai_models', log_path='logs/model_tests.log')
 
-        print("\nAby wymusić ponowne trenowanie wszystkich modeli, użyj flagi --force-retrain")
+    # Statystyki testów
+    test_stats = {
+        "total_models": 0,
+        "successful_tests": 0,
+        "failed_tests": 0,
+        "model_results": {}
+    }
 
-        # Zapisz wyniki do pliku
-        with open('logs/model_test_results.json', 'w') as f:
-            json.dump(results, f, indent=2)
+    # Ładowanie i testowanie modeli
+    loaded_models = tester.load_models(force_retrain=args.force_retrain) # Assumed load_models method added to ModelTester
+    test_stats["total_models"] = len(loaded_models)
 
-        print("\n✅ Wyniki testów zapisane w logs/model_test_results.json")
+    for model_info in loaded_models:
+        model_name = model_info.get('name', 'Nieznany model')
+        model_instance = model_info.get('instance')
 
-        # Zwróć kod wyjścia
-        success_count = sum(1 for result in results.values() if result.get('success', False))
-        if success_count == len(results):
-            return 0  # Wszystkie testy udane
+        if model_instance:
+            print(f"Testowanie modelu: {model_name}")
+
+            # Sprawdzenie metod
+            has_predict = hasattr(model_instance, 'predict')
+            has_fit = hasattr(model_instance, 'fit')
+
+            print(f"  - Metoda predict: {'Tak' if has_predict else 'Nie'}")
+            print(f"  - Metoda fit: {'Tak' if has_fit else 'Nie'}")
+
+            start_time = time.time()
+            result = tester.test_model(model_instance, model_name)
+            test_time = time.time() - start_time
+
+            # Zapisz wyniki testu
+            test_stats["model_results"][model_name] = {
+                "success": result,
+                "test_time": f"{test_time:.2f}s",
+                "has_predict": has_predict,
+                "has_fit": has_fit
+            }
+
+            if result:
+                test_stats["successful_tests"] += 1
+                print(f"  ✅ Wynik testu: Sukces ({test_time:.2f}s)")
+            else:
+                test_stats["failed_tests"] += 1
+                print(f"  ❌ Wynik testu: Błąd ({test_time:.2f}s)")
         else:
-            return 1  # Niektóre testy się nie powiodły
+            print(f"❌ Nie udało się załadować modelu: {model_name}")
+            test_stats["model_results"][model_name] = {
+                "success": False,
+                "error": "Nie udało się załadować modelu"
+            }
+            test_stats["failed_tests"] += 1
 
+    # Wyświetlenie podsumowania
+    successful_models = [name for name, stats in test_stats["model_results"].items() if stats.get("success", False)]
+    failed_models = [name for name, stats in test_stats["model_results"].items() if not stats.get("success", False)]
+
+    print("\n=== PODSUMOWANIE TESTÓW ===")
+    print(f"Załadowano {test_stats['total_models']} modeli")
+    print(f"Pomyślnie przetestowano: {test_stats['successful_tests']} modeli")
+    print(f"Niepowodzenia: {test_stats['failed_tests']} modeli")
+
+    if successful_models:
+        print("\nModele działające poprawnie:")
+        for model_name in successful_models:
+            print(f" - {model_name}")
+
+    if failed_models:
+        print("\nModele z błędami:")
+        for model_name in failed_models:
+            print(f" - {model_name}")
+
+    # Zapisanie wyników do pliku JSON
+    try:
+        os.makedirs('reports', exist_ok=True)
+        report_path = f'reports/model_test_report_{time.strftime("%Y%m%d_%H%M%S")}.json'
+        with open(report_path, 'w') as f:
+            json.dump(test_stats, f, indent=2)
+        print(f"\nRaport testów zapisany do {report_path}")
     except Exception as e:
-        logger.error(f"Błąd podczas testowania modeli: {e}")
-        return 2  # Błąd podczas testowania
+        print(f"Błąd podczas zapisywania raportu: {e}")
+
+    return test_stats["failed_tests"] == 0  # Zwraca True, jeśli wszystkie testy się powiodły
+
+def generate_test_data():
+    """
+    Generuje testowe dane do uczenia modeli.
+
+    Returns:
+        Tuple: X_train, X_test, y_train, y_test
+    """
+    # Generuj dane syntetyczne
+    np.random.seed(42)
+    X = np.random.rand(100, 10)  # 100 próbek, 10 cech
+    y = np.random.choice([0, 1], size=(100,), p=[0.7, 0.3])  # Etykiety binarne
+
+    # Podział na zbiory treningowy i testowy
+    split_idx = int(0.8 * len(X))
+    X_train, X_test = X[:split_idx], X[split_idx:]
+    y_train, y_test = y[:split_idx], y[split_idx:]
+
+    return X_train, X_test, y_train, y_test
 
 if __name__ == "__main__":
     sys.exit(main())

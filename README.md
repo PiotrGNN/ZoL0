@@ -1,7 +1,52 @@
+# ZoL0-1 Trading System
 
-# ZoL0-1: System Tradingowy z AI
+System tradingowy oparty o uczenie maszynowe i sztuczną inteligencję
 
-System automatyzacji handlu z wykorzystaniem sztucznej inteligencji i analizy technicznej. Projekt integruje modele uczenia maszynowego, zarządzanie ryzykiem oraz efektywne operacje handlowe w trybie symulowanym lub rzeczywistym.
+## Instalacja
+
+```bash
+pip install -r requirements.txt
+```
+
+## Uruchomienie
+
+```bash
+python main.py
+```
+
+## Zarządzanie modelami AI
+
+System zawiera narzędzia do zarządzania i testowania modeli AI:
+
+```bash
+# Uruchomienie pełnych testów modeli
+python test_models.py
+
+# Wymuszenie ponownego trenowania podczas testów
+python test_models.py --force-retrain
+
+# Zarządzanie modelami AI
+python manage_ai_models.py list    # Lista dostępnych modeli
+python manage_ai_models.py clean   # Usuń uszkodzone modele
+python manage_ai_models.py backup  # Utwórz backup modeli
+python manage_ai_models.py test    # Szybki test modeli
+```
+
+## Funkcjonalności
+- Analiza rynków kryptowalutowych
+- Automatyczne generowanie strategii
+- Backtesting
+- Panel monitorowania
+- Rozpoznawanie wzorców rynkowych
+- Analiza sentymentu
+- Wykrywanie anomalii
+
+## Rozwiązane problemy
+- Naprawiono błąd 'tolist()' w modelach AI poprzez dodanie bezpiecznej konwersji danych
+- Poprawiono zapisywanie i odczytywanie modeli z plików .pkl
+- Dodano obsługę niezgodnych kształtów danych w ReinforcementLearner
+- Usprawniono walidację danych wejściowych do modeli
+- Dodano narzędzia do zarządzania modelami AI i tworzenia kopii zapasowych
 
 ## 🚀 Funkcjonalność
 

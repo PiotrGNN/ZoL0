@@ -1,4 +1,3 @@
-
 """
 model_utils.py
 -------------
@@ -12,6 +11,7 @@ import logging
 import time
 import datetime
 import hashlib
+import pickle #added import for pickle
 from typing import Dict, Any, Optional, Tuple, List, Union
 
 import joblib
@@ -33,10 +33,10 @@ def ensure_model_dirs():
 def calculate_data_hash(data: Any) -> str:
     """
     Oblicza hash dla danych treningowych.
-    
+
     Args:
         data: Dane treningowe (może być np. numpy array, DataFrame, lista, słownik)
-        
+
     Returns:
         str: Hash danych
     """
@@ -61,7 +61,7 @@ def calculate_data_hash(data: Any) -> str:
             data_str = str(data)
     else:
         data_str = str(data)
-    
+
     # Obliczenie hasha
     hash_obj = hashlib.sha256(data_str.encode())
     return hash_obj.hexdigest()
@@ -69,32 +69,32 @@ def calculate_data_hash(data: Any) -> str:
 def save_model(model: Any, model_name: str, metadata: Optional[Dict[str, Any]] = None) -> Tuple[bool, str]:
     """
     Zapisuje model wraz z metadanymi.
-    
+
     Args:
         model: Model do zapisania
         model_name: Nazwa modelu
         metadata: Opcjonalne metadane
-        
+
     Returns:
         Tuple[bool, str]: (sukces, ścieżka_do_pliku)
     """
     ensure_model_dirs()
-    
+
     # Przygotuj metadane
     if metadata is None:
         metadata = {}
-    
+
     # Dodaj podstawowe metadane
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     safe_model_name = model_name.replace(' ', '_').lower()
-    
+
     # Pełna ścieżka pliku
     file_path = os.path.join(MODELS_DIR, f"{safe_model_name}_model.pkl")
     metadata_path = os.path.join(MODELS_DIR, f"{safe_model_name}_metadata.json")
-    
+
     # Dodatkowa archiwalna kopia
     archive_path = os.path.join(SAVED_MODELS_DIR, f"{safe_model_name}_{timestamp}.pkl")
-    
+
     # Uzupełnij metadane
     metadata.update({
         "model_name": model_name,
@@ -104,20 +104,20 @@ def save_model(model: Any, model_name: str, metadata: Optional[Dict[str, Any]] =
         "model_type": type(model).__name__,
         "model_module": type(model).__module__
     })
-    
+
     # Zapisz model
     try:
         joblib.dump(model, file_path)
         # Dodatkowo zapisz archiwalną kopię
         joblib.dump(model, archive_path)
-        
+
         # Zapisz metadane
         with open(metadata_path, 'w') as f:
             json.dump(metadata, f, indent=2)
-        
+
         # Aktualizuj główny plik metadanych
         update_models_metadata(model_name, metadata)
-        
+
         logger.info(f"Model {model_name} zapisany do {file_path} i {archive_path}")
         return True, file_path
     except Exception as e:
@@ -127,26 +127,26 @@ def save_model(model: Any, model_name: str, metadata: Optional[Dict[str, Any]] =
 def load_model(model_name: str) -> Tuple[Any, Dict[str, Any], bool]:
     """
     Wczytuje model na podstawie nazwy.
-    
+
     Args:
         model_name: Nazwa modelu
-        
+
     Returns:
         Tuple[Any, Dict, bool]: (model, metadane, sukces)
     """
     safe_model_name = model_name.replace(' ', '_').lower()
     file_path = os.path.join(MODELS_DIR, f"{safe_model_name}_model.pkl")
     metadata_path = os.path.join(MODELS_DIR, f"{safe_model_name}_metadata.json")
-    
+
     try:
         # Sprawdź, czy pliki istnieją
         if not os.path.exists(file_path):
             logger.warning(f"Plik modelu {file_path} nie istnieje")
             return None, {}, False
-        
+
         # Wczytaj model
         model = joblib.load(file_path)
-        
+
         # Wczytaj metadane, jeśli istnieją
         metadata = {}
         if os.path.exists(metadata_path):
@@ -155,7 +155,7 @@ def load_model(model_name: str) -> Tuple[Any, Dict[str, Any], bool]:
                     metadata = json.load(f)
             except Exception as e:
                 logger.warning(f"Błąd podczas odczytu metadanych {metadata_path}: {e}")
-        
+
         logger.info(f"Model {model_name} wczytany z {file_path}")
         return model, metadata, True
     except Exception as e:
@@ -165,11 +165,11 @@ def load_model(model_name: str) -> Tuple[Any, Dict[str, Any], bool]:
 def update_models_metadata(model_name: str, metadata: Dict[str, Any]) -> bool:
     """
     Aktualizuje główny plik metadanych modeli.
-    
+
     Args:
         model_name: Nazwa modelu
         metadata: Metadane modelu
-        
+
     Returns:
         bool: Sukces
     """
@@ -182,14 +182,14 @@ def update_models_metadata(model_name: str, metadata: Dict[str, Any]) -> bool:
                     all_metadata = json.load(f)
             except:
                 all_metadata = {}
-        
+
         # Aktualizuj informacje o tym modelu
         all_metadata[model_name] = metadata
-        
+
         # Zapisz z powrotem
         with open(MODELS_METADATA_FILE, 'w') as f:
             json.dump(all_metadata, f, indent=2)
-        
+
         return True
     except Exception as e:
         logger.error(f"Błąd podczas aktualizacji metadanych modeli: {e}")
@@ -198,7 +198,7 @@ def update_models_metadata(model_name: str, metadata: Dict[str, Any]) -> bool:
 def get_all_models_metadata() -> Dict[str, Dict[str, Any]]:
     """
     Pobiera metadane wszystkich zapisanych modeli.
-    
+
     Returns:
         Dict[str, Dict[str, Any]]: Metadane modeli
     """
@@ -208,16 +208,16 @@ def get_all_models_metadata() -> Dict[str, Dict[str, Any]]:
                 return json.load(f)
         except Exception as e:
             logger.error(f"Błąd podczas odczytu metadanych modeli: {e}")
-    
+
     return {}
 
 def model_exists(model_name: str) -> bool:
     """
     Sprawdza, czy model o podanej nazwie istnieje.
-    
+
     Args:
         model_name: Nazwa modelu
-        
+
     Returns:
         bool: Czy model istnieje
     """
@@ -228,28 +228,28 @@ def model_exists(model_name: str) -> bool:
 def create_model_checkpoint(model: Any, model_name: str, checkpoint_name: Optional[str] = None) -> Tuple[bool, str]:
     """
     Tworzy punkt kontrolny modelu.
-    
+
     Args:
         model: Model
         model_name: Nazwa modelu
         checkpoint_name: Opcjonalna nazwa punktu kontrolnego
-        
+
     Returns:
         Tuple[bool, str]: (sukces, ścieżka do punktu kontrolnego)
     """
     ensure_model_dirs()
-    
+
     # Przygotuj nazwę punktu kontrolnego
     safe_model_name = model_name.replace(' ', '_').lower()
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    
+
     if checkpoint_name:
         checkpoint_filename = f"{safe_model_name}_{checkpoint_name}_{timestamp}.pkl"
     else:
         checkpoint_filename = f"{safe_model_name}_checkpoint_{timestamp}.pkl"
-    
+
     checkpoint_path = os.path.join(SAVED_MODELS_DIR, "checkpoints", checkpoint_filename)
-    
+
     try:
         # Zapisz punkt kontrolny
         joblib.dump(model, checkpoint_path)
@@ -262,34 +262,34 @@ def create_model_checkpoint(model: Any, model_name: str, checkpoint_name: Option
 def check_model_data_compatibility(model_name: str, data: Any) -> bool:
     """
     Sprawdza, czy dane są kompatybilne z zapisanym modelem.
-    
+
     Args:
         model_name: Nazwa modelu
         data: Dane do sprawdzenia
-        
+
     Returns:
         bool: Czy dane są kompatybilne
     """
     # Wczytaj metadane modelu
     safe_model_name = model_name.replace(' ', '_').lower()
     metadata_path = os.path.join(MODELS_DIR, f"{safe_model_name}_metadata.json")
-    
+
     if not os.path.exists(metadata_path):
         logger.warning(f"Brak metadanych dla modelu {model_name}")
         return False
-    
+
     try:
         with open(metadata_path, 'r') as f:
             metadata = json.load(f)
-        
+
         # Sprawdź, czy metadane zawierają informację o hashu danych
         if "data_hash" not in metadata:
             logger.warning(f"Metadane modelu {model_name} nie zawierają informacji o hashu danych")
             return False
-        
+
         # Oblicz hash aktualnych danych
         current_hash = calculate_data_hash(data)
-        
+
         # Porównaj hashe
         return metadata["data_hash"] == current_hash
     except Exception as e:
@@ -299,30 +299,30 @@ def check_model_data_compatibility(model_name: str, data: Any) -> bool:
 def list_available_models() -> List[Dict[str, Any]]:
     """
     Zwraca listę dostępnych modeli z podstawowymi informacjami.
-    
+
     Returns:
         List[Dict[str, Any]]: Lista modeli
     """
     ensure_model_dirs()
-    
+
     models_info = []
-    
+
     # Zbierz informacje o modelach w głównym katalogu
     for filename in os.listdir(MODELS_DIR):
         if filename.endswith("_model.pkl"):
             model_name = filename.replace("_model.pkl", "")
-            
+
             # Sprawdź metadane
             metadata_path = os.path.join(MODELS_DIR, f"{model_name}_metadata.json")
             metadata = {}
-            
+
             if os.path.exists(metadata_path):
                 try:
                     with open(metadata_path, 'r') as f:
                         metadata = json.load(f)
                 except:
                     pass
-            
+
             models_info.append({
                 "name": model_name,
                 "path": os.path.join(MODELS_DIR, filename),
@@ -332,8 +332,122 @@ def list_available_models() -> List[Dict[str, Any]]:
                 ).strftime("%Y-%m-%d %H:%M:%S"),
                 "metadata": metadata
             })
-    
+
     return models_info
+
+def save_model(model, model_name, metadata=None):
+    """
+    Bezpiecznie zapisuje model do pliku .pkl z walidacją.
+
+    Args:
+        model: Model do zapisania
+        model_name (str): Nazwa modelu
+        metadata (dict, optional): Metadane modelu
+
+    Returns:
+        bool: True jeśli zapisanie się powiodło, False w przeciwnym razie
+    """
+    try:
+        # Utwórz folder models, jeśli nie istnieje
+        os.makedirs('models', exist_ok=True)
+
+        # Walidacja możliwości pickle'owania modelu
+        try:
+            pickle.dumps(model)
+        except Exception as pickle_error:
+            logging.error(f"Model {model_name} nie może być zapisany przez pickle: {pickle_error}")
+            return False
+
+        # Ścieżka do pliku
+        model_path = f'models/{model_name.lower()}_model.pkl'
+
+        # Zapisz model z zabezpieczeniem przed uszkodzeniem istniejącego pliku
+        tmp_path = f'models/{model_name.lower()}_model.tmp.pkl'
+        with open(tmp_path, 'wb') as f:
+            pickle.dump(model, f)
+
+        # Jeśli zapisano pomyślnie, zastąp oryginalny plik
+        if os.path.exists(tmp_path) and os.path.getsize(tmp_path) > 0:
+            if os.path.exists(model_path):
+                os.remove(model_path)
+            os.rename(tmp_path, model_path)
+        else:
+            logging.error(f"Próba zapisu modelu {model_name} utworzyła pusty plik")
+            if os.path.exists(tmp_path):
+                os.remove(tmp_path)
+            return False
+
+        # Zapisz metadane, jeśli podano
+        if metadata:
+            metadata_path = f'models/{model_name.lower()}_metadata.json'
+            with open(metadata_path, 'w') as f:
+                json.dump(metadata, f)
+
+            # Dodaj informacje o czasie zapisu
+            metadata['saved_at'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        logging.info(f"Pomyślnie zapisano model {model_name} do {model_path}")
+        return True
+    except Exception as e:
+        logging.error(f"Błąd podczas zapisywania modelu {model_name}: {e}")
+        return False
+
+def load_model(model_name):
+    """
+    Bezpiecznie ładuje model z pliku .pkl z obsługą błędów.
+
+    Args:
+        model_name (str): Nazwa modelu
+
+    Returns:
+        tuple: (model, metadata) lub (None, None) w przypadku błędu
+    """
+    try:
+        # Ścieżki do plików
+        model_path = f'models/{model_name.lower()}_model.pkl'
+        metadata_path = f'models/{model_name.lower()}_metadata.json'
+
+        # Sprawdź czy plik modelu istnieje i nie jest pusty
+        if not os.path.exists(model_path):
+            logging.warning(f"Plik modelu {model_path} nie istnieje")
+            return None, None
+
+        if os.path.getsize(model_path) == 0:
+            logging.warning(f"Plik modelu {model_path} jest pusty")
+            return None, None
+
+        # Załaduj model z obsługą wyjątków
+        try:
+            with open(model_path, 'rb') as f:
+                model = pickle.load(f)
+        except (pickle.UnpicklingError, EOFError, AttributeError) as pickle_error:
+            logging.error(f"Błąd podczas ładowania modelu {model_name} z pliku: {pickle_error}")
+            # Usuń uszkodzony plik
+            logging.warning(f"Usuwanie uszkodzonego pliku modelu {model_path}")
+            os.remove(model_path)
+            return None, None
+
+        # Załaduj metadane, jeśli istnieją
+        metadata = None
+        if os.path.exists(metadata_path):
+            try:
+                with open(metadata_path, 'r') as f:
+                    metadata = json.load(f)
+            except json.JSONDecodeError as json_error:
+                logging.warning(f"Błąd podczas ładowania metadanych {model_name}: {json_error}")
+
+        # Sprawdź czy model ma wymagane metody
+        required_methods = ['predict']
+        missing_methods = [method for method in required_methods if not hasattr(model, method)]
+
+        if missing_methods:
+            logging.warning(f"Model {model_name} nie ma wymaganych metod: {missing_methods}")
+
+        logging.info(f"Pomyślnie załadowano model {model_name} z {model_path}")
+        return model, metadata
+    except Exception as e:
+        logging.error(f"Błąd podczas ładowania modelu {model_name}: {e}")
+        return None, None
 
 # Inicjalizacja przy importowaniu
 ensure_model_dirs()
