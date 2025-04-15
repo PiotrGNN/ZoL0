@@ -1,0 +1,93 @@
+(venv) PS C:\Users\piotr\Desktop\ZoL0-o1> python test_data_conversion.py
+Dodano katalog python_libs do ścieżki Pythona.
+2025-04-15 16:08:51,166 [INFO] SentimentAnalyzer zainicjalizowany
+2025-04-15 16:08:51,175 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_loader.log
+2025-04-15 16:08:51,175 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_loader.log
+2025-04-15 16:08:51,175 [INFO] Inicjalizacja ModelLoader dla ścieżki: ai_models
+2025-04-15 16:08:51,175 [INFO] Rozpoczęcie ładowania modeli...
+2025-04-15 16:08:51,175 [INFO] AnomalyDetector zainicjalizowany (metoda: z_score, próg: 2.5)
+2025-04-15 16:08:51,175 [INFO] Załadowano model AnomalyDetector z modułu anomaly_detection
+2025-04-15 16:08:51,175 [INFO] Załadowano model AnomalyDetector z modułu anomaly_detection
+2025-04-15 16:08:51,175 [INFO] ModelRecognizer zainicjalizowany z 5 modelami w bazie
+2025-04-15 16:08:51,175 [INFO] ModelRecognizer zainicjalizowany z 5 modelami w bazie
+2025-04-15 16:08:51,175 [INFO] Załadowano model ModelRecognizer z modułu model_recognition
+2025-04-15 16:08:51,175 [INFO] Załadowano model ModelRecognizer z modułu model_recognition
+2025-04-15 16:08:51.241769: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-04-15 16:08:52.269521: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-04-15 16:08:54,235 [INFO] Załadowano model RandomForestRegressor z modułu model_training
+2025-04-15 16:08:54,235 [INFO] Załadowano model RandomForestRegressor z modułu model_training
+2025-04-15 16:08:54,245 [INFO] Załadowano model Sequential z modułu reinforcement_learning
+2025-04-15 16:08:54,245 [INFO] Załadowano model Sequential z modułu reinforcement_learning
+2025-04-15 16:08:54,247 [INFO] SentimentAnalyzer zainicjalizowany
+2025-04-15 16:08:54,247 [INFO] Załadowano model SentimentAnalyzer z modułu sentiment_ai
+2025-04-15 16:08:54,247 [INFO] Załadowano model SentimentAnalyzer z modułu sentiment_ai
+2025-04-15 16:08:54,247 [INFO] Dane wejściowe przekonwertowane dla modelu AnomalyDetector
+2025-04-15 16:08:54,247 [INFO] Dane wejściowe przekonwertowane dla modelu AnomalyDetector
+2025-04-15 16:08:54,249 [INFO] Dane wejściowe przekonwertowane dla modelu ModelRecognizer
+2025-04-15 16:08:54,249 [INFO] Dane wejściowe przekonwertowane dla modelu ModelRecognizer
+2025-04-15 16:08:54,249 [INFO] Pewność rozpoznania modelu (0.67) poniżej progu (0.7)
+2025-04-15 16:08:54,249 [INFO] Pewność rozpoznania modelu (0.67) poniżej progu (0.7)
+2025-04-15 16:08:54,250 [INFO] Dane wejściowe przekonwertowane dla modelu RandomForestRegressor
+2025-04-15 16:08:54,250 [INFO] Dane wejściowe przekonwertowane dla modelu RandomForestRegressor
+2025-04-15 16:08:54,250 [WARNING] Model RandomForestRegressor nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:08:54,250 [WARNING] Model RandomForestRegressor nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:08:54,367 [INFO] Model RandomForestRegressor został wytrenowany.
+2025-04-15 16:08:54,367 [INFO] Model RandomForestRegressor został wytrenowany.
+C:\Users\piotr\Desktop\ZoL0-o1\venv\lib\site-packages\sklearn\utils\validation.py:2739: UserWarning: X does not have valid feature names, but RandomForestRegressor was fitted with feature names
+  warnings.warn(
+2025-04-15 16:08:54,375 [ERROR] Błąd podczas predykcji modelu RandomForestRegressor: X has 5 features, but RandomForestRegressor is expecting 2 features as input.
+2025-04-15 16:08:54,375 [ERROR] Błąd podczas predykcji modelu RandomForestRegressor: X has 5 features, but RandomForestRegressor is expecting 2 features as input.
+2025-04-15 16:08:54,377 [INFO] Dane wejściowe przekonwertowane dla modelu Sequential
+2025-04-15 16:08:54,377 [INFO] Dane wejściowe przekonwertowane dla modelu Sequential
+2025-04-15 16:08:54,378 [WARNING] Model Sequential nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:08:54,378 [WARNING] Model Sequential nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:08:54,378 [ERROR] Błąd podczas trenowania modelu Sequential: You must call `compile()` before using the model.
+2025-04-15 16:08:54,378 [ERROR] Błąd podczas trenowania modelu Sequential: You must call `compile()` before using the model.
+2025-04-15 16:08:54,378 [INFO] Dane wejściowe przekonwertowane dla modelu SentimentAnalyzer
+2025-04-15 16:08:54,378 [INFO] Dane wejściowe przekonwertowane dla modelu SentimentAnalyzer
+2025-04-15 16:08:54,378 [WARNING] Model SentimentAnalyzer nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:08:54,378 [WARNING] Model SentimentAnalyzer nie został jeszcze wytrenowany. Próba treningu...
+2025-04-15 16:08:54,378 [INFO] Model sentymentu wytrenowany. Nowa dokładność: 82.74%
+2025-04-15 16:08:54,378 [INFO] Model SentimentAnalyzer został wytrenowany.
+2025-04-15 16:08:54,378 [INFO] Model SentimentAnalyzer został wytrenowany.
+2025-04-15 16:08:54,378 [INFO] Zakończono testy 5 modeli
+2025-04-15 16:08:54,378 [INFO] Zakończono testy 5 modeli
+2025-04-15 16:08:54,378 [INFO] Załadowano model: AnomalyDetector
+2025-04-15 16:08:54,378 [INFO] Załadowano model: ModelRecognizer
+2025-04-15 16:08:54,378 [INFO] Załadowano model: RandomForestRegressor
+2025-04-15 16:08:54,378 [INFO] Załadowano model: Sequential
+2025-04-15 16:08:54,378 [INFO] Załadowano model: SentimentAnalyzer
+2025-04-15 16:08:54,378 [INFO] Załadowano 5 modeli
+2025-04-15 16:08:54,378 [INFO] Znaleziono 13 modeli
+2025-04-15 16:08:54,378 [INFO] ai_models: Znaleziono 13 modeli AI
+2025-04-15 16:08:54,378 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 16:08:54,378 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 16:08:54,378 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 16:08:54,378 [INFO] Rozpoczynam testy konwersji danych
+2025-04-15 16:08:54,378 [INFO] Uruchamiam test: Konwersja ze słownika
+2025-04-15 16:08:54,378 [INFO] Test konwersji danych ze słownika
+2025-04-15 16:08:54,385 [INFO] Wynik konwersji: Tablica o kształcie (5, 5)
+2025-04-15 16:08:54,385 [INFO] Typ wyniku: <class 'numpy.ndarray'>
+2025-04-15 16:08:54,385 [INFO] Konwersja ze słownika zakończona sukcesem
+2025-04-15 16:08:54,385 [INFO] Test Konwersja ze słownika zakończony sukcesem
+2025-04-15 16:08:54,385 [INFO] Uruchamiam test: Konwersja z DataFrame
+2025-04-15 16:08:54,385 [INFO] Test konwersji danych z DataFrame
+2025-04-15 16:08:54,385 [INFO] Wynik konwersji: Tablica o kształcie (5, 6)
+2025-04-15 16:08:54,385 [INFO] Typ wyniku: <class 'numpy.ndarray'>
+2025-04-15 16:08:54,385 [INFO] Konwersja z DataFrame zakończona sukcesem
+2025-04-15 16:08:54,385 [INFO] Test Konwersja z DataFrame zakończony sukcesem
+2025-04-15 16:08:54,385 [INFO] Uruchamiam test: Konwersja z tablicy NumPy
+2025-04-15 16:08:54,385 [INFO] Test konwersji danych z tablicy NumPy
+2025-04-15 16:08:54,385 [INFO] Wynik konwersji: Tablica o kształcie (10, 5)
+2025-04-15 16:08:54,385 [INFO] Typ wyniku: <class 'numpy.ndarray'>
+2025-04-15 16:08:54,385 [INFO] Konwersja z tablicy NumPy zakończona sukcesem
+2025-04-15 16:08:54,385 [INFO] Test Konwersja z tablicy NumPy zakończony sukcesem
+2025-04-15 16:08:54,385 [INFO] Uruchamiam test: Konwersja danych dla modeli ML
+2025-04-15 16:08:54,385 [INFO] Test konwersji danych dla RandomForestRegressor
+2025-04-15 16:08:54,385 [INFO] Format danych testowych: <class 'pandas.core.frame.DataFrame'>, kształt: (5, 2)
+2025-04-15 16:08:54,385 [INFO] Wynik konwersji dla RF: Tablica o kształcie (5, 2)
+2025-04-15 16:08:54,385 [INFO] Konwersja danych dla RandomForestRegressor zakończona sukcesem
+2025-04-15 16:08:54,385 [INFO] Test konwersji danych dla ML zakończony sukcesem
+2025-04-15 16:08:54,385 [INFO] Testy zakończone. Udane: 4/4
+2025-04-15 16:08:54,385 [INFO] Wszystkie testy zakończone sukcesem!
+(venv) PS C:\Users\piotr\Desktop\ZoL0-o1>
