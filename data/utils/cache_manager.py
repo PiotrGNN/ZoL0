@@ -345,8 +345,21 @@ def get_cloudfront_status() -> Dict[str, Any]:
         "time_left": max(0, CLOUDFRONT_BLOCK["reset_time"] - time.time()) if CLOUDFRONT_BLOCK["blocked"] else 0
     }
 
-# Automatyczna inicjalizacja przy imporcie
-init_cache_manager()
+# Singleton pattern dla inicjalizacji cache_manager
+_instance_initialized = False
+
+def get_instance():
+    """Uzyskaj instancję cache_manager (singleton pattern)"""
+    global _instance_initialized
+    if not _instance_initialized:
+        init_cache_manager()
+        _instance_initialized = True
+    return _instance_initialized
+
+# Automatyczna inicjalizacja przy imporcie, ale tylko raz
+if not _instance_initialized:
+    init_cache_manager()
+    _instance_initialized = True
 
 from functools import wraps
 

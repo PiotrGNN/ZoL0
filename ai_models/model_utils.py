@@ -20,6 +20,19 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Eksport dostępnych funkcji i klas
+__all__ = [
+    "ensure_model_dirs", 
+    "save_model", 
+    "load_model", 
+    "create_model_checkpoint",
+    "list_available_models", 
+    "is_model_newer_than_data", 
+    "delete_model",
+    "copy_model_to_saved", 
+    "load_model_metadata"
+]
+
 def ensure_model_dirs():
     """Tworzy wymagane katalogi dla modeli, jeśli nie istnieją."""
     os.makedirs("models", exist_ok=True)

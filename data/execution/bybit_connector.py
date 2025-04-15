@@ -115,6 +115,20 @@ class BybitConnector:
                 raise ValueError(
                     "Nieprawidłowe klucze API dla środowiska produkcyjnego. Sprawdź konfigurację."
                 )
+                
+            # Dodatkowy mechanizm potwierdzenia trybu produkcyjnego
+            production_confirmed = os.getenv("BYBIT_PRODUCTION_CONFIRMED", "false").lower() == "true"
+            
+            if not production_confirmed:
+                self.logger.critical("UWAGA: Używanie produkcyjnego API wymaga jawnego potwierdzenia!")
+                self.logger.critical("Ustaw zmienną środowiskową BYBIT_PRODUCTION_CONFIRMED=true, aby potwierdzić")
+                print("\n" + "!"*80)
+                print("!!! UWAGA !!! Wykryto próbę użycia PRODUKCYJNEGO API Bybit bez potwierdzenia!")
+                print("!!! To może prowadzić do REALNYCH TRANSAKCJI z prawdziwymi środkami !!!")
+                print("!!! Aby potwierdzić, że chcesz użyć produkcyjnego API, ustaw zmienną środowiskową:")
+                print("!!! BYBIT_PRODUCTION_CONFIRMED=true")
+                print("!"*80 + "\n")
+                raise PermissionError("Użycie produkcyjnego API wymaga jawnego potwierdzenia przez zmienną środowiskową")
         else:
             self.logger.info("Używasz testnet API (środowisko testowe).")
 

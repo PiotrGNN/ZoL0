@@ -447,25 +447,68 @@ def test_model(model_name=None):
     """Testuje określony model AI."""
     try:
         from python_libs.model_tester import ModelTester
+        from ai_models.model_utils import save_model, load_model
+        import os
 
         tester = ModelTester(models_path='ai_models', log_path='logs/model_tests.log')
 
         if model_name:
             logger.info(f"Testowanie modelu: {model_name}")
-            result = tester.test_model_by_name(model_name)
-            if result["success"]:
-                logger.info(f"Test zakończony pomyślnie. Dokładność: {result.get('accuracy', 'N/A')}%")
+            
+            # Sprawdź czy model ma już zapisany plik .pkl
+            model_path = os.path.join("models", f"{model_name}_model.pkl")
+            if os.path.exists(model_path) and not force_retrain:
+                logger.info(f"Znaleziono zapisany model {model_name}. Wczytywanie z pliku...")
+                model, metadata, success = load_model(model_name)
+                if success:
+                    logger.info(f"Model {model_name} załadowany pomyślnie. Metadane: {metadata}")
+                else:
+                    logger.warning(f"Nie udało się załadować modelu {model_name}. Przeprowadzam nowy trening.")
+                    result = tester.test_model_by_name(model_name)
+                    
+                    # Zapisz model po treningu
+                    if result["success"] and "instance" in result:
+                        save_model(result["instance"], model_name, {
+                            "accuracy": result.get("accuracy", 0),
+                            "trained_at": datetime.now().isoformat(),
+                            "test_result": "success"
+                        })
+                        logger.info(f"Model {model_name} zapisany po treningu")
             else:
-                logger.error(f"Test nie powiódł się: {result.get('error', 'Nieznany błąd')}")
+                # Trenuj model jeśli nie istnieje
+                result = tester.test_model_by_name(model_name)
+                if result["success"]:
+                    logger.info(f"Test zakończony pomyślnie. Dokładność: {result.get('accuracy', 'N/A')}%")
+                    
+                    # Zapisz model po treningu
+                    if "instance" in result:
+                        save_model(result["instance"], model_name, {
+                            "accuracy": result.get("accuracy", 0),
+                            "trained_at": datetime.now().isoformat(),
+                            "test_result": "success"
+                        })
+                        logger.info(f"Model {model_name} zapisany po treningu")
+                else:
+                    logger.error(f"Test nie powiódł się: {result.get('error', 'Nieznany błąd')}")
         else:
             logger.info("Testowanie wszystkich modeli...")
             results = tester.run_tests()
             logger.info(f"Testy zakończone. Wyniki: {len(results)} modeli przetestowano.")
 
-            # Wyświetlanie wyników
+            # Wyświetlanie wyników i zapis modeli
             for model_name, result in results.items():
-                status = "✅ Sukces" if result.get("success", False) else "❌ Błąd"
-                logger.info(f"{model_name}: {status} - Dokładność: {result.get('accuracy', 'N/A')}%")
+                if isinstance(result, dict):  # Upewnij się, że result to słownik
+                    status = "✅ Sukces" if result.get("success", False) else "❌ Błąd"
+                    logger.info(f"{model_name}: {status} - Dokładność: {result.get('accuracy', 'N/A')}%")
+                    
+                    # Zapisz model po pomyślnych testach
+                    if result.get("success", False) and "instance" in result:
+                        save_model(result["instance"], model_name, {
+                            "accuracy": result.get("accuracy", 0),
+                            "trained_at": datetime.now().isoformat(),
+                            "test_result": "success"
+                        })
+                        logger.info(f"Model {model_name} zapisany po pomyślnych testach")
 
     except Exception as e:
         logger.error(f"Błąd podczas testowania modeli: {e}")

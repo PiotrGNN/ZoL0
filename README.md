@@ -1,5 +1,42 @@
-# ZoL0-1
-Zautomatyzowany system tradingowy z elementami AI.
+# ZoL0
+
+Trading System based on AI
+
+## Ostatnie poprawki (15.04.2025)
+
+1. Naprawiono błąd importu klasy `ModelTester` z modułu `python_libs.model_tester`
+2. Poprawiono implementację i eksport klasy `AnomalyDetector` w module `ai_models.anomaly_detection`
+3. Dodano eksport funkcji i klas w module `ai_models.model_utils`
+4. Dodano kompilację modelu Keras Sequential przed użyciem `fit()`
+5. Zaimplementowano mechanizm zapisywania/wczytywania modeli do plików .pkl
+6. Dodano mechanizm potwierdzenia trybu produkcyjnego dla API Bybit
+7. Zastosowano wzorzec singleton dla inicjalizacji cache_manager
+
+## Jak uruchomić
+
+1. Skonfiguruj środowisko:
+   ```
+   python setup_local_packages.py
+   ```
+
+2. Uruchom testy modeli:
+   ```
+   python test_models.py
+   ```
+
+3. Uruchom główną aplikację:
+   ```
+   python main.py
+   ```
+
+## Tryb produkcyjny API
+
+Aby używać produkcyjnego API Bybit (prawdziwe transakcje), należy ustawić zmienną środowiskową:
+```
+BYBIT_PRODUCTION_CONFIRMED=true
+```
+
+**UWAGA**: W trybie produkcyjnym wszystkie transakcje są prawdziwe i dotyczą rzeczywistych środków!
 
 ## Funkcjonalności
 - Wczytywanie i analiza danych rynkowych
