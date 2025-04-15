@@ -29,8 +29,24 @@ deploymentTarget = "cloudrun"
 localPort = 5000
 externalPort = 80
 
+[workflows]
+runButton = "Run"
+
 [[workflows.workflow]]
 name = "Naprawiony System"
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python fix_imports.py"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python main.py"
+
+[[workflows.workflow]]
+name = "Run"
+author = 31819671
 mode = "sequential"
 
 [[workflows.workflow.tasks]]
