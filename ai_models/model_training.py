@@ -244,23 +244,34 @@ class ModelTrainer:
             raise
 
 
+def get_example_data():
+    """
+    Tworzy i zwraca przykładowe dane do treningu modeli.
+    
+    Returns:
+        Tuple[pd.DataFrame, pd.Series]: X_train (cechy) i y_train (wartości docelowe)
+    """
+    np.random.seed(42)
+    dates = pd.date_range(start="2022-01-01", periods=500, freq="D")
+    X_train = pd.DataFrame(
+        {
+            "feature1": np.random.normal(0, 1, size=500),
+            "feature2": np.random.normal(0, 1, size=500),
+        },
+        index=dates,
+    )
+    y_train = (
+        X_train["feature1"] * 1.5
+        + X_train["feature2"] * (-2.0)
+        + np.random.normal(0, 0.5, size=500)
+    )
+    return X_train, y_train
+
+# Tworzenie przykładowych danych, które można zaimportować w innych modułach
+X_train, y_train = get_example_data()
+
 if __name__ == "__main__":
     try:
-        np.random.seed(42)
-        dates = pd.date_range(start="2022-01-01", periods=500, freq="D")
-        X = pd.DataFrame(
-            {
-                "feature1": np.random.normal(0, 1, size=500),
-                "feature2": np.random.normal(0, 1, size=500),
-            },
-            index=dates,
-        )
-        y = (
-            X["feature1"] * 1.5
-            + X["feature2"] * (-2.0)
-            + np.random.normal(0, 0.5, size=500)
-        )
-
         model = RandomForestRegressor(n_estimators=100, random_state=42)
         trainer = ModelTrainer(
             model=model,
@@ -268,7 +279,7 @@ if __name__ == "__main__":
             online_learning=True,
             early_stopping_params={"monitor": "val_loss", "patience": 5},
         )
-        metrics = trainer.train(X, y, n_splits=5)
+        metrics = trainer.train(X_train, y_train, n_splits=5)
         logging.info("Trening zakończony. Wyniki walidacji: %s", metrics)
     except Exception as e:
         logging.error("Błąd w przykładowym użyciu ModelTrainer: %s", e)

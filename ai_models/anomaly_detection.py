@@ -24,6 +24,8 @@ class AnomalyDetector:
         self.last_detection = datetime.now()
         self.model_type = "Anomaly Detection"
         self.accuracy = 84.0
+        self.model = None #Initialize model to None.
+
 
     def detect(self, data):
         """
@@ -157,25 +159,26 @@ class AnomalyDetector:
                 logging.warning(f"Błąd podczas używania metody detect: {detect_error}")
 
             # Jeśli mamy załadowany model ML, używamy go
-            if hasattr(self, 'model') and self.model is not None:
+            if self.model is not None:
                 try:
                     # Konwersja danych wejściowych na odpowiedni format
                     from ai_models.model_training import prepare_data_for_model
                     data_prepared = prepare_data_for_model(data)
-                    
+
                     # Wykonaj predykcję
                     prediction = self.model.predict(data_prepared)
                     return {"prediction": prediction, "success": True}
                 except ImportError:
                     # Jeśli nie możemy zaimportować funkcji prepare_data_for_model
+                    logging.warning("Nie można zaimportować prepare_data_for_model. Używam metody detect.")
                     return {"prediction": self.detect(data), "success": True}
                 except Exception as prep_error:
-                    logging.warning(f"Błąd podczas przygotowania danych dla modelu: {prep_error}")
+                    logging.warning(f"Błąd podczas przygotowania danych dla modelu lub predykcji: {prep_error}")
                     return {"prediction": self.detect(data), "success": True}
             else:
                 # Używamy prostej metody detect jako fallback
                 return {"prediction": self.detect(data), "success": True}
-                
+
         except Exception as e:
             return {"error": str(e), "success": False}
 
@@ -196,3 +199,7 @@ class AnomalyDetector:
             "model_type": self.model_type,
             "accuracy": self.accuracy
         }
+
+    def load_model(self, model):
+        """Loads a pre-trained model."""
+        self.model = model
