@@ -1,0 +1,74 @@
+✅ Co działa poprawnie:
+ModelRecognizer poprawnie rozpoznaje wzorce: np. Bull Flag z pewnością 0.93​
+.
+
+ModelLoader uruchamia pipeline, inicjalizuje modele i zapisuje je po trenowaniu.
+
+Modele trenowane i zapisywane do .pkl: ReinforcementLearner, DataScaler, SentimentAnalyzer.
+
+❗ Błędy krytyczne i ostrzeżenia:
+'dict' object has no attribute 'tolist' — występuje w AnomalyDetector, ModelRecognizer, SentimentAnalyzer​
+.
+
+❗ Błąd konwersji danych wejściowych — tolist() prawdopodobnie wywoływane na dict, zamiast np.array lub pd.Series.
+
+Modele nie ładują się z .pkl:
+
+Expecting value: line 1 column 1 (char 0) — sugeruje, że pliki .pkl są puste lub uszkodzone.
+
+invalid load key, '\x07' — wskazuje na próbę wczytania pliku, który nie jest picklem.
+
+Brak wymaganych argumentów przy tworzeniu instancji klas:
+
+ModelTrainer, ModelTuner, RealExchangeEnv, DQNAgent – brak wymaganych argumentów (model, api_key, itp.).
+
+Broadcast error przy testowaniu ReinforcementLearner:
+
+operands could not be broadcast together with shapes (100,3) (100,) — oznacza błędne wymiary danych X vs y.
+
+✅ Sugestie kolejnych kroków (priorytetowo):
+1. Naprawa tolist() błędów
+Sprawdź dane wejściowe do modeli — muszą być typu numpy.ndarray lub pandas.Series.
+
+Zabezpiecz funkcje testujące modele, np.:
+
+python
+Kopiuj
+Edytuj
+if isinstance(data, dict):
+    data = np.array(list(data.values()))
+2. Zabezpieczenie zapisu/odczytu .pkl
+Przed zapisem sprawdź, czy obiekt jest pickle-owalny.
+
+Przed odczytem sprawdź, czy plik istnieje i ma odpowiedni rozmiar.
+
+Dodaj try/except z logiem błędu i fallbackiem do retrain:
+
+python
+Kopiuj
+Edytuj
+try:
+    with open(path, 'rb') as f:
+        model = pickle.load(f)
+except Exception as e:
+    logger.warning(f"Nie można wczytać modelu {path}: {e}, trenowanie od nowa.")
+    model = train_model(...)
+3. Uzupełnienie argumentów do klas (ModelTrainer, RealExchangeEnv, DQNAgent)
+Upewnij się, że tworząc instancję, przekazujesz wszystkie wymagane parametry (np. api_key, model, state_size...).
+
+4. Naprawa błędu broadcast
+Sprawdź dopasowanie kształtów X.shape i y.shape w ReinforcementLearner:
+
+python
+Kopiuj
+Edytuj
+assert X.shape[0] == y.shape[0], "Mismatch in data shapes"
+5. Walidacja danych wejściowych do modeli
+Dodaj validate_input(X) do każdego modelu – wykrywaj NaN, None, zły typ, złe wymiary.
+
+6. Logika ładowania modeli
+Usprawnij: jeśli model istnieje i jest poprawny — ładuj; jeśli nie — trenuj i zapisz.
+
+7. Monitoring i dashboard
+Dodaj podsumowanie: liczba modeli, dokładności, ostatnie rozpoznania, błędy – w jednym pliku summary.json i opcjonalnie wyświetlaj na dashboardzie.
+
