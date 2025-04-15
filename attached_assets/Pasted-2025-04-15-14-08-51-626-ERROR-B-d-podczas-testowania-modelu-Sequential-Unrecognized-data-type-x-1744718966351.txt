@@ -1,0 +1,81 @@
+2025-04-15 14:08:51,626 [ERROR] Błąd podczas testowania modelu Sequential: Unrecognized data type: x={'open': [19610.00135324725, 19403.905067440974, 20174.34862429996, 20167.439740773392, 20754.382661825988, 19659.60453887878, 20812.000824841252, 19921.553047021967, 19904.426756846526, 19253.438107852882], 'high': [20328.38110796542, 19963.054065324097, 20496.73724490964, 21348.074034495236, 20414.36401046655, 20604.985504820444, 21212.669157073513, 19761.878662949086, 21172.570573890946, 20820.699132206493], 'low': [19719.612290058125, 19585.84607559442, 19752.965190913674, 18636.943871571264, 19995.535267349092, 19848.7851122036, 19449.532057128436, 19045.53126829609, 19544.930174133584, 18948.64952137478], 'close': [20039.798564553334, 19687.869007028432, 20396.35759184349, 20679.591660561284, 19513.80285114313, 19207.70954495835, 19550.505482888377, 19373.150430097885, 20873.319085220115, 19019.536560404267], 'volume': [845.3016648226871, 328.4571973586488, 903.4582727821489, 320.0988383119793, 975.8332333621557, 778.3111889649617, 835.8883320427319, 515.2437921895062, 814.2044445197887, 124.8126234765029], 'timestamp': [1744718931.626423, 1744715331.626423, 1744711731.626423, 1744708131.626423, 1744704531.626423, 1744700931.626423, 1744697331.626423, 1744693731.626423, 1744690131.626423, 1744686531.626423]} (of type <class 'dict'>)
+2025-04-15 14:08:51,626 [ERROR] Błąd podczas testowania modelu Sequential: Unrecognized data type: x={'open': [19610.00135324725, 19403.905067440974, 20174.34862429996, 20167.439740773392, 20754.382661825988, 19659.60453887878, 20812.000824841252, 19921.553047021967, 19904.426756846526, 19253.438107852882], 'high': [20328.38110796542, 19963.054065324097, 20496.73724490964, 21348.074034495236, 20414.36401046655, 20604.985504820444, 21212.669157073513, 19761.878662949086, 21172.570573890946, 20820.699132206493], 'low': [19719.612290058125, 19585.84607559442, 19752.965190913674, 18636.943871571264, 19995.535267349092, 19848.7851122036, 19449.532057128436, 19045.53126829609, 19544.930174133584, 18948.64952137478], 'close': [20039.798564553334, 19687.869007028432, 20396.35759184349, 20679.591660561284, 19513.80285114313, 19207.70954495835, 19550.505482888377, 19373.150430097885, 20873.319085220115, 19019.536560404267], 'volume': [845.3016648226871, 328.4571973586488, 903.4582727821489, 320.0988383119793, 975.8332333621557, 778.3111889649617, 835.8883320427319, 515.2437921895062, 814.2044445197887, 124.8126234765029], 'timestamp': [1744718931.626423, 1744715331.626423, 1744711731.626423, 1744708131.626423, 1744704531.626423, 1744700931.626423, 1744697331.626423, 1744693731.626423, 1744690131.626423, 1744686531.626423]} (of type <class 'dict'>)
+2025-04-15 14:08:51,626 [ERROR] Błąd podczas testowania modelu Sequential: Unrecognized data type: x={'open': [19610.00135324725, 19403.905067440974, 20174.34862429996, 20167.439740773392, 20754.382661825988, 19659.60453887878, 20812.000824841252, 19921.553047021967, 19904.426756846526, 19253.438107852882], 'high': [20328.38110796542, 19963.054065324097, 20496.73724490964, 21348.074034495236, 20414.36401046655, 20604.985504820444, 21212.669157073513, 19761.878662949086, 21172.570573890946, 20820.699132206493], 'low': [19719.612290058125, 19585.84607559442, 19752.965190913674, 18636.943871571264, 19995.535267349092, 19848.7851122036, 19449.532057128436, 19045.53126829609, 19544.930174133584, 18948.64952137478], 'close': [20039.798564553334, 19687.869007028432, 20396.35759184349, 20679.591660561284, 19513.80285114313, 19207.70954495835, 19550.505482888377, 19373.150430097885, 20873.319085220115, 19019.536560404267], 'volume': [845.3016648226871, 328.4571973586488, 903.4582727821489, 320.0988383119793, 975.8332333621557, 778.3111889649617, 835.8883320427319, 515.2437921895062, 814.2044445197887, 124.8126234765029], 'timestamp': [1744718931.626423, 1744715331.626423, 1744711731.626423, 1744708131.626423, 1744704531.626423, 1744700931.626423, 1744697331.626423, 1744693731.626423, 1744690131.626423, 1744686531.626423]} (of type <class 'dict'>)
+2025-04-15 14:08:51,627 [INFO] Zakończono testy 3 modeli
+2025-04-15 14:08:51,627 [INFO] Zakończono testy 3 modeli
+2025-04-15 14:08:51,627 [INFO] Zakończono testy 3 modeli
+2025-04-15 14:08:51,628 [INFO] Przetestowano modele AI: znaleziono 3 działających modeli
+2025-04-15 14:08:51,628 [INFO] System zainicjalizowany poprawnie
+2025-04-15 14:08:51,628 [INFO] Uruchamianie aplikacji Flask na 0.0.0.0:5000
+2025-04-15 14:08:51,642 [WARNING]  * Debugger is active!
+2025-04-15 14:08:51,649 [INFO]  * Debugger PIN: 594-981-190
+2025-04-15 14:08:56,290 [ERROR] Błąd podczas pobierania danych świecowych: invalid literal for int() with base 10: '15m'
+2025-04-15 14:09:01,291 [INFO] Wygenerowano sygnał BUY dla BTCUSDT
+2025-04-15 14:09:01,292 [INFO] Wygenerowano sygnał SELL dla BTCUSDT
+2025-04-15 14:09:01,292 [INFO] Przefiltrowano sygnały: 2 -> 2
+2025-04-15 14:09:01,292 [INFO] Symulacja zlecenia: BUY 0.0043 BTCUSDT @ 36849.08 (LIMIT)
+2025-04-15 14:09:01,292 [INFO] Symulacja zlecenia: SELL 0.0068 BTCUSDT @ 33052.26 (LIMIT)
+2025-04-15 14:09:01,562 [ERROR] Błąd podczas pobierania danych świecowych: invalid literal for int() with base 10: '15m'
+2025-04-15 14:09:11,296 [ERROR] Błąd podczas pobierania danych świecowych: invalid literal for int() with base 10: '15m'
+2025-04-15 14:09:11,350 [WARNING] Brak wymaganych danych cenowych dla rozpoznania modelu rynkowego
+2025-04-15 14:09:11,350 [WARNING] Brak wymaganych danych cenowych dla rozpoznania modelu rynkowego
+2025-04-15 14:09:11,352 [INFO] 127.0.0.1 - - [15/Apr/2025 14:09:11] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 14:09:11,353 [WARNING] Brak wymaganych danych cenowych dla rozpoznania modelu rynkowego
+2025-04-15 14:09:11,353 [WARNING] Brak wymaganych danych cenowych dla rozpoznania modelu rynkowego
+2025-04-15 14:09:11,353 [INFO] 192.168.11.115 - - [15/Apr/2025 14:09:11] "GET /api/ai/thoughts HTTP/1.1" 200 -
+2025-04-15 14:09:11,358 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 14:09:11,358 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 14:09:11,358 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 14:09:11,358 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 14:09:11,361 [INFO] AnomalyDetector zainicjalizowany (metoda: z_score, próg: 2.5)
+2025-04-15 14:09:11,361 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 14:09:11,361 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 14:09:11,361 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 14:09:11,362 [INFO] Załadowano model AnomalyDetector z modułu anomaly_detection
+2025-04-15 14:09:11,361 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 14:09:11,362 [INFO] Załadowano model AnomalyDetector z modułu anomaly_detection
+2025-04-15 14:09:11,362 [INFO] Załadowano model AnomalyDetector z modułu anomaly_detection
+2025-04-15 14:09:11,361 [INFO] ModelTester zainicjalizowany. Folder modeli: ai_models, Log: logs/model_tests.log
+2025-04-15 14:09:11,362 [INFO] Załadowano model AnomalyDetector z modułu anomaly_detection
+2025-04-15 14:09:11,362 [INFO] Załadowano model AnomalyDetector z modułu anomaly_detection
+2025-04-15 14:09:11,367 [INFO] Załadowano model Sequential z modułu reinforcement_learning
+2025-04-15 14:09:11,367 [INFO] AnomalyDetector zainicjalizowany (metoda: z_score, próg: 2.5)
+2025-04-15 14:09:11,367 [INFO] Załadowano model Sequential z modułu reinforcement_learning
+2025-04-15 14:09:11,367 [INFO] Załadowano model AnomalyDetector z modułu anomaly_detection
+2025-04-15 14:09:11,367 [INFO] Załadowano model Sequential z modułu reinforcement_learning
+2025-04-15 14:09:11,367 [INFO] Załadowano model Sequential z modułu reinforcement_learning
+2025-04-15 14:09:11,367 [INFO] Załadowano model AnomalyDetector z modułu anomaly_detection
+2025-04-15 14:09:11,367 [INFO] Załadowano model AnomalyDetector z modułu anomaly_detection
+2025-04-15 14:09:11,367 [INFO] Załadowano model Sequential z modułu reinforcement_learning
+2025-04-15 14:09:11,367 [INFO] Załadowano model AnomalyDetector z modułu anomaly_detection
+2025-04-15 14:09:11,368 [INFO] SentimentAnalyzer zainicjalizowany
+2025-04-15 14:09:11,367 [INFO] Załadowano model AnomalyDetector z modułu anomaly_detection
+2025-04-15 14:09:11,370 [INFO] Załadowano model SentimentAnalyzer z modułu sentiment_ai
+2025-04-15 14:09:11,370 [INFO] Załadowano model Sequential z modułu reinforcement_learning
+2025-04-15 14:09:11,370 [INFO] Załadowano model SentimentAnalyzer z modułu sentiment_ai
+2025-04-15 14:09:11,370 [INFO] Załadowano model SentimentAnalyzer z modułu sentiment_ai
+2025-04-15 14:09:11,370 [INFO] Załadowano model Sequential z modułu reinforcement_learning
+2025-04-15 14:09:11,370 [INFO] Załadowano model SentimentAnalyzer z modułu sentiment_ai
+2025-04-15 14:09:11,375 [INFO] Załadowano 26 raportów. Najnowszy: 20250414_214308
+2025-04-15 14:09:11,370 [INFO] Załadowano model Sequential z modułu reinforcement_learning
+2025-04-15 14:09:11,370 [INFO] Załadowano model Sequential z modułu reinforcement_learning
+2025-04-15 14:09:11,370 [INFO] Załadowano model SentimentAnalyzer z modułu sentiment_ai
+2025-04-15 14:09:11,376 [INFO] 127.0.0.1 - - [15/Apr/2025 14:09:11] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 14:09:11,376 [INFO] Załadowano 27 raportów. Najnowszy: 20250414_214308
+2025-04-15 14:09:11,370 [INFO] Załadowano model Sequential z modułu reinforcement_learning
+2025-04-15 14:09:11,377 [INFO] 192.168.11.115 - - [15/Apr/2025 14:09:11] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-15 14:09:11,377 [INFO] 192.168.11.115 - - [15/Apr/2025 14:09:11] "GET /api/ai/learning-status HTTP/1.1" 200 -
+2025-04-15 14:09:11,378 [INFO] SentimentAnalyzer zainicjalizowany
+2025-04-15 14:09:11,378 [INFO] Załadowano model SentimentAnalyzer z modułu sentiment_ai
+2025-04-15 14:09:11,378 [INFO] Załadowano model SentimentAnalyzer z modułu sentiment_ai
+2025-04-15 14:09:11,378 [INFO] Załadowano model SentimentAnalyzer z modułu sentiment_ai
+2025-04-15 14:09:11,378 [INFO] Załadowano model SentimentAnalyzer z modułu sentiment_ai
+2025-04-15 14:09:11,378 [INFO] Załadowano model SentimentAnalyzer z modułu sentiment_ai
+2025-04-15 14:09:11,380 [INFO] 127.0.0.1 - - [15/Apr/2025 14:09:11] "GET /api/ai-models-status HTTP/1.1" 200 -
+2025-04-15 14:09:16,304 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49610.45)
+2025-04-15 14:09:16,304 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 14:09:16,304 [INFO] Data Processor: pobrano dane testowe dla BTCUSDT (cena: 49969.64)
+2025-04-15 14:09:16,304 [INFO] Statusy komponentów: API: online, Trading: online
+2025-04-15 14:09:16,304 [INFO] 192.168.11.115 - - [15/Apr/2025 14:09:16] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 14:09:16,305 [INFO] 127.0.0.1 - - [15/Apr/2025 14:09:16] "GET /api/component-status HTTP/1.1" 200 -
+2025-04-15 14:09:16,574 [ERROR] Błąd podczas pobierania danych świecowych: invalid literal for int() with base 10: '15m'
