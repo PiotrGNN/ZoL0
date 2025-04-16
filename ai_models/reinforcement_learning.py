@@ -3,19 +3,14 @@ model = Sequential()
         model.add(Dense(32, activation='relu'))
         model.add(Dense(1))
 
-        # Dodanie kompilacji modelu przed treningiem z pełną konfiguracją
+        # Compile the model with appropriate optimizer and loss function
         model.compile(
             optimizer='adam',
             loss='mse',
-            metrics=['mae', 'mse', 'accuracy']
+            metrics=['mae', 'mse']
         )
-        
-        # Sprawdzenie czy model został poprawnie skompilowany
-        if not getattr(model, "_is_compiled", False):
-            logging.warning("Model nie został poprawnie skompilowany - próba ponownej kompilacji")
-            model.compile(optimizer='adam', loss='mse', metrics=['mae'])
 
-        # Dodanie callback'a dla early stopping
+        # Add early stopping to prevent overfitting
         from tensorflow.keras.callbacks import EarlyStopping
         early_stopping = EarlyStopping(
             monitor='val_loss',

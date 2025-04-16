@@ -702,6 +702,7 @@ class CacheManager:
 
     # Przechowuje pojedynczą instancję klasy
     _instance = None
+    _initialized = False
 
     def __new__(cls, cache_dir="./data/cache", max_cache_size_mb=500, ttl_seconds=3600):
         """
@@ -709,7 +710,6 @@ class CacheManager:
         """
         if cls._instance is None:
             cls._instance = super(CacheManager, cls).__new__(cls)
-            cls._instance._initialized = False
         return cls._instance
 
     def __init__(self, cache_dir="./data/cache", max_cache_size_mb=500, ttl_seconds=3600):
@@ -722,7 +722,19 @@ class CacheManager:
             ttl_seconds: Czas życia elementów w cache (time to live).
         """
         # Zabezpieczenie przed wielokrotną inicjalizacją tej samej instancji
-        if getattr(self, "_initialized", False):
+        if CacheManager._initialized:
             return
 
-        self._initialized = True
+        # Oznacz instancję jako zainicjalizowaną
+        CacheManager._initialized = True
+        
+        # Log tylko przy pierwszej inicjalizacji
+        logging.info(f"Inicjalizacja CacheManager (Singleton) - cache_dir: {cache_dir}")
+        
+        # Wykonaj inicjalizację tylko raz
+        self.cache_dir = cache_dir
+        self.max_cache_size_mb = max_cache_size_mb
+        self.ttl_seconds = ttl_seconds
+        
+        # Upewniamy się, że katalog istnieje
+        os.makedirs(self.cache_dir, exist_ok=True)

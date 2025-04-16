@@ -116,19 +116,31 @@ class BybitConnector:
                     "Nieprawidłowe klucze API dla środowiska produkcyjnego. Sprawdź konfigurację."
                 )
 
-            # Dodatkowy mechanizm potwierdzenia trybu produkcyjnego
+            # Mechanizm podwójnego potwierdzenia trybu produkcyjnego
             production_confirmed = os.getenv("BYBIT_PRODUCTION_CONFIRMED", "false").lower() == "true"
+            production_extra_check = os.getenv("BYBIT_PRODUCTION_ENABLED", "false").lower() == "true"
 
-            if not production_confirmed:
+            if not (production_confirmed and production_extra_check):
                 self.logger.critical("UWAGA: Używanie produkcyjnego API wymaga jawnego potwierdzenia!")
-                self.logger.critical("Ustaw zmienną środowiskową BYBIT_PRODUCTION_CONFIRMED=true, aby potwierdzić")
+                self.logger.critical("Musisz ustawić OBYDWIE zmienne środowiskowe:")
+                self.logger.critical("1. BYBIT_PRODUCTION_CONFIRMED=true")
+                self.logger.critical("2. BYBIT_PRODUCTION_ENABLED=true")
+                
                 print("\n" + "!"*80)
-                print("!!! UWAGA !!! Wykryto próbę użycia PRODUKCYJNEGO API Bybit bez potwierdzenia!")
+                print("!!! UWAGA !!! Wykryto próbę użycia PRODUKCYJNEGO API Bybit bez pełnego potwierdzenia!")
                 print("!!! To może prowadzić do REALNYCH TRANSAKCJI z prawdziwymi środkami !!!")
-                print("!!! Aby potwierdzić, że chcesz użyć produkcyjnego API, ustaw zmienną środowiskową:")
-                print("!!! BYBIT_PRODUCTION_CONFIRMED=true")
+                print("!!! Aby potwierdzić, że chcesz użyć produkcyjnego API, ustaw OBYDWIE zmienne środowiskowe:")
+                print("!!! 1. BYBIT_PRODUCTION_CONFIRMED=true")
+                print("!!! 2. BYBIT_PRODUCTION_ENABLED=true")
                 print("!"*80 + "\n")
-                raise PermissionError("Użycie produkcyjnego API wymaga jawnego potwierdzenia przez zmienną środowiskową")
+                
+                # Automatycznie przełącz na testnet w przypadku braku potwierdzenia
+                self.use_testnet = True
+                self.base_url = "https://api-testnet.bybit.com"
+                self.logger.warning("Przełączono na testnet ze względu na brak pełnego potwierdzenia dla API produkcyjnego")
+                
+                # Nie rzucamy wyjątku - zamiast tego przełączamy na testnet
+                # Zapobiega to przerwaniu aplikacji
         else:
             self.logger.info("Używasz testnet API (środowisko testowe).")
 
