@@ -12,29 +12,44 @@ Zaawansowany system tradingowy z modułami AI, analizą techniczną i dashboarde
 
 ## Uruchamianie systemu
 
-### Główna aplikacja (API)
-```bash
-python run.py
-```
+System składa się z dwóch głównych komponentów:
+1. **Backend API** - serwer Flask obsługujący dane dla dashboardu
+2. **Dashboard** - interfejs użytkownika zbudowany w Streamlit
 
-### Dashboard (Streamlit)
+### Uruchamianie w trybie developerskim
+
 ```bash
+# Instalacja zależności
+pip install -r requirements.txt
+
+# Uruchomienie backendu
+python run.py    # Uruchamia główny system z API
+
+# Uruchomienie dashboardu (w osobnym terminalu)
 streamlit run dashboard.py
 ```
 
-### Tworzenie modeli AI
+### Zarządzanie modelami AI
+
 ```bash
+# Generowanie nowych modeli AI
 python create_models.py
+
+# Testowanie modeli AI
+python test_models.py
 ```
 
 ## Struktura projektu
-- `ai_models/` - Modele AI i ich implementacje
-- `data/` - Moduły dostępu do danych rynkowych
-- `python_libs/` - Podstawowe biblioteki systemu
-- `static/` - Pliki statyczne dla interfejsu
-- `templates/` - Szablony HTML
-- `models/` - Zapisane modele AI
-- `reports/` - Raporty z backtestingu
+
+- `dashboard.py` - Interfejs użytkownika zbudowany w Streamlit
+- `dashboard_api.py` - API do dostarczania danych dla dashboardu
+- `run.py` - Główny skrypt uruchomieniowy dla backendu
+- `create_models.py` - Skrypt do generowania podstawowych modeli AI
+- `test_models.py` - Skrypt do testowania modeli AI
+- `ai_models/` - Katalog zawierający modele AI
+- `python_libs/` - Biblioteki pomocnicze
+- `models/` - Zapisane modele ML w formacie pkl
+- `static/img/` - Obrazy, wykresy i inne zasoby statyczne
 
 ## Konfiguracja
 System konfiguruje się przez plik `.env` - skopiuj `.env.example` i dostosuj ustawienia.

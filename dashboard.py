@@ -88,10 +88,11 @@ def get_api_data(endpoint, default_data=None):
         if response.status_code == 200:
             return response.json()
         else:
-            st.error(f"Błąd API: {response.status_code}")
+            logger.error(f"Błąd API: {response.status_code} dla {endpoint}")
             return default_data
     except Exception as e:
-        st.warning(f"Nie można połączyć z API: {e}")
+        # W trybie developmentu używamy zapasowych danych
+        logger.error(f"Błąd podczas pobierania {endpoint}: {e}")
         return default_data
 
 # Nagłówek

@@ -2053,3 +2053,502 @@ if __name__ == "__main__":
     
     logger.info(f"Uruchamianie Trading Dashboard API na porcie {port}")
     uvicorn.run(app, host="0.0.0.0", port=port)
+#!/usr/bin/env python3
+"""
+dashboard_api.py - Backend API dla dashboardu tradingowego
+"""
+
+import os
+import sys
+import logging
+import json
+import numpy as np
+import pandas as pd
+from datetime import datetime, timedelta
+from flask import Flask, jsonify, request
+
+# Konfiguracja logowania
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler("logs/dashboard_api.log", mode="a")
+    ]
+)
+logger = logging.getLogger(__name__)
+
+# Dodanie bibliotek lokalnych do ścieżki Pythona
+sys.path.append(os.path.join(os.path.dirname(__file__), "python_libs"))
+
+# Tworzenie aplikacji Flask
+app = Flask(__name__)
+
+# Ustawienie trybu symulacji z zmiennej środowiskowej
+APP_ENV = os.environ.get("APP_ENV", "simulation")
+logger.info(f"Uruchamianie API w trybie: {APP_ENV}")
+
+# Funkcje pomocnicze
+def generate_fake_data():
+    """Generuje przykładowe dane na potrzeby dashboardu"""
+    return {
+        "price": np.random.uniform(50000, 60000),
+        "volume": np.random.uniform(1000, 5000),
+        "timestamp": datetime.now().isoformat()
+    }
+
+def load_simulation_reports():
+    """Ładuje raporty symulacji z katalogu reports"""
+    reports_data = {"results": []}
+    reports_dir = "reports"
+    
+    try:
+        if not os.path.exists(reports_dir):
+            return reports_data
+            
+        report_files = [f for f in os.listdir(reports_dir) if f.endswith('.json') and f.startswith('trading_report_')]
+        
+        for file_name in sorted(report_files, reverse=True)[:10]:  # Bierzemy 10 najnowszych
+            file_path = os.path.join(reports_dir, file_name)
+            try:
+                with open(file_path, 'r') as f:
+                    report = json.load(f)
+                
+                # Dodaj ID raportu na podstawie nazwy pliku
+                report_id = file_name.replace('trading_report_', '').replace('.json', '')
+                report['id'] = report_id
+                
+                # Dodaj ścieżkę do wykresu, jeśli istnieje
+                chart_path = f"static/img/simulation_chart_{report_id}.png"
+                if os.path.exists(chart_path):
+                    report['chart_path'] = chart_path
+                
+                reports_data["results"].append(report)
+            except Exception as e:
+                logger.error(f"Błąd podczas ładowania raportu {file_name}: {e}")
+                
+        logger.info(f"Załadowano {len(reports_data['results'])} raportów. Najnowszy: {report_id if 'report_id' in locals() else 'brak'}")
+    except Exception as e:
+        logger.error(f"Błąd podczas ładowania raportów symulacji: {e}")
+    
+    return reports_data
+
+# Endpointy API
+@app.route('/api/component-status', methods=['GET'])
+def get_component_status():
+    """Zwraca status komponentów systemu"""
+    # W symulacji zawsze zwracamy offline/online
+    if APP_ENV == "simulation":
+        return jsonify({
+            "api_status": "online",
+            "trading_status": "offline"
+        })
+    else:
+        # Tu dodać kod do sprawdzenia faktycznego statusu
+        return jsonify({
+            "api_status": "online", 
+            "trading_status": "online"
+        })
+
+@app.route('/api/portfolio', methods=['GET'])
+def get_portfolio():
+    """Zwraca informacje o portfelu"""
+    # W symulacji generujemy dane testowe
+    if APP_ENV == "simulation":
+        fake_balance = {
+            "USDT": 10000 + np.random.uniform(-500, 500),
+            "BTC": np.random.uniform(0.1, 0.5),
+            "ETH": np.random.uniform(1, 5)
+        }
+        
+        fake_positions = []
+        
+        # Dodaj przykładowe pozycje, jeśli potrzebne
+        if np.random.random() > 0.5:
+            fake_positions.append({
+                "symbol": "BTCUSDT",
+                "side": "LONG" if np.random.random() > 0.5 else "SHORT",
+                "size": np.random.uniform(0.1, 0.3),
+                "entry_price": np.random.uniform(50000, 55000),
+                "mark_price": np.random.uniform(50000, 55000),
+                "unrealized_pnl": np.random.uniform(-500, 500),
+                "roe": np.random.uniform(-5, 5)
+            })
+            
+        # Oblicz wartość całkowitą
+        equity = fake_balance["USDT"] + fake_balance["BTC"] * 50000 + fake_balance["ETH"] * 3000
+        available = fake_balance["USDT"]  # Uproszczenie - tylko USDT jest dostępne
+        unrealized_pnl = sum(pos["unrealized_pnl"] for pos in fake_positions) if fake_positions else 0
+        
+        return jsonify({
+            "balance": fake_balance,
+            "positions": fake_positions,
+            "equity": equity,
+            "available": available,
+            "unrealized_pnl": unrealized_pnl
+        })
+    else:
+        # Tu dodać kod do pobrania rzeczywistych danych
+        return jsonify({
+            "balance": {"USDT": 10000},
+            "positions": [],
+            "equity": 10000,
+            "available": 10000,
+            "unrealized_pnl": 0
+        })
+
+@app.route('/api/trades', methods=['GET'])
+def get_trades():
+    """Zwraca historię transakcji"""
+    # W symulacji generujemy dane testowe
+    if APP_ENV == "simulation":
+        fake_trades = []
+        now = datetime.now()
+        
+        for i in range(10):
+            trade_time = now - timedelta(hours=i)
+            entry_price = np.random.uniform(50000, 55000)
+            exit_price = np.random.uniform(50000, 55000)
+            quantity = np.random.uniform(0.1, 0.5)
+            profit_loss = (exit_price - entry_price) * quantity
+            profit_loss_percent = (exit_price / entry_price - 1) * 100
+            
+            fake_trades.append({
+                "symbol": "BTCUSDT",
+                "side": "BUY" if np.random.random() > 0.5 else "SELL",
+                "quantity": quantity,
+                "entry_price": entry_price,
+                "exit_price": exit_price if np.random.random() > 0.3 else None,
+                "profit_loss": profit_loss if np.random.random() > 0.3 else None,
+                "profit_loss_percent": profit_loss_percent if np.random.random() > 0.3 else None,
+                "status": "CLOSED" if np.random.random() > 0.3 else "OPEN",
+                "timestamp": trade_time.isoformat()
+            })
+            
+        return jsonify({
+            "trades": fake_trades
+        })
+    else:
+        # Tu dodać kod do pobrania rzeczywistych danych
+        return jsonify({
+            "trades": []
+        })
+
+@app.route('/api/chart-data', methods=['GET'])
+def get_chart_data():
+    """Zwraca dane do wykresu"""
+    symbol = request.args.get('symbol', 'BTCUSDT')
+    timeframe = request.args.get('timeframe', '1h')
+    
+    # Przygotuj przykładowe dane historyczne
+    now = datetime.now()
+    candles = []
+    base_price = 50000 if symbol == 'BTCUSDT' else 3000
+    
+    # Generuj dane dla ostatnich 100 świec
+    for i in range(100):
+        candle_time = now - timedelta(hours=i)
+        close_price = base_price + np.random.normal(0, base_price * 0.01)  # 1% zmienności
+        open_price = close_price * (1 + np.random.normal(0, 0.005))  # 0.5% różnicy
+        high_price = max(close_price, open_price) * (1 + np.random.uniform(0, 0.01))  # do 1% wyżej
+        low_price = min(close_price, open_price) * (1 - np.random.uniform(0, 0.01))  # do 1% niżej
+        volume = np.random.uniform(10, 100) * base_price / 1000  # Proporcjonalnie do ceny
+        
+        candles.append({
+            "timestamp": candle_time.isoformat(),
+            "open": open_price,
+            "high": high_price,
+            "low": low_price,
+            "close": close_price,
+            "volume": volume
+        })
+    
+    # Dodaj przykładowe wskaźniki
+    indicators = {
+        "MA_20": [{"timestamp": c["timestamp"], "value": c["close"] * (1 + np.random.normal(0, 0.005))} for c in candles],
+        "MA_50": [{"timestamp": c["timestamp"], "value": c["close"] * (1 + np.random.normal(0, 0.01))} for c in candles]
+    }
+    
+    return jsonify({
+        "candles": candles,
+        "indicators": indicators
+    })
+
+@app.route('/api/market/analyze', methods=['GET'])
+def analyze_market():
+    """Zwraca analizę rynku dla danego symbolu i interwału"""
+    symbol = request.args.get('symbol', 'BTCUSDT')
+    interval = request.args.get('interval', '1h')
+    strategy = request.args.get('strategy', 'trend_following')
+    
+    # Symulacja analizy rynku
+    signals = ["BUY", "SELL", "NEUTRAL"]
+    signal = signals[np.random.randint(0, len(signals))]
+    confidence = np.random.uniform(0.5, 1.0)
+    
+    # Przykładowe wskaźniki
+    indicators = {
+        "RSI": np.random.uniform(0, 100),
+        "MACD": np.random.uniform(-10, 10),
+        "BB_width": np.random.uniform(0, 2),
+        "ATR": np.random.uniform(100, 500),
+        "OBV": np.random.uniform(-10000, 10000),
+        "ADX": np.random.uniform(0, 100)
+    }
+    
+    return jsonify({
+        "symbol": symbol,
+        "interval": interval,
+        "strategy": strategy,
+        "signal": signal,
+        "confidence": confidence,
+        "indicators": indicators,
+        "timestamp": datetime.now().isoformat()
+    })
+
+@app.route('/api/sentiment', methods=['GET'])
+def get_sentiment():
+    """Zwraca analizę sentymentu rynku"""
+    # Symulacja analizy sentymentu
+    sentiment_value = np.random.uniform(-1, 1)
+    
+    # Określ tekstowy opis sentymentu
+    if sentiment_value > 0.3:
+        analysis = "Byczo"
+    elif sentiment_value < -0.3:
+        analysis = "Niedźwiedzio"
+    else:
+        analysis = "Neutralny"
+    
+    # Przykładowe źródła sentymentu
+    sources = {
+        "twitter": np.random.uniform(-1, 1),
+        "news": np.random.uniform(-1, 1),
+        "forum": np.random.uniform(-1, 1)
+    }
+    
+    return jsonify({
+        "value": sentiment_value,
+        "analysis": analysis,
+        "sources": sources,
+        "timestamp": datetime.now().isoformat()
+    })
+
+@app.route('/api/ai-models-status', methods=['GET'])
+def get_ai_models_status():
+    """Zwraca status modeli AI"""
+    try:
+        # Sprawdź, czy ModelTester jest dostępny
+        try:
+            from python_libs.model_tester import ModelTester
+            tester = ModelTester(models_path='ai_models', log_path='logs/model_tests.log')
+            logger.info("ModelTester zainicjalizowany. Katalog modeli: ai_models")
+        except ImportError:
+            logger.error("Nie można zaimportować ModelTester z python_libs")
+            return jsonify({"models": [], "error": "Nie można zaimportować ModelTester"})
+        
+        # Przykładowe statusy modeli
+        model_names = ["AnomalyDetector", "SentimentAnalyzer", "PricePredictor", "PatternRecognizer", "ML_Model"]
+        models = []
+        
+        for name in model_names:
+            status = "active" if np.random.random() > 0.2 else "inactive"
+            accuracy = np.random.uniform(50, 95)
+            last_active = (datetime.now() - timedelta(hours=np.random.randint(1, 48))).strftime("%Y-%m-%d %H:%M:%S")
+            
+            models.append({
+                "name": name,
+                "type": name.replace("Model", "").replace("Analyzer", ""),
+                "status": status,
+                "accuracy": accuracy,
+                "last_active": last_active
+            })
+        
+        return jsonify({"models": models})
+    except Exception as e:
+        logger.error(f"Błąd podczas pobierania statusu modeli AI: {e}")
+        return jsonify({"models": [], "error": str(e)})
+
+@app.route('/api/ai/learning-status', methods=['GET'])
+def get_ai_learning_status():
+    """Zwraca status uczenia modeli AI"""
+    # Symulacja statusu uczenia
+    models_in_training = np.random.randint(0, 3)
+    last_trained = (datetime.now() - timedelta(hours=np.random.randint(1, 24))).strftime("%Y-%m-%d %H:%M:%S")
+    best_accuracy = np.random.uniform(80, 95)
+    training_progress = np.random.uniform(0, 100)
+    
+    return jsonify({
+        "models_in_training": models_in_training,
+        "last_trained": last_trained,
+        "best_accuracy": best_accuracy,
+        "training_progress": training_progress
+    })
+
+@app.route('/api/ai/thoughts', methods=['GET'])
+def get_ai_thoughts():
+    """Zwraca przemyślenia AI na temat rynku"""
+    # Przykładowe przemyślenia AI
+    thoughts = [
+        "Wykryto silny trend wzrostowy na BTCUSDT, zalecana strategia: podążanie za trendem z TP na poziomie 55000 USD.",
+        "Wskaźniki techniczne sugerują możliwe odwrócenie trendu w ciągu najbliższych 24h. Rozważ redukcję ekspozycji.",
+        "Analiza sentymentu rynku wskazuje na strach wśród inwestorów, co może być dobrym momentem na akumulację.",
+        "Wykryto potencjalny arbitraż między BTCUSDT na Binance i Bybit, różnica 0.3%.",
+        "Model predykcyjny przewiduje konsolidację cenową w zakresie 48000-52000 USD w ciągu najbliższych 12h."
+    ]
+    
+    # Wybierz losowe myśli
+    selected_thoughts = np.random.choice(thoughts, size=np.random.randint(1, 4), replace=False).tolist()
+    
+    return jsonify({
+        "thoughts": selected_thoughts,
+        "timestamp": datetime.now().isoformat()
+    })
+
+@app.route('/api/logs', methods=['GET'])
+def get_logs():
+    """Zwraca logi systemowe"""
+    log_levels = ["INFO", "WARNING", "ERROR", "CRITICAL"]
+    logs = []
+    
+    # Generuj przykładowe logi
+    for _ in range(20):
+        level = np.random.choice(log_levels, p=[0.7, 0.15, 0.1, 0.05])
+        timestamp = (datetime.now() - timedelta(minutes=np.random.randint(1, 120))).strftime("%Y-%m-%d %H:%M:%S")
+        
+        message_templates = {
+            "INFO": [
+                "Połączono z API giełdy",
+                "Strategia X uruchomiona",
+                "Model Y załadowany pomyślnie",
+                "Zaktualizowano dane historyczne",
+                "Wygenerowano sygnał handlowy"
+            ],
+            "WARNING": [
+                "Opóźniony response z API",
+                "Niska płynność na rynku",
+                "Model nieaktualny - wymaga retreningu",
+                "Brak dostępu do niektórych danych",
+                "Rate limit osiągnięty"
+            ],
+            "ERROR": [
+                "Błąd połączenia z API",
+                "Błąd ładowania modelu",
+                "Nieprawidłowe dane wejściowe",
+                "Transakcja odrzucona",
+                "Brak uprawnień"
+            ],
+            "CRITICAL": [
+                "Utracono połączenie z giełdą",
+                "Krytyczny błąd systemu",
+                "Wykryto nieautoryzowaną transakcję",
+                "Utrata danych",
+                "Zamknięcie awaryjne"
+            ]
+        }
+        
+        message = np.random.choice(message_templates[level])
+        details = None if np.random.random() > 0.3 else f"Dodatkowe szczegóły: {np.random.randint(1000, 9999)}"
+        
+        logs.append({
+            "level": level,
+            "timestamp": timestamp,
+            "message": message,
+            "details": details
+        })
+    
+    # Sortuj logi według timestamp (najnowsze na górze)
+    logs = sorted(logs, key=lambda x: x["timestamp"], reverse=True)
+    
+    return jsonify({
+        "logs": logs
+    })
+
+@app.route('/api/status', methods=['GET'])
+def get_system_status():
+    """Zwraca status systemu i jego komponentów"""
+    components = {
+        "bybit_api": "online" if np.random.random() > 0.2 else "offline",
+        "binance_api": "online" if np.random.random() > 0.2 else "offline",
+        "ccxt": "online" if np.random.random() > 0.1 else "offline",
+        "strategy_manager": "online" if np.random.random() > 0.1 else "offline",
+        "model_recognizer": "online" if np.random.random() > 0.2 else "offline",
+        "anomaly_detector": "online" if np.random.random() > 0.2 else "offline",
+        "sentiment_analyzer": "online" if np.random.random() > 0.2 else "offline"
+    }
+    
+    overall_status = "online" if all(status == "online" for status in components.values()) else "degraded"
+    
+    return jsonify({
+        "status": overall_status,
+        "components": components,
+        "timestamp": datetime.now().isoformat()
+    })
+
+@app.route('/api/simulation-results', methods=['GET'])
+def get_simulation_results():
+    """Zwraca wyniki symulacji strategii"""
+    return load_simulation_reports()
+
+@app.route('/api/dashboard/data', methods=['GET'])
+def get_dashboard_data():
+    """Zwraca wszystkie potrzebne dane dla dashboardu w jednym zapytaniu"""
+    try:
+        logger.info("Aktualizacja danych dashboardu...")
+        
+        # Symulacja danych dashboardu
+        last_candle = {
+            "open": np.random.uniform(50000, 51000),
+            "high": np.random.uniform(51000, 52000),
+            "low": np.random.uniform(49000, 50000),
+            "close": np.random.uniform(50000, 51000),
+            "volume": np.random.uniform(1000, 5000),
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        market_sentiment = np.random.uniform(-1, 1)
+        
+        active_strategies = []
+        for strategy in ["trend_following", "mean_reversion", "breakout", "ml_prediction"]:
+            if np.random.random() > 0.5:
+                active_strategies.append({
+                    "name": strategy,
+                    "status": "active",
+                    "last_signal": np.random.choice(["BUY", "SELL", "NEUTRAL"]),
+                    "performance": np.random.uniform(-10, 10)
+                })
+        
+        system_health = {
+            "cpu_usage": np.random.uniform(10, 90),
+            "memory_usage": np.random.uniform(20, 80),
+            "api_latency": np.random.uniform(50, 500),
+            "errors_count": np.random.randint(0, 10)
+        }
+        
+        return jsonify({
+            "last_update": datetime.now().isoformat(),
+            "last_candle": last_candle,
+            "market_sentiment": market_sentiment,
+            "active_strategies": active_strategies,
+            "system_health": system_health
+        })
+    except Exception as e:
+        logger.error(f"Błąd podczas pobierania danych dashboardu: {e}")
+        return jsonify({"error": str(e)})
+
+# Endpoint dla testów API
+@app.route('/api/test', methods=['GET'])
+def test_api():
+    """Prosty endpoint testowy do sprawdzenia działania API"""
+    return jsonify({
+        "status": "ok",
+        "message": "Dashboard API działa poprawnie",
+        "env": APP_ENV,
+        "timestamp": datetime.now().isoformat()
+    })
+
+# Główna funkcja uruchamiająca serwer
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    logger.info(f"Uruchamianie Dashboard API na porcie {port}...")
+    app.run(host="0.0.0.0", port=port, debug=False)

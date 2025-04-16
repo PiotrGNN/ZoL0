@@ -257,3 +257,147 @@ def main():
 
 if __name__ == "__main__":
     main()
+#!/usr/bin/env python3
+"""
+create_models.py - Skrypt do tworzenia i zapisywania podstawowych modeli ML
+"""
+
+import os
+import numpy as np
+import pandas as pd
+import joblib
+import pickle
+import logging
+from datetime import datetime
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestRegressor, IsolationForest
+
+# Konfiguracja logowania
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler("logs/create_models.log")
+    ]
+)
+logger = logging.getLogger(__name__)
+
+# Upewnij się, że katalogi istnieją
+os.makedirs("models", exist_ok=True)
+os.makedirs("logs", exist_ok=True)
+
+def create_standard_scaler():
+    """Tworzy i zapisuje model StandardScaler"""
+    logger.info("Tworzenie modelu StandardScaler...")
+    # Generuj przykładowe dane
+    X = np.random.rand(100, 5)
+    
+    # Utwórz i wytrenuj model
+    scaler = StandardScaler()
+    scaler.fit(X)
+    
+    # Zapisz model
+    model_path = "models/datascaler_model.pkl"
+    metadata_path = "models/datascaler_metadata.json"
+    
+    try:
+        # Zapisz model z metadanymi
+        joblib.dump(scaler, model_path)
+        
+        # Zapisz podstawowe metadane jako plik JSON
+        import json
+        metadata = {
+            "name": "DataScaler",
+            "type": "StandardScaler",
+            "created_at": datetime.now().isoformat(),
+            "features_count": X.shape[1],
+            "samples_trained": X.shape[0]
+        }
+        
+        with open(metadata_path, 'w') as f:
+            json.dump(metadata, f, indent=2)
+            
+        logger.info(f"Model StandardScaler zapisany do {model_path}")
+        return True
+    except Exception as e:
+        logger.error(f"Błąd podczas zapisywania modelu StandardScaler: {e}")
+        return False
+
+def create_random_forest():
+    """Tworzy i zapisuje model RandomForest"""
+    logger.info("Tworzenie modelu RandomForest...")
+    # Generuj przykładowe dane
+    X = np.random.rand(100, 5)
+    y = np.random.rand(100) * 10  # Przykładowe wartości docelowe
+    
+    # Utwórz i wytrenuj model
+    rf_model = RandomForestRegressor(n_estimators=10, random_state=42)
+    rf_model.fit(X, y)
+    
+    # Zapisz model
+    model_path = "models/random_forest_model.pkl"
+    
+    try:
+        # Zapisz model
+        with open(model_path, 'wb') as f:
+            pickle.dump(rf_model, f)
+            
+        logger.info(f"Model RandomForest zapisany do {model_path}")
+        return True
+    except Exception as e:
+        logger.error(f"Błąd podczas zapisywania modelu RandomForest: {e}")
+        return False
+
+def create_isolation_forest():
+    """Tworzy i zapisuje model IsolationForest do wykrywania anomalii"""
+    logger.info("Tworzenie modelu IsolationForest...")
+    # Generuj przykładowe dane
+    X = np.random.rand(100, 5)
+    
+    # Utwórz i wytrenuj model
+    iso_model = IsolationForest(random_state=42, contamination=0.1)
+    iso_model.fit(X)
+    
+    # Zapisz model
+    model_path = "models/isolation_forest_model.pkl"
+    
+    try:
+        # Zapisz model
+        with open(model_path, 'wb') as f:
+            pickle.dump(iso_model, f)
+            
+        logger.info(f"Model IsolationForest zapisany do {model_path}")
+        return True
+    except Exception as e:
+        logger.error(f"Błąd podczas zapisywania modelu IsolationForest: {e}")
+        return False
+
+def main():
+    """Główna funkcja do tworzenia wszystkich modeli"""
+    logger.info("Rozpoczynam tworzenie podstawowych modeli ML...")
+    
+    # Utwórz modele
+    scaler_result = create_standard_scaler()
+    rf_result = create_random_forest()
+    iso_result = create_isolation_forest()
+    
+    # Podsumowanie
+    results = {
+        "StandardScaler": scaler_result,
+        "RandomForest": rf_result,
+        "IsolationForest": iso_result
+    }
+    
+    success_count = sum(1 for result in results.values() if result)
+    total_count = len(results)
+    
+    logger.info(f"Tworzenie modeli zakończone. Utworzono {success_count}/{total_count} modeli.")
+    for model_name, result in results.items():
+        status = "✅ Sukces" if result else "❌ Błąd"
+        logger.info(f"- {model_name}: {status}")
+    
+    return success_count == total_count
+
+if __name__ == "__main__":
+    main()
