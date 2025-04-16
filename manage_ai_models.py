@@ -545,3 +545,92 @@ def test_model(model_name=None):
 if __name__ == "__main__":
     logger.info("Narzędzie zarządzania modelami AI")
     main()
+import os
+import shutil
+import logging
+import pickle
+import datetime
+import argparse
+import traceback
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+
+def fix_corrupted_models():
+    """Usuwa lub regeneruje uszkodzone modele."""
+    models_dir = 'models'
+    if not os.path.exists(models_dir):
+        logging.error("Katalog modeli nie istnieje!")
+        return
+    
+    # Tworzenie katalogu na uszkodzone modele
+    corrupted_dir = os.path.join(models_dir, 'corrupted')
+    os.makedirs(corrupted_dir, exist_ok=True)
+    
+    # Skanowanie plików modeli
+    model_files = [f for f in os.listdir(models_dir) if f.endswith('.pkl')]
+    fixed_count = 0
+    moved_count = 0
+    
+    for model_file in model_files:
+        model_path = os.path.join(models_dir, model_file)
+        try:
+            # Sprawdź czy plik jest pusty
+            if os.path.getsize(model_path) == 0:
+                logging.warning(f"Model {model_file} jest pusty. Przenoszenie do {corrupted_dir}")
+                shutil.move(model_path, os.path.join(corrupted_dir, model_file))
+                moved_count += 1
+                continue
+                
+            # Sprawdź czy model można załadować
+            with open(model_path, 'rb') as f:
+                try:
+                    model = pickle.load(f)
+                    # Model załadowany poprawnie
+                    continue
+                except (pickle.UnpicklingError, EOFError, AttributeError) as e:
+                    logging.error(f"Model {model_file} jest uszkodzony: {str(e)}")
+                    
+                    # Sprawdź, czy istnieje kopia zapasowa
+                    backup_file = model_file.replace('.pkl', '_backup.pkl')
+                    backup_path = os.path.join(models_dir, backup_file)
+                    
+                    if os.path.exists(backup_path):
+                        # Przywróć z kopii zapasowej
+                        shutil.copy(backup_path, model_path)
+                        logging.info(f"Przywrócono model {model_file} z kopii zapasowej")
+                        fixed_count += 1
+                    else:
+                        # Przenieś uszkodzony model do folderu corrupted
+                        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                        corrupt_name = f"{model_file}.corrupted.{timestamp}"
+                        shutil.move(model_path, os.path.join(corrupted_dir, corrupt_name))
+                        logging.info(f"Przeniesiono uszkodzony model {model_file} do {corrupted_dir}/{corrupt_name}")
+                        moved_count += 1
+                        
+                        # Sprawdź czy istnieje alternatywny model w saved_models
+                        alt_model_name = model_file.replace('model.pkl', '')
+                        if os.path.exists('saved_models'):
+                            alt_models = [f for f in os.listdir('saved_models') if alt_model_name in f and f.endswith('.pkl')]
+                            if alt_models:
+                                # Użyj najnowszego alternatywnego modelu
+                                alt_models.sort(key=lambda x: os.path.getmtime(os.path.join('saved_models', x)), reverse=True)
+                                src_path = os.path.join('saved_models', alt_models[0])
+                                shutil.copy(src_path, model_path)
+                                logging.info(f"Zastąpiono uszkodzony model {model_file} alternatywnym: {alt_models[0]}")
+                                fixed_count += 1
+        except Exception as e:
+            logging.error(f"Błąd podczas sprawdzania modelu {model_file}: {str(e)}")
+    
+    logging.info(f"Naprawa zakończona: {fixed_count} modeli naprawionych, {moved_count} modeli przeniesionych")
+    return fixed_count, moved_count
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Zarządzanie modelami AI")
+    parser.add_argument('--fix', action='store_true', help='Napraw uszkodzone modele')
+    
+    # Dodaj pozostałe opcje argumentów jeśli istnieją w oryginalnym pliku
+    
+    args = parser.parse_args()
+    
+    if args.fix:
+        fix_corrupted_models()
