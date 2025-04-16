@@ -1,161 +1,91 @@
 run = "python main.py"
 language = "python3"
-
-[nix]
-channel = "stable-22_11"
-
-[env]
-PYTHONPATH="${PYTHONPATH}:${HOME}/.venv/lib/python3.10/site-packages:."
-BYBIT_TESTNET="true"
-BYBIT_PRODUCTION_CONFIRMED="false"
-BYBIT_PRODUCTION_ENABLED="false"
-
-[languages]
-python = "3.11"
-
-[deployment]
-run = "python main.py"
-deploymentTarget = "cloudrun"
-
-[replit]
-languageServer = { version = "7.2.6" }
-
-[keybindings]
-run = "ctrl+r"
-test = "ctrl+shift+t"
-deploy = "ctrl+shift+d"
-
-[workflow.Test\ Modeli]
-name = "Test Modeli"
-description = "Uruchamia testy modeli AI"
-command = "python test_models.py"
-
-[workflow.Test\ Modeli\ z\ Retrainingiem]
-name = "Test Modeli z Retrainingiem"
-description = "Uruchamia testy modeli AI z wymuszonym retrenowaniem"
-command = "python test_models.py --force-retrain"
-
-[workflow.Czyszczenie\ Cache]
-name = "Czyszczenie Cache"
-description = "Czyści dane cache"
-command = "python -c \"from data.utils.cache_manager import clean_old_data; clean_old_data(); print('✅ Cache wyczyszczone!')\""
-
-[workflow.Testy\ Pełne]
-name = "Testy Pełne"
-description = "Uruchamia pełne testy środowiska i modeli"
-command = """
-python test_environment.py
-python test_data_conversion.py
-python test_models.py
-"""
-
-[workflow.Test\ Konwersji\ Danych]
-name = "Test Konwersji Danych"
-description = "Testuje konwersję danych"
-command = "python test_data_conversion.py"
-
-[workflow.Uruchom\ Dashboard]
-name = "Uruchom Dashboard"
-description = "Uruchamia dashboard główny aplikacji"
-command = "python main.py"
-
-[workflow.Naprawiony\ System]
-name = "Naprawiony System"
-description = "Uruchamia system po naprawach"
-run = true
-command = "python main.py"
 entrypoint = "main.py"
 modules = ["python-3.10:v18-20230807-322e88b"]
 
-[nix]
-channel = "stable-23_05"
+hidden = [".pytest_cache", "__pycache__", ".idea", ".vscode", "venv"]
 
-[deployment]
-run = ["python", "main.py"]
-deploymentTarget = "cloudrun"
+[nix]
+channel = "stable-23_11"
+
+[env]
+VIRTUAL_ENV = "/home/runner/${REPL_SLUG}/venv"
+PATH = "${VIRTUAL_ENV}/bin:${PATH}"
+PYTHONPATH = "${VIRTUAL_ENV}/lib/python3.10/site-packages"
+REPLIT_POETRY_PYPI_REPOSITORY = "https://package-proxy.replit.com/pypi/"
+MPLBACKEND = "TkAgg"
+PYTHONUNBUFFERED = "1"
 
 [unitTest]
 language = "python3"
 
-[workflows]
+[gitHubImport]
+requiredFiles = [".replit", "replit.nix", ".config", "venv", ".gitignore"]
 
-[[workflows.workflow]]
-name = "Naprawiony System"
-mode = "sequential"
+[deployment]
+run = ["sh", "-c", "python main.py"]
+deploymentTarget = "cloudrun"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python main.py"
-
-[[workflows.workflow]]
-name = "Test Modeli"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python test_models.py"
-
-[[workflows.workflow]]
-name = "Czyszczenie Cache"
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python -c \"from data.utils.cache_manager import clean_old_data; clean_old_data(); print('✅ Cache wyczyszczone!')\""
-
-[[workflows.workflow]]
-name = "Testy Pełne"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python test_environment.py"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python test_data_conversion.py"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python test_models.py"
-
-[[workflows.workflow]]
-name = "Test Konwersji Danych"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python test_data_conversion.py"
-
-[[workflows.workflow]]
-name = "Test Modeli z Retrainingiem"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python test_models.py --force-retrain"
-
-[[workflows.workflow]]
-name = "Uruchom Dashboard"
-author = 31819671
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python main.py"
+[interpreter]
+command = ["python", "-u", "main.py"]
 
 [packager]
 language = "python3"
+ignoredPackages = ["unit_tests"]
 
 [packager.features]
 packageSearch = true
 guessImports = true
-enabledForHosting = true
+enabledForHosting = false
 
-[[ports]]
-localPort = 5000
-externalPort = 80
+[debugger]
+support = true
+
+[debugger.interactive]
+transport = "localhost:0"
+startCommand = ["dap-python", "main.py"]
+
+[debugger.interactive.integratedAdapter]
+dapTcpAddress = "localhost:0"
+
+[debugger.interactive.initializeMessage]
+command = "initialize"
+type = "request"
+
+[debugger.interactive.initializeMessage.arguments]
+adapterID = "debugpy"
+clientID = "replit"
+clientName = "replit.com"
+columnsStartAt1 = true
+linesStartAt1 = true
+locale = "en-us"
+pathFormat = "path"
+supportsInvalidatedEvent = true
+supportsProgressReporting = true
+supportsRunInTerminalRequest = true
+supportsVariablePaging = true
+supportsVariableType = true
+
+[debugger.interactive.launchMessage]
+command = "launch"
+type = "request"
+
+[debugger.interactive.launchMessage.arguments]
+console = "externalTerminal"
+cwd = "."
+debugOptions = []
+program = "main.py"
+request = "launch"
+type = "python"
+
+[workflows]
+runButton = "Run"
+
+[[workflows.workflow]]
+name = "Run"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python main.py"
