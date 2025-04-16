@@ -1,41 +1,29 @@
 run = "python main.py"
-entrypoint = "main.py"
+language = "python3"
 
 [nix]
 channel = "stable-22_11"
 
-[deployment]
-run = ["sh", "-c", "python main.py"]
-deploymentTarget = "cloudrun"
-
 [env]
-PYTHONPATH = "."
-FLASK_APP = "main.py"
+PYTHONPATH="${PYTHONPATH}:${HOME}/.venv/lib/python3.10/site-packages:."
+BYBIT_TESTNET="true"
+BYBIT_PRODUCTION_CONFIRMED="false"
+BYBIT_PRODUCTION_ENABLED="false"
 
 [languages]
+python = "3.11"
 
-[languages.python3]
-pattern = "**/*.py"
+[deployment]
+run = "python main.py"
+deploymentTarget = "cloudrun"
 
-[languages.python3.languageServer]
-start = "pylsp"
+[replit]
+languageServer = { version = "7.2.6" }
 
-[unitTest]
-language = "python3"
-
-[gitHubImport]
-requiredFiles = [".replit", "replit.nix", "requirements.txt"]
-
-[packager]
-language = "python3"
-
-[packager.features]
-packageSearch = true
-guessImports = true
-enabledForHosting = false
-
-[interpreter]
-command = ["python", "-u"]
+[keybindings]
+run = "ctrl+r"
+test = "ctrl+shift+t"
+deploy = "ctrl+shift+d"
 
 [workflow.Test\ Modeli]
 name = "Test Modeli"
@@ -159,19 +147,6 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python main.py"
-
-# Wspólne skróty
-[keybindings]
-run = "ctrl+r"
-test = "ctrl+shift+t"
-deploy = "ctrl+shift+d"
-
-[env]
-PYTHONPATH = "${PYTHONPATH}:${REPL_HOME}"
-FLASK_APP = "main.py"
-FLASK_ENV = "development"
-PORT = "5000"
-HOST = "0.0.0.0"
 
 [packager]
 language = "python3"

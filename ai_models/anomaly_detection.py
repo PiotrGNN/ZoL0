@@ -1,195 +1,276 @@
+
 """
-anomaly_detection.py - Moduł do wykrywania anomalii w danych rynkowych
+anomaly_detection.py
+------------------
+Moduł zawierający klasę AnomalyDetector do wykrywania anomalii w danych cenowych.
 """
 
-import logging
-import time
+import os
 import numpy as np
-from typing import Dict, Any, List, Optional
-
-# Eksport klasy AnomalyDetector
-__all__ = ["AnomalyDetector"]
-
-# Konfiguracja logowania
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s"
-)
-logger = logging.getLogger(__name__)
+import pandas as pd
+from typing import Dict, List, Optional, Tuple, Union
+import logging
 
 class AnomalyDetector:
     """
-    Klasa do wykrywania anomalii w danych rynkowych.
-    Wykorzystuje różne metody detekcji anomalii, takie jak Z-score, IQR, itp.
+    Klasa do wykrywania anomalii w danych cenowych i sygnałach transakcyjnych.
+    Użyteczna do identyfikacji potencjalnych błędów w strategiach lub manipulacji rynkiem.
     """
-
-    def __init__(self, method: str = "z_score", threshold: float = 3.0):
+    
+    def __init__(self, model_path: Optional[str] = None, sensitivity: float = 0.05):
         """
         Inicjalizacja detektora anomalii.
-
-        Parameters:
-            method (str): Metoda wykrywania anomalii ('z_score', 'iqr', 'local_outlier')
-            threshold (float): Próg uznania obserwacji za anomalię
+        
+        Args:
+            model_path: Opcjonalna ścieżka do zapisanego modelu
+            sensitivity: Poziom czułości wykrywania anomalii (0.01-0.1, gdzie niższe wartości oznaczają większą czułość)
         """
-        self.method = method
-        self.threshold = threshold
-        self.anomalies = []
-        self.detection_method = method
-        logging.info(f"Zainicjalizowano AnomalyDetector (metoda: {method}, próg: {threshold})")
-
-    def detect(self, data, column=None):
+        self.model = None
+        self.sensitivity = max(0.01, min(0.1, sensitivity))  # Zakres 0.01-0.1
+        
+        if model_path and os.path.exists(model_path):
+            try:
+                import pickle
+                with open(model_path, 'rb') as f:
+                    self.model = pickle.load(f)
+                logging.info(f"Załadowano model detekcji anomalii z {model_path}")
+            except Exception as e:
+                logging.error(f"Nie udało się załadować modelu detekcji anomalii: {e}")
+                self._initialize_default_model()
+        else:
+            self._initialize_default_model()
+    
+    def _initialize_default_model(self):
+        """Inicjalizuje domyślny model detekcji anomalii."""
+        try:
+            from sklearn.ensemble import IsolationForest
+            self.model = IsolationForest(
+                contamination=self.sensitivity,  # Oczekiwany procent anomalii w danych
+                random_state=42,
+                n_estimators=100
+            )
+            logging.info("Zainicjalizowano domyślny model detekcji anomalii (Isolation Forest)")
+        except ImportError:
+            logging.warning("Nie można zaimportować scikit-learn. Używam prostego modelu zastępczego.")
+            self.model = None
+    
+    def fit(self, data: Union[pd.DataFrame, np.ndarray]) -> None:
+        """
+        Trenuje model detekcji anomalii na danych.
+        
+        Args:
+            data: Dane treningowe (DataFrame lub np.ndarray)
+        """
+        if self.model is None:
+            self._initialize_default_model()
+            
+        if self.model is None:
+            logging.warning("Brak modelu do treningu (scikit-learn niedostępny)")
+            return
+            
+        try:
+            # Przygotuj dane do treningu
+            X = self._prepare_data(data)
+            
+            # Trenuj model
+            self.model.fit(X)
+            logging.info(f"Wytrenowano model detekcji anomalii na {X.shape[0]} próbkach")
+        except Exception as e:
+            logging.error(f"Błąd podczas treningu modelu detekcji anomalii: {e}")
+    
+    def detect(self, data: Union[pd.DataFrame, np.ndarray]) -> Dict[str, Any]:
         """
         Wykrywa anomalie w danych.
-
-        Parameters:
-            data: Dane do analizy (np. numpy array, pandas DataFrame, lista)
-            column: Opcjonalna nazwa kolumny, jeśli data to DataFrame
-
+        
+        Args:
+            data: Dane do analizy (DataFrame lub np.ndarray)
+            
         Returns:
-            List[int]: Indeksy wykrytych anomalii
+            Dict: Wyniki detekcji zawierające indeksy anomalii i ich wyniki
         """
-        if self.method == "z_score":
-            return self._detect_zscore(data, column)
-        elif self.method == "iqr":
-            return self._detect_iqr(data, column)
+        try:
+            if self.model is None:
+                return self._fallback_detect(data)
+                
+            # Przygotuj dane
+            X = self._prepare_data(data)
+            
+            # Wykonaj predykcję (-1 to anomalia, 1 to normalne dane)
+            predictions = self.model.predict(X)
+            scores = self.model.decision_function(X)
+            
+            # Znajdź indeksy anomalii
+            anomaly_indices = np.where(predictions == -1)[0]
+            
+            # Jeśli dane zawierają indeks czasowy, użyj go
+            timestamps = None
+            if isinstance(data, pd.DataFrame) and isinstance(data.index, pd.DatetimeIndex):
+                timestamps = data.index[anomaly_indices].tolist()
+            
+            # Stwórz wynik
+            result = {
+                "anomaly_indices": anomaly_indices.tolist(),
+                "anomaly_scores": scores[anomaly_indices].tolist(),
+                "anomaly_count": len(anomaly_indices),
+                "total_samples": X.shape[0],
+                "anomaly_ratio": len(anomaly_indices) / X.shape[0] if X.shape[0] > 0 else 0,
+                "timestamps": timestamps
+            }
+            
+            return result
+        except Exception as e:
+            logging.error(f"Błąd podczas wykrywania anomalii: {e}")
+            return self._fallback_detect(data)
+    
+    def _fallback_detect(self, data: Union[pd.DataFrame, np.ndarray]) -> Dict[str, Any]:
+        """
+        Prosta metoda zastępcza do wykrywania anomalii bez modelu.
+        
+        Args:
+            data: Dane do analizy
+            
+        Returns:
+            Dict: Wyniki detekcji
+        """
+        try:
+            # Konwertuj dane do numpy array jeśli potrzeba
+            if isinstance(data, pd.DataFrame):
+                X = data.select_dtypes(include=['number']).values
+            else:
+                X = data
+                
+            # Metoda zastępcza - użyj prostej metody z-score do wykrywania anomalii
+            mean = np.mean(X, axis=0)
+            std = np.std(X, axis=0) + 1e-10  # Unikaj dzielenia przez 0
+            
+            # Oblicz z-scores
+            z_scores = np.abs((X - mean) / std)
+            
+            # Użyj maksymalnego z-score każdej próbki jako wyniku anomalii
+            max_z_scores = np.max(z_scores, axis=1)
+            
+            # Próg z-score odpowiadający czułości
+            threshold = max(2.5, 3.0 - self.sensitivity * 10)
+            
+            # Znajdź indeksy anomalii
+            anomaly_indices = np.where(max_z_scores > threshold)[0]
+            
+            # Jeśli dane zawierają indeks czasowy, użyj go
+            timestamps = None
+            if isinstance(data, pd.DataFrame) and isinstance(data.index, pd.DatetimeIndex):
+                timestamps = data.index[anomaly_indices].tolist()
+            
+            # Stwórz wynik
+            result = {
+                "anomaly_indices": anomaly_indices.tolist(),
+                "anomaly_scores": max_z_scores[anomaly_indices].tolist(),
+                "anomaly_count": len(anomaly_indices),
+                "total_samples": X.shape[0],
+                "anomaly_ratio": len(anomaly_indices) / X.shape[0] if X.shape[0] > 0 else 0,
+                "timestamps": timestamps,
+                "method": "z_score_fallback"
+            }
+            
+            return result
+        except Exception as e:
+            logging.error(f"Błąd podczas zastępczego wykrywania anomalii: {e}")
+            return {
+                "anomaly_indices": [],
+                "anomaly_scores": [],
+                "anomaly_count": 0,
+                "total_samples": 0,
+                "anomaly_ratio": 0,
+                "error": str(e),
+                "method": "failed_fallback"
+            }
+    
+    def _prepare_data(self, data: Union[pd.DataFrame, np.ndarray]) -> np.ndarray:
+        """
+        Przygotowuje dane do analizy.
+        
+        Args:
+            data: Dane wejściowe (DataFrame lub np.ndarray)
+            
+        Returns:
+            np.ndarray: Przygotowane dane
+        """
+        if isinstance(data, pd.DataFrame):
+            # Wybierz tylko kolumny numeryczne
+            numeric_data = data.select_dtypes(include=['number'])
+            
+            # Dodaj cechy techniczne jeśli są dostępne odpowiednie kolumny
+            if all(col in data.columns for col in ['open', 'high', 'low', 'close']):
+                price_volatility = data['high'] - data['low']
+                price_change = data['close'] - data['open']
+                numeric_data['price_volatility'] = price_volatility
+                numeric_data['price_change'] = price_change
+            
+            # Wypełnij braki danych
+            numeric_data = numeric_data.fillna(method='ffill').fillna(0)
+            
+            return numeric_data.values
         else:
-            logging.warning(f"Nieznana metoda detekcji anomalii: {self.method}. Użycie domyślnej z_score.")
-            return self._detect_zscore(data, column)
-
-    def _detect_zscore(self, data, column=None):
+            # Zakładamy, że dane są już w formacie np.ndarray
+            # Wypełnij braki danych
+            if np.isnan(data).any():
+                data = np.nan_to_num(data, nan=0.0)
+            return data
+    
+    def predict(self, data: Union[pd.DataFrame, np.ndarray]) -> np.ndarray:
         """
-        Wykrywa anomalie metodą Z-score.
-
-        Parameters:
+        Kompatybilność ze standardowym interfejsem - przewiduje, czy dane są anomaliami.
+        
+        Args:
             data: Dane do analizy
-            column: Opcjonalna nazwa kolumny
-
+            
         Returns:
-            List[int]: Indeksy wykrytych anomalii
+            np.ndarray: Wynik detekcji (-1 dla anomalii, 1 dla normalnych danych)
         """
         try:
-            # Konwersja na numpy array
-            if column is not None and hasattr(data, 'loc'):
-                values = data[column].values
-            else:
-                values = np.array(data)
-
-            # Obliczenie Z-score
-            mean = np.mean(values)
-            std = np.std(values)
-
-            if std == 0:
-                return []
-
-            z_scores = np.abs((values - mean) / std)
-
-            # Znalezienie anomalii
-            anomaly_indices = np.where(z_scores > self.threshold)[0]
-
-            # Logowanie wykrytych anomalii
-            if len(anomaly_indices) > 0:
-                logging.info(f"Wykryto {len(anomaly_indices)} anomalii metodą Z-score")
-                for idx in anomaly_indices:
-                    self.log_anomaly({
-                        'index': int(idx),
-                        'value': float(values[idx]),
-                        'z_score': float(z_scores[idx]),
-                        'method': 'z_score'
-                    })
-
-            return anomaly_indices.tolist()
+            if self.model is None:
+                self._initialize_default_model()
+                
+            if self.model is None:
+                # Fallback gdy model jest niedostępny
+                X = self._prepare_data(data)
+                result = np.ones(X.shape[0])
+                detection = self._fallback_detect(data)
+                result[detection["anomaly_indices"]] = -1
+                return result
+            
+            # Przygotuj dane
+            X = self._prepare_data(data)
+            
+            # Wykonaj predykcję
+            return self.model.predict(X)
         except Exception as e:
-            logging.error(f"Błąd podczas detekcji anomalii metodą Z-score: {e}")
-            return []
-
-    def _detect_iqr(self, data, column=None):
+            logging.error(f"Błąd podczas przewidywania anomalii: {e}")
+            # W przypadku błędu zwróć wszystkie dane jako normalne
+            if isinstance(data, pd.DataFrame):
+                return np.ones(data.shape[0])
+            else:
+                return np.ones(data.shape[0] if len(data.shape) > 1 else len(data))
+                
+    def save_model(self, path: str) -> bool:
         """
-        Wykrywa anomalie metodą IQR (Interquartile Range).
-
-        Parameters:
-            data: Dane do analizy
-            column: Opcjonalna nazwa kolumny
-
+        Zapisuje model do pliku.
+        
+        Args:
+            path: Ścieżka do pliku
+            
         Returns:
-            List[int]: Indeksy wykrytych anomalii
+            bool: True jeśli zapis się powiódł, False w przeciwnym razie
         """
         try:
-            # Konwersja na numpy array
-            if column is not None and hasattr(data, 'loc'):
-                values = data[column].values
+            if self.model is not None:
+                import pickle
+                with open(path, 'wb') as f:
+                    pickle.dump(self.model, f)
+                logging.info(f"Model detekcji anomalii zapisany w {path}")
+                return True
             else:
-                values = np.array(data)
-
-            # Obliczenie IQR
-            q1 = np.percentile(values, 25)
-            q3 = np.percentile(values, 75)
-            iqr = q3 - q1
-
-            lower_bound = q1 - (self.threshold * iqr)
-            upper_bound = q3 + (self.threshold * iqr)
-
-            # Znalezienie anomalii
-            anomalies_lower = values < lower_bound
-            anomalies_upper = values > upper_bound
-            anomaly_indices = np.where(anomalies_lower | anomalies_upper)[0]
-
-            # Logowanie wykrytych anomalii
-            if len(anomaly_indices) > 0:
-                logging.info(f"Wykryto {len(anomaly_indices)} anomalii metodą IQR")
-                for idx in anomaly_indices:
-                    value = values[idx]
-                    bound_type = "lower" if value < lower_bound else "upper"
-                    bound_value = lower_bound if bound_type == "lower" else upper_bound
-                    self.log_anomaly({
-                        'index': int(idx),
-                        'value': float(value),
-                        'bound_type': bound_type,
-                        'bound_value': float(bound_value),
-                        'method': 'iqr'
-                    })
-
-            return anomaly_indices.tolist()
+                logging.warning("Brak modelu do zapisania")
+                return False
         except Exception as e:
-            logging.error(f"Błąd podczas detekcji anomalii metodą IQR: {e}")
-            return []
-
-    def analyze_market_data(self, data: Dict[str, Any]) -> List[Dict[str, Any]]:
-        """
-        Analizuje dane rynkowe w poszukiwaniu anomalii.
-
-        Parameters:
-            data (Dict[str, Any]): Dane do analizy.
-
-        Returns:
-            List[Dict[str, Any]]: Lista wykrytych anomalii.
-        """
-        # Implementacja detekcji anomalii
-        # W szablonie zwracamy pustą listę
-        return []
-
-    def get_detected_anomalies(self) -> List[Dict[str, Any]]:
-        """
-        Zwraca wykryte anomalie z pamięci podręcznej.
-
-        Returns:
-            List[Dict[str, Any]]: Lista wykrytych anomalii.
-        """
-        return self.anomalies
-
-    def log_anomaly(self, anomaly: Dict[str, Any]) -> None:
-        """
-        Loguje wykrytą anomalię.
-
-        Parameters:
-            anomaly (Dict[str, Any]): Dane anomalii.
-        """
-        logging.warning(f"Wykryto anomalię: {anomaly}")
-        self.anomalies.append({
-            **anomaly,
-            "timestamp": time.time(),
-            "detection_method": self.detection_method
-        })
-
-        # Ograniczamy liczbę przechowywanych anomalii do 100
-        if len(self.anomalies) > 100:
-            self.anomalies = self.anomalies[-100:]
+            logging.error(f"Błąd podczas zapisywania modelu: {e}")
+            return False
