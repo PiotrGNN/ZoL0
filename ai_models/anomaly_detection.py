@@ -8,7 +8,7 @@ Moduł zawierający klasę AnomalyDetector do wykrywania anomalii w danych cenow
 import os
 import numpy as np
 import pandas as pd
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union, Any
 import logging
 
 class AnomalyDetector:
