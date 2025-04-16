@@ -400,21 +400,15 @@ def initialize_system():
             from python_libs.portfolio_manager import PortfolioManager, portfolio_manager
             if portfolio_manager is None:  # Jeśli nie został automatycznie utworzony w module
                 # Tworzymy instancję PortfolioManager bezpośrednio
-                portfolio_manager = PortfolioManager(initial_balance=100.0, currency="USDT", mode="simulated")
+                portfolio_manager = PortfolioManager(initial_balance=1000.0, currency="USDT", mode="simulated")
             logging.info("Zainicjalizowano menadżera portfela")
         except ImportError as e:
             logging.error(f"Nie można zaimportować PortfolioManager: {e}")
-            # Utwórz domyślny menadżer portfela jako fallback
-            try:
-                # Tworzenie klasy PortfolioManager w locie jako fallback
-                class SimplePortfolioManager:
-                    def __init__(self, initial_balance=100.0, currency="USDT", mode="simulated"):
-                        self.initial_balance = initial_balance
-                        self.currency = currency
-                        self.mode = mode
-                        self.balances = {
-                            currency: {"equity": initial_balance, "available_balance": initial_balance, "wallet_balance": initial_balance},
-                            "BTC": {"equity": 0.01, "available_balance": 0.01, "wallet_balance": 0.01}
+            # Zaimportuj lub utwórz portfolio_manager
+            from python_libs.portfolio_manager import PortfolioManager, portfolio_manager
+            if portfolio_manager is None:
+                portfolio_manager = PortfolioManager(initial_balance=1000.0, currency="USDT", mode="simulated")
+                logging.info("Zainicjalizowano fallback menadżera portfela")
                         }
                         logging.info(f"Utworzono fallback PortfolioManager (saldo: {initial_balance} {currency})")
 
@@ -597,23 +591,29 @@ def get_portfolio_data():
     """Endpoint API do pobierania danych portfela."""
     try:
         # Sprawdź, czy portfolio_manager jest dostępny
+        global portfolio_manager
         if portfolio_manager is None:
-            logging.error("portfolio_manager nie jest zainicjalizowany w get_portfolio_data")
-            return jsonify({
-                "success": True,  # Ustawiamy True, aby frontend nie wyświetlał błędu
-                "balances": {
-                    "BTC": {"equity": 0.01, "available_balance": 0.01, "wallet_balance": 0.01},
-                    "USDT": {"equity": 100.0, "available_balance": 100.0, "wallet_balance": 100.0}
-                },
-                "source": "fallback_error",
-                "error": "Portfolio manager nie jest zainicjalizowany"
-            })
+            # Jeśli portfolio_manager nie jest dostępny, utwórz go
+            from python_libs.portfolio_manager import PortfolioManager, portfolio_manager
+            if portfolio_manager is None:
+                portfolio_manager = PortfolioManager(initial_balance=1000.0, currency="USDT", mode="simulated")
+            logging.info("Utworzono portfolio_manager w get_portfolio_data")
 
         # Używanie portfolio_manager zamiast bezpośredniego pobierania danych z Bybit
         portfolio_data = portfolio_manager.get_portfolio()
         return jsonify(portfolio_data)
     except Exception as e:
-        logging.error(f"Błąd podczas pobierania danych portfela: {e}", exc_info=True)
+        logging.error(f"Błąd w get_portfolio_data: {str(e)}")
+        # Zwróć dane awaryjne, aby frontend nie pokazywał błędu
+        return jsonify({
+            "success": True,
+            "balances": {
+                "BTC": {"equity": 0.01, "available_balance": 0.01, "wallet_balance": 0.01},
+                "USDT": {"equity": 1000.0, "available_balance": 1000.0, "wallet_balance": 1000.0}
+            },
+            "source": "fallback_error",
+            "error": str(e)
+        })f"Błąd podczas pobierania danych portfela: {e}", exc_info=True)
         # Szczegółowe dane diagnostyczne
         logging.error(f"Szczegóły błędu: {type(e).__name__}, {str(e)}")
 

@@ -25,3 +25,5 @@ loguru>=0.5.3
 pytest>=6.2.5
 black>=21.9b0
 flake8>=4.0.0
+python-dotenv
+requests
