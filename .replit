@@ -1,10 +1,12 @@
-run = "python run.py"
-hidden = [".git", ".config", "__pycache__", "*.log", "models_tested.lock", "running.lock"]
+run = ["python", "app.py"]
+modules = ["python-3.10:v18-20230807-322e88b", "python-3.10-pytest:v1-20240510-2e89c25"]
+
+hidden = [".pythonlibs", ".git", ".config", "__pycache__", "*.log", "models_tested.lock", "running.lock"]
 
 entrypoint = "run.py"
 
 [nix]
-channel = "stable-22_11"
+channel = "stable-23_05"
 
 [env]
 PYTHONPATH = "$PYTHONPATH:${REPL_HOME}/"
@@ -13,6 +15,10 @@ PORT = "5000"
 HOST = "0.0.0.0"
 FLASK_APP = "main.py"
 FLASK_ENV = "development"
+BYBIT_TESTNET = "true"
+
+[unitTest]
+language = "python3"
 
 [gitHubImport]
 requiredFiles = [".replit", "replit.nix"]
@@ -24,8 +30,12 @@ pattern = "**/*.py"
 start = "pylsp"
 
 [deployment]
-run = ["sh", "-c", "python run.py"]
+run = ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "5000"]
 deploymentTarget = "cloudrun"
+
+[[ports]]
+localPort = 5000
+externalPort = 80
 
 [workflows]
 runButton = "Start Dashboard"

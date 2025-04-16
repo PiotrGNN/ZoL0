@@ -335,6 +335,99 @@ async def place_order(order: OrderRequest):
             content={"success": False, "error": str(e)}
         )
 
+# Dodajemy stan silnika tradingowego
+trading_engine_running = False
+
+@app.post("/api/trading/start")
+async def start_trading():
+    """Uruchom silnik tradingowy."""
+    global trading_engine_running
+    
+    try:
+        if trading_engine_running:
+            return JSONResponse(
+                status_code=400,
+                content={
+                    "success": False, 
+                    "message": "Silnik handlowy już jest uruchomiony",
+                    "status": "running"
+                }
+            )
+        
+        # Tu byłby kod uruchamiający silnik tradingowy
+        trading_engine_running = True
+        
+        return JSONResponse(
+            status_code=200,
+            content={
+                "success": True,
+                "message": "Silnik handlowy został uruchomiony",
+                "status": "running"
+            }
+        )
+    except Exception as e:
+        logger.error(f"Błąd podczas uruchamiania silnika handlowego: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"success": False, "error": str(e)}
+        )
+
+@app.post("/api/trading/stop")
+async def stop_trading():
+    """Zatrzymaj silnik tradingowy."""
+    global trading_engine_running
+    
+    try:
+        if not trading_engine_running:
+            return JSONResponse(
+                status_code=400,
+                content={
+                    "success": False, 
+                    "message": "Silnik handlowy nie jest uruchomiony",
+                    "status": "stopped"
+                }
+            )
+        
+        # Tu byłby kod zatrzymujący silnik tradingowy
+        trading_engine_running = False
+        
+        return JSONResponse(
+            status_code=200,
+            content={
+                "success": True,
+                "message": "Silnik handlowy został zatrzymany",
+                "status": "stopped"
+            }
+        )
+    except Exception as e:
+        logger.error(f"Błąd podczas zatrzymywania silnika handlowego: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"success": False, "error": str(e)}
+        )
+
+@app.get("/api/trading/status")
+async def get_trading_status():
+    """Pobierz status silnika tradingowego."""
+    try:
+        status = "running" if trading_engine_running else "stopped"
+        
+        return JSONResponse(
+            status_code=200,
+            content={
+                "success": True,
+                "status": status,
+                "since": "2025-04-16T14:30:00Z" if trading_engine_running else None,
+                "message": "Silnik handlowy jest uruchomiony" if trading_engine_running else "Silnik handlowy jest zatrzymany"
+            }
+        )
+    except Exception as e:
+        logger.error(f"Błąd podczas pobierania statusu silnika handlowego: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"success": False, "error": str(e)}
+        )
+
 @app.get("/api/market_summary")
 async def get_market_summary():
     """Pobierz podsumowanie rynku dla głównych kryptowalut."""
@@ -451,6 +544,82 @@ async def get_strategies():
         return {"success": True, "data": strategies}
     except Exception as e:
         logger.error(f"Błąd podczas pobierania strategii: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"success": False, "error": str(e)}
+        )
+
+@app.get("/api/trades/history")
+async def get_trades_history():
+    """Pobierz historię transakcji."""
+    try:
+        # Na potrzeby demonstracji zwróć symulowane dane historyczne
+        trade_history = [
+            {
+                "id": "12345",
+                "symbol": "BTCUSDT",
+                "side": "buy",
+                "price": 43250.5,
+                "quantity": 0.05,
+                "value": 2162.53,
+                "fee": 1.08,
+                "timestamp": (datetime.now().replace(hour=10, minute=15) - pd.Timedelta(days=1)).isoformat(),
+                "pnl": 108.13,
+                "status": "closed"
+            },
+            {
+                "id": "12346",
+                "symbol": "ETHUSDT",
+                "side": "buy",
+                "price": 2310.75,
+                "quantity": 0.4,
+                "value": 924.3,
+                "fee": 0.46,
+                "timestamp": (datetime.now().replace(hour=11, minute=30) - pd.Timedelta(days=1)).isoformat(),
+                "pnl": 37.22,
+                "status": "closed"
+            },
+            {
+                "id": "12347",
+                "symbol": "BTCUSDT",
+                "side": "sell",
+                "price": 42980.25,
+                "quantity": 0.03,
+                "value": 1289.41,
+                "fee": 0.64,
+                "timestamp": (datetime.now().replace(hour=14, minute=45) - pd.Timedelta(days=1)).isoformat(),
+                "pnl": -15.42,
+                "status": "closed"
+            },
+            {
+                "id": "12348",
+                "symbol": "SOLUSDT",
+                "side": "buy",
+                "price": 145.25,
+                "quantity": 3.5,
+                "value": 508.38,
+                "fee": 0.25,
+                "timestamp": datetime.now().replace(hour=9, minute=20).isoformat(),
+                "pnl": 42.53,
+                "status": "closed"
+            },
+            {
+                "id": "12349",
+                "symbol": "ETHUSDT",
+                "side": "sell",
+                "price": 2340.50,
+                "quantity": 0.2,
+                "value": 468.1,
+                "fee": 0.23,
+                "timestamp": datetime.now().replace(hour=10, minute=10).isoformat(),
+                "pnl": 5.95,
+                "status": "closed"
+            }
+        ]
+        
+        return {"success": True, "data": trade_history}
+    except Exception as e:
+        logger.error(f"Błąd podczas pobierania historii transakcji: {e}")
         return JSONResponse(
             status_code=500,
             content={"success": False, "error": str(e)}

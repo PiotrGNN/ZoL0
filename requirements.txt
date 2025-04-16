@@ -1,21 +1,35 @@
 
-fastapi==0.109.2
-uvicorn==0.27.1
-websockets==12.0
-python-binance==1.0.19
-ccxt==4.2.11
-pydantic==2.5.2
-numpy==1.26.3
-pandas==2.1.4
-matplotlib==3.8.2
-scipy==1.12.0
-scikit-learn==1.4.1
-python-dotenv==1.0.0
-requests==2.31.0
-pybit==2.4.1
-SQLAlchemy==2.0.25
-plotly==5.18.0
-pandas-ta==0.3.14b0
-ta==0.11.0
-tensorflow==2.15.0
-aiohttp==3.9.3
+# Podstawowe biblioteki
+fastapi>=0.100.0
+uvicorn>=0.22.0
+pydantic>=2.0.0
+python-dotenv>=1.0.0
+requests>=2.30.0
+websockets>=11.0.3
+jinja2>=3.1.2
+
+# Biblioteki do przetwarzania danych
+pandas>=2.0.0
+numpy>=1.24.0
+scikit-learn>=1.3.0
+matplotlib>=3.7.0
+plotly>=5.14.0
+
+# Biblioteki do wymiany kryptowalut
+ccxt>=4.0.0
+python-binance>=1.0.16
+
+# Biblioteki do modelowania i analityki
+joblib>=1.3.0
+statsmodels>=0.14.0
+
+# Pomocnicze biblioteki
+tqdm>=4.65.0
+pytz>=2023.3
+aiohttp>=3.8.4
+httpx>=0.24.1
+SQLAlchemy>=2.0.0
+
+# Dodatkowe biblioteki
+aiofiles>=23.1.0
+python-multipart>=0.0.5
