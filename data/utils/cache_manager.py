@@ -613,17 +613,17 @@ def clean_old_data(max_age_hours=24, max_cache_size_mb=500):
             # Sprawdź, czy to plik (nie katalog)
             if not os.path.isfile(file_path):
                 continue
-                
+
             # Pobierz rozmiar pliku w bajtach
             file_size = os.path.getsize(file_path)
             size_before += file_size
-            
+
             # Sprawdź wiek pliku
             file_mod_time = datetime.fromtimestamp(os.path.getmtime(file_path))
             age_hours = (now - file_mod_time).total_seconds() / 3600
-            
+
             files_info.append((file_path, file_size, age_hours))
-            
+
         # Usuń stare pliki
         for file_path, file_size, age_hours in files_info:
             if age_hours > max_age_hours:
@@ -631,18 +631,18 @@ def clean_old_data(max_age_hours=24, max_cache_size_mb=500):
                 files_removed += 1
             else:
                 size_after += file_size
-                
+
         # Jeśli rozmiar cache nadal przekracza limit
         if size_after > max_cache_size_mb * 1024 * 1024:
             # Posortuj pozostałe pliki według wieku (od najstarszego)
             remaining_files = [(p, s, a) for p, s, a in files_info if a <= max_age_hours]
             remaining_files.sort(key=lambda x: x[2], reverse=True)
-            
+
             # Usuń najstarsze pliki aż do osiągnięcia limitu rozmiaru
             for file_path, file_size, _ in remaining_files:
                 if size_after <= max_cache_size_mb * 1024 * 1024:
                     break
-                    
+
                 if os.path.exists(file_path):  # Sprawdź czy plik nadal istnieje
                     os.remove(file_path)
                     size_after -= file_size
@@ -653,7 +653,7 @@ def clean_old_data(max_age_hours=24, max_cache_size_mb=500):
         mb_after = size_after / (1024 * 1024)
         logging.info(f"Cache czyszczenie: usunięto {files_removed} plików")
         logging.info(f"Rozmiar cache przed: {mb_before:.2f} MB, po: {mb_after:.2f} MB")
-        
+
         return files_removed
     except Exception as e:
         logging.error(f"Błąd podczas czyszczenia cache: {e}")
@@ -663,13 +663,13 @@ def clean_old_data(max_age_hours=24, max_cache_size_mb=500):
 def setup_auto_cleanup(interval_hours=6):
     """
     Konfiguruje automatyczne czyszczenie cache w regularnych odstępach czasu.
-    
+
     Args:
         interval_hours (int): Częstotliwość czyszczenia w godzinach
     """
     import threading
     import time
-    
+
     def cleanup_thread():
         while True:
             # Czyszczenie cache
@@ -678,10 +678,10 @@ def setup_auto_cleanup(interval_hours=6):
                 logging.info(f"Automatyczne czyszczenie cache: usunięto {files_removed} plików")
             except Exception as e:
                 logging.error(f"Błąd podczas automatycznego czyszczenia cache: {e}")
-                
+
             # Czekaj określony czas
             time.sleep(interval_hours * 3600)
-    
+
     # Uruchom wątek czyszczenia w tle
     cleanup_thread = threading.Thread(target=cleanup_thread, daemon=True)
     cleanup_thread.start()
@@ -692,3 +692,37 @@ try:
     setup_auto_cleanup()
 except Exception as e:
     logging.error(f"Nie udało się skonfigurować automatycznego czyszczenia cache: {e}")
+
+class CacheManager:
+    """
+    Klasa do zarządzania cache'em danych w systemie.
+    Optymalizuje dostęp do danych poprzez przechowywanie wyników obliczeń i danych rynkowych.
+    Implementuje wzorzec Singleton dla zapewnienia jednej instancji w całym systemie.
+    """
+
+    # Przechowuje pojedynczą instancję klasy
+    _instance = None
+
+    def __new__(cls, cache_dir="./data/cache", max_cache_size_mb=500, ttl_seconds=3600):
+        """
+        Implementacja wzorca Singleton - zapewnia tylko jedną instancję klasy.
+        """
+        if cls._instance is None:
+            cls._instance = super(CacheManager, cls).__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
+
+    def __init__(self, cache_dir="./data/cache", max_cache_size_mb=500, ttl_seconds=3600):
+        """
+        Inicjalizacja managera cache.
+
+        Args:
+            cache_dir: Katalog przechowywania plików cache.
+            max_cache_size_mb: Maksymalny rozmiar cache w MB.
+            ttl_seconds: Czas życia elementów w cache (time to live).
+        """
+        # Zabezpieczenie przed wielokrotną inicjalizacją tej samej instancji
+        if getattr(self, "_initialized", False):
+            return
+
+        self._initialized = True

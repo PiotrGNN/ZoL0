@@ -10,6 +10,13 @@ from typing import Dict, Any, List, Optional
 # Eksport klasy AnomalyDetector
 __all__ = ["AnomalyDetector"]
 
+# Konfiguracja logowania
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s"
+)
+logger = logging.getLogger(__name__)
+
 class AnomalyDetector:
     """
     Klasa do wykrywania anomalii w danych rynkowych.

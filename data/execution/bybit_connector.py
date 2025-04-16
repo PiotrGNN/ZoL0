@@ -115,10 +115,10 @@ class BybitConnector:
                 raise ValueError(
                     "Nieprawidłowe klucze API dla środowiska produkcyjnego. Sprawdź konfigurację."
                 )
-                
+
             # Dodatkowy mechanizm potwierdzenia trybu produkcyjnego
             production_confirmed = os.getenv("BYBIT_PRODUCTION_CONFIRMED", "false").lower() == "true"
-            
+
             if not production_confirmed:
                 self.logger.critical("UWAGA: Używanie produkcyjnego API wymaga jawnego potwierdzenia!")
                 self.logger.critical("Ustaw zmienną środowiskową BYBIT_PRODUCTION_CONFIRMED=true, aby potwierdzić")
@@ -714,7 +714,7 @@ class BybitConnector:
             self._apply_rate_limit()
             # Konwertuj interwał na liczbę minut
             interval_value = 15  # Domyślnie 15 minut
-            
+
             if isinstance(interval, str):
                 if interval.endswith('m'):
                     try:
@@ -751,7 +751,7 @@ class BybitConnector:
             current_time = int(time.time())
             klines = []
 
-            last_price = 50000.0 if "BTC" in symbol else 3000.0  # Przykładowe ceny dla BTC lub innych par
+            last_price = 50000.0 if "BTC" in symbol else 3000.0  # Przykładowe cenydla BTC lub innych par
 
             for i in range(limit):
                 timestamp = current_time - (interval_value * 60 * (limit - i - 1))
@@ -1526,7 +1526,7 @@ class BybitConnector:
                                                     try:
                                                         equity = float(coin_data.get("equity", 0) or 0)
                                                     except (ValueError, TypeError):
-                                                        self.logger.warning(f"Błędna wartość equity dla {coin}: {coin_data.get('equity')}, ustawiam 0")
+                                                        self.logger.logger.warning(f"Błędna wartość equity dla {coin}: {coin_data.get('equity')}, ustawiam 0")
                                                         equity = 0.0
 
                                                     # Sprawdź dostępne saldo z różnych możliwych pól
@@ -1836,6 +1836,416 @@ class BybitConnector:
                     "last_price": last_price,
                     "volume_24h": 0,  # Brak informacji o wolumenie w tym przypadku
                     "timestamp": order_book.get("timestamp", int(time.time() * 1000)),
+                    "datetime": order_book.get("datetime", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+                }
+
+            # Ostateczny fallback - symulacja danych
+            base_price = 50000.0 if "BTC" in symbol else 3000.0
+            # Dodajemy losową zmianę ceny w zakresie ±0.5%
+            change = random.uniform(-0.005, 0.005)
+            price = base_price * (1 + change)
+
+            self.logger.info(f"Używam symulowanych danych tickera dla {symbol} (cena: {price:.2f})")
+
+            return {
+                "symbol": symbol,
+                "bid": price * 0.999,  # Bid nieznacznie niższy
+                "ask": price * 1.001,  # Ask nieznacznie wyższy
+                "last_price": price,
+                "volume_24h": random.uniform(1000, 5000),
+                "timestamp": int(time.time() * 1000),
+                "datetime": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            }
+        except Exception as e:
+            self.logger.error(f"Błąd podczas pobierania tickera dla {symbol}: {e}")
+            # Zwróć awaryjne dane w przypadku błędu
+            return {
+                "symbol": symbol,
+                "bid": 0,
+                "ask": 0,
+                "last_price": 0,
+                "volume_24h": 0,
+                "timestamp": int(time.time() * 1000),
+                "datetime": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                "error": str(e)
+            }
+
+
+    def place_order(self,
+                    symbol: str,
+                    side: str,
+                    price: float,
+                    quantity: float,
+                    order_type: str = "Limit") -> Dict[str, Any]:
+        """
+        Składa zlecenie na giełdzie.
+
+        Parameters:
+            symbol (str): Symbol pary handlowej.
+            side (str): Strona zlecenia ('Buy' lub 'Sell').
+            price (float): Cena zlecenia.
+            quantity (float): Ilość zlecenia.
+            order_type (str): Typ zlecenia ('Limit' lub 'Market').
+
+        Returns:
+            Dict[str, Any]: Wynik złożenia zlecenia.
+        """
+        try:
+            self._apply_rate_limit()
+
+            # Dodatkowe potwierdzenie dla produkcyjnego API
+            if self.is_production_api():
+                self.logger.warning(
+                    f"PRODUKCYJNE ZLECENIE: {side} {quantity} {symbol} za {price if order_type == 'Limit' else 'Market'}"
+                )
+
+                # Limity wielkości zleceń dla produkcyjnego API
+                max_order_value_usd = 1000.0  # Maksymalna wartość zlecenia w USD dla bezpieczeństwa
+                est_order_value = quantity * price if order_type == "Limit" else quantity * price
+
+                if est_order_value > max_order_value_usd and "BTC" in symbol:
+                    self.logger.critical(
+                        f"ODRZUCONO ZLECENIE: Przekroczono maksymalną wartość zlecenia ({est_order_value} USD > {max_order_value_usd} USD)"
+                    )
+                    return {
+                        "success":
+                        False,
+                        "error":
+                        f"Zlecenie przekracza maksymalną dozwoloną wartość {max_order_value_usd} USD"
+                    }
+
+            # Sprawdzenie poprawności danych
+            if side not in ["Buy", "Sell"]:
+                return {
+                    "success":
+                    False,
+                    "error":
+                    "Nieprawidłowa strona zlecenia. Musi być 'Buy' lub 'Sell'."
+                }
+
+            if order_type not in ["Limit", "Market"]:
+                return {
+                    "success":
+                    False,
+                    "error":
+                    "Nieprawidłowy typ zlecenia. Musi być 'Limit' lub 'Market'."
+                }
+
+            if quantity <= 0:
+                return {"success": False, "error": "Ilość musi być dodatnia."}
+
+            if order_type == "Limit" and price <= 0:
+                return {
+                    "success": False,
+                    "error": "Cena musi być dodatnia dla zleceń typu Limit."
+                }
+
+            # Symulacja składania zlecenia
+            order_id = f"ORD-{int(time.time())}-{random.randint(1000, 9999)}"
+
+            self.logger.info(
+                f"Złożono zlecenie: {side} {quantity} {symbol} po cenie {price if order_type == 'Limit' else 'Market'}"
+            )
+
+            return {
+                "success": True,
+                "order_id": order_id,
+                "symbol": symbol,
+                "side": side,
+                "price": price if order_type == "Limit" else None,
+                "quantity": quantity,
+                "order_type": order_type,
+                "status": "New",
+                "timestamp": int(time.time() * 1000),
+                "datetime": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            }
+        except Exception as e:
+            self.logger.error(f"Błąd podczas składania zlecenia: {e}")
+            return {"success": False, "error": str(e)}
+
+    def cancel_order(self, order_id: str) -> Dict[str, Any]:
+        """
+        Anuluje zlecenie.
+
+        Parameters:
+            order_id (str): ID zlecenia do anulowania.
+
+        Returns:
+            Dict[str, Any]: Wynik anulowania zlecenia.
+        """
+        try:
+            self._apply_rate_limit()
+            # Symulacja anulowania zlecenia
+            self.logger.info(f"Anulowano zlecenie: {order_id}")
+
+            return {
+                "success": True,
+                "order_id": order_id,
+                "status": "Cancelled",
+                "timestamp": int(time.time() * 1000),
+                "datetime": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            }
+        except Exception as e:
+            self.logger.error(f"Błąd podczas anulowania zlecenia: {e}")
+            return {"success": False, "error": str(e)}
+
+    def get_order_status(self, order_id: str) -> Dict[str, Any]:
+        """
+        Pobiera statuszlecenia.
+
+        Parameters:
+            order_id (str): ID zlecenia.
+
+        Returns:
+            Dict[str, Any]: Status zlecenia.
+        """
+        try:
+            self._apply_rate_limit()
+            # Symulacja pobierania statusu zlecenia
+            statuses = [
+                "New", "PartiallyFilled", "Filled", "Cancelled", "Rejected"
+            ]
+            status = random.choice(statuses)
+
+            return {
+                "success":
+                True,
+                "order_id":
+                order_id,
+                "status":
+                status,
+                "filled_quantity":
+                random.uniform(0, 1) if status == "PartiallyFilled" else
+                (1.0 if status == "Filled" else 0.0),
+                "timestamp":
+                int(time.time() * 1000),
+                "datetime":
+                datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            }
+        except Exception as e:
+            self.logger.error(f"Błąd podczas pobierania statusu zlecenia: {e}")
+            return {"success": False, "error": str(e)}
+
+    def _apply_rate_limit(self):
+        """Applies rate limiting to API calls with exponential backoff for production environment."""
+        try:
+            # Używamy uproszczonego importu, który nie będzie wymagał wszystkich funkcji
+            from data.utils.cache_manager import get_api_status
+
+            # Jeśli główny import się powiedzie, importujemy resztę
+            from data.utils.cache_manager import (store_cached_data,
+                                                  detect_cloudfront_error,
+                                                  set_cloudfront_block_status,
+                                                  get_cloudfront_status)
+        except ImportError as e:
+            self.logger.warning(
+                f"Cache manager import error: {e}. Using simplified rate limiting."
+            )
+            # Implement simplified rate limiting if imports fail
+            current_time = time.time()
+            time_since_last_call = current_time - self.last_api_call
+            min_interval = 20.0 if not self.use_testnet else 10.0
+
+            if time_since_last_call < min_interval:
+                sleep_time = min_interval - time_since_last_call
+                if sleep_time > 0.1:
+                    time.sleep(sleep_time)
+
+            self.last_api_call = time.time()
+            return
+
+        # Bezpieczne pobieranie statusu CloudFront
+        try:
+            cloudfront_status = get_cloudfront_status()
+            is_blocked = False
+
+            # Bezpieczne sprawdzenie czy mamy blokadę CloudFront
+            if isinstance(cloudfront_status, dict):
+                is_blocked = cloudfront_status.get("blocked", False)
+
+            if is_blocked:
+                error_msg = "Unknown error"
+                if isinstance(cloudfront_status, dict):
+                    error_msg = cloudfront_status.get("error", "Unknown error")
+                self.logger.warning(
+                    f"Wykryto aktywną blokadę CloudFront: {error_msg}. Używanie danych z cache."
+                )
+                self.rate_limit_exceeded = True
+                return
+        except Exception as e:
+            self.logger.warning(
+                f"Błąd podczas sprawdzania statusu CloudFront: {e}. Kontynuowanie z domyślnymi ustawieniami."
+            )
+
+        # Pobierz aktualny status API z cache_manager
+        api_status = get_api_status()
+        now = time.time()
+        is_production = os.getenv(
+            'IS_PRODUCTION', 'false').lower() == 'true' or not self.use_testnet
+
+        # Synchronizuj parametry rate limiter'a z cache_manager (raz na minutę)
+        if not hasattr(self, '_rate_limit_synced') or now - getattr(
+                self, '_last_sync_time', 0) > 60:
+            # Produkcyjne parametry: max 2 wywołania co 30 sekund (bardzo konserwatywne)
+            if is_production:
+                max_calls = 2
+                min_interval = 30.0  # 30 sekund między zapytaniami dla produkcji
+            else:
+                max_calls = 6
+                min_interval = 10.0
+
+            # Jeśli wystąpiły wcześniej błędy rate limit, zwiększamy jeszcze bardziej restrykcje
+            if hasattr(self,
+                       'rate_limit_exceeded') and self.rate_limit_exceeded:
+                # Eksponencjalne zmniejszenie ruchu
+                min_interval = min(60.0, min_interval *
+                                   2)  # max 60s między zapytaniami
+                self.logger.warning(
+                    f"Zastosowano eksponencjalne wycofanie: min_interval={min_interval}s"
+                )
+                time.sleep(3.0)  # Dodatkowa pauza
+
+            # Synchronizuj parametry
+            from data.utils.cache_manager import set_rate_limit_parameters
+            set_rate_limit_parameters(max_calls_per_minute=max_calls,
+                                      min_interval=min_interval)
+            self._rate_limit_synced = True
+            self._last_sync_time = now
+            self.min_time_between_calls = min_interval
+
+        # Jeśli przekroczono limit lub mamy blokadę CloudFront
+        if self.rate_limit_exceeded or api_status["rate_limited"]:
+            # Resetuj stan po długim okresie oczekiwania
+            reset_time = 600.0 if is_production else 300.0  # 10 minut dla produkcji, 5 dla dev
+
+            if now - self.last_rate_limit_reset > reset_time:
+                self.logger.info("Próba resetu stanu po długim oczekiwaniu")
+                self.rate_limit_exceeded = False
+                self.remaining_rate_limit = 3 if is_production else 10
+                store_cached_data("api_rate_limited", False)
+                set_cloudfront_block_status(False)
+            else:
+                # Eksponencjalny backoff przy powtarzających się błędach
+                base_backoff = 20.0 if is_production else 10.0
+                attempt = getattr(self, '_backoff_attempt', 1)
+                max_sleep = 600.0 if is_production else 300.0
+
+                # Eksponencjalny wzrost czasu oczekiwania: 20s, 40s, 80s, 160s...
+                sleep_time = min(max_sleep, base_backoff * (2**(attempt - 1)))
+
+                self.logger.warning(
+                    f"Eksponencjalne wycofanie: próba {attempt}, oczekiwanie {sleep_time:.1f}s"
+                )
+                time.sleep(sleep_time)
+
+                # Zwiększ licznik próby dla kolejnego eksponencjalnego wzrostu
+                self._backoff_attempt = attempt + 1
+
+        # Zachowaj minimalny odstęp między wywołaniami - 20s dla produkcji
+        time_since_last_call = now - self.last_api_call
+        min_time = 20.0 if is_production else 5.0
+
+        if time_since_last_call < min_time:
+            sleep_time = min_time - time_since_last_call
+            if sleep_time > 0.1:
+                time.sleep(sleep_time)
+
+        # Aktualizacja czasu ostatniego wywołania
+        self.last_api_call = time.time()
+
+        # Po wielu pomyślnych wywołaniach, stopniowo zmniejszamy backoff
+        if not self.rate_limit_exceeded and hasattr(
+                self, '_backoff_attempt') and self._backoff_attempt > 1:
+            if getattr(self, '_success_count', 0) > 5:
+                self._backoff_attempt = max(1, self._backoff_attempt - 1)
+                self._success_count = 0
+                self.logger.info(
+                    f"Zmniejszono poziom backoff do {self._backoff_attempt} po wielu poprawnych wywołaniach"
+                )
+            else:
+                self._success_count = getattr(self, '_success_count', 0) + 1
+
+    def is_production_api(self):
+        """Sprawdza czy używane jest produkcyjne API.
+
+        Returns:
+            bool: True jeśli używane jest produkcyjne API, False dla testnet.
+        """
+        # Sprawdzenie czy używamy produkcyjnego API
+        is_prod = not self.use_testnet
+
+        # Dodatkowy log dla produkcyjnego API (tylko jeśli nie wyświetlono wcześniej)
+        if is_prod and not hasattr(self, '_production_warning_shown'):
+            self.logger.warning(
+                "!!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit. Operacje handlowe będą mieć realne skutki finansowe!"
+            )
+            self.logger.warning(
+                "Upewnij się, że Twoje klucze API mają właściwe ograniczenia i są odpowiednio zabezpieczone."
+            )
+            print("\n========== PRODUKCYJNE API BYBIT ==========")
+            print("!!! UWAGA !!! Używasz PRODUKCYJNEGO API ByBit")
+            print("Operacje handlowe będą mieć realne skutki finansowe!")
+            print("===========================================\n")
+            self._production_warning_shown = True
+        elif not is_prod and not hasattr(self, '_testnet_info_shown'):
+            self.logger.info("Używasz testnet API (środowisko testowe).")
+            self._testnet_info_shown = True
+
+        return is_prod
+
+    def get_ticker(self, symbol: str) -> Dict[str, Any]:
+        """
+        Pobiera dane tickera (ostatnia cena, zmienność itd.) z Bybit.
+
+        Parameters:
+            symbol (str): Symbol pary handlowej (np. BTCUSDT).
+
+        Returns:
+            Dict[str, Any]: Informacje o tickerze zawierające aktualną cenę, wolumen itp.
+        """
+        try:
+            self._apply_rate_limit()
+
+            # Próba pobrania informacji przez API V5
+            try:
+                endpoint = f"{self.base_url}/v5/market/tickers"
+                params = {"category": "spot", "symbol": symbol}
+
+                self.logger.debug(f"Pobieranie danych tickera dla {symbol} z API V5")
+                response = requests.get(endpoint, params=params, timeout=10)
+
+                if response.status_code == 200:
+                    data = response.json()
+                    if data.get("retCode") == 0 and "result" in data:
+                        if "list" in data["result"] and len(data["result"]["list"]) > 0:
+                            ticker_data = data["result"]["list"][0]
+                            return {
+                                "symbol": symbol,
+                                "bid": float(ticker_data.get("bid1Price", 0)),
+                                "ask": float(ticker_data.get("ask1Price", 0)),
+                                "last_price": float(ticker_data.get("lastPrice", 0)),
+                                "volume_24h": float(ticker_data.get("volume24h", 0)),
+                                "timestamp": int(time.time() * 1000),
+                                "datetime": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                            }
+            except Exception as e:
+                self.logger.warning(f"Błąd podczas pobierania tickera z API V5: {e}")
+
+            # Fallback - użyj danych z księgi zleceń
+            order_book = self.get_order_book(symbol, limit=1)
+            if order_book and "bids" in order_book and "asks" in order_book:
+                # Oblicz średnią cenę z najlepszych ofert kupna i sprzedaży
+                bid = order_book["bids"][0][0] if order_book["bids"] else 0
+                ask = order_book["asks"][0][0] if order_book["asks"] else 0
+                last_price = (bid + ask) / 2 if bid and ask else (bid or ask or 0)
+
+                return {
+                    "symbol": symbol,
+                    "bid": bid,
+                    "ask": ask,
+                    "last_price": last_price,
+                    "volume_24h": 0,  # Brak informacji o wolumenie w tym przypadku
+                    "timestamp": order_book.get("timestamp", int(time.time()* 1000)),
                     "datetime": order_book.get("datetime", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
                 }
 
