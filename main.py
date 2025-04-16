@@ -1,3 +1,4 @@
+
 import logging
 import os
 import sys
@@ -404,16 +405,8 @@ def initialize_system():
             logging.info("Zainicjalizowano menadżera portfela")
         except ImportError as e:
             logging.error(f"Nie można zaimportować PortfolioManager: {e}")
-            # Zaimportuj lub utwórz portfolio_manager
-            from python_libs.portfolio_manager import PortfolioManager, portfolio_manager
-            if portfolio_manager is None:
-                initial_balance = 1000.0
-                currency = "USDT"
-                portfolio_manager = PortfolioManager(initial_balance=initial_balance, currency=currency, mode="simulated")
-                logging.info("Zainicjalizowano fallback menadżera portfela")
-                logging.info(f"Utworzono fallback PortfolioManager (saldo: {initial_balance} {currency})")
-
-                # Definicja klasy SimplePortfolioManager na odpowiednim poziomie wcięcia
+            try:
+                # Definicja klasy SimplePortfolioManager
                 class SimplePortfolioManager:
                     def __init__(self, initial_balance=100.0, currency="USDT", mode="simulated"):
                         self.initial_balance = initial_balance
@@ -462,13 +455,14 @@ def initialize_system():
                             ]
                         }
 
-
-                portfolio_manager = SimplePortfolioManager(initial_balance=100.0, currency="USDT", mode="simulated")
-                logging.info("Zainicjalizowano prosty fallback menadżera portfela")
+                initial_balance = 1000.0
+                currency = "USDT"
+                portfolio_manager = SimplePortfolioManager(initial_balance=initial_balance, currency=currency, mode="simulated")
+                logging.info("Zainicjalizowano fallback menadżera portfela")
+                logging.info(f"Utworzono fallback PortfolioManager (saldo: {initial_balance} {currency})")
             except Exception as fallback_error:
                 logging.error(f"Nie można utworzyć fallback menadżera portfela: {fallback_error}")
                 portfolio_manager = None
-
 
         # Test modeli AI
         if model_tester:
@@ -489,9 +483,6 @@ def initialize_system():
     except Exception as e:
         logging.error(f"Błąd podczas inicjalizacji systemu: {e}", exc_info=True)
         return False
-
-# Funkcja get_ai_models_status została przeniesiona na koniec pliku
-# aby uniknąć duplikacji
 
 # Trasy aplikacji
 @app.route('/')
@@ -605,10 +596,32 @@ def get_portfolio_data():
         global portfolio_manager
         if portfolio_manager is None:
             # Jeśli portfolio_manager nie jest dostępny, utwórz go
-            from python_libs.portfolio_manager import PortfolioManager, portfolio_manager
-            if portfolio_manager is None:
+            try:
+                from python_libs.portfolio_manager import PortfolioManager
                 portfolio_manager = PortfolioManager(initial_balance=1000.0, currency="USDT", mode="simulated")
-            logging.info("Utworzono portfolio_manager w get_portfolio_data")
+                logging.info("Utworzono portfolio_manager w get_portfolio_data")
+            except ImportError:
+                # Jeśli nie możemy zaimportować, utwórzmy prosty fallback
+                class SimplePortfolioManager:
+                    def __init__(self, initial_balance=100.0, currency="USDT", mode="simulated"):
+                        self.initial_balance = initial_balance
+                        self.currency = currency
+                        self.mode = mode
+                        self.balances = {
+                            currency: {"equity": initial_balance, "available_balance": initial_balance, "wallet_balance": initial_balance}
+                        }
+                        
+                    def get_portfolio(self):
+                        return {
+                            "success": True,
+                            "balances": self.balances,
+                            "total_value": sum(balance["equity"] for balance in self.balances.values()),
+                            "base_currency": self.currency,
+                            "mode": self.mode
+                        }
+                
+                portfolio_manager = SimplePortfolioManager(initial_balance=1000.0, currency="USDT", mode="simulated")
+                logging.info("Utworzono prosty fallback portfolio_manager w get_portfolio_data")
 
         # Używanie portfolio_manager zamiast bezpośredniego pobierania danych z Bybit
         portfolio_data = portfolio_manager.get_portfolio()
@@ -621,19 +634,6 @@ def get_portfolio_data():
             "balances": {
                 "BTC": {"equity": 0.01, "available_balance": 0.01, "wallet_balance": 0.01},
                 "USDT": {"equity": 1000.0, "available_balance": 1000.0, "wallet_balance": 1000.0}
-            },
-            "source": "fallback_error",
-            "error": str(e)
-        })
-        logging.error(f"Błąd podczas pobierania danych portfela: {e}", exc_info=True)
-        # Szczegółowe dane diagnostyczne
-        logging.error(f"Szczegóły błędu: {type(e).__name__}, {str(e)}")
-
-        return jsonify({
-            "success": True,  # Ustawiamy True, aby frontend nie wyświetlał błędu
-            "balances": {
-                "BTC": {"equity": 0.005, "available_balance": 0.005, "wallet_balance": 0.005},
-                "USDT": {"equity": 500, "available_balance": 450, "wallet_balance": 500}
             },
             "source": "fallback_error",
             "error": str(e)
