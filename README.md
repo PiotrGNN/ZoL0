@@ -1,60 +1,73 @@
-# ZoL0 Trading System
 
-## Opis
-Zaawansowany system tradingowy z modułami AI, analizą techniczną i dashboardem monitorującym.
+# Trading Dashboard System
 
-## Funkcje główne
-- Śledzenie danych rynkowych w czasie rzeczywistym
-- Integracja z giełdami (Binance, Bybit, CCXT)
-- Modele AI do analizy rynku
-- Backtesting strategii tradingowych
-- Dashboard z wizualizacją danych
+System tradingowy z zaawansowanym dashboardem i integracją modeli AI.
 
-## Uruchamianie systemu
+## Funkcjonalności
 
-System składa się z dwóch głównych komponentów:
-1. **Backend API** - serwer Flask obsługujący dane dla dashboardu
-2. **Dashboard** - interfejs użytkownika zbudowany w Streamlit
+- Dashboard z wizualizacją danych tradingowych
+- Integracja z różnymi giełdami kryptowalut (Binance, Bybit)
+- Modele AI do analizy rynku i predykcji
+- Backtesting i symulacja strategii
 
-### Uruchamianie w trybie developerskim
+## Instalacja
+
+Zainstaluj wymagane zależności:
 
 ```bash
-# Instalacja zależności
 pip install -r requirements.txt
-
-# Uruchomienie backendu
-python run.py    # Uruchamia główny system z API
-
-# Uruchomienie dashboardu (w osobnym terminalu)
-streamlit run dashboard.py
 ```
 
-### Zarządzanie modelami AI
+## Uruchamianie
+
+### Dashboard
+
+Aby uruchomić dashboard:
 
 ```bash
-# Generowanie nowych modeli AI
-python create_models.py
+python run_dashboard.py
+```
 
-# Testowanie modeli AI
-python test_models.py
+Dashboard będzie dostępny pod adresem http://0.0.0.0:8501
+
+### System tradingowy
+
+Aby uruchomić główny system tradingowy:
+
+```bash
+python run.py
+```
+
+### Tworzenie modeli
+
+Aby wygenerować modele AI:
+
+```bash
+python create_models.py
 ```
 
 ## Struktura projektu
 
-- `dashboard.py` - Interfejs użytkownika zbudowany w Streamlit
-- `dashboard_api.py` - API do dostarczania danych dla dashboardu
-- `run.py` - Główny skrypt uruchomieniowy dla backendu
-- `create_models.py` - Skrypt do generowania podstawowych modeli AI
-- `test_models.py` - Skrypt do testowania modeli AI
-- `ai_models/` - Katalog zawierający modele AI
+- `ai_models/` - Modele AI
+- `data/` - Moduły przetwarzania danych
 - `python_libs/` - Biblioteki pomocnicze
-- `models/` - Zapisane modele ML w formacie pkl
-- `static/img/` - Obrazy, wykresy i inne zasoby statyczne
+- `dashboard.py` - Interfejs użytkownika (Streamlit)
+- `dashboard_api.py` - API dla dashboardu (Flask)
+- `run.py` - Skrypt uruchamiający główny system
+- `run_dashboard.py` - Skrypt uruchamiający dashboard
 
-## Konfiguracja
-System konfiguruje się przez plik `.env` - skopiuj `.env.example` i dostosuj ustawienia.
+## Testowanie
 
-## Wymagania
-System wymaga Pythona 3.8+ oraz zainstalowanych bibliotek z pliku `requirements.txt`.
+Aby przetestować załadowane modele:
+
 ```bash
-pip install -r requirements.txt
+python -m python_libs.model_tester
+```
+
+## Rozwiązywanie problemów
+
+Jeśli napotkasz problemy z ładowaniem modeli, upewnij się, że:
+
+1. Katalog `models/` istnieje
+2. Modele są w odpowiednim formacie (.pkl dla serializowanych modeli, .py dla klas)
+3. Logi są czytelne w katalogu `logs/`

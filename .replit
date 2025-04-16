@@ -1,4 +1,4 @@
-run = "python run.py"
+run = "python run_dashboard.py"
 entrypoint = "dashboard.py"
 hidden = [".git", ".config", "__pycache__", "*.log", "models_tested.lock", "running.lock"]
 
