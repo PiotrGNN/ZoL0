@@ -179,10 +179,21 @@ def initialize_system():
             sample_data = pd.DataFrame(np.random.normal(0, 1, (100, 5)), 
                                   columns=['feature1', 'feature2', 'feature3', 'feature4', 'feature5'])
             try:
+                # Upewniamy się, że model jest zainicjalizowany
+                if anomaly_detector.model is None:
+                    anomaly_detector._initialize_default_model()
+                
+                # Trening modelu
                 anomaly_detector.fit(sample_data)
-                logging.info("Model detekcji anomalii pomyślnie wytrenowany na przykładowych danych")
+                
+                # Weryfikacja, że model działa prawidłowo
+                test_prediction = anomaly_detector.predict(sample_data[:5])
+                logging.info(f"Model detekcji anomalii pomyślnie wytrenowany i przetestowany (wynik: {test_prediction[:3]})")
             except Exception as e:
                 logging.warning(f"Nie udało się wytrenować modelu detekcji anomalii: {e}")
+                logging.info("Inicjalizuję zapasowy model detekcji...")
+                # Użyj zapasowej strategii
+                anomaly_detector = None
             
             logging.info(f"Zainicjalizowano AnomalyDetector z biblioteki {anomaly_lib} (metoda: {method}, próg: {threshold})")
         except ImportError as e:

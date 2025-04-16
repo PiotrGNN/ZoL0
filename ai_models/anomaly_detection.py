@@ -241,6 +241,18 @@ class AnomalyDetector:
             # Przygotuj dane
             X = self._prepare_data(data)
             
+            # Sprawdź czy model został wytrenowany, jeśli nie, trenuj na bieżących danych
+            try:
+                # Próba wywołania predict może spowodować wyjątek jeśli model nie jest wytrenowany
+                self.model.predict(X[:1])
+            except Exception as e:
+                if "not fitted yet" in str(e):
+                    logging.info("Model IsolationForest nie był wytrenowany. Trenuję na bieżących danych...")
+                    self.model.fit(X)
+                    logging.info(f"Model wytrenowany na {X.shape[0]} próbkach")
+                else:
+                    raise e
+            
             # Wykonaj predykcję
             return self.model.predict(X)
         except Exception as e:
