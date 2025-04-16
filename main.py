@@ -409,7 +409,6 @@ def initialize_system():
             if portfolio_manager is None:
                 portfolio_manager = PortfolioManager(initial_balance=1000.0, currency="USDT", mode="simulated")
                 logging.info("Zainicjalizowano fallback menadżera portfela")
-                        }
                         logging.info(f"Utworzono fallback PortfolioManager (saldo: {initial_balance} {currency})")
 
                     def get_portfolio(self):
@@ -613,7 +612,8 @@ def get_portfolio_data():
             },
             "source": "fallback_error",
             "error": str(e)
-        })f"Błąd podczas pobierania danych portfela: {e}", exc_info=True)
+        })
+        logging.error(f"Błąd podczas pobierania danych portfela: {e}", exc_info=True)
         # Szczegółowe dane diagnostyczne
         logging.error(f"Szczegóły błędu: {type(e).__name__}, {str(e)}")
 
