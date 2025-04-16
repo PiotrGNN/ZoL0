@@ -47,3 +47,12 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python create_models.py"
+
+[[workflows.workflow]]
+name = "Run Dashboard"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "streamlit run dashboard.py"

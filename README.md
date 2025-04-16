@@ -1,36 +1,25 @@
 # ZoL0 Trading System
 
-## Opis projektu
-System tradingowy wykorzystujący modele AI do analizy rynków kryptowalut i automatycznego handlu.
+## Opis
+Zaawansowany system tradingowy z modułami AI, analizą techniczną i dashboardem monitorującym.
 
-## Funkcje
-- Analiza sentymentu rynkowego
-- Wykrywanie anomalii cenowych
-- Automatyczne strategie handlowe
-- Integracja z giełdą Bybit (testnet i produkcja)
+## Funkcje główne
+- Śledzenie danych rynkowych w czasie rzeczywistym
+- Integracja z giełdami (Binance, Bybit, CCXT)
+- Modele AI do analizy rynku
+- Backtesting strategii tradingowych
 - Dashboard z wizualizacją danych
 
-## Instalacja
+## Uruchamianie systemu
 
-### Wymagania
-System wymaga Python 3.8+ i zainstalowanych bibliotek z pliku requirements.txt.
-
-```bash
-pip install -r requirements.txt
-```
-
-### Konfiguracja
-1. Skopiuj plik `.env.example` do `.env`
-2. Ustaw swoje klucze API Bybit:
-   - `BYBIT_API_KEY` - Twój klucz API
-   - `BYBIT_API_SECRET` - Twój sekret API
-   - `BYBIT_TESTNET` - `true` dla testnet, `false` dla produkcji
-
-## Uruchomienie
-
-### Tryb lokalny
+### Główna aplikacja (API)
 ```bash
 python run.py
+```
+
+### Dashboard (Streamlit)
+```bash
+streamlit run dashboard.py
 ```
 
 ### Tworzenie modeli AI
@@ -39,24 +28,18 @@ python create_models.py
 ```
 
 ## Struktura projektu
-- `ai_models/` - Modele AI i narzędzia do ich obsługi
-- `data/` - Moduły do pobierania i przetwarzania danych
-- `python_libs/` - Uproszczone wersje bibliotek
-- `static/` - Zasoby statyczne dla dashboardu
-- `templates/` - Szablony HTML dla dashboardu
-- `logs/` - Logi systemu
+- `ai_models/` - Modele AI i ich implementacje
+- `data/` - Moduły dostępu do danych rynkowych
+- `python_libs/` - Podstawowe biblioteki systemu
+- `static/` - Pliki statyczne dla interfejsu
+- `templates/` - Szablony HTML
 - `models/` - Zapisane modele AI
-- `reports/` - Raporty wyników tradingu
+- `reports/` - Raporty z backtestingu
 
-## Dashboard
-Dashboard jest dostępny pod adresem http://localhost:5000 po uruchomieniu systemu.
+## Konfiguracja
+System konfiguruje się przez plik `.env` - skopiuj `.env.example` i dostosuj ustawienia.
 
-## Tryb symulacji vs. produkcja
-System domyślnie działa w trybie symulacji (testnet Bybit).
-Aby uruchomić w trybie produkcyjnym:
-
+## Wymagania
+System wymaga Pythona 3.8+ oraz zainstalowanych bibliotek z pliku `requirements.txt`.
 ```bash
-python run.py --mode real
-```
-
-**UWAGA:** Tryb produkcyjny wykonuje rzeczywiste transakcje z użyciem prawdziwych środków!
+pip install -r requirements.txt
