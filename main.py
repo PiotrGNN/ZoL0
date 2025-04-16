@@ -1638,12 +1638,6 @@ if __name__ == "__main__":
     mode_str = "symulowanym" if args.mode == "sim" else "RZECZYWISTYM"
     logger.info(f"Uruchamianie aplikacji w trybie {mode_str}")
     
-    if args.mode == "real":
-        logger.warning("========== UWAGA ==========")
-        logger.warning("Uruchomiono system w trybie RZECZYWISTYM!")
-        logger.warning("Transakcje będą wykonywane na prawdziwym koncie!")
-        logger.warning("===========================")
-
     # Sprawdź środowisko - czy na pewno używamy produkcyjnego API
     if is_env_flag_true("BYBIT_TESTNET"):
         logger.warning("❌ OSTRZEŻENIE: .env wskazuje na testnet (BYBIT_TESTNET=True). Ustaw BYBIT_TESTNET=False, jeśli chcesz realny rynek!")
@@ -1656,7 +1650,7 @@ if __name__ == "__main__":
         print("Operacje handlowe będą mieć REALNE SKUTKI FINANSOWE!")
         print("===========================================\n\n")
 
-    # Inicjalizacja systemu
+    # Inicjalizacja systemu przed uruchomieniem aplikacji
     initialize_system()
 
     # Utworzenie pliku .env, jeśli nie istnieje
@@ -1713,12 +1707,21 @@ if __name__ == "__main__":
     host = "0.0.0.0"  # Używamy 0.0.0.0 dla dostępu zewnętrznego w środowisku Replit
     debug_mode = args.debug or os.getenv("DEBUG", "False").lower() in ["true", "1", "yes"]
 
+    # Dodajemy middleware CORS dla wsparcia API
+    from flask_cors import CORS
+    CORS(app)
+    
+    # Dodatkowa konfiguracja dla lepszego działania w środowisku Replit
+    app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
+    app.config['JSON_SORT_KEYS'] = False
+    app.config['PROPAGATE_EXCEPTIONS'] = True
+    
     logging.info(f"Uruchamianie aplikacji Flask na {host}:{port}")
     try:
-        app.run(host=host, port=port, debug=debug_mode)
+        app.run(host=host, port=port, debug=debug_mode, threaded=True)
     except Exception as e:
         logging.error(f"Błąd podczas uruchamiania aplikacji Flask: {e}")
         print(f"\nBłąd podczas uruchamiania aplikacji: {e}")
-        print("Sprawdź czy port {port} nie jest już używany.")
+        print(f"Sprawdź czy port {port} nie jest już używany.")
         import sys
         sys.exit(1)

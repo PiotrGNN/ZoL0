@@ -90,6 +90,19 @@ def run_application():
         # Import main powinien być wykonany tylko raz
         import main
         
+        # Uruchom aplikację Flask w trybie rozwojowym
+        port = int(os.environ.get("PORT", 5000))
+        host = "0.0.0.0"  # Używamy 0.0.0.0 dla dostępu zewnętrznego w środowisku Replit
+        
+        try:
+            logger.info(f"Uruchamianie serwera Flask na {host}:{port}")
+            # Uruchamiamy serwer Flask w osobnym wątku, aby nie blokować głównego programu
+            import threading
+            threading.Thread(target=lambda: main.app.run(host=host, port=port, debug=False)).start()
+            logger.info(f"Serwer Flask uruchomiony na {host}:{port}")
+        except Exception as flask_err:
+            logger.error(f"Błąd podczas uruchamiania serwera Flask: {flask_err}", exc_info=True)
+            
         # Usuń plik blokady po zakończeniu
         if os.path.exists('running.lock'):
             os.remove('running.lock')
