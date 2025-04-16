@@ -407,10 +407,22 @@ def initialize_system():
             # Zaimportuj lub utwórz portfolio_manager
             from python_libs.portfolio_manager import PortfolioManager, portfolio_manager
             if portfolio_manager is None:
-                portfolio_manager = PortfolioManager(initial_balance=1000.0, currency="USDT", mode="simulated")
+                initial_balance = 1000.0
+                currency = "USDT"
+                portfolio_manager = PortfolioManager(initial_balance=initial_balance, currency=currency, mode="simulated")
                 logging.info("Zainicjalizowano fallback menadżera portfela")
-                        logging.info(f"Utworzono fallback PortfolioManager (saldo: {initial_balance} {currency})")
+                logging.info(f"Utworzono fallback PortfolioManager (saldo: {initial_balance} {currency})")
 
+                # Definicja klasy SimplePortfolioManager na odpowiednim poziomie wcięcia
+                class SimplePortfolioManager:
+                    def __init__(self, initial_balance=100.0, currency="USDT", mode="simulated"):
+                        self.initial_balance = initial_balance
+                        self.currency = currency
+                        self.mode = mode
+                        self.balances = {
+                            currency: {"equity": initial_balance, "available_balance": initial_balance, "wallet_balance": initial_balance}
+                        }
+                        
                     def get_portfolio(self):
                         return {
                             "success": True,
