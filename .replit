@@ -1,82 +1,31 @@
-run = "python main.py"
-language = "python3"
-entrypoint = "main.py"
-modules = ["python-3.10:v18-20230807-322e88b"]
+run = "python run.py"
+hidden = [".git", ".config", "__pycache__", "*.log", "models_tested.lock", "running.lock"]
 
-hidden = [".pytest_cache", "__pycache__", ".idea", ".vscode", "venv"]
+entrypoint = "run.py"
 
 [nix]
-channel = "stable-23_11"
+channel = "stable-22_11"
 
 [env]
-VIRTUAL_ENV = "/home/runner/${REPL_SLUG}/venv"
-PATH = "${VIRTUAL_ENV}/bin:${PATH}"
-PYTHONPATH = "${VIRTUAL_ENV}/lib/python3.10/site-packages"
-REPLIT_POETRY_PYPI_REPOSITORY = "https://package-proxy.replit.com/pypi/"
-MPLBACKEND = "TkAgg"
+PYTHONPATH = "$PYTHONPATH:${REPL_HOME}/"
 PYTHONUNBUFFERED = "1"
-
-[unitTest]
-language = "python3"
+PORT = "5000"
+HOST = "0.0.0.0"
+FLASK_APP = "main.py"
+FLASK_ENV = "development"
 
 [gitHubImport]
-requiredFiles = [".replit", "replit.nix", ".config", "venv", ".gitignore"]
+requiredFiles = [".replit", "replit.nix"]
+
+[languages]
+[languages.python3]
+pattern = "**/*.py"
+[languages.python3.languageServer]
+start = "pylsp"
 
 [deployment]
-run = ["sh", "-c", "python main.py"]
+run = ["sh", "-c", "python run.py"]
 deploymentTarget = "cloudrun"
-
-[interpreter]
-command = ["python", "-u", "main.py"]
-
-[packager]
-language = "python3"
-ignoredPackages = ["unit_tests"]
-
-[packager.features]
-packageSearch = true
-guessImports = true
-enabledForHosting = false
-
-[debugger]
-support = true
-
-[debugger.interactive]
-transport = "localhost:0"
-startCommand = ["dap-python", "main.py"]
-
-[debugger.interactive.integratedAdapter]
-dapTcpAddress = "localhost:0"
-
-[debugger.interactive.initializeMessage]
-command = "initialize"
-type = "request"
-
-[debugger.interactive.initializeMessage.arguments]
-adapterID = "debugpy"
-clientID = "replit"
-clientName = "replit.com"
-columnsStartAt1 = true
-linesStartAt1 = true
-locale = "en-us"
-pathFormat = "path"
-supportsInvalidatedEvent = true
-supportsProgressReporting = true
-supportsRunInTerminalRequest = true
-supportsVariablePaging = true
-supportsVariableType = true
-
-[debugger.interactive.launchMessage]
-command = "launch"
-type = "request"
-
-[debugger.interactive.launchMessage.arguments]
-console = "externalTerminal"
-cwd = "."
-debugOptions = []
-program = "main.py"
-request = "launch"
-type = "python"
 
 [workflows]
 runButton = "Run"
@@ -98,7 +47,3 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python create_models.py"
-
-[[ports]]
-localPort = 5000
-externalPort = 80
