@@ -88,7 +88,16 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python manage_ai_models.py --fix && python main.py"
+args = "python run.py"
+
+[[workflows.workflow]]
+name = "Create Models"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python create_models.py"
 
 [[ports]]
 localPort = 5000

@@ -36,7 +36,7 @@ class ModelLoader:
     Klasa do ładowania i zarządzania modelami AI.
     
     Automatycznie wykrywa i ładuje modele z folderu ai_models/,
-    zapewniając dostęp do nich poprzez wygodne API.
+    zapewniając dostęp do nim poprzez wygodne API.
     """
     
     def __init__(self, models_path: str = 'ai_models'):
@@ -49,6 +49,7 @@ class ModelLoader:
         self.models_path = models_path
         self.models: Dict[str, Any] = {}
         self.model_tester = ModelTester(models_path=models_path, log_path='logs/model_loader.log')
+        self.training_data = None
         
         logger.info(f"Inicjalizacja ModelLoader dla ścieżki: {models_path}")
     
@@ -81,6 +82,85 @@ class ModelLoader:
             logger.error(f"Błąd podczas ładowania modeli: {e}")
             traceback.print_exc()
             return {}
+            
+    def predict(self, data=None):
+        """
+        Zbiera predykcje ze wszystkich załadowanych modeli.
+        
+        Args:
+            data: Dane do predykcji (opcjonalne)
+            
+        Returns:
+            Dict: Słownik z wynikami predykcji
+        """
+        predictions = {}
+        
+        # Jeśli modele nie są jeszcze załadowane, załaduj je
+        if not self.models:
+            self.load_models()
+            
+        # Zbierz predykcje z każdego modelu, który ma metodę predict
+        for name, model in self.models.items():
+            try:
+                if hasattr(model, 'predict'):
+                    result = model.predict(data)
+                    predictions[name] = result
+                    logger.info(f"Wykonano predykcję dla modelu {name}")
+                else:
+                    predictions[name] = {"error": "Model nie ma metody predict"}
+            except Exception as e:
+                logger.error(f"Błąd podczas predykcji modelu {name}: {e}")
+                predictions[name] = {"error": str(e)}
+                
+        return {
+            "predictions": predictions,
+            "models_count": len(self.models),
+            "timestamp": datetime.now().isoformat()
+        }
+    
+    def fit(self, data, model_names=None):
+        """
+        Trenuje wybrane lub wszystkie załadowane modele.
+        
+        Args:
+            data: Dane treningowe
+            model_names: Lista nazw modeli do wytrenowania (None dla wszystkich)
+            
+        Returns:
+            Dict: Wyniki treningu
+        """
+        results = {}
+        self.training_data = data
+        
+        # Jeśli modele nie są jeszcze załadowane, załaduj je
+        if not self.models:
+            self.load_models()
+            
+        # Ustal listę modeli do treningu
+        models_to_train = model_names if model_names else self.models.keys()
+        
+        # Trenuj każdy wybrany model, który ma metodę fit
+        for name in models_to_train:
+            if name in self.models:
+                model = self.models[name]
+                try:
+                    if hasattr(model, 'fit'):
+                        success = model.fit(data)
+                        results[name] = {"success": success}
+                        logger.info(f"Trening modelu {name} {'zakończony sukcesem' if success else 'nieudany'}")
+                    else:
+                        results[name] = {"error": "Model nie ma metody fit"}
+                except Exception as e:
+                    logger.error(f"Błąd podczas treningu modelu {name}: {e}")
+                    results[name] = {"error": str(e)}
+            else:
+                results[name] = {"error": "Model nie istnieje"}
+                
+        return {
+            "training_results": results,
+            "models_trained": len(results),
+            "timestamp": datetime.now().isoformat()
+        }
     
     def get_model(self, name: str) -> Optional[Any]:
         """

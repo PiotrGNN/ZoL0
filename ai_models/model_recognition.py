@@ -28,6 +28,8 @@ class ModelRecognizer:
             "double_top": self._detect_double_top,
             "double_bottom": self._detect_double_bottom
         }
+        self.trained = False
+        self.training_data = None
         self.logger.info("ModelRecognizer zainicjalizowany")
 
     def identify_model_type(self, data: Optional[pd.DataFrame]) -> Dict[str, Any]:
@@ -200,3 +202,74 @@ class ModelRecognizer:
                 "strength": 0.0,
                 "error": str(e)
             }
+    
+    def predict(self, data: Union[pd.DataFrame, np.ndarray, List]) -> Dict[str, Any]:
+        """
+        Przewiduje wzorce na podstawie podanych danych.
+        
+        Args:
+            data: Dane wejściowe do analizy (DataFrame, numpy array lub lista)
+            
+        Returns:
+            Dict: Wynik analizy wzorców
+        """
+        try:
+            if isinstance(data, list):
+                # Konwertuj listę na DataFrame, jeśli to możliwe
+                if len(data) > 0 and isinstance(data[0], dict):
+                    data = pd.DataFrame(data)
+                else:
+                    # Twórz prosty DataFrame z wartościami
+                    data = pd.DataFrame({'value': data})
+            
+            elif isinstance(data, np.ndarray):
+                # Konwertuj numpy array na DataFrame
+                if data.ndim == 1:
+                    data = pd.DataFrame({'value': data})
+                else:
+                    cols = [f'feature_{i}' for i in range(data.shape[1])]
+                    data = pd.DataFrame(data, columns=cols)
+            
+            # Identyfikuj model i analizuj trend
+            model_result = self.identify_model_type(data)
+            trend_result = self.analyze_trend(data)
+            
+            # Połącz wyniki w jeden słownik
+            result = {
+                'model': model_result,
+                'trend': trend_result,
+                'timestamp': datetime.now().isoformat()
+            }
+            
+            return result
+        except Exception as e:
+            self.logger.error(f"Błąd podczas predykcji: {e}")
+            return {
+                'error': str(e),
+                'timestamp': datetime.now().isoformat()
+            }
+    
+    def fit(self, data: Union[pd.DataFrame, np.ndarray, List], labels: Optional[Any] = None) -> bool:
+        """
+        Trenuje model na podanych danych. Ta metoda przechowuje dane treningowe do późniejszej analizy.
+        
+        Args:
+            data: Dane treningowe (DataFrame, numpy array lub lista)
+            labels: Opcjonalne etykiety (nie używane w obecnej implementacji)
+            
+        Returns:
+            bool: True jeśli trening się powiódł, False w przeciwnym przypadku
+        """
+        try:
+            # Przechowaj dane treningowe do późniejszej analizy
+            if isinstance(data, (pd.DataFrame, np.ndarray, list)):
+                self.training_data = data
+                self.trained = True
+                self.logger.info(f"Model został wytrenowany na {len(data) if hasattr(data, '__len__') else 'nieznanych'} próbkach")
+                return True
+            else:
+                self.logger.error("Nieprawidłowy format danych treningowych")
+                return False
+        except Exception as e:
+            self.logger.error(f"Błąd podczas treningu modelu: {e}")
+            return False
