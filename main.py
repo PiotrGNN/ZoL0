@@ -170,7 +170,19 @@ def initialize_system():
             method = anomaly_config.get("method", "z_score")
             threshold = anomaly_config.get("threshold", 2.5)
 
-            anomaly_detector = AnomalyDetector(method=method, threshold=threshold)
+            anomaly_detector = AnomalyDetector(sensitivity=threshold)
+    
+    # Trening modelu na przykładowych danych
+    import numpy as np
+    import pandas as pd
+    # Tworzymy przykładowe dane do wstępnego treningu
+    sample_data = pd.DataFrame(np.random.normal(0, 1, (100, 5)), 
+                              columns=['feature1', 'feature2', 'feature3', 'feature4', 'feature5'])
+    try:
+        anomaly_detector.fit(sample_data)
+        logging.info("Model detekcji anomalii pomyślnie wytrenowany na przykładowych danych")
+    except Exception as e:
+        logging.warning(f"Nie udało się wytrenować modelu detekcji anomalii: {e}")
             logging.info(f"Zainicjalizowano AnomalyDetector z biblioteki {anomaly_lib} (metoda: {method}, próg: {threshold})")
         except ImportError as e:
             logging.warning(f"Nie można zaimportować AnomalyDetector z ai_models: {e}")
