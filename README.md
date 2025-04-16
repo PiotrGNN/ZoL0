@@ -1,108 +1,104 @@
+# System Tradingowy AI
 
-# CryptoTrader Dashboard
+## 🚀 Szybkie uruchomienie
 
-Dashboard do tradingu kryptowalut z backendem w FastAPI i frontendem w React/TailwindCSS.
+1. Kliknij przycisk `Run` w górnej części ekranu Replit.
+2. Poczekaj na inicjalizację środowiska i uruchomienie aplikacji.
+3. Aplikacja zostanie uruchomiona i będzie dostępna pod wskazanym adresem.
 
-## Funkcjonalności
-
-- 📊 Wyświetlanie danych z giełdy (saldo, ceny, transakcje)
-- 📈 Real-time aktualizacje przez WebSocket
-- 💰 Panel tradingowy do składania zleceń
-- 📉 Wykresy i statystyki wydajności portfela
-- 🤖 Integracja z modelami AI (predykcje)
-- 🔄 Automatyczne strategie tradingowe
-
-## Wymagania
-
-- Python 3.8+
-- Node.js 16+ (opcjonalnie dla rozwoju frontendu)
-
-## Instalacja
-
-1. Sklonuj to repozytorium
-2. Zainstaluj zależności:
-
-```bash
-pip install -r requirements.txt
-```
-
-3. Skonfiguruj zmienne środowiskowe:
-
-Skopiuj plik .env.example do .env i wypełnij wymagane dane:
+## 📂 Struktura projektu
 
 ```
-BYBIT_API_KEY=YourApiKeyHere
-BYBIT_API_SECRET=YourApiSecretHere
-BYBIT_TESTNET=true
-```
-
-## Uruchomienie
-
-### Uruchomienie serwera FastAPI:
-
-```bash
-python app.py
-```
-
-Serwer zostanie uruchomiony na porcie 5000. Dashboard będzie dostępny pod adresem http://localhost:5000/static/dashboard.html
-
-Możesz uruchomić skrypt główny, który także zainicjalizuje środowisko:
-
-```bash
-python run.py
-```
-
-## Struktura projektu
-
-```
-├── app.py                # Główny plik aplikacji FastAPI
-├── run.py                # Skrypt do lokalnego uruchomienia systemu
-├── requirements.txt      # Zależności
-├── .env                  # Konfiguracja środowiska
+project/
+├── ai_models/            # Modele sztucznej inteligencji
+├── python_libs/          # Biblioteki pomocnicze
+├── data/                 # Dane i cache
+│   └── cache/            # Pliki tymczasowe
+├── models/               # Zapisane modele
+├── saved_models/         # Dodatkowe zapisane modele
+├── logs/                 # Pliki logów
+├── reports/              # Generowane raporty
 ├── static/               # Pliki statyczne
-│   ├── css/              # Style CSS
-│   ├── js/               # Skrypty JavaScript
-│   └── img/              # Obrazy
-├── templates/            # Szablony HTML
-├── data/                 # Moduły do obsługi danych
-│   ├── execution/        # Klasy do komunikacji z giełdami
-│   ├── strategies/       # Strategie tradingowe
-│   └── utils/            # Narzędzia pomocnicze
-├── ai_models/            # Modele AI
-└── logs/                 # Logi aplikacji
+├── main.py               # Główny plik aplikacji
+├── run.py                # Skrypt startowy
+├── create_models.py      # Skrypt tworzący przykładowe modele
+└── test_models.py        # Skrypt testujący modele
 ```
 
-## API Endpoints
+## 🤖 Zarządzanie modelami AI
 
-- `GET /api/health` - Sprawdzenie stanu aplikacji
-- `GET /api/balance` - Pobranie salda portfela
-- `GET /api/ticker/{symbol}` - Pobranie tickera dla symbolu
-- `GET /api/klines/{symbol}` - Pobranie danych świecowych
-- `POST /api/order` - Złożenie zlecenia
-- `GET /api/market_summary` - Podsumowanie rynku
-- `GET /api/portfolio_performance` - Wydajność portfela
-- `GET /api/strategies` - Lista dostępnych strategii
-- `WebSocket /ws` - Endpoint do aktualizacji w czasie rzeczywistym
+1. **Tworzenie przykładowych modeli**:
+   ```
+   python create_models.py
+   ```
 
-## Rozwijanie projektu
+2. **Testowanie modeli**:
+   ```
+   python test_models.py
+   ```
 
-### Backend (FastAPI)
+3. **Uruchomienie aplikacji**:
+   ```
+   python run.py
+   ```
 
-1. Dodawanie nowych endpointów: Otwórz `app.py` i dodaj nowe funkcje obsługi żądań.
-2. Modyfikacja strategii: Edytuj pliki w katalogu `data/strategies/`.
-3. Zmiana konfiguracji: Dostosuj ustawienia w pliku `.env`.
+## 🛠️ Rozwiązywanie problemów
 
-### Frontend
+Jeśli wystąpią problemy:
 
-1. Modyfikacja interfejsu: Edytuj pliki w `templates/` i `static/`.
-2. Dodawanie funkcjonalności JavaScript: Edytuj plik `static/js/trading-dashboard.js`.
+1. Sprawdź logi w katalogu `logs/`.
+2. Usuń pliki blokad, jeśli aplikacja została nieprawidłowo zamknięta:
+   ```
+   rm running.lock models_tested.lock
+   ```
+3. Uruchom tworzenie modeli przykładowych:
+   ```
+   python create_models.py
+   ```
 
-## Bezpieczeństwo
+## 📋 Lista funkcjonalności
 
-- Upewnij się, że API_KEY i API_SECRET są bezpieczne.
-- Domyślnie używane jest testnet API, aby uniknąć przypadkowego użycia prawdziwych środków.
-- Jeśli chcesz używać prawdziwego API, zmień `BYBIT_TESTNET=false` w pliku `.env` i potwierdź to dodatkowymi ustawieniami.
+- **Automatyczne wykrywanie modeli** - system automatycznie znajduje i ładuje modele AI.
+- **Testowanie modeli** - testy sprawdzają poprawność modeli przed użyciem.
+- **Zarządzanie danymi** - system obsługuje dane z różnych źródeł.
+- **Wizualizacja wyników** - dashboard z wykresami i statystykami.
+- **Symulacja tradingu** - możliwość testowania strategii bez ryzyka.
 
-## Licencja
+## 🔧 Konfiguracja
 
-MIT
+Konfiguracja znajduje się w pliku `.env` (utworzonym z `.env.example` przy pierwszym uruchomieniu).
+
+## Zarządzanie modelami AI
+System zawiera narzędzie do zarządzania modelami AI, które można uruchomić:
+```
+python manage_ai_models.py [KOMENDA]
+```
+
+Dostępne komendy:
+- `list` - Wyświetl listę dostępnych modeli
+- `backup` - Utwórz kopię zapasową modeli
+- `test` - Testuj wszystkie modele
+- `retrain [MODEL]` - Trenuj wybrane modele (użyj "all" dla wszystkich)
+- `details [MODEL]` - Wyświetl szczegóły modelu
+
+
+Przykłady:
+```bash
+# Wyświetl listę modeli
+python manage_ai_models.py list
+
+# Testuj wszystkie modele
+python manage_ai_models.py test
+
+# Trenuj wybrany model
+python manage_ai_models.py retrain AnomalyDetector
+```
+
+Możesz uruchomić testy wszystkich modeli za pomocą:
+```
+python test_models.py
+```
+
+Opcjonalnie, możesz wymusić ponowne trenowanie podczas testów:
+```
+python test_models.py --force-retrain
