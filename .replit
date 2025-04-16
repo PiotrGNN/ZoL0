@@ -28,7 +28,7 @@ run = ["sh", "-c", "python run.py"]
 deploymentTarget = "cloudrun"
 
 [workflows]
-runButton = "Run"
+runButton = "Start Dashboard"
 
 [[workflows.workflow]]
 name = "Run"
@@ -47,3 +47,12 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python create_models.py"
+
+[[workflows.workflow]]
+name = "Start Dashboard"
+author = 31819671
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python app.py"
