@@ -1,4 +1,21 @@
 """
+Pakiet utilities do przetwarzania danych i monitorowania wydajności.
+"""
+
+# Import głównych komponentów modułu
+from .performance_monitor import (
+    PerformanceMonitor, 
+    performance_monitor, 
+    add_trade,
+    update_balance,
+    get_performance_stats,
+    reset_performance_monitor
+)
+
+# Wersja modułu
+__version__ = '1.0.0'
+
+"""
 Inicjalizacja pakietu.
 
 Ten plik __init__.py automatycznie importuje wszystkie moduły (.py) znajdujące się w bieżącym katalogu

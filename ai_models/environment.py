@@ -173,15 +173,8 @@ class MarketEnvironment:
 
             # Aktualizacja stanu: przejście do następnego kroku
             self.current_step += 1
-            done = (
-                self.current_step
-                >= (
-                    len(self.data)
-                    if self.data is not None
-                    else len(self.simulated_prices)
-                )
-                - 1
-            )
+            done = (self.current_step >= 
+                   (len(self.data) if self.data is not None else len(self.simulated_prices)) - 1)
 
             next_state = self._get_state()
             info = {

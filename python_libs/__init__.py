@@ -1,4 +1,3 @@
-
 """
 Katalog z uproszczonymi modułami dla systemu tradingowego, 
 kompatybilnymi zarówno z lokalnym środowiskiem, jak i Replit.
@@ -23,3 +22,7 @@ import os
 
 # Dodaj ścieżkę bieżącego katalogu do sys.path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+"""
+Pakiet python_libs zawierający niestandardowe biblioteki pomocnicze dla systemu handlowego.
+"""

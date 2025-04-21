@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 """
 run.py - Skrypt do lokalnego uruchomienia systemu tradingowego
@@ -10,6 +9,7 @@ import logging
 import time
 import subprocess
 from dotenv import load_dotenv
+import socket
 
 # Konfiguracja logowania
 logging.basicConfig(
@@ -74,6 +74,22 @@ def fix_imports():
     
     return True
 
+# Funkcja do znajdowania wolnego portu
+def find_free_port(start_port=5000, max_attempts=20):
+    """Znajdź wolny port TCP zaczynając od start_port."""
+    for port in range(start_port, start_port + max_attempts):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            try:
+                s.bind(('0.0.0.0', port))
+                logging.info(f"Znaleziono wolny port: {port}")
+                return port
+            except OSError:
+                logging.info(f"Port {port} jest zajęty, próbuję następny...")
+                continue
+    # Jeśli nie znaleziono wolnego portu, zwróć None
+    logging.error(f"Nie znaleziono wolnego portu w zakresie {start_port}-{start_port + max_attempts - 1}")
+    return None
+
 def run_application():
     """Uruchomienie głównej aplikacji."""
     try:
@@ -90,8 +106,16 @@ def run_application():
         # Import main powinien być wykonany tylko raz
         import main
         
-        # Uruchom aplikację Flask w trybie rozwojowym
-        port = int(os.environ.get("PORT", 5000))
+        # Znajdź wolny port zaczynając od domyślnego portu 5000
+        default_port = int(os.environ.get("PORT", 5000))
+        port = find_free_port(start_port=default_port)
+        if port is None:
+            logger.error("Nie znaleziono wolnego portu. Zakończono działanie.")
+            return False
+        
+        # Ustawienie zmiennej środowiskowej PORT na znaleziony wolny port
+        os.environ["PORT"] = str(port)
+        
         host = "0.0.0.0"  # Używamy 0.0.0.0 dla dostępu zewnętrznego w środowisku Replit
         
         try:
@@ -100,6 +124,18 @@ def run_application():
             import threading
             threading.Thread(target=lambda: main.app.run(host=host, port=port, debug=False)).start()
             logger.info(f"Serwer Flask uruchomiony na {host}:{port}")
+            
+            # Wyświetlenie adresu dostępu dla użytkownika
+            print(f"\n============================================")
+            print(f"Aplikacja dostępna pod adresem: http://localhost:{port}")
+            print(f"============================================\n")
+            
+            # Utrzymuj główny wątek aktywny, aby program nie zakończył się od razu
+            try:
+                while True:
+                    time.sleep(1)
+            except KeyboardInterrupt:
+                logger.info("Otrzymano sygnał zakończenia pracy (Ctrl+C).")
         except Exception as flask_err:
             logger.error(f"Błąd podczas uruchamiania serwera Flask: {flask_err}", exc_info=True)
             

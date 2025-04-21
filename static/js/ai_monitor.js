@@ -465,3 +465,147 @@ function showNotification(type, message) {
         }, 500);
     }, 5000);
 }
+
+// Funkcje dla monitora AI
+function updateAIThoughtsPanel(thoughts) {
+    const container = document.getElementById('ai-thoughts-container');
+    if (!container) return;
+
+    if (!thoughts || thoughts.length === 0) {
+        container.innerHTML = '<div class="no-data">Brak aktywnych przemyśleń AI</div>';
+        return;
+    }
+
+    let thoughtsHtml = '<div class="thoughts-list">';
+    thoughts.forEach(thought => {
+        thoughtsHtml += `
+            <div class="thought-item">
+                <div class="thought-content">${thought}</div>
+                <div class="thought-timestamp">${new Date().toLocaleTimeString()}</div>
+            </div>
+        `;
+    });
+    thoughtsHtml += '</div>';
+    container.innerHTML = thoughtsHtml;
+}
+
+function updateLearningStatus(status) {
+    const container = document.getElementById('learning-status-container');
+    if (!container) return;
+
+    if (!status) {
+        container.innerHTML = '<div class="no-data">Brak danych o statusie uczenia</div>';
+        return;
+    }
+
+    const progressPercentage = status.training_progress || 0;
+    const html = `
+        <div class="learning-status">
+            <div class="status-header">
+                <div>Modele w treningu: ${status.models_in_training}</div>
+                <div>Najlepsza dokładność: ${status.best_accuracy}%</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress" style="width: ${progressPercentage}%"></div>
+            </div>
+            <div class="progress-text">${progressPercentage}% ukończono</div>
+            <div class="last-trained">Ostatni trening: ${status.last_trained}</div>
+        </div>
+    `;
+    container.innerHTML = html;
+}
+
+// Nasłuchiwanie zdarzeń symulacji
+document.addEventListener('DOMContentLoaded', function() {
+    const simulationForm = document.getElementById('simulation-form');
+    if (simulationForm) {
+        simulationForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            runSimulation();
+        });
+    }
+
+    // Przyciski szybkiej symulacji
+    const quickSimBtn = document.getElementById('run-simulation-btn');
+    const learningSimBtn = document.getElementById('run-learning-btn');
+
+    if (quickSimBtn) {
+        quickSimBtn.addEventListener('click', function() {
+            runQuickSimulation();
+        });
+    }
+
+    if (learningSimBtn) {
+        learningSimBtn.addEventListener('click', function() {
+            runLearningSimulation();
+        });
+    }
+});
+
+function runQuickSimulation() {
+    fetch('/api/simulation/quick', {
+        method: 'POST',
+        headers: getAuthHeaders()
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('success', 'Szybka symulacja uruchomiona');
+            setTimeout(() => fetchSimulationResults(), 2000);
+        } else {
+            showNotification('error', data.error || 'Błąd podczas uruchamiania symulacji');
+        }
+    })
+    .catch(error => {
+        console.error('Błąd podczas uruchamiania szybkiej symulacji:', error);
+        showNotification('error', 'Błąd podczas uruchamiania symulacji');
+    });
+}
+
+function runLearningSimulation() {
+    fetch('/api/simulation/learning', {
+        method: 'POST',
+        headers: getAuthHeaders()
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('success', 'Symulacja z uczeniem uruchomiona');
+            setTimeout(() => {
+                fetchSimulationResults();
+                fetchAIStatus();
+            }, 2000);
+        } else {
+            showNotification('error', data.error || 'Błąd podczas uruchamiania symulacji z uczeniem');
+        }
+    })
+    .catch(error => {
+        console.error('Błąd podczas uruchamiania symulacji z uczeniem:', error);
+        showNotification('error', 'Błąd podczas uruchamiania symulacji');
+    });
+}
+
+// Automatyczne odświeżanie danych AI
+setInterval(() => {
+    if (document.getElementById('ai-monitor-tab').style.display === 'block') {
+        fetch('/api/ai/thoughts', {
+            headers: getAuthHeaders()
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.thoughts) {
+                    updateAIThoughtsPanel(data.thoughts);
+                }
+            })
+            .catch(console.error);
+
+        fetch('/api/ai/learning-status', {
+            headers: getAuthHeaders()
+        })
+            .then(response => response.json())
+            .then(data => {
+                updateLearningStatus(data);
+            })
+            .catch(console.error);
+    }
+}, 5000); // Odświeżaj co 5 sekund

@@ -1,4 +1,3 @@
-
 """
 anomaly_detection.py
 ------------------
@@ -78,22 +77,37 @@ class AnomalyDetector:
         except Exception as e:
             logging.error(f"Błąd podczas treningu modelu detekcji anomalii: {e}")
     
-    def detect(self, data: Union[pd.DataFrame, np.ndarray]) -> Dict[str, Any]:
+    def detect(self, data: Union[pd.DataFrame, np.ndarray, List[Dict]]) -> Dict[str, Any]:
         """
         Wykrywa anomalie w danych.
         
         Args:
-            data: Dane do analizy (DataFrame lub np.ndarray)
+            data: Dane do analizy (DataFrame, np.ndarray lub lista słowników)
             
         Returns:
             Dict: Wyniki detekcji zawierające indeksy anomalii i ich wyniki
         """
         try:
             if self.model is None:
-                return self._fallback_detect(data)
-                
+                self._initialize_default_model()
+                if self.model is None:
+                    return self._fallback_detect(data)
+                    
             # Przygotuj dane
             X = self._prepare_data(data)
+            
+            # Sprawdź czy model został wytrenowany, jeśli nie, trenuj na bieżących danych
+            try:
+                # Próba wywołania predict może spowodować wyjątek jeśli model nie jest wytrenowany
+                self.model.predict(X[:1])
+            except Exception as e:
+                if "not fitted yet" in str(e):
+                    logging.info("Model IsolationForest nie był wytrenowany. Trenuję na bieżących danych...")
+                    self.model.fit(X)
+                    logging.info(f"Model wytrenowany na {X.shape[0]} próbkach")
+                else:
+                    logging.error(f"Nieznany błąd podczas predykcji: {e}")
+                    return self._fallback_detect(data)
             
             # Wykonaj predykcję (-1 to anomalia, 1 to normalne dane)
             predictions = self.model.predict(X)
@@ -114,7 +128,8 @@ class AnomalyDetector:
                 "anomaly_count": len(anomaly_indices),
                 "total_samples": X.shape[0],
                 "anomaly_ratio": len(anomaly_indices) / X.shape[0] if X.shape[0] > 0 else 0,
-                "timestamps": timestamps
+                "timestamps": timestamps,
+                "method": "isolation_forest"
             }
             
             return result
@@ -122,23 +137,32 @@ class AnomalyDetector:
             logging.error(f"Błąd podczas wykrywania anomalii: {e}")
             return self._fallback_detect(data)
     
-    def _fallback_detect(self, data: Union[pd.DataFrame, np.ndarray]) -> Dict[str, Any]:
+    def _fallback_detect(self, data: Union[pd.DataFrame, np.ndarray, List[Dict]]) -> Dict[str, Any]:
         """
         Prosta metoda zastępcza do wykrywania anomalii bez modelu.
         
         Args:
-            data: Dane do analizy
+            data: Dane do analizy (DataFrame, np.ndarray lub lista słowników)
             
         Returns:
             Dict: Wyniki detekcji
         """
         try:
-            # Konwertuj dane do numpy array jeśli potrzeba
-            if isinstance(data, pd.DataFrame):
-                X = data.select_dtypes(include=['number']).values
-            else:
-                X = data
-                
+            # Przygotuj dane - korzystamy z istniejącej metody _prepare_data
+            X = self._prepare_data(data)
+            
+            # Jeśli dane są puste lub zawierają tylko jeden element, zwróć pusty wynik
+            if X.size <= 1:
+                return {
+                    "anomaly_indices": [],
+                    "anomaly_scores": [],
+                    "anomaly_count": 0,
+                    "total_samples": X.shape[0] if hasattr(X, "shape") else 0,
+                    "anomaly_ratio": 0,
+                    "timestamps": None,
+                    "method": "empty_data_fallback"
+                }
+            
             # Metoda zastępcza - użyj prostej metody z-score do wykrywania anomalii
             mean = np.mean(X, axis=0)
             std = np.std(X, axis=0) + 1e-10  # Unikaj dzielenia przez 0
@@ -184,16 +208,37 @@ class AnomalyDetector:
                 "method": "failed_fallback"
             }
     
-    def _prepare_data(self, data: Union[pd.DataFrame, np.ndarray]) -> np.ndarray:
+    def _prepare_data(self, data: Union[pd.DataFrame, np.ndarray, List[Dict]]) -> np.ndarray:
         """
         Przygotowuje dane do analizy.
         
         Args:
-            data: Dane wejściowe (DataFrame lub np.ndarray)
+            data: Dane wejściowe (DataFrame, np.ndarray lub lista słowników)
             
         Returns:
             np.ndarray: Przygotowane dane
         """
+        # Obsługa listy słowników - konwertuj na DataFrame
+        if isinstance(data, list) and len(data) > 0 and isinstance(data[0], dict):
+            try:
+                data = pd.DataFrame(data)
+            except Exception as e:
+                logging.error(f"Błąd konwersji listy słowników do DataFrame: {e}")
+                # Fallback - ekstrahuj wartości liczbowe ze słowników
+                numeric_values = []
+                for item in data:
+                    item_values = []
+                    for key, value in item.items():
+                        if isinstance(value, (int, float)) and not isinstance(value, bool):
+                            item_values.append(value)
+                    if item_values:
+                        numeric_values.append(item_values)
+                if numeric_values:
+                    return np.array(numeric_values)
+                else:
+                    # Jeśli nie udało się wyodrębnić wartości liczbowych, zwróć pustą tablicę
+                    return np.array([[0.0]])
+        
         if isinstance(data, pd.DataFrame):
             # Wybierz tylko kolumny numeryczne
             numeric_data = data.select_dtypes(include=['number'])
@@ -205,16 +250,35 @@ class AnomalyDetector:
                 numeric_data['price_volatility'] = price_volatility
                 numeric_data['price_change'] = price_change
             
-            # Wypełnij braki danych
-            numeric_data = numeric_data.fillna(method='ffill').fillna(0)
+            # Wypełnij braki danych - poprawiona wersja bez ostrzeżeń
+            numeric_data = numeric_data.ffill().fillna(0)
             
+            # Sprawdź, czy DataFrame nie jest pusty po filtracji
+            if numeric_data.empty:
+                logging.warning("DataFrame nie zawiera kolumn numerycznych po filtracji")
+                return np.array([[0.0]])
+                
             return numeric_data.values
         else:
             # Zakładamy, że dane są już w formacie np.ndarray
-            # Wypełnij braki danych
-            if np.isnan(data).any():
-                data = np.nan_to_num(data, nan=0.0)
-            return data
+            # Sprawdź, czy dane są tablicą numpy
+            try:
+                if not isinstance(data, np.ndarray):
+                    data = np.array(data)
+                    
+                # Sprawdź wymiary - jeśli 1D, przekształć do 2D
+                if data.ndim == 1:
+                    data = data.reshape(-1, 1)
+                    
+                # Wypełnij braki danych
+                if np.isnan(data).any():
+                    data = np.nan_to_num(data, nan=0.0)
+                    
+                return data
+            except Exception as e:
+                logging.error(f"Błąd podczas przygotowywania danych: {e}")
+                # Zwróć domyślną tablicę w przypadku błędu
+                return np.array([[0.0]])
     
     def predict(self, data: Union[pd.DataFrame, np.ndarray]) -> np.ndarray:
         """

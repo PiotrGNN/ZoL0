@@ -22,7 +22,7 @@ logging.basicConfig(
 
 
 def fixed_fractional_position_size(
-    capital: float, risk_per_trade: float, stop_loss_distance: float
+    capital: float, risk_per_trade: float, stop_loss_distance: float, current_price: float = None
 ) -> float:
     """
     Oblicza rozmiar pozycji przy użyciu metody fixed fractional.
@@ -31,6 +31,7 @@ def fixed_fractional_position_size(
         capital (float): Dostępny kapitał.
         risk_per_trade (float): Maksymalny procent kapitału, jaki chcemy ryzykować na jedną transakcję (np. 0.02 dla 2%).
         stop_loss_distance (float): Odległość od punktu wejścia do stop loss (w jednostkach ceny).
+        current_price (float, optional): Aktualna cena aktywa. Jeśli podana, wielkość pozycji będzie w jednostkach aktywa.
 
     Returns:
         float: Optymalny rozmiar pozycji.
@@ -40,7 +41,12 @@ def fixed_fractional_position_size(
     if stop_loss_distance <= 0:
         logging.error("Stop loss distance musi być dodatnie.")
         raise ValueError("Stop loss distance musi być dodatnie.")
-    position_size = risk_amount / stop_loss_distance
+
+    if current_price is not None and current_price > 0:
+        position_size = (risk_amount / current_price) / (stop_loss_distance / current_price)
+    else:
+        position_size = risk_amount / stop_loss_distance
+
     logging.info("Fixed fractional position size obliczone: %.4f", position_size)
     return position_size
 
@@ -131,6 +137,58 @@ def dynamic_position_size(
     return dynamic_size
 
 
+def calculate_position_size(capital: float, risk_params: dict) -> float:
+    """
+    Główna funkcja do obliczania rozmiaru pozycji, wykorzystująca różne metody w zależności od parametrów.
+
+    Parameters:
+        capital (float): Dostępny kapitał
+        risk_params (dict): Parametry ryzyka zawierające:
+            - method (str): Metoda obliczania ('fixed_fractional', 'kelly', 'risk_parity', 'dynamic')
+            - risk_per_trade (float): Procent kapitału na jedną transakcję
+            - stop_loss_distance (float, optional): Odległość stop loss
+            - win_rate (float, optional): Dla metody Kelly
+            - win_loss_ratio (float, optional): Dla metody Kelly
+            - market_volatility (float, optional): Dla metody dynamicznej
+            - volatilities (np.ndarray, optional): Dla metody risk parity
+
+    Returns:
+        float: Obliczony rozmiar pozycji
+    """
+    method = risk_params.get('method', 'fixed_fractional')
+    risk_per_trade = risk_params.get('risk_per_trade', 0.02)
+
+    if method == 'fixed_fractional':
+        stop_loss_distance = risk_params.get('stop_loss_distance')
+        current_price = risk_params.get('current_price')
+        if not stop_loss_distance:
+            raise ValueError("Dla metody fixed_fractional wymagany jest parametr stop_loss_distance")
+        return fixed_fractional_position_size(capital, risk_per_trade, stop_loss_distance, current_price)
+
+    elif method == 'kelly':
+        win_rate = risk_params.get('win_rate')
+        win_loss_ratio = risk_params.get('win_loss_ratio')
+        if not win_rate or not win_loss_ratio:
+            raise ValueError("Dla metody kelly wymagane są parametry win_rate i win_loss_ratio")
+        return kelly_criterion_position_size(win_rate, win_loss_ratio, capital)
+
+    elif method == 'risk_parity':
+        volatilities = risk_params.get('volatilities')
+        if volatilities is None:
+            raise ValueError("Dla metody risk_parity wymagany jest parametr volatilities")
+        return risk_parity_position_size(volatilities, capital)
+
+    elif method == 'dynamic':
+        stop_loss_distance = risk_params.get('stop_loss_distance')
+        market_volatility = risk_params.get('market_volatility')
+        if not stop_loss_distance or market_volatility is None:
+            raise ValueError("Dla metody dynamic wymagane są parametry stop_loss_distance i market_volatility")
+        return dynamic_position_size(capital, risk_per_trade, stop_loss_distance, market_volatility)
+
+    else:
+        raise ValueError(f"Nieznana metoda obliczania rozmiaru pozycji: {method}")
+
+
 # -------------------- Testy jednostkowe --------------------
 def unit_test_position_sizing():
     """
@@ -142,8 +200,9 @@ def unit_test_position_sizing():
         capital = 10000
         risk_per_trade = 0.02  # 2%
         stop_loss_distance = 50  # jednostki ceny
+        current_price = 100  # cena aktywa
         pos_size_fixed = fixed_fractional_position_size(
-            capital, risk_per_trade, stop_loss_distance
+            capital, risk_per_trade, stop_loss_distance, current_price
         )
         assert (
             pos_size_fixed > 0

@@ -1,4 +1,3 @@
-
 """
 test_environment.py
 ------------------
@@ -8,7 +7,13 @@ Skrypt do testowania środowiska i dostępności wymaganych bibliotek.
 import sys
 import importlib
 import os
+import logging
 from typing import List, Dict
+
+# Wyciszenie ostrzeżeń TensorFlow związanych z CUDA
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # 0=all, 1=INFO, 2=WARNING, 3=ERROR
+# Wyłącz autodetekcję GPU, jeśli nie jest potrzebna
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 def check_required_libs() -> Dict[str, bool]:
     """
@@ -41,7 +46,7 @@ def check_ai_models() -> Dict[str, bool]:
     Returns:
         Dict[str, bool]: Słownik nazw modeli i statusów dostępności
     """
-    ai_models = [
+    model_names = [
         "SentimentAnalyzer", "AnomalyDetector", "ModelRecognizer"
     ]
     results = {}
@@ -49,7 +54,7 @@ def check_ai_models() -> Dict[str, bool]:
     try:
         import ai_models
         
-        for model_name in ai_models:
+        for model_name in model_names:
             try:
                 # Sprawdź czy model jest dostępny w available_models
                 if hasattr(ai_models, 'get_available_models'):
@@ -90,7 +95,7 @@ def check_ai_models() -> Dict[str, bool]:
                 print(f"❌ Błąd podczas sprawdzania modelu {model_name}: {e}")
     except ImportError:
         print("❌ Nie można zaimportować pakietu ai_models")
-        for model_name in ai_models:
+        for model_name in model_names:
             results[model_name] = False
     
     return results
@@ -163,6 +168,9 @@ def main():
     # Sprawdzenie metod w modelach
     check_model_methods()
     
+    # Inicjalizacja słownika statystyk
+    stats = {"py_files_scanned": 0}
+    
     # Podsumowanie
     print("\n📋 Podsumowanie:")
     libs_ok = all(lib_results.values())
@@ -194,7 +202,7 @@ def main():
     
     if libs_ok and models_ok:
         print("\n🎉 Środowisko jest gotowe do pracy!")
-        returnn 0
+        return 0
     else:
         print("\n⚠️ Środowisko wymaga konfiguracji!")
         return 1

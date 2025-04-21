@@ -1,545 +1,478 @@
 """
-Model Training Module
---------------------
-This module provides functionality to train and evaluate models 
-for market prediction and analysis.
+model_training.py
+---------------
+Zoptymalizowany moduł do treningu modeli AI z:
+- Automatycznym doborem hiperparametrów
+- Walidacją krzyżową
+- Early stopping
+- Checkpointami
+- Równoległym treningiem
 """
 
 import os
+import json
 import logging
 import numpy as np
-import pandas as pd
 from datetime import datetime
-from typing import Dict, Union, List, Any, Optional, Tuple
+from typing import Dict, Any, Optional, List, Tuple
+from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
+from sklearn.model_selection import KFold, TimeSeriesSplit
+import torch
+import torch.nn as nn
+from torch.utils.data import DataLoader, TensorDataset
+import optuna
+from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 
-try:
-    import tensorflow as tf
-    from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
-except ImportError:
-    tf = None
-
-from sklearn.metrics import mean_absolute_error, mean_squared_error
-from sklearn.model_selection import TimeSeriesSplit
-from sklearn.ensemble import RandomForestRegressor # Added for example usage
-import pickle
-
-
+# Konfiguracja logowania
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    handlers=[
+        logging.FileHandler('logs/model_training.log'),
+        logging.StreamHandler()
+    ]
 )
-
-
-def prepare_data_for_model(data, features_count=None, expected_features=None):
-    """
-    Przygotowuje dane do formatu akceptowanego przez modele ML.
-
-    Args:
-        data: Dane wejściowe (np. DataFrame, słownik, lista)
-        features_count: Opcjonalna liczba cech do zwrócenia (dopasowanie wymiarów)
-        expected_features: Alias dla features_count, dla wstecznej kompatybilności
-
-    Returns:
-        Przygotowane dane w formacie numpy array lub DataFrame
-    """
-    # Jeśli podano expected_features, użyj go jako features_count
-    if expected_features is not None and features_count is None:
-        features_count = expected_features
-    try:
-        if isinstance(data, dict):
-            # Jeśli dane są słownikiem, konwertuj na DataFrame lub numpy array
-            if "close" in data and "open" in data:
-                # Tworzenie prostych cech na podstawie dostępnych kolumn
-                X = np.column_stack((
-                    np.array(data['close']),
-                    np.array(data['open']),
-                ))
-
-                # Jeśli określono features_count, dopasuj liczbę cech
-                if features_count is not None and X.shape[1] != features_count:
-                    logging.warning(f"Dopasowuję liczbę cech: {X.shape[1]} -> {features_count}")
-                    if X.shape[1] > features_count:
-                        # Jeśli mamy za dużo cech, wybierz pierwsze features_count
-                        X = X[:, :features_count]
-                    else:
-                        # Jeśli mamy za mało cech, dodaj kolumny z zerami
-                        padding = np.zeros((X.shape[0], features_count - X.shape[1]))
-                        X = np.hstack((X, padding))
-                return X
-            else:
-                # Gdy nie ma typowych kolumn OHLC, konwertujemy wszystkie wartości
-                features = []
-                for key, values in data.items():
-                    if isinstance(values, (list, np.ndarray)):
-                        features.append(np.array(values).reshape(-1, 1))
-
-                result = np.hstack(features) if features else None
-
-                # Dopasuj liczę cech jeśli potrzeba
-                if features_count is not None and result is not None and result.shape[1] != features_count:
-                    logging.warning(f"Dopasowuję liczbę cech: {result.shape[1]} -> {features_count}")
-                    if result.shape[1] > features_count:
-                        result = result[:, :features_count]
-                    else:
-                        padding = np.zeros((result.shape[0], features_count - result.shape[1]))
-                        result = np.hstack((result, padding))
-                return result
-
-        elif isinstance(data, pd.DataFrame):
-            # Dla DataFrame wybierz tylko kolumny numeryczne
-            numeric_cols = data.select_dtypes(include=[np.number]).columns
-            result = data[numeric_cols].values
-
-            # Dopasuj liczę cech jeśli potrzeba
-            if features_count is not None and result.shape[1] != features_count:
-                logging.warning(f"Dopasowuję liczbę cech: {result.shape[1]} -> {features_count}")
-                if result.shape[1] > features_count:
-                    result = result[:, :features_count]
-                else:
-                    padding = np.zeros((result.shape[0], features_count - result.shape[1]))
-                    result = np.hstack((result, padding))
-            return result
-
-        elif isinstance(data, np.ndarray):
-            # Już jest w formie numpy array, tylko dopasuj wymiary jeśli potrzeba
-            result = data
-            if features_count is not None and len(result.shape) > 1 and result.shape[1] != features_count:
-                logging.warning(f"Dopasowuję liczbę cech: {result.shape[1]} -> {features_count}")
-                if result.shape[1] > features_count:
-                    result = result[:, :features_count]
-                else:
-                    padding = np.zeros((result.shape[0], features_count - result.shape[1]))
-                    result = np.hstack((result, padding))
-            return result
-
-        elif isinstance(data, list):
-            # Konwertuj listę na numpy array
-            result = np.array(data)
-
-            # Dostosuj wymiar jeśli potrzeba
-            if features_count is not None and len(result.shape) > 1 and result.shape[1] != features_count:
-                logging.warning(f"Dopasowuję liczbę cech: {result.shape[1]} -> {features_count}")
-                if result.shape[1] > features_count:
-                    result = result[:, :features_count]
-                else:
-                    padding = np.zeros((result.shape[0], features_count - result.shape[1]))
-                    result = np.hstack((result, padding))
-            return result
-
-        else:
-            logging.warning(f"Nieznany format danych: {type(data)}")
-            return None
-    except Exception as e:
-        logging.error(f"Błąd podczas przygotowania danych: {e}")
-        return None
-
-def compute_data_hash(X, y=None):
-    """
-    Oblicza hash dla danych wejściowych, który można wykorzystać do sprawdzenia 
-    czy dane treningowe się zmieniły.
-    
-    Args:
-        X: Dane wejściowe (features)
-        y: Dane wyjściowe (target), opcjonalne
-        
-    Returns:
-        str: Hash reprezentujący dane
-    """
-    import hashlib
-    import numpy as np
-    
-    try:
-        # Oblicz statystyki dla X
-        if hasattr(X, 'shape'):
-            x_shape = str(X.shape)
-            x_mean = str(np.mean(X) if X.size > 0 else 0)
-            x_std = str(np.std(X) if X.size > 0 else 0)
-        else:
-            x_shape = str(len(X))
-            x_mean = "unknown"
-            x_std = "unknown"
-            
-        # Oblicz statystyki dla y, jeśli zostało podane
-        if y is not None:
-            if hasattr(y, 'shape'):
-                y_shape = str(y.shape)
-                y_mean = str(np.mean(y) if y.size > 0 else 0)
-                y_std = str(np.std(y) if y.size > 0 else 0)
-            else:
-                y_shape = str(len(y))
-                y_mean = "unknown"
-                y_std = "unknown"
-            
-            # Połącz statystyki X i y
-            data_repr = f"{x_shape}_{x_mean}_{x_std}_{y_shape}_{y_mean}_{y_std}"
-        else:
-            # Użyj tylko statystyk X
-            data_repr = f"{x_shape}_{x_mean}_{x_std}"
-        
-        # Oblicz hash MD5
-        return hashlib.md5(data_repr.encode()).hexdigest()
-    except Exception as e:
-        logging.error(f"Błąd podczas obliczania hasha danych: {e}")
-        # W przypadku błędu zwróć losowy hash
-        import time
-        return hashlib.md5(str(time.time()).encode()).hexdigest()
-
+logger = logging.getLogger(__name__)
 
 class ModelTrainer:
-    def __init__(
-        self,
-        model: Union["tf.keras.Model", Any],
-        model_name: str,
-        saved_model_dir: str = "saved_models",
-        online_learning: bool = False,
-        use_gpu: bool = False,
-        early_stopping_params: Optional[Dict[str, Any]] = None,
-    ):
-        self.model = model
-        self.model_name = model_name
-        self.saved_model_dir = saved_model_dir
-        self.online_learning = online_learning
-        self.use_gpu = use_gpu
-        self.early_stopping_params = early_stopping_params or {}
-        self.history = {}
-        self.model_metadata = {}
-        self.last_data_hash = None
-        
-        # Upewnij się, że katalog istnieje
-        os.makedirs(self.saved_model_dir, exist_ok=True)
-        
-        # Upewnij się, że katalog models istnieje (do zapisywania modeli w nowym formacie)
-        os.makedirs("models", exist_ok=True)
-
-        if tf is not None and isinstance(model, tf.keras.Model) and use_gpu:
-            logging.info("Trening z wykorzystaniem GPU/TPU (o ile jest dostępne).")
-            
-        # Spróbuj załadować istniejący model zamiast trenować od zera
-        self._try_load_existing_model()
-
-    def _try_load_existing_model(self) -> bool:
+    def __init__(self, config_path: Optional[str] = None):
         """
-        Próbuje załadować wcześniej zapisany model o tej samej nazwie.
-        
-        Returns:
-            bool: True jeśli udało się załadować model, False w przeciwnym przypadku
-        """
-        try:
-            # Sprawdź najpierw w katalogu models/
-            model_path = os.path.join("models", f"{self.model_name.lower()}_model.pkl")
-            
-            if os.path.exists(model_path):
-                logging.info(f"Znaleziono zapisany model {self.model_name} w {model_path}")
-                
-                with open(model_path, 'rb') as f:
-                    model_data = pickle.load(f)
-                    
-                if 'model' in model_data and 'metadata' in model_data:
-                    self.model = model_data['model']
-                    self.model_metadata = model_data['metadata']
-                    self.last_data_hash = self.model_metadata.get('data_hash')
-                    
-                    logging.info(f"Załadowano model {self.model_name} (trenowany: {self.model_metadata.get('train_date', 'nieznany')})")
-                    return True
-                else:
-                    logging.warning(f"Plik modelu {model_path} nie zawiera wymaganych danych")
-            
-            # Sprawdź również w standardowym katalogu saved_model_dir
-            # Znajdź najnowszy plik modelu
-            model_files = []
-            for file in os.listdir(self.saved_model_dir):
-                if file.startswith(f"{self.model_name}_") and (file.endswith(".pkl") or file.endswith(".h5")):
-                    file_path = os.path.join(self.saved_model_dir, file)
-                    model_files.append((file_path, os.path.getmtime(file_path)))
-            
-            if model_files:
-                # Sortuj po czasie modyfikacji (od najnowszego)
-                model_files.sort(key=lambda x: x[1], reverse=True)
-                latest_model_path = model_files[0][0]
-                
-                logging.info(f"Znaleziono zapisany model {self.model_name} w {latest_model_path}")
-                
-                # Załaduj model
-                if latest_model_path.endswith(".pkl"):
-                    with open(latest_model_path, 'rb') as f:
-                        # Stary format - sam model bez metadanych
-                        self.model = pickle.load(f)
-                        self.model_metadata = {'train_date': datetime.fromtimestamp(model_files[0][1]).isoformat()}
-                elif latest_model_path.endswith(".h5") and tf is not None:
-                    self.model = tf.keras.models.load_model(latest_model_path)
-                    self.model_metadata = {'train_date': datetime.fromtimestamp(model_files[0][1]).isoformat()}
-                
-                logging.info(f"Załadowano model {self.model_name} (trenowany: {self.model_metadata.get('train_date', 'nieznany')})")
-                return True
-            
-            return False
-            
-        except Exception as e:
-            logging.warning(f"Nie można załadować zapisanego modelu {self.model_name}: {e}")
-            return False
-
-    def walk_forward_split(
-        self, X: pd.DataFrame, y: pd.Series, n_splits: int = 5
-    ) -> List[tuple]:
-        splits = []
-        tscv = TimeSeriesSplit(n_splits=n_splits)
-        for train_index, val_index in tscv.split(X):
-            X_train, X_val = X.iloc[train_index], X.iloc[val_index]
-            y_train, y_val = y.iloc[train_index], y.iloc[val_index]
-            splits.append((X_train, y_train, X_val, y_val))
-        return splits
-
-    def train(
-        self,
-        X: pd.DataFrame,
-        y: pd.Series,
-        n_splits: int = 5,
-        epochs: int = 50,
-        batch_size: int = 32,
-        force_train: bool = False,
-    ) -> Dict[str, Any]:
-        """
-        Trenuje model na danych, z inteligentnym cachingiem.
+        Inicjalizacja trenera modeli z konfiguracją.
         
         Args:
-            X: Dane wejściowe
-            y: Dane wyjściowe
-            n_splits: Liczba podziałów danych w walidacji krzyżowej
-            epochs: Liczba epok dla modeli głębokiego uczenia
-            batch_size: Rozmiar partii danych dla modeli głębokiego uczenia
-            force_train: Czy wymusić trenowanie modelu nawet jeśli istnieje zapisany model
-            
-        Returns:
-            Dict[str, Any]: Wyniki treningu
+            config_path: Ścieżka do pliku konfiguracyjnego JSON
         """
-        try:
-            # Oblicz hash danych treningowych
-            current_data_hash = compute_data_hash(X, y)
-            
-            # Sprawdź czy model już istnieje i czy dane się zmieniły
-            if not force_train and self.last_data_hash == current_data_hash and self.model_metadata:
-                logging.info(f"Model {self.model_name} jest aktualny (hash danych się nie zmienił)")
-                return {
-                    "success": True,
-                    "message": "Model jest aktualny (dane nie zmieniły się)",
-                    "is_updated": False,
-                    "metrics": self.model_metadata.get("metrics", {}),
-                    "accuracy": self.model_metadata.get("accuracy", 0.0)
-                }
-            
-            # Jeśli dane się zmieniły lub wymuszono trening, trenuj model
-            splits = self.walk_forward_split(X, y, n_splits=n_splits)
-            metrics = {"mse": [], "mae": []}
-
-            for fold, (X_train, y_train, X_val, y_val) in enumerate(splits, start=1):
-                logging.info("Rozpoczynam trening (fold %d / %d)", fold, n_splits)
-
-                # Prepare data for the model (handling different data types)
-                X_train_prepared = prepare_data_for_model(X_train, expected_features=2) # Specifying expected features
-                X_val_prepared = prepare_data_for_model(X_val, expected_features=2) # Specifying expected features
-                y_train_prepared = prepare_data_for_model(y_train)
-                y_val_prepared = prepare_data_for_model(y_val)
-
-
-                if tf is not None and isinstance(self.model, tf.keras.Model):
-                    callbacks = []
-                    if self.early_stopping_params:
-                        callbacks.append(EarlyStopping(**self.early_stopping_params))
-                    checkpoint_path = os.path.join(
-                        self.saved_model_dir, f"{self.model_name}_fold{fold}.h5"
-                    )
-                    callbacks.append(
-                        ModelCheckpoint(
-                            checkpoint_path,
-                            save_best_only=True,
-                            monitor=self.early_stopping_params.get(
-                                "monitor", "val_loss"
-                            ),
-                            verbose=1,
-                        )
-                    )
-
-                    history = self.model.fit(
-                        X_train_prepared,
-                        y_train_prepared,
-                        validation_data=(X_val_prepared, y_val_prepared),
-                        epochs=epochs,
-                        batch_size=batch_size,
-                        callbacks=callbacks,
-                        verbose=1,
-                    )
-                    self.history = history.history
-                    self.model = tf.keras.models.load_model(checkpoint_path)
-                    predictions = self.model.predict(X_val_prepared)
-
-                else:
-                    self.model.fit(X_train_prepared, y_train_prepared)
-                    predictions = self.model.predict(X_val_prepared)
-
-                mse = mean_squared_error(y_val_prepared, predictions)
-                mae = mean_absolute_error(y_val_prepared, predictions)
-                metrics["mse"].append(mse)
-                metrics["mae"].append(mae)
-
-                logging.info("Fold %d - MSE: %.4f, MAE: %.4f", fold, mse, mae)
-
-                if self.online_learning and hasattr(self.model, "partial_fit"):
-                    logging.info(
-                        "Aktualizacja modelu metodą partial_fit (online learning)."
-                    )
-                    self.model.partial_fit(X_val_prepared, y_val_prepared)
-
-            avg_mse = float(np.mean(metrics["mse"]))
-            avg_mae = float(np.mean(metrics["mae"]))
-            accuracy = 1.0 / (1.0 + avg_mse)
-            logging.info("Średnie MSE: %.4f, Średnie MAE: %.4f, Accuracy: %.4f", avg_mse, avg_mae, accuracy)
-            
-            # Zapisz metadane modelu
-            self.model_metadata = {
-                "train_date": datetime.now().isoformat(),
-                "data_hash": current_data_hash,
-                "metrics": {
-                    "mse": avg_mse,
-                    "mae": avg_mae
-                },
-                "accuracy": accuracy,
-                "features_shape": X.shape if hasattr(X, 'shape') else None,
-                "target_shape": y.shape if hasattr(y, 'shape') else None,
-                "name": self.model_name,
-                "model_type": str(type(self.model)),
-            }
-            
-            # Dodaj parametry modelu do metadanych, jeśli model je posiada
-            if hasattr(self.model, 'get_params'):
-                self.model_metadata["params"] = self.model.get_params()
-            
-            # Zapisz model w starym i nowym formacie
-            self._save_model_old_format()
-            self._save_model_new_format()
-            
-            self.last_data_hash = current_data_hash
-            
-            return {
-                "success": True,
-                "is_updated": True,
-                "metrics": metrics,
-                "accuracy": accuracy,
-                "model_metadata": self.model_metadata
-            }
-
-        except Exception as e:
-            logging.error("Błąd podczas treningu modelu: %s", e)
-            return {"success": False, "error": str(e)}
-
-    def _save_model_old_format(self) -> None:
-        """Zapisuje model w starym formacie (dla kompatybilności)"""
-        try:
-            # Sprawdzenie, czy model został wytrenowany
-            if hasattr(self.model, 'n_features_in_') or hasattr(self.model, 'feature_importances_') or \
-               (tf is not None and isinstance(self.model, tf.keras.Model) and len(self.model.layers) > 0):
-
-                # Jeśli to model Sklearn i nie był trenowany, dodajemy ostrzeżenie
-                if hasattr(self.model, 'fit') and not hasattr(self.model, 'n_features_in_') and \
-                   not (tf is not None and isinstance(self.model, tf.keras.Model)):
-                    logging.warning("Model %s może nie być wytrenowany! Sprawdź czy wywołano fit() przed zapisem.", 
-                                  self.model_name)
-
-                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                model_filename = os.path.join(
-                    self.saved_model_dir, f"{self.model_name}_{timestamp}"
-                )
-
-                if tf is not None and isinstance(self.model, tf.keras.Model):
-                    # Sprawdzenie czy model ma warstwy
-                    if not self.model.layers:
-                        logging.error("Model Sequential nie ma warstw! Anulowanie zapisu.")
-                        return
-
-                    model_filename += ".h5"
-                    self.model.save(model_filename)
-                else:
-                    model_filename += ".pkl"
-                    with open(model_filename, "wb") as f:
-                        pickle.dump(self.model, f)
-
-                logging.info("Model zapisany w starym formacie: %s", model_filename)
-            else:
-                logging.error("Model %s nie został wytrenowany lub nie ma warstw! Anulowanie zapisu.", 
-                            self.model_name)
-
-        except Exception as e:
-            logging.error("Błąd podczas zapisywania modelu w starym formacie: %s", e)
-    
-    def _save_model_new_format(self) -> None:
-        """Zapisuje model w nowym formacie z metadanymi"""
-        try:
-            # Sprawdzenie, czy model został wytrenowany
-            if hasattr(self.model, 'n_features_in_') or hasattr(self.model, 'feature_importances_') or \
-               (tf is not None and isinstance(self.model, tf.keras.Model) and len(self.model.layers) > 0):
+        self.config = self._load_config(config_path)
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.models = {}
+        self.optimizers = {}
+        self.schedulers = {}
+        self.early_stopping = {}
+        self.best_params = {}
+        
+        # Utwórz katalog na checkpointy
+        os.makedirs('saved_models', exist_ok=True)
+        
+    def _load_config(self, config_path: Optional[str]) -> Dict[str, Any]:
+        """Ładuje konfigurację z pliku JSON lub używa domyślnych wartości."""
+        default_config = {
+            'batch_size': 32,
+            'learning_rate': 0.001,
+            'epochs': 100,
+            'early_stopping_patience': 10,
+            'num_folds': 5,
+            'validation_split': 0.2,
+            'optimizer': 'adam',
+            'loss_function': 'mse',
+            'parallel_training': True,
+            'max_workers': 4,
+            'checkpointing': True,
+            'checkpoint_frequency': 10
+        }
+        
+        if config_path and os.path.exists(config_path):
+            try:
+                with open(config_path, 'r') as f:
+                    loaded_config = json.load(f)
+                default_config.update(loaded_config)
+            except Exception as e:
+                logger.error(f"Błąd podczas ładowania konfiguracji: {e}")
                 
-                # Przygotuj ścieżkę do zapisu modelu
-                model_filename = os.path.join("models", f"{self.model_name.lower()}_model.pkl")
-                
-                # Przygotuj dane modelu z metadanymi
-                model_data = {
-                    "model": self.model,
-                    "metadata": self.model_metadata
-                }
-                
-                # Zapisz model z metadanymi
-                with open(model_filename, "wb") as f:
-                    pickle.dump(model_data, f)
-                
-                logging.info("Model zapisany w nowym formacie z metadanymi: %s", model_filename)
-            else:
-                logging.error("Model %s nie został wytrenowany lub nie ma warstw! Anulowanie zapisu.", 
-                            self.model_name)
-                            
-        except Exception as e:
-            logging.error("Błąd podczas zapisywania modelu w nowym formacie: %s", e)
-            
-    def save_model(self) -> None:
-        """Zapisuje model w obu formatach (stary i nowy)"""
-        self._save_model_old_format()
-        self._save_model_new_format()
+        return default_config
 
-
-def get_example_data():
-    """
-    Tworzy i zwraca przykładowe dane do treningu modeli.
-
-    Returns:
-        Tuple[pd.DataFrame, pd.Series]: X_train (cechy) i y_train (wartości docelowe)
-    """
-    np.random.seed(42)
-    dates = pd.date_range(start="2022-01-01", periods=500, freq="D")
-    X_train = pd.DataFrame(
-        {
-            "feature1": np.random.normal(0, 1, size=500),
-            "feature2": np.random.normal(0, 1, size=500),
-        },
-        index=dates,
-    )
-    y_train = (
-        X_train["feature1"] * 1.5
-        + X_train["feature2"] * (-2.0)
-        + np.random.normal(0, 0.5, size=500)
-    )
-    return X_train, y_train
-
-# Tworzenie przykładowych danych, które można zaimportować w innych modułach
-X_train, y_train = get_example_data()
-
-if __name__ == "__main__":
-    try:
-        model = RandomForestRegressor(n_estimators=100, random_state=42)
-        trainer = ModelTrainer(
-            model=model,
-            model_name="RandomForest_Model",
-            online_learning=True,
-            early_stopping_params={"monitor": "val_loss", "patience": 5},
+    def prepare_data(self, X: np.ndarray, y: np.ndarray) -> Tuple[DataLoader, DataLoader]:
+        """Przygotowuje dane do treningu."""
+        X_tensor = torch.FloatTensor(X)
+        y_tensor = torch.FloatTensor(y)
+        dataset = TensorDataset(X_tensor, y_tensor)
+        
+        # Podział na zbiór treningowy i walidacyjny
+        train_size = int((1 - self.config['validation_split']) * len(dataset))
+        valid_size = len(dataset) - train_size
+        train_dataset, valid_dataset = torch.utils.data.random_split(dataset, [train_size, valid_size])
+        
+        train_loader = DataLoader(
+            train_dataset, 
+            batch_size=self.config['batch_size'],
+            shuffle=True
         )
-        metrics = trainer.train(X_train, y_train, n_splits=5)
-        logging.info("Trening zakończony. Wyniki walidacji: %s", metrics)
-    except Exception as e:
-        logging.error("Błąd w przykładowym użyciu ModelTrainer: %s", e)
-        raise
+        valid_loader = DataLoader(
+            valid_dataset,
+            batch_size=self.config['batch_size']
+        )
+        
+        return train_loader, valid_loader
+
+    def optimize_hyperparameters(self, model_name: str, X: np.ndarray, y: np.ndarray) -> Dict[str, Any]:
+        """Optymalizuje hiperparametry za pomocą Optuna."""
+        def objective(trial):
+            # Przestrzeń parametrów do optymalizacji
+            params = {
+                'learning_rate': trial.suggest_loguniform('learning_rate', 1e-5, 1e-1),
+                'batch_size': trial.suggest_int('batch_size', 16, 128),
+                'hidden_size': trial.suggest_int('hidden_size', 32, 256),
+                'num_layers': trial.suggest_int('num_layers', 1, 4),
+                'dropout': trial.suggest_uniform('dropout', 0.1, 0.5)
+            }
+            
+            # Walidacja krzyżowa
+            kf = TimeSeriesSplit(n_splits=self.config['num_folds'])
+            scores = []
+            
+            for train_idx, val_idx in kf.split(X):
+                X_train, X_val = X[train_idx], X[val_idx]
+                y_train, y_val = y[train_idx], y[val_idx]
+                
+                # Trenuj model z aktualnym zestawem parametrów
+                model = self.create_model(model_name, params)
+                train_loader, valid_loader = self.prepare_data(X_train, y_train)
+                
+                try:
+                    self.train_model(
+                        model,
+                        train_loader,
+                        valid_loader,
+                        epochs=20,  # Mniej epok dla optymalizacji
+                        early_stopping_patience=5
+                    )
+                    
+                    # Ewaluacja
+                    score = self.evaluate_model(model, X_val, y_val)
+                    scores.append(score['accuracy'])
+                except Exception as e:
+                    logger.error(f"Błąd podczas optymalizacji parametrów: {e}")
+                    return float('-inf')
+                
+            return np.mean(scores)
+        
+        # Uruchom optymalizację
+        study = optuna.create_study(direction='maximize')
+        study.optimize(objective, n_trials=20)
+        
+        return study.best_params
+
+    def train_model(
+        self,
+        model: nn.Module,
+        train_loader: DataLoader,
+        valid_loader: DataLoader,
+        epochs: int = None,
+        early_stopping_patience: int = None
+    ) -> Dict[str, List[float]]:
+        """
+        Trenuje model z wykorzystaniem early stopping i checkpointów.
+        
+        Returns:
+            Dict zawierający historię treningu
+        """
+        epochs = epochs or self.config['epochs']
+        early_stopping_patience = early_stopping_patience or self.config['early_stopping_patience']
+        
+        model = model.to(self.device)
+        optimizer = self._get_optimizer(model)
+        criterion = self._get_loss_function()
+        
+        # Historia treningu
+        history = {
+            'train_loss': [],
+            'valid_loss': [],
+            'train_acc': [],
+            'valid_acc': []
+        }
+        
+        best_valid_loss = float('inf')
+        patience_counter = 0
+        best_model_state = None
+        
+        for epoch in range(epochs):
+            # Tryb treningu
+            model.train()
+            train_losses = []
+            train_preds = []
+            train_true = []
+            
+            for batch_X, batch_y in train_loader:
+                batch_X = batch_X.to(self.device)
+                batch_y = batch_y.to(self.device)
+                
+                optimizer.zero_grad()
+                outputs = model(batch_X)
+                loss = criterion(outputs, batch_y)
+                loss.backward()
+                optimizer.step()
+                
+                train_losses.append(loss.item())
+                train_preds.extend(outputs.detach().cpu().numpy())
+                train_true.extend(batch_y.cpu().numpy())
+            
+            # Tryb ewaluacji
+            model.eval()
+            valid_losses = []
+            valid_preds = []
+            valid_true = []
+            
+            with torch.no_grad():
+                for batch_X, batch_y in valid_loader:
+                    batch_X = batch_X.to(self.device)
+                    batch_y = batch_y.to(self.device)
+                    
+                    outputs = model(batch_X)
+                    loss = criterion(outputs, batch_y)
+                    
+                    valid_losses.append(loss.item())
+                    valid_preds.extend(outputs.cpu().numpy())
+                    valid_true.extend(batch_y.cpu().numpy())
+            
+            # Oblicz średnie straty i dokładności
+            train_loss = np.mean(train_losses)
+            valid_loss = np.mean(valid_losses)
+            train_acc = accuracy_score(np.round(train_true), np.round(train_preds))
+            valid_acc = accuracy_score(np.round(valid_true), np.round(valid_preds))
+            
+            # Zapisz historię
+            history['train_loss'].append(train_loss)
+            history['valid_loss'].append(valid_loss)
+            history['train_acc'].append(train_acc)
+            history['valid_acc'].append(valid_acc)
+            
+            # Early stopping
+            if valid_loss < best_valid_loss:
+                best_valid_loss = valid_loss
+                patience_counter = 0
+                best_model_state = model.state_dict()
+            else:
+                patience_counter += 1
+                
+            # Checkpointing
+            if self.config['checkpointing'] and epoch % self.config['checkpoint_frequency'] == 0:
+                self._save_checkpoint(model, optimizer, epoch, valid_loss)
+            
+            # Logowanie postępu
+            logger.info(
+                f"Epoch {epoch+1}/{epochs} - "
+                f"Train Loss: {train_loss:.4f}, Valid Loss: {valid_loss:.4f}, "
+                f"Train Acc: {train_acc:.4f}, Valid Acc: {valid_acc:.4f}"
+            )
+            
+            if patience_counter >= early_stopping_patience:
+                logger.info(f"Early stopping na epoce {epoch+1}")
+                break
+        
+        # Przywróć najlepszy model
+        if best_model_state is not None:
+            model.load_state_dict(best_model_state)
+        
+        return history
+
+    def train_multiple_models(
+        self,
+        models: Dict[str, nn.Module],
+        X: np.ndarray,
+        y: np.ndarray
+    ) -> Dict[str, Dict[str, Any]]:
+        """Trenuje wiele modeli równolegle."""
+        results = {}
+        
+        if self.config['parallel_training']:
+            with ProcessPoolExecutor(max_workers=self.config['max_workers']) as executor:
+                future_to_model = {
+                    executor.submit(
+                        self._train_single_model,
+                        model_name,
+                        model,
+                        X,
+                        y
+                    ): model_name for model_name, model in models.items()
+                }
+                
+                for future in future_to_model:
+                    model_name = future_to_model[future]
+                    try:
+                        results[model_name] = future.result()
+                    except Exception as e:
+                        logger.error(f"Błąd podczas treningu modelu {model_name}: {e}")
+        else:
+            for model_name, model in models.items():
+                try:
+                    results[model_name] = self._train_single_model(model_name, model, X, y)
+                except Exception as e:
+                    logger.error(f"Błąd podczas treningu modelu {model_name}: {e}")
+        
+        return results
+
+    def _train_single_model(
+        self,
+        model_name: str,
+        model: nn.Module,
+        X: np.ndarray,
+        y: np.ndarray
+    ) -> Dict[str, Any]:
+        """Helper do treningu pojedynczego modelu."""
+        # Optymalizacja hiperparametrów
+        best_params = self.optimize_hyperparameters(model_name, X, y)
+        
+        # Aktualizacja modelu z optymalnymi parametrami
+        model = self.create_model(model_name, best_params)
+        
+        # Przygotowanie danych
+        train_loader, valid_loader = self.prepare_data(X, y)
+        
+        # Trening modelu
+        history = self.train_model(model, train_loader, valid_loader)
+        
+        # Ewaluacja
+        metrics = self.evaluate_model(model, X, y)
+        
+        return {
+            'model': model,
+            'history': history,
+            'metrics': metrics,
+            'best_params': best_params
+        }
+
+    def evaluate_model(self, model: nn.Module, X: np.ndarray, y: np.ndarray) -> Dict[str, float]:
+        """Ewaluacja modelu ze szczegółowymi metrykami."""
+        model.eval()
+        X_tensor = torch.FloatTensor(X).to(self.device)
+        
+        with torch.no_grad():
+            predictions = model(X_tensor).cpu().numpy()
+        
+        # Oblicz metryki
+        accuracy = accuracy_score(np.round(y), np.round(predictions))
+        precision, recall, f1, _ = precision_recall_fscore_support(
+            np.round(y),
+            np.round(predictions),
+            average='weighted'
+        )
+        
+        return {
+            'accuracy': accuracy,
+            'precision': precision,
+            'recall': recall,
+            'f1': f1
+        }
+
+    def _get_optimizer(self, model: nn.Module) -> torch.optim.Optimizer:
+        """Tworzy optymalizator na podstawie konfiguracji."""
+        optimizer_name = self.config['optimizer'].lower()
+        lr = self.config['learning_rate']
+        
+        if optimizer_name == 'adam':
+            return torch.optim.Adam(model.parameters(), lr=lr)
+        elif optimizer_name == 'sgd':
+            return torch.optim.SGD(model.parameters(), lr=lr)
+        else:
+            raise ValueError(f"Nieznany optymalizator: {optimizer_name}")
+
+    def _get_loss_function(self) -> nn.Module:
+        """Tworzy funkcję straty na podstawie konfiguracji."""
+        loss_name = self.config['loss_function'].lower()
+        
+        if loss_name == 'mse':
+            return nn.MSELoss()
+        elif loss_name == 'bce':
+            return nn.BCELoss()
+        else:
+            raise ValueError(f"Nieznana funkcja straty: {loss_name}")
+
+    def _save_checkpoint(
+        self,
+        model: nn.Module,
+        optimizer: torch.optim.Optimizer,
+        epoch: int,
+        valid_loss: float
+    ) -> None:
+        """Zapisuje checkpoint modelu."""
+        checkpoint = {
+            'epoch': epoch,
+            'model_state_dict': model.state_dict(),
+            'optimizer_state_dict': optimizer.state_dict(),
+            'valid_loss': valid_loss
+        }
+        
+        checkpoint_path = os.path.join(
+            'saved_models',
+            f'checkpoint_epoch_{epoch}_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pt'
+        )
+        
+        torch.save(checkpoint, checkpoint_path)
+        logger.info(f"Zapisano checkpoint: {checkpoint_path}")
+
+    def load_checkpoint(self, checkpoint_path: str) -> Tuple[nn.Module, int, float]:
+        """Ładuje model z checkpointu."""
+        checkpoint = torch.load(checkpoint_path)
+        
+        model = self.models.get(checkpoint['model_name'])
+        if model is None:
+            raise ValueError(f"Model {checkpoint['model_name']} nie został zainicjalizowany")
+            
+        model.load_state_dict(checkpoint['model_state_dict'])
+        optimizer = self._get_optimizer(model)
+        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        
+        return model, checkpoint['epoch'], checkpoint['valid_loss']
+
+    def create_model(self, model_name: str, params: Dict[str, Any]) -> nn.Module:
+        """Tworzy model o zadanej architekturze z podanymi parametrami."""
+        # Przykładowa implementacja - można rozszerzyć o więcej architektur
+        if model_name == 'lstm':
+            return LSTMModel(
+                input_size=params['input_size'],
+                hidden_size=params['hidden_size'],
+                num_layers=params['num_layers'],
+                dropout=params['dropout']
+            )
+        elif model_name == 'gru':
+            return GRUModel(
+                input_size=params['input_size'],
+                hidden_size=params['hidden_size'],
+                num_layers=params['num_layers'],
+                dropout=params['dropout']
+            )
+        else:
+            raise ValueError(f"Nieznana architektura modelu: {model_name}")
+
+class LSTMModel(nn.Module):
+    def __init__(
+        self,
+        input_size: int,
+        hidden_size: int,
+        num_layers: int,
+        dropout: float
+    ):
+        super().__init__()
+        self.lstm = nn.LSTM(
+            input_size=input_size,
+            hidden_size=hidden_size,
+            num_layers=num_layers,
+            dropout=dropout,
+            batch_first=True
+        )
+        self.fc = nn.Linear(hidden_size, 1)
+        
+    def forward(self, x):
+        lstm_out, _ = self.lstm(x)
+        return self.fc(lstm_out[:, -1, :])
+
+class GRUModel(nn.Module):
+    def __init__(
+        self,
+        input_size: int,
+        hidden_size: int,
+        num_layers: int,
+        dropout: float
+    ):
+        super().__init__()
+        self.gru = nn.GRU(
+            input_size=input_size,
+            hidden_size=hidden_size,
+            num_layers=num_layers,
+            dropout=dropout,
+            batch_first=True
+        )
+        self.fc = nn.Linear(hidden_size, 1)
+        
+    def forward(self, x):
+        gru_out, _ = self.gru(x)
+        return self.fc(gru_out[:, -1, :])

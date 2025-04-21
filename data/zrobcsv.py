@@ -29,7 +29,6 @@ logging.basicConfig(
 # Standardowy schemat kolumn
 STANDARD_COLUMNS = ["timestamp", "open", "high", "low", "close", "volume"]
 
-
 def detect_file_format(file_path: str) -> str:
     """
     Wykrywa format pliku na podstawie rozszerzenia.
@@ -51,7 +50,6 @@ def detect_file_format(file_path: str) -> str:
         return "csv"
     else:
         raise ValueError(f"Nieobsługiwany format pliku: {ext}")
-
 
 def load_data(file_path: str, file_format: str, chunksize: int = None) -> pd.DataFrame:
     """
@@ -104,7 +102,6 @@ def load_data(file_path: str, file_format: str, chunksize: int = None) -> pd.Dat
         logging.error("Błąd przy ładowaniu danych z %s: %s", file_path, e)
         raise
 
-
 def map_columns(df: pd.DataFrame) -> pd.DataFrame:
     """
     Mapuje kolumny wejściowe na standardowy schemat:
@@ -139,7 +136,6 @@ def map_columns(df: pd.DataFrame) -> pd.DataFrame:
         logging.error("Błąd przy mapowaniu kolumn: %s", e)
         raise
 
-
 def convert_to_csv(
     input_file: str,
     output_file: str,
@@ -166,7 +162,6 @@ def convert_to_csv(
     except Exception as e:
         logging.error("Błąd podczas konwersji do CSV: %s", e)
         raise
-
 
 # -------------------- Testy jednostkowe --------------------
 def unit_test_conversion():
@@ -268,7 +263,6 @@ def unit_test_conversion():
     os.remove(temp_xml_path)
     os.remove(temp_csv_path3)
     logging.info("Testy jednostkowe konwersji zakończone sukcesem.")
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(

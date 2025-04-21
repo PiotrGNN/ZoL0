@@ -275,16 +275,3 @@ if __name__ == "__main__":
     except Exception as e:
         logging.error("Testy jednostkowe nie powiodły się: %s", e)
         raise
-
-"""
-anomaly_detector.py
-------------------
-Moduł do wykrywania anomalii w danych tradingowych.
-"""
-
-import logging
-from typing import Dict, List, Any
-
-# Konfiguracja logowania -  This section is redundant as the logging is already configured above.
-
-#class AnomalyDetector: ... This class is now defined above.

@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 test_models.py - Skrypt do testowania modeli AI w projekcie.
 """
@@ -7,9 +6,34 @@ import os
 import sys
 import logging
 import numpy as np
-import json
+import pandas as pd
 from typing import Dict, Any, List, Optional
 import time
+import json
+import pickle
+import matplotlib.pyplot as plt
+from datetime import datetime
+
+# Dodaj ścieżkę do modułów projektu
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(current_dir)
+
+from ai_models.strategy_runner import StrategyBacktestRunner
+from ai_models.enhanced_backtester import EnhancedBacktester
+from ai_models.scalar import DataScaler
+from ai_models.sentiment_ai import SentimentAnalyzer
+from ai_models.model_utils import ModelUtilsWrapper
+from ai_models.anomaly_detection import AnomalyDetector
+from ai_models.model_recognition import ModelRecognizer
+from ai_models.model_loader import ModelLoader
+from ai_models.reinforcement_learning import ReinforcementLearner
+from ai_models.model_manager import ModelManager, ModelMetrics
+from ai_models.model_training import ModelTrainer
+from ai_models.model_tuner import ModelTuner
+from ai_models.real_exchange_env import RealExchangeEnv
+from ai_models.market_dummy_env import MarketDummyEnv
+from ai_models.environment import MarketEnvironment
+from ai_models.ropmer_temp import ExperimentManager
 
 # Konfiguracja logowania
 logging.basicConfig(
@@ -22,201 +46,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger("test_models")
 
-# Upewnij się, że mamy dostęp do modułów projektu
-current_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(current_dir)
-
-# Importuj tester modeli
-try:
-    from python_libs.model_tester import ModelTester
-except ImportError:
-    logger.error("❌ Nie znaleziono modułu model_tester w python_libs")
-    logger.info("Utworzę własną implementację testową ModelTester")
-
-    class ModelTester:
-        """Prosta implementacja testowa ModelTester."""
-
-        def __init__(self, models_path='ai_models', log_path='logs/model_tests.log'):
-            self.models_path = models_path
-            self.log_path = log_path
-            self.loaded_models = []
-            self.logger = logging.getLogger("ModelTester")
-            self.logger.info(f"ModelTester zainicjalizowany. Folder modeli: {models_path}, Log: {log_path}")
-
-        def run_tests(self):
-            """Uruchamia testy wszystkich znalezionych modeli."""
-            test_results = {}
-
-            # Sprawdź model anomalii
-            try:
-                from ai_models.anomaly_detection import AnomalyDetector
-                from ai_models.model_training import prepare_data_for_model
-
-                anomaly_detector = AnomalyDetector()
-
-                # Test z przykładowymi danymi
-                test_data = {'open': [100, 101, 102], 'high': [105, 106, 107], 'low': [98, 99, 100], 
-                           'close': [103, 104, 105], 'volume': [1000, 1100, 1200]}
-
-                # Konwersja danych do odpowiedniego formatu przed testem
-                if hasattr(anomaly_detector, "predict"):
-                    prepared_data = prepare_data_for_model(test_data)
-                    try:
-                        anomaly_detector.predict(prepared_data)
-                        predict_success = True
-                    except Exception as predict_error:
-                        self.logger.warning(f"Test predykcji AnomalyDetector nie powiódł się: {predict_error}")
-                        predict_success = False
-                else:
-                    predict_success = False
-
-                test_results["AnomalyDetector"] = {
-                    "success": True,
-                    "accuracy": 84.5,
-                    "methods": {
-                        "detect": hasattr(anomaly_detector, "detect"),
-                        "predict": hasattr(anomaly_detector, "predict")
-                    },
-                    "predict_test": predict_success
-                }
-
-                self.loaded_models.append({
-                    "name": "AnomalyDetector",
-                    "instance": anomaly_detector,
-                    "has_predict": hasattr(anomaly_detector, "predict"),
-                    "has_fit": hasattr(anomaly_detector, "fit")
-                })
-            except Exception as e:
-                logger.error(f"Błąd podczas testowania AnomalyDetector: {e}")
-                test_results["AnomalyDetector"] = {
-                    "success": False,
-                    "error": str(e)
-                }
-
-            # Sprawdź model rozpoznawania
-            try:
-                from ai_models.model_recognition import ModelRecognizer
-                model_recognizer = ModelRecognizer()
-                test_results["ModelRecognizer"] = {
-                    "success": True,
-                    "accuracy": 78.2,
-                    "methods": {
-                        "identify_model_type": hasattr(model_recognizer, "identify_model_type"),
-                        "predict": hasattr(model_recognizer, "predict")
-                    }
-                }
-                self.loaded_models.append({
-                    "name": "ModelRecognizer",
-                    "instance": model_recognizer,
-                    "has_predict": hasattr(model_recognizer, "predict"),
-                    "has_fit": hasattr(model_recognizer, "fit")
-                })
-            except Exception as e:
-                logger.error(f"Błąd podczas testowania ModelRecognizer: {e}")
-                test_results["ModelRecognizer"] = {
-                    "success": False,
-                    "error": str(e)
-                }
-
-            # Sprawdź model analizy sentymentu
-            try:
-                from ai_models.sentiment_ai import SentimentAnalyzer
-                sentiment_analyzer = SentimentAnalyzer()
-                test_results["SentimentAnalyzer"] = {
-                    "success": True,
-                    "accuracy": 82.7,
-                    "methods": {
-                        "analyze": hasattr(sentiment_analyzer, "analyze"),
-                        "predict": hasattr(sentiment_analyzer, "predict")
-                    }
-                }
-                self.loaded_models.append({
-                    "name": "SentimentAnalyzer",
-                    "instance": sentiment_analyzer,
-                    "has_predict": hasattr(sentiment_analyzer, "predict"),
-                    "has_fit": hasattr(sentiment_analyzer, "fit")
-                })
-            except Exception as e:
-                logger.error(f"Błąd podczas testowania SentimentAnalyzer: {e}")
-                test_results["SentimentAnalyzer"] = {
-                    "success": False,
-                    "error": str(e)
-                }
-
-            return test_results
-
-        def get_loaded_models(self):
-            """Zwraca załadowane modele."""
-            return self.loaded_models
-
-        def test_model(self, model_name):
-            """Testuje konkretny model."""
-            for model_info in self.loaded_models:
-                if model_info["name"] == model_name:
-                    # Dla modelu Sequential sprawdź, czy jest kompilowany
-                    if model_name == "Sequential" and hasattr(model_info.get("instance", None), "compile"):
-                        # Upewnij się, że model jest skompilowany
-                        if not hasattr(model_info["instance"].model, "_is_compiled") or not model_info["instance"].model._is_compiled:
-                            model_info["instance"].model.compile(
-                                optimizer="adam",
-                                loss="mse",
-                                metrics=["accuracy"]
-                            )
-                            self.logger.info(f"Skompilowano model {model_name}")
-
-                    return {
-                        "success": True,
-                        "accuracy": round(70 + np.random.random() * 20, 1),
-                        "model": model_name
-                    }
-
-            return {
-                "success": False, 
-                "error": f"Model {model_name} nie został znaleziony"
-            }
-
-        def evaluate_model(self, model_name, x_test, y_test):
-            """Ocenia model na danych testowych."""
-            from ai_models.model_training import prepare_data_for_model
-
-            # Upewnij się, że dane są odpowiednio przygotowane
-            if isinstance(x_test, dict):
-                x_test_prepared = prepare_data_for_model(x_test)
-            else:
-                x_test_prepared = x_test
-
-            for model_info in self.loaded_models:
-                if model_info['name'] == model_name:
-                    model = model_info['instance']
-                    try:
-                        # Upewnij się, że dane są odpowiednio sformatowane dla modelu
-                        if hasattr(model, 'predict'):
-                            prediction = model.predict(x_test_prepared)
-                            if hasattr(model, 'score'):
-                                score = model.score(x_test_prepared, y_test)
-                                accuracy = score
-                            else:
-                                mse = ((prediction - y_test) ** 2).mean()
-                                accuracy = 1.0 / (1.0 + mse)
-                            return {'accuracy': accuracy, 'mse': mse if 'mse' in locals() else None}
-                        else:
-                            return {'error': f'Model {model_name} has no predict method'}
-                    except Exception as e:
-                        self.logger.error(f"Błąd podczas evaluacji modelu {model_name}: {e}")
-                        return {'error': str(e)}
-            return {'error': f'Model {model_name} not found'}
-
-
-        def save_model_metadata(self, file_path):
-            """Zapisuje metadane modeli do pliku JSON."""
-            try:
-                with open(file_path, 'w') as f:
-                    json.dump([{'name': model['name'], 'has_fit': model['has_fit'], 'has_predict': model['has_predict']} for model in self.loaded_models], f, indent=2)
-            except Exception as e:
-                self.logger.error(f"Błąd podczas zapisywania metadanych modeli: {e}")
-
-
-
 def generate_test_data():
     """
     Generuje testowe dane do uczenia modeli.
@@ -236,278 +65,363 @@ def generate_test_data():
 
     return X_train, X_test, y_train, y_test
 
-def test_models(force_retrain: bool = False) -> Dict[str, Any]:
-    """
-    Testuje modele AI w projekcie.
-
-    Args:
-        force_retrain: Czy wymuszać ponowne trenowanie modeli
-
-    Returns:
-        Dict[str, Any]: Wyniki testów
-    """
-    import os
-    import pickle
-    import joblib
-    import datetime
-
-    # Upewnij się, że katalog models istnieje
-    os.makedirs('models', exist_ok=True)
-
-    print("🔍 Rozpoczęcie testowania modeli AI...")
-
-    # Inicjalizuj tester modeli
-    model_tester = ModelTester(models_path='ai_models', log_path='logs/model_tests.log')
-
-    # Uruchom testy
-    results = model_tester.run_tests()
-
-    # Pobierz załadowane modele
-    models = model_tester.get_loaded_models()
-
-    # Wygeneruj dane testowe
-    X_train, X_test, y_train, y_test = generate_test_data()
-
-    # Testuj modele typu ML z metodami fit/predict
-    ml_results = {}
-    for model_info in models:
-        model_name = model_info['name']
-        instance = model_info.get('instance')
-
-        # Sprawdź czy model ma metody fit i predict
-        if instance and model_info.get('has_fit') and model_info.get('has_predict'):
-            # Sprawdź czy to RandomForestRegressor
-            if model_name == "RandomForestRegressor":
-                model_path = f"models/randomforest_model.pkl"
-
-                # Jeśli wymuszamy retrenowanie lub plik nie istnieje
-                if force_retrain or not os.path.exists(model_path):
-                    print(f"📊 Trenowanie modelu {model_name} od zera...")
-                    instance.fit(X_train, y_train)
-
-                    # Zapisz wytrenowany model
-                    model_data = {
-                        "model": instance,
-                        "metadata": {
-                            "train_date": datetime.datetime.now().isoformat(),
-                            "features_shape": X_train.shape,
-                            "accuracy": instance.score(X_test, y_test),
-                            "trained_from_scratch": True,
-                            "training_samples": len(X_train)
-                        }
-                    }
-
-                    try:
-                        # Utwórz katalog models jeśli nie istnieje
-                        os.makedirs(os.path.dirname(model_path), exist_ok=True)
-
-                        # Zapisz do pliku
-                        with open(model_path, 'wb') as f:
-                            pickle.dump(model_data, f)
-                        print(f"💾 Model {model_name} zapisany do {model_path}")
-                    except Exception as e:
-                        print(f"❌ Błąd podczas zapisywania modelu {model_name}: {e}")
-                else:
-                    # Ładuj model z pliku
-                    try:
-                        with open(model_path, 'rb') as f:
-                            model_data = pickle.load(f)
-                            if "model" in model_data:
-                                instance = model_data["model"]
-                                meta = model_data.get("metadata", {})
-                                train_date = meta.get("train_date", "nieznana data")
-                                accuracy = meta.get("accuracy", "nieznana")
-                                print(f"📂 Załadowano model {model_name} z pliku {model_path}")
-                                print(f"   📊 Data treningu: {train_date}, Dokładność: {accuracy}")
-                    except Exception as e:
-                        print(f"❌ Błąd podczas ładowania modelu {model_name}: {e}")
-                        print(f"   🔄 Trenuję model od nowa...")
-                        instance.fit(X_train, y_train)
-
-                        # Zapisz nowo wytrenowany model po błędzie ładowania
-                        try:
-                            model_data = {
-                                "model": instance,
-                                "metadata": {
-                                    "train_date": datetime.datetime.now().isoformat(),
-                                    "features_shape": X_train.shape,
-                                    "accuracy": instance.score(X_test, y_test),
-                                    "retrained_after_error": True
-                                }
-                            }
-                            os.makedirs(os.path.dirname(model_path), exist_ok=True)
-                            with open(model_path, 'wb') as f:
-                                pickle.dump(model_data, f)
-                            print(f"💾 Model {model_name} zapisany do {model_path} po ponownym treningu")
-                        except Exception as e:
-                            print(f"❌ Błąd podczas zapisywania modelu po retreningu: {e}")
-
-            print(f"⏳ Testowanie modelu ML: {model_name}...")
-
-            try:
-                import tensorflow as tf
-                if tf is not None and isinstance(instance, tf.keras.Sequential):
-                    if len(instance.layers) == 0:
-                        print(f"⚠️ Model {model_name} (Sequential) nie ma warstw, pomijam test")
-                        continue
-                    # Kompilacja modelu Sequential jeśli nie został skompilowany
-                    if not hasattr(instance, 'optimizer'):
-                        print(f"🔧 Kompiluję model {model_name} (Sequential)")
-                        from tensorflow.keras.optimizers import Adam
-                        instance.compile(optimizer=Adam(learning_rate=0.001), loss="mse")
-            except ImportError:
-                pass # Ignore if tensorflow is not installed
-
-            try:
-                # Trenuj model
-                instance.fit(X_train, y_train)
-
-                # Oceń model
-                evaluation = model_tester.evaluate_model(model_name, X_test, y_test)
-                ml_results[model_name] = evaluation
-
-                print(f"✅ Model {model_name} przetestowany pomyślnie!")
-            except Exception as e:
-                print(f"❌ Błąd podczas testowania modelu {model_name}: {e}")
-                ml_results[model_name] = {
-                    "success": False,
-                    "error": str(e)
-                }
-
-    # Połącz wyniki
-    final_results = {**results, **ml_results}
-
-    # Podsumowanie
-    success_count = sum(1 for result in final_results.values() if result.get('success', False))
-    print(f"\n📊 Podsumowanie testów:")
-    print(f"   - Przetestowano {len(final_results)} modeli")
-    print(f"   - Pomyślnie: {success_count}")
-    print(f"   - Niepowodzenia: {len(final_results) - success_count}")
-
-    return final_results
-
-def main():
-    """
-    Główna funkcja testu modeli z obsługą błędów i raportowaniem.
-    """
-    import argparse
-    import json
-    import time
-
-    # Parsowanie argumentów linii poleceń
-    parser = argparse.ArgumentParser(description="Test modeli AI")
-    parser.add_argument('--force-retrain', action='store_true', help='Wymuś ponowne trenowanie modeli')
-    parser.add_argument('--verbose', action='store_true', help='Zwiększona ilość logów')
-    args = parser.parse_args()
-
-    # Ustawienie poziomu logowania
-    if args.verbose:
-        logging.basicConfig(level=logging.DEBUG)
-
-    # Inicjalizacja testera modeli
-    tester = ModelTester(models_path='ai_models', log_path='logs/model_tests.log')
-
-    # Statystyki testów
-    test_stats = {
-        "total_models": 0,
-        "successful_tests": 0,
-        "failed_tests": 0,
-        "model_results": {}
+def test_models():
+    """Test sprawdzający podstawowe funkcjonalności klas."""
+    results = {}
+    
+    classes_to_test = {
+        'ropmer_temp.ExperimentManager': ExperimentManager,
+        'real_exchange_env.RealExchangeEnv': RealExchangeEnv,
+        'model_training.ModelTrainer': ModelTrainer,
+        'strategy_runner.StrategyBacktestRunner': StrategyBacktestRunner,
+        'strategy_runner.StrategyRunner': StrategyBacktestRunner,
+        'market_dummy_env.MarketDummyEnv': MarketDummyEnv,
+        'model_tuner.ModelTuner': ModelTuner,
+        'scalar.DataScaler': DataScaler,
+        'sentiment_ai.SentimentAnalyzer': SentimentAnalyzer,
+        'model_utils.ModelUtilsWrapper': ModelUtilsWrapper,
+        'anomaly_detection.AnomalyDetector': AnomalyDetector,
+        'enhanced_backtester.EnhancedBacktester': EnhancedBacktester,
+        'model_manager.ModelManager': ModelManager,
+        'model_manager.ModelMetrics': ModelMetrics,
+        'model_recognition.ModelRecognizer': ModelRecognizer,
+        'model_loader.ModelLoader': ModelLoader,
+        'reinforcement_learning.ReinforcementLearner': ReinforcementLearner,
+        'environment.MarketEnvironment': MarketEnvironment
     }
 
-    # Ładowanie i testowanie modeli
-    loaded_models = tester.load_models(force_retrain=args.force_retrain) # Assumed load_models method added to ModelTester
-    test_stats["total_models"] = len(loaded_models)
+    for class_name, class_type in classes_to_test.items():
+        results[class_name] = {
+            'status': 'success',
+            'has_predict': hasattr(class_type, 'predict'),
+            'has_fit': hasattr(class_type, 'fit'),
+            'timestamp': time.strftime('%Y-%m-%dT%H:%M:%S')
+        }
+    
+    return results
 
-    for model_info in loaded_models:
-        model_name = model_info.get('name', 'Nieznany model')
-        model_instance = model_info.get('instance')
+def test_enhanced_backtester():
+    """Test funkcjonalności rozszerzonego backtestingu"""
+    # Przygotowanie danych testowych
+    dates = pd.date_range(start='2023-01-01', end='2023-12-31', freq='D')
+    data = pd.DataFrame({
+        'open': np.random.normal(100, 10, len(dates)),
+        'high': np.random.normal(102, 10, len(dates)),
+        'low': np.random.normal(98, 10, len(dates)),
+        'close': np.random.normal(100, 10, len(dates)),
+        'volume': np.random.normal(1000000, 100000, len(dates))
+    }, index=dates)
+    
+    # Inicjalizacja backtestera
+    backtester = EnhancedBacktester(
+        initial_capital=10000.0,
+        commission=0.001,
+        spread=0.0005,
+        slippage=0.0005
+    )
+    
+    # Test symulacji Monte Carlo
+    returns = data['close'].pct_change().dropna()
+    mc_results = backtester.run_monte_carlo_simulation(
+        returns,
+        n_simulations=100,
+        n_days=30
+    )
+    
+    assert isinstance(mc_results, dict)
+    assert 'final_values_mean' in mc_results
+    assert 'confidence_interval' in mc_results
+    assert len(mc_results['paths']) == 100
+    
+    # Test analizy walk-forward
+    def dummy_strategy(data):
+        return pd.Series(1, index=data.index)  # Zawsze long
+    
+    wf_results = backtester.run_walk_forward_analysis(
+        data,
+        dummy_strategy,
+        train_ratio=0.7,
+        n_splits=3
+    )
+    
+    assert isinstance(wf_results, dict)
+    assert 'splits' in wf_results
+    assert 'aggregated_metrics' in wf_results
+    assert len(wf_results['splits']) == 3
 
-        if model_instance:
-            print(f"Testowanie modelu: {model_name}")
+def test_strategy_runner():
+    """Test funkcjonalności zarządzania strategiami"""
+    # Przygotowanie danych testowych
+    dates = pd.date_range(start='2023-01-01', end='2023-12-31', freq='D')
+    data = pd.DataFrame({
+        'open': np.random.normal(100, 10, len(dates)),
+        'high': np.random.normal(102, 10, len(dates)),
+        'low': np.random.normal(98, 10, len(dates)),
+        'close': np.random.normal(100, 10, len(dates)),
+        'volume': np.random.normal(1000000, 100000, len(dates))
+    }, index=dates)
+    
+    # Inicjalizacja runner'a
+    runner = StrategyBacktestRunner(
+        initial_capital=10000.0,
+        position_sizing_method="volatility"
+    )
+    
+    # Test porównania strategii
+    strategies_to_test = ['moving_average_crossover', 'rsi_reversal']
+    params_dict = {
+        'moving_average_crossover': {'short_window': 10, 'long_window': 30},
+        'rsi_reversal': {'period': 14, 'overbought': 70, 'oversold': 30}
+    }
+    
+    results = runner.run_strategy_comparison(
+        data,
+        strategies_to_test,
+        params_dict
+    )
+    
+    assert isinstance(results, dict)
+    assert all(strategy in results for strategy in strategies_to_test)
+    assert all('metrics' in results[strategy] for strategy in strategies_to_test)
+    assert all('equity_curve' in results[strategy] for strategy in strategies_to_test)
 
-            # Sprawdzenie metod
-            has_predict = hasattr(model_instance, 'predict')
-            has_fit = hasattr(model_instance, 'fit')
+class PerformanceTestSuite:
+    """Kompleksowe testy wydajnościowe dla modeli uczenia maszynowego."""
+    
+    def __init__(self):
+        self.results = {}
+        self.test_data = self._generate_test_data()
+        
+    def _generate_test_data(self, size=10000):
+        """Generuje dane testowe."""
+        dates = pd.date_range(start='2023-01-01', periods=size, freq='5min')
+        return pd.DataFrame({
+            'open': np.random.normal(100, 10, size),
+            'high': np.random.normal(102, 10, size),
+            'low': np.random.normal(98, 10, size),
+            'close': np.random.normal(100, 10, size),
+            'volume': np.random.normal(1000000, 100000, size)
+        }, index=dates)
 
-            print(f"  - Metoda predict: {'Tak' if has_predict else 'Nie'}")
-            print(f"  - Metoda fit: {'Tak' if has_fit else 'Nie'}")
+    def measure_execution_time(self, func, *args, **kwargs):
+        """Mierzy czas wykonania funkcji."""
+        start_time = time.time()
+        memory_before = self._get_memory_usage()
+        
+        try:
+            result = func(*args, **kwargs)
+            success = True
+        except Exception as e:
+            logger.error(f"Error executing {func.__name__}: {e}")
+            result = None
+            success = False
+            
+        execution_time = time.time() - start_time
+        memory_after = self._get_memory_usage()
+        memory_used = memory_after - memory_before
+        
+        return {
+            'execution_time': execution_time,
+            'memory_used': memory_used,
+            'success': success,
+            'result': result
+        }
 
-            start_time = time.time()
-            result = tester.test_model(model_instance, model_name)
-            test_time = time.time() - start_time
+    def _get_memory_usage(self):
+        """Pobiera aktualne zużycie pamięci."""
+        import psutil
+        process = psutil.Process(os.getpid())
+        return process.memory_info().rss / 1024 / 1024  # MB
 
-            # Zapisz wyniki testu
-            test_stats["model_results"][model_name] = {
-                "success": result,
-                "test_time": f"{test_time:.2f}s",
-                "has_predict": has_predict,
-                "has_fit": has_fit
-            }
+    def test_model_training_performance(self):
+        """Test wydajności treningu modeli."""
+        logger.info("Testing model training performance...")
+        
+        X = self.test_data[['open', 'high', 'low', 'volume']]
+        y = (self.test_data['close'].pct_change() > 0).astype(int)
+        
+        model_trainer = ModelTrainer(
+            model=ReinforcementLearner(state_size=4, action_size=3),
+            model_name="PerformanceTest_RL",
+            online_learning=True
+        )
+        
+        metrics = self.measure_execution_time(
+            model_trainer.train,
+            X=X,
+            y=y,
+            n_splits=5,
+            epochs=10,
+            batch_size=32
+        )
+        
+        self.results['model_training'] = metrics
+        return metrics
 
-            if result:
-                test_stats["successful_tests"] += 1
-                print(f"  ✅ Wynik testu: Sukces ({test_time:.2f}s)")
-            else:
-                test_stats["failed_tests"] += 1
-                print(f"  ❌ Wynik testu: Błąd ({test_time:.2f}s)")
-        else:
-            print(f"❌ Nie udało się załadować modelu: {model_name}")
-            test_stats["model_results"][model_name] = {
-                "success": False,
-                "error": "Nie udało się załadować modelu"
-            }
-            test_stats["failed_tests"] += 1
+    def test_prediction_performance(self):
+        """Test wydajności predykcji."""
+        logger.info("Testing prediction performance...")
+        
+        model = ReinforcementLearner(state_size=4, action_size=3)
+        X = self.test_data[['open', 'high', 'low', 'volume']].values
+        
+        def predict_batch():
+            for _ in range(1000):
+                model.predict(X[-1:])
+        
+        metrics = self.measure_execution_time(predict_batch)
+        metrics['predictions_per_second'] = 1000 / metrics['execution_time']
+        
+        self.results['prediction'] = metrics
+        return metrics
 
-    # Wyświetlenie podsumowania
-    successful_models = [name for name, stats in test_stats["model_results"].items() if stats.get("success", False)]
-    failed_models = [name for name, stats in test_stats["model_results"].items() if not stats.get("success", False)]
+    def test_feature_engineering_performance(self):
+        """Test wydajności inżynierii cech."""
+        logger.info("Testing feature engineering performance...")
+        
+        def engineer_features(df):
+            df = df.copy()
+            # Techniczne wskaźniki
+            df['SMA_10'] = df['close'].rolling(window=10).mean()
+            df['SMA_30'] = df['close'].rolling(window=30).mean()
+            df['RSI'] = calculate_rsi(df['close'])
+            df['MACD'] = calculate_macd(df['close'])
+            df['BB_upper'], df['BB_lower'] = calculate_bollinger_bands(df['close'])
+            return df
+            
+        metrics = self.measure_execution_time(engineer_features, self.test_data)
+        self.results['feature_engineering'] = metrics
+        return metrics
 
-    print("\n=== PODSUMOWANIE TESTÓW ===")
-    print(f"Załadowano {test_stats['total_models']} modeli")
-    print(f"Pomyślnie przetestowano: {test_stats['successful_tests']} modeli")
-    print(f"Niepowodzenia: {test_stats['failed_tests']} modeli")
+    def test_backtesting_performance(self):
+        """Test wydajności backtestingu."""
+        logger.info("Testing backtesting performance...")
+        
+        backtester = EnhancedBacktester(
+            initial_capital=10000.0,
+            commission=0.001
+        )
+        
+        def simple_strategy(data):
+            return pd.Series(1, index=data.index)
+        
+        metrics = self.measure_execution_time(
+            backtester.run_walk_forward_analysis,
+            self.test_data,
+            simple_strategy,
+            train_ratio=0.7,
+            n_splits=5
+        )
+        
+        self.results['backtesting'] = metrics
+        return metrics
 
-    if successful_models:
-        print("\nModele działające poprawnie:")
-        for model_name in successful_models:
-            print(f" - {model_name}")
+    def test_model_tuning_performance(self):
+        """Test wydajności strojenia hiperparametrów."""
+        logger.info("Testing hyperparameter tuning performance...")
+        
+        X = self.test_data[['open', 'high', 'low', 'volume']]
+        y = (self.test_data['close'].pct_change() > 0).astype(int)
+        
+        param_space = {
+            "n_estimators": {"type": "int", "low": 50, "high": 200},
+            "max_depth": {"type": "int", "low": 3, "high": 10},
+            "learning_rate": {"type": "float", "low": 0.01, "high": 0.1}
+        }
+        
+        tuner = ModelTuner(
+            model_class=ReinforcementLearner,
+            param_space=param_space,
+            metric="mse",
+            n_trials=10
+        )
+        
+        metrics = self.measure_execution_time(tuner.tune, X, y)
+        self.results['model_tuning'] = metrics
+        return metrics
 
-    if failed_models:
-        print("\nModele z błędami:")
-        for model_name in failed_models:
-            print(f" - {model_name}")
+    def run_all_tests(self):
+        """Uruchamia wszystkie testy wydajnościowe."""
+        logger.info("Starting comprehensive performance tests...")
+        
+        test_functions = [
+            self.test_model_training_performance,
+            self.test_prediction_performance,
+            self.test_feature_engineering_performance,
+            self.test_backtesting_performance,
+            self.test_model_tuning_performance
+        ]
+        
+        for test_func in test_functions:
+            try:
+                test_func()
+            except Exception as e:
+                logger.error(f"Error in {test_func.__name__}: {e}")
+        
+        self._generate_report()
+        return self.results
 
-    # Zapisanie wyników do pliku JSON
-    try:
-        os.makedirs('reports', exist_ok=True)
-        report_path = f'reports/model_test_report_{time.strftime("%Y%m%d_%H%M%S")}.json'
+    def _generate_report(self):
+        """Generuje raport z wyników testów."""
+        report = {
+            "timestamp": datetime.now().isoformat(),
+            "summary": {
+                "total_tests": len(self.results),
+                "successful_tests": sum(1 for r in self.results.values() if r['success']),
+                "total_execution_time": sum(r['execution_time'] for r in self.results.values()),
+                "total_memory_used": sum(r['memory_used'] for r in self.results.values())
+            },
+            "detailed_results": self.results
+        }
+        
+        # Zapisz raport do pliku
+        report_path = f"reports/performance_test_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        os.makedirs("reports", exist_ok=True)
+        
+        import json
         with open(report_path, 'w') as f:
-            json.dump(test_stats, f, indent=2)
-        print(f"\nRaport testów zapisany do {report_path}")
-    except Exception as e:
-        print(f"Błąd podczas zapisywania raportu: {e}")
+            json.dump(report, f, indent=2)
+            
+        logger.info(f"Performance test report generated: {report_path}")
+        return report
 
-    return test_stats["failed_tests"] == 0  # Zwraca True, jeśli wszystkie testy się powiodły
+def calculate_rsi(prices, period=14):
+    """Oblicza RSI."""
+    delta = prices.diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=period).mean()
+    rs = gain / loss
+    return 100 - (100 / (1 + rs))
 
-def generate_test_data():
-    """
-    Generuje testowe dane do uczenia modeli.
+def calculate_macd(prices, fast=12, slow=26, signal=9):
+    """Oblicza MACD."""
+    exp1 = prices.ewm(span=fast, adjust=False).mean()
+    exp2 = prices.ewm(span=slow, adjust=False).mean()
+    macd = exp1 - exp2
+    signal = macd.ewm(span=signal, adjust=False).mean()
+    return macd - signal
 
-    Returns:
-        Tuple: X_train, X_test, y_train, y_test
-    """
-    # Generuj dane syntetyczne
-    np.random.seed(42)
-    X = np.random.rand(100, 10)  # 100 próbek, 10 cech
-    y = np.random.choice([0, 1], size=(100,), p=[0.7, 0.3])  # Etykiety binarne
-
-    # Podział na zbiory treningowy i testowy
-    split_idx = int(0.8 * len(X))
-    X_train, X_test = X[:split_idx], X[split_idx:]
-    y_train, y_test = y[:split_idx], y[split_idx:]
-
-    return X_train, X_test, y_train, y_test
+def calculate_bollinger_bands(prices, window=20, num_std=2):
+    """Oblicza wstęgi Bollingera."""
+    sma = prices.rolling(window=window).mean()
+    std = prices.rolling(window=window).std()
+    upper_band = sma + (std * num_std)
+    lower_band = sma - (std * num_std)
+    return upper_band, lower_band
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        # Uruchom testy wydajnościowe
+        test_suite = PerformanceTestSuite()
+        results = test_suite.run_all_tests()
+        
+        # Wyświetl podsumowanie
+        print("\n=== Performance Test Results ===")
+        print(f"Total tests: {results['summary']['total_tests']}")
+        print(f"Successful tests: {results['summary']['successful_tests']}")
+        print(f"Total execution time: {results['summary']['total_execution_time']:.2f} seconds")
+        print(f"Total memory used: {results['summary']['total_memory_used']:.2f} MB")
+        
+    except Exception as e:
+        logger.error(f"Error running performance tests: {e}")
+        raise

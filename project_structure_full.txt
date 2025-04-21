@@ -1,0 +1,392 @@
+└── ZoL0
+    ├── .devcontainer
+    │   └── devcontainer.json
+    ├── .env
+    ├── .env.example
+    ├── .flake8
+    ├── .gitignore
+    ├── .pylintrc
+    ├── .replit
+    ├── =1.10.0
+    ├── BamBam
+    ├── README.md
+    ├── ai_models
+    │   ├── __init__.py
+    │   ├── anomaly_detection.py
+    │   ├── enhanced_backtester.py
+    │   ├── environment.py
+    │   ├── feature_engineering.py
+    │   ├── market_dummy_env.py
+    │   ├── model_loader.py
+    │   ├── model_manager.py
+    │   ├── model_recognition.py
+    │   ├── model_training.py
+    │   ├── model_tuner.py
+    │   ├── model_utils.py
+    │   ├── real_exchange_env.py
+    │   ├── reinforcement_learning.py
+    │   ├── ropmer_temp.py
+    │   ├── scalar.py
+    │   ├── sentiment_ai.py
+    │   └── strategy_runner.py
+    ├── anomaly_detection.log
+    ├── attached_assets
+    │   ├── Pasted--Cel-Jeste-do-wiadczonym-architektem-oprogramowania-i-specjalist-od-integracji-API-Twoim--1744077432429.txt
+    │   ├── Pasted--Co-dzia-a-dobrze-adowanie-modeli-AI-RandomForest-SentimentAnalyzer-AnomalyDetector-ModelReco-1744742255236.txt
+    │   ├── Pasted--Co-dzia-a-poprawnie-ModelRecognizer-poprawnie-rozpoznaje-wzorce-np-Bull-Flag-z-pewno-ci-0-93--1744737828284.txt
+    │   ├── Pasted--Co-robi-Skanuje-folder-ai-models-Importuje-klasy-z-py-i-pkl-Sprawdza-istnienie-predi-1744156785990.txt
+    │   ├── Pasted--Naprawa-importu-AnomalyDetector-javascript-Kopiuj-Edytuj-Napraw-import-klasy-AnomalyDetector-w--1744743968572.txt
+    │   ├── Pasted--PRODUKCYJNE-API-BYBIT-UWAGA-U-ywasz-PRODUKCYJNEGO-API-ByBit-Operacje--1744062407795.txt
+    │   ├── Pasted--Podsumowanie-log-w-2025-04-15-projekt-ZoL0-1-Status-og-lny-System-dzia-a-i-aduje-wi-kszo--1744746249719.txt
+    │   ├── Pasted--Podsumowanie-log-w-systemu-ZoL0-1-15-04-2025-Co-dzia-a-Wszystkie-modu-y-AI-s-adowane-popr-1744734261638.txt
+    │   ├── Pasted--Podsumowanie-statusu-systemu-ZoL0-1-na-podstawie-ostatnich-log-w-Modele-AI-Model-RandomFores-1744741256839.txt
+    │   ├── Pasted--Prompt-Kompleksowa-Diagnostyka-Naprawa-i-Integracja-AI-w-Systemie-Tradingowym-C-1744024456831.txt
+    │   ├── Pasted--Superprompt-Pe-na-Diagnostyka-Naprawa-i-Optymalizacja-Inteligentnego-Systemu-Tradingowego--1744025532970.txt
+    │   ├── Pasted--You-are-a-world-class-fullstack-software-engineer-system-integrator-and-debugging-expert--1744118559413.txt
+    │   ├── Pasted--Zadanie-Kompleksowa-Optymalizacja-Projektu-Replit-ready-Cel-Zmodernizuj-i-zopty-1743972922342.txt
+    │   ├── Pasted--Zadanie-Kompleksowa-Optymalizacja-Projektu-Replit-ready-Cel-Zmodernizuj-i-zopty-1743973116700.txt
+    │   ├── Pasted--Zadanie-Kompleksowa-Optymalizacja-Projektu-Replit-ready-Cel-Zmodernizuj-i-zopty-1743973232480.txt
+    │   ├── Pasted--Zadanie-Kompleksowa-Optymalizacja-Projektu-Replit-ready-Cel-Zmodernizuj-i-zopty-1743973399771.txt
+    │   ├── Pasted--Zadanie-Kompleksowa-Optymalizacja-Projektu-Replit-ready-Cel-Zmodernizuj-i-zopty-1743973553404.txt
+    │   ├── Pasted--Zadanie-Kompleksowa-Optymalizacja-Projektu-Replit-ready-Cel-Zmodernizuj-i-zopty-1743974105678.txt
+    │   ├── Pasted--Zadanie-Kompleksowa-Optymalizacja-Projektu-Replit-ready-Cel-Zmodernizuj-i-zopty-1743975434866.txt
+    │   ├── Pasted--Zadanie-Kompleksowa-Optymalizacja-Projektu-Replit-ready-Cel-Zmodernizuj-i-zopty-1743981023176.txt
+    │   ├── Pasted--Zadanie-Kompleksowa-Optymalizacja-Projektu-Replit-ready-Cel-Zmodernizuj-i-zopty-1743981134031.txt
+    │   ├── Pasted--Zadanie-Kompleksowa-Optymalizacja-Projektu-Replit-ready-Cel-Zmodernizuj-i-zopty-1743981318238.txt
+    │   ├── Pasted--Zadanie-Kompleksowa-Optymalizacja-Projektu-Replit-ready-Cel-Zmodernizuj-i-zopty-1743981453581.txt
+    │   ├── Pasted--Zadanie-Kompleksowa-Optymalizacja-Projektu-Replit-ready-Cel-Zmodernizuj-i-zopty-1743981611190.txt
+    │   ├── Pasted--Zastosowania-Budowa-strategii-handlowych-np-MACD-RSI-ADX-SMA-BBANDS-Sygnalizacja-wej-i--1744155592439.txt
+    │   ├── Pasted--venv-PS-C-Users-piotr-Desktop-ZoL0-o1-python-test-data-conversion-py-2025-04-15-15-58-46-545-I-1744725549475.txt
+    │   ├── Pasted--venv-PS-C-Users-piotr-Desktop-ZoL0-o1-python-test-data-conversion-py-2025-04-15-16-01-13-588-I-1744725707010.txt
+    │   ├── Pasted--venv-PS-C-Users-piotr-Desktop-ZoL0-o1-python-test-data-conversion-py-2025-04-15-16-03-49-233-I-1744725857218.txt
+    │   ├── Pasted--venv-PS-C-Users-piotr-Desktop-ZoL0-o1-python-test-data-conversion-py-Dodano-katalog-python-libs-1744726163760.txt
+    │   ├── Pasted--venv-PS-C-Users-piotr-Desktop-ZoL0-o1-python-test-data-conversion-py-Dodano-katalog-python-libs-1744726402113.txt
+    │   ├── Pasted--venv-PS-C-Users-piotr-Desktop-ZoL0-o1-python-test-models-py-Dodano-katalog-python-libs-do-cie--1744726659054.txt
+    │   ├── Pasted--venv-PS-C-Users-piotr-Desktop-ZoL0-o1-python-test-models-py-Dodano-katalog-python-libs-do-cie--1744726951727.txt
+    │   ├── Pasted--venv-PS-C-Users-piotr-Desktop-ZoL0-o1-python-test-models-py-Dodano-katalog-python-libs-do-cie--1744728539035.txt
+    │   ├── Pasted--venv-PS-C-Users-piotr-Desktop-miner-ZoL0-1-python-main-py-Dodano-katalog-python-libs-do-cie-ki-1744127068709.txt
+    │   ├── Pasted-1-B-d-przy-inicjalizacji-ModelTester-Komunikat-b-du-css-Kopiuj-TypeError-ModelTester-init--1744805966447.txt
+    │   ├── Pasted-2025-04-07-19-10-22-028-WARNING-Pomijam-podpakiet-execution-z-powodu-b-du-Nie-uda-o-si-zaimpo-1744053042734.txt
+    │   ├── Pasted-2025-04-07-19-16-57-362-INFO-Pr-ba-pobrania-danych-z-PRODUKCYJNEGO-API-Bybit-Klucz-a4r7--1744053485768.txt
+    │   ├── Pasted-2025-04-07-19-21-34-354-INFO-Pr-ba-pobrania-danych-z-PRODUKCYJNEGO-API-Bybit-Klucz-a4r7--1744053730783.txt
+    │   ├── Pasted-2025-04-07-19-31-09-158-WARNING-Pomijam-podpakiet-execution-z-powodu-b-du-Nie-uda-o-si-zaimpo-1744054278639.txt
+    │   ├── Pasted-2025-04-07-19-41-02-229-WARNING-Pomijam-podpakiet-execution-z-powodu-b-du-Nie-uda-o-si-zaimpo-1744054870320.txt
+    │   ├── Pasted-2025-04-07-21-56-15-537-INFO-Inicjalizacja-klienta-ByBit-Klucz-aLYR--1744063058371.txt
+    │   ├── Pasted-2025-04-15-14-08-51-626-ERROR-B-d-podczas-testowania-modelu-Sequential-Unrecognized-data-type-x-1744718966351.txt
+    │   ├── Pasted-7-19-54-05-601-INFO-Zainicjalizowano-system-powiadomie-z-2-kana-ami-2025-04-07-19-54-05-601-IN-1744055707310.txt
+    │   ├── Pasted-Aby-naprawi-b-d-Trading-Engine-Warning-kt-ry-mo-e-wynika-z-nieprawid-owych-ustawie-silnika-ha-1744150067839.txt
+    │   ├── Pasted-Brakuj-cy-modu-No-module-named-optuna-Prosz-sprawdzi-instalacj-pakiet-w-Uruchom-pip-insta-1743973094723.txt
+    │   ├── Pasted-Bybit-offers-several-authenticated-API-endpoints-related-to-account-balances-and-wallet-information--1744076220045.txt
+    │   ├── Pasted-Key-Recommendations-Production-API-Confirmation-If-you-intend-to-use-the-production-API-set-both--1744798224224.txt
+    │   ├── Pasted-Masz-dwa-g-wne-b-dy-w-logach-kt-re-trzeba-naprawi-aby-system-dzia-a-poprawnie-1-B-d-Strat-1744154544136.txt
+    │   ├── Pasted-Ostrze-enie-Trading-Engine-Warning-mo-e-wynika-z-r-nych-powod-w-zwi-zanych-z-dzia-aniem-siln-1744147674630.txt
+    │   ├── Pasted-plan-migracji-prze-adowania-modeli-do-alternatywnych-framework-w-W-wielu-przypadkach-problemem-s--1744166737250.txt
+    │   ├── content-1744063548534.md
+    │   ├── content-1744159560911.md
+    │   ├── image_1744661903275.png
+    │   ├── image_1744661920249.png
+    │   └── screenshot-1744159558243.png
+    ├── auto_fix_log.txt
+    ├── auto_fix_tests.py
+    ├── config
+    │   ├──  (3).env
+    │   ├──  — kopia.env
+    │   ├── __init__.py
+    │   ├── config_loader.py
+    │   ├── secrets.json
+    │   ├── settings.py
+    │   └── settings.yml
+    ├── create_models.py
+    ├── dashboard.py
+    ├── dashboard_api.py
+    ├── data
+    │   ├── __init__.py
+    │   ├── backtesting
+    │   │   ├── BTCUSDT_15m.csv
+    │   │   ├── BTCUSDT_1h.csv
+    │   │   ├── ETHUSDT_1h.csv
+    │   │   └── advanced_backtester.py
+    │   ├── cache
+    │   │   ├── api_rate_limited.json
+    │   │   └── server_time_True.json
+    │   ├── data
+    │   │   ├── __init__.py
+    │   │   ├── data_preprocessing.py
+    │   │   ├── historical_data.py
+    │   │   └── market_data_fetcher.py
+    │   ├── data_preprocessing.py
+    │   ├── data_storage.py
+    │   ├── database.py
+    │   ├── dev_db
+    │   ├── execution
+    │   │   ├── __init__.py
+    │   │   ├── advanced_order_execution.py
+    │   │   ├── bybit_connector (copy).py
+    │   │   ├── bybit_connector.py
+    │   │   ├── exchange_connector.py
+    │   │   ├── latency_optimizer.py
+    │   │   ├── order_execution.py
+    │   │   └── trade_executor.py
+    │   ├── generate_historical_data.py
+    │   ├── historical.py
+    │   ├── historical_data.db
+    │   ├── indicators
+    │   │   ├── __init__.py
+    │   │   ├── advanced_indicators.py
+    │   │   ├── custom_indicators.py
+    │   │   ├── sentiment_analysis.py
+    │   │   ├── technical_analysis.py
+    │   │   └── volume_analysis.py
+    │   ├── logging
+    │   │   ├── __init__.py
+    │   │   ├── anomaly_detector.py
+    │   │   ├── error_logger.py
+    │   │   └── trade_logger.py
+    │   ├── optimization
+    │   │   ├── __init__.py
+    │   │   ├── backtesting.py
+    │   │   ├── enhanced_backtesting.py
+    │   │   ├── hyperparameter_tuner.py
+    │   │   ├── leverage_optimizer.py
+    │   │   ├── portfolio_risk.py
+    │   │   ├── real_time_optimizer.py
+    │   │   ├── strategy_backtest_runner.py
+    │   │   └── strategy_optimizer.py
+    │   ├── portfolio_analytics.py
+    │   ├── requirements.txt
+    │   ├── risk_management
+    │   │   ├── __init__.py
+    │   │   ├── advanced_risk_manager.py
+    │   │   ├── portfolio_risk.py
+    │   │   ├── position_sizing.py
+    │   │   ├── risk_assessment.py
+    │   │   └── stop_loss_manager.py
+    │   ├── strategies
+    │   │   ├── AI_strategy_generator.py
+    │   │   ├── __init__.py
+    │   │   ├── breakout_strategy.py
+    │   │   ├── dynamic_strategy_switcher.py
+    │   │   ├── mean_reversion.py
+    │   │   ├── strategy_manager.py
+    │   │   └── trend_following.py
+    │   ├── tests
+    │   │   ├── __init__.py
+    │   │   ├── test_ai_models.py
+    │   │   ├── test_backtesting.py
+    │   │   ├── test_data_processing.py
+    │   │   ├── test_execution.py
+    │   │   ├── test_risk_management.py
+    │   │   ├── test_strategies.py
+    │   │   └── test_utils.py
+    │   ├── utils
+    │   │   ├── __init__.py
+    │   │   ├── api_handler.py
+    │   │   ├── cache_manager.py
+    │   │   ├── data_validator.py
+    │   │   ├── database_manager.py
+    │   │   ├── error_handling.py
+    │   │   ├── import_manager.py
+    │   │   ├── notification_system.py
+    │   │   └── performance_monitor.py
+    │   └── zrobcsv.py
+    ├── drzewo.txt
+    ├── error.log
+    ├── fix_dashboard.py
+    ├── fix_dashboard_log.txt
+    ├── fix_imports.py
+    ├── fix_imports_log.txt
+    ├── fix_tests.py
+    ├── flake8_errors.txt
+    ├── flake8_final_report.txt
+    ├── init_project.py
+    ├── install_replit.py
+    ├── logs
+    │   ├── ai_strategy_generator.log
+    │   ├── anomaly_detector.log
+    │   ├── app.log
+    │   ├── bybit_connector.log
+    │   ├── dashboard.log
+    │   ├── dashboard_api.log
+    │   ├── dev_app.log
+    │   ├── hyperparameter_tuner.log
+    │   ├── live_trading.log
+    │   ├── model_loader.log
+    │   ├── portfolio_risk.log
+    │   ├── realtime_market.log
+    │   ├── run.log
+    │   └── trade_logger.log
+    ├── main.py
+    ├── main.py.backup
+    ├── manage_ai_models.py
+    ├── models
+    │   ├── .gitkeep
+    │   ├── datascaler_metadata.json
+    │   ├── reinforcement_learner_model.pkl
+    │   ├── reinforcementlearner_metadata.json
+    │   ├── reinforcementlearner_model.pkl
+    │   ├── sentimentanalyzer_metadata.json
+    │   └── sentimentanalyzer_model.pkl
+    ├── models_tested.lock
+    ├── notifications
+    │   ├── advanced_alerts.py
+    │   ├── notification_manager.py
+    │   ├── notification_server.log
+    │   └── websocket_server.py
+    ├── order_execution.log
+    ├── portfolio
+    │   ├── backtest_manager.py
+    │   ├── portfolio_analyzer.py
+    │   └── portfolio_optimizer.py
+    ├── python_libs
+    │   ├── __init__.py
+    │   ├── dashboard_realtime_connector.py
+    │   ├── exchange_manager.py
+    │   ├── feature_processor.py
+    │   ├── market_monitor.py
+    │   ├── market_simulator.py
+    │   ├── model_tester.py
+    │   ├── model_trainer.py
+    │   ├── order_manager.py
+    │   ├── portfolio_manager.py
+    │   ├── portfolio_monitor.py
+    │   ├── realtime_market_connector.py
+    │   ├── risk_manager.py
+    │   ├── simplified_notification.py
+    │   ├── simplified_risk_manager.py
+    │   ├── simplified_strategy.py
+    │   ├── simplified_trading_engine.py
+    │   ├── simulated_bybit.py
+    │   ├── simulation_results.py
+    │   ├── technical_analyzer.py
+    │   ├── trade_manager.py
+    │   └── trading_system.py
+    ├── raport.txt
+    ├── real_exchange_env.log
+    ├── replit.nix
+    ├── reports
+    │   ├── ai_predictions.csv
+    │   ├── simulation_results.csv
+    │   ├── trading_report_20250409_014410.json
+    │   ├── trading_report_20250409_021852.json
+    │   ├── trading_report_20250409_021949.json
+    │   ├── trading_report_20250409_022645.json
+    │   ├── trading_report_20250409_031852.json
+    │   ├── trading_report_20250409_032003.json
+    │   ├── trading_report_20250409_032924.json
+    │   ├── trading_report_20250414_200438.json
+    │   ├── trading_report_20250414_200510.json
+    │   ├── trading_report_20250414_200548.json
+    │   ├── trading_report_20250414_200614.json
+    │   ├── trading_report_20250414_214306.json
+    │   ├── trading_report_20250414_214307.json
+    │   ├── trading_report_20250414_214308.json
+    │   └── trading_simulation_result.png
+    ├── requirements.txt
+    ├── reset_environment.sh
+    ├── ropmer_temp.log
+    ├── run.bat
+    ├── run.py
+    ├── run_dashboard.py
+    ├── run_live_bybit.sh
+    ├── run_live_trading.py
+    ├── run_local.bat
+    ├── run_local.sh
+    ├── run_windows.bat
+    ├── saved_models
+    │   ├── RANDOMFOREST_DirectionPredictor_20250418_193333.pkl
+    │   ├── XGBOOST_DirectionPredictor_20250418_195256.pkl
+    │   ├── XGBOOST_DirectionPredictor_20250418_195304.pkl
+    │   ├── XGBOOST_DirectionPredictor_20250418_195315.pkl
+    │   ├── XGBOOST_DirectionPredictor_20250418_195825.pkl
+    │   ├── XGBOOST_DirectionPredictor_20250418_195922.pkl
+    │   ├── XGBOOST_DirectionPredictor_20250418_202659.pkl
+    │   ├── XGBOOST_DirectionPredictor_20250418_203944.pkl
+    │   ├── XGBOOST_DirectionPredictor_20250418_211059.pkl
+    │   ├── XGBOOST_DirectionPredictor_20250418_211449.pkl
+    │   ├── XGBOOST_DirectionPredictor_20250418_212044.pkl
+    │   ├── XGBOOST_DirectionPredictor_20250418_212805.pkl
+    │   ├── XGBOOST_DirectionPredictor_20250418_213459.pkl
+    │   ├── XGBOOST_DirectionPredictor_20250418_234429.pkl
+    │   ├── XGBOOST_DirectionPredictor_20250418_235719.pkl
+    │   ├── XGBOOST_DirectionPredictor_20250419_001155.pkl
+    │   ├── XGBOOST_DirectionPredictor_20250419_001533.pkl
+    │   ├── XGBOOST_DirectionPredictor_20250419_002719.pkl
+    │   ├── XGBOOST_DirectionPredictor_20250419_003357.pkl
+    │   ├── XGBOOST_DirectionPredictor_20250419_004736.pkl
+    │   ├── XGB_PricePredictor_20250228_065021.pkl
+    │   ├── XGB_PricePredictor_20250228_065941.pkl
+    │   ├── XGB_PricePredictor_20250228_072451.pkl
+    │   ├── XGB_PricePredictor_20250228_082641.pkl
+    │   ├── XGB_PricePredictor_20250228_090101.pkl
+    │   ├── XGB_PricePredictor_20250228_093248.pkl
+    │   ├── XGB_PricePredictor_20250228_093619.pkl
+    │   ├── XGB_PricePredictor_20250228_094152.pkl
+    │   ├── XGB_PricePredictor_20250228_105722.pkl
+    │   ├── XGB_PricePredictor_20250228_105930.pkl
+    │   ├── XGB_PricePredictor_20250228_150412.pkl
+    │   └── __init__.py
+    ├── setup_bybit_connection.sh
+    ├── setup_local_packages.py
+    ├── setup_ssh_tunnel.py
+    ├── static
+    │   ├── css
+    │   │   ├── ai_monitor.css
+    │   │   ├── notifications.css
+    │   │   └── styles.css
+    │   ├── img
+    │   │   ├── learning_results.png
+    │   │   ├── simulation_chart.png
+    │   │   ├── simulation_chart_20250409_031848.png
+    │   │   ├── simulation_chart_20250409_031849.png
+    │   │   ├── simulation_chart_20250409_031850.png
+    │   │   ├── simulation_chart_20250409_031851.png
+    │   │   ├── simulation_chart_20250409_031958.png
+    │   │   ├── simulation_chart_20250409_031959.png
+    │   │   ├── simulation_chart_20250409_032001.png
+    │   │   ├── simulation_chart_20250409_032002.png
+    │   │   ├── simulation_chart_20250409_032917.png
+    │   │   ├── simulation_chart_20250409_032919.png
+    │   │   ├── simulation_chart_20250409_032920.png
+    │   │   ├── simulation_chart_20250409_032922.png
+    │   │   ├── simulation_chart_20250409_032923.png
+    │   │   ├── simulation_chart_20250414_200437.png
+    │   │   ├── simulation_chart_20250414_200438.png
+    │   │   ├── simulation_chart_20250414_200509.png
+    │   │   ├── simulation_chart_20250414_200546.png
+    │   │   ├── simulation_chart_20250414_200547.png
+    │   │   ├── simulation_chart_20250414_200548.png
+    │   │   ├── simulation_chart_20250414_200611.png
+    │   │   ├── simulation_chart_20250414_200612.png
+    │   │   ├── simulation_chart_20250414_200613.png
+    │   │   ├── simulation_chart_20250414_200614.png
+    │   │   ├── simulation_chart_20250414_214305.png
+    │   │   └── simulation_chart_20250414_214308.png
+    │   └── js
+    │       ├── ai_monitor.js
+    │       ├── dashboard.js
+    │       ├── dashboard.js.backup
+    │       └── notifications.js
+    ├── temp_historical_data.db
+    ├── temp_test_data.csv
+    ├── templates
+    │   ├── __init__.py
+    │   ├── dashboard.html
+    │   └── dashboard.html.backup
+    ├── test_api_connection.py
+    ├── test_bybit_connection.py
+    ├── test_data_conversion.py
+    ├── test_environment.py
+    ├── test_errors.log
+    ├── test_models.py
+    ├── test_proxy.py
+    ├── test_proxy_windows.bat
+    ├── tests
+    │   ├── integration
+    │   ├── performance
+    │   ├── test_ai_modules.py
+    │   └── unit
+    ├── tree_view.py
+    ├── users.db
+    └── utils
+        ├── __init__.py
+        └── retry_handler.py

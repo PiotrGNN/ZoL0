@@ -1,3 +1,14 @@
+import logging
+import unittest
+import numpy as np
+import pandas as pd
+from typing import Any, Dict
+from data.execution.exchange_connector import ExchangeConnector
+from data.execution.order_execution import OrderExecution
+from data.execution.trade_executor import TradeExecutor
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+
 """
 test_execution.py
 -----------------
@@ -9,16 +20,6 @@ Testy jednostkowe dla modułów:
 Weryfikują komunikację z giełdą (symulowaną przez dummy connector),
 obsługę błędów oraz poprawną synchronizację między modułami.
 """
-
-import logging
-import unittest
-from typing import Any, Dict
-
-from data.execution.exchange_connector import ExchangeConnector
-from data.execution.order_execution import OrderExecution
-from data.execution.trade_executor import TradeExecutor
-
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
 
 class DummyExchangeConnector(ExchangeConnector):

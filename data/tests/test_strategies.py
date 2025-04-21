@@ -1,68 +1,19 @@
 import logging
 import unittest
-
 import numpy as np
 import pandas as pd
+from typing import Any, Dict, List
+from data.strategies.base_strategy import BaseStrategy
+from data.strategies.momentum_strategy import MomentumStrategy
+from data.strategies.mean_reversion_strategy import MeanReversionStrategy
+from data.strategies.trend_following_strategy import TrendFollowingStrategy
+from data.strategies.volatility_strategy import VolatilityStrategy
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
 from data.strategies.breakout_strategy import breakout_strategy
 from data.strategies.mean_reversion import generate_mean_reversion_signal
 from data.strategies.trend_following import generate_trend_following_signal
-
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
-
-class TestStrategies(unittest.TestCase):
-    """Testy jednostkowe dla strategii tradingowych."""
-    
-    def setUp(self):
-        """Przygotowanie danych testowych."""
-        self.dates = pd.date_range(start="2023-01-01", periods=50, freq="D")
-        np.random.seed(42)
-        
-    def test_mean_reversion(self):
-        """Test strategii mean reversion."""
-        # Generujemy dane z trendem rewersyjnym: ceny oscylują wokół 100
-        close_prices = 100 + np.random.normal(0, 2, 50)
-        volume = np.random.randint(1000, 1500, 50)
-        df = pd.DataFrame({"close": close_prices, "volume": volume}, index=self.dates)
-        
-        signal = generate_mean_reversion_signal(
-            df, window=10, zscore_threshold=1.5, volume_filter=1100
-        )
-        
-        self.assertIsNotNone(signal)
-        self.assertTrue(isinstance(signal, pd.Series))
-        self.assertEqual(len(signal), len(df))
-        self.assertTrue(signal.isin([-1, 0, 1]).all(), "Sygnały powinny mieć wartości -1, 0 lub 1")
-        
-    def test_trend_following(self):
-        """Test strategii podążania za trendem."""
-        # Dane z trendem wzrostowym
-        close_prices = np.linspace(100, 150, 50) + np.random.normal(0, 1, 50)
-        df = pd.DataFrame({"close": close_prices}, index=self.dates)
-        
-        signal = generate_trend_following_signal(df, short_window=5, long_window=20)
-        
-        self.assertIsNotNone(signal)
-        self.assertTrue(isinstance(signal, pd.Series))
-        self.assertEqual(len(signal), len(df))
-        
-    def test_breakout_strategy(self):
-        """Test strategii przełamania."""
-        # Dane z nagłym wzrostem
-        close_prices = np.ones(50) * 100
-        close_prices[30:] = 120  # Gwałtowny wzrost po 30 dniu
-        df = pd.DataFrame({"close": close_prices}, index=self.dates)
-        
-        signal = breakout_strategy(df, window=10)
-        
-        self.assertIsNotNone(signal)
-        self.assertTrue(isinstance(signal, pd.Series))
-        self.assertEqual(len(signal), len(df))
-        # Powinna być przynajmniej jedna wartość 1 (sygnał kupna)
-        self.assertTrue((signal == 1).any())
-
-if __name__ == "__main__":
-    unittest.main()
 
 class TestStrategies(unittest.TestCase):
     """Testy jednostkowe strategii inwestycyjnych."""
@@ -86,6 +37,62 @@ class TestStrategies(unittest.TestCase):
         # Wyraźnie obniż ceny, aby łatwiej osiągnąć breakout
         self.df.iloc[-10:, [0, 1, 2]] -= 10.0
         self.df.iloc[-10:, 3] = int(self.df["volume"].mean() // 3)
+
+    def test_mean_reversion(self):
+        """Test strategii mean reversion."""
+        # Generujemy dane z trendem rewersyjnym: ceny oscylują wokół 100
+        close_prices = 100 + np.random.normal(0, 2, 50)
+        volume = np.random.randint(1000, 1500, 50)
+        df = pd.DataFrame({"close": close_prices, "volume": volume}, index=self.dates)
+        
+        signal = generate_mean_reversion_signal(
+            df, window=10, zscore_threshold=1.5, volume_filter=1100
+        )
+        
+        self.assertIsNotNone(signal)
+        self.assertTrue(isinstance(signal, pd.Series))
+        self.assertEqual(len(signal), len(df))
+        self.assertTrue(signal.isin([-1, 0, 1]).all(), "Sygnały powinny mieć wartości -1, 0 lub 1")
+        
+    def test_trend_following(self):
+        """Test strategii podążania za trendem."""
+        # Dane z trendem wzrostowym
+        close_prices = np.linspace(100, 150, 50) + np.random.normal(0, 1, 50)
+        volumes = np.random.randint(1000, 2000, 50)
+        df = pd.DataFrame({
+            "close": close_prices,
+            "high": close_prices + 1,
+            "low": close_prices - 1,
+            "volume": volumes
+        }, index=self.dates)
+        
+        signal = generate_trend_following_signal(
+            df,
+            adx_threshold=25,
+            macd_threshold=0,
+            channel_window=20,
+            liquidity_threshold=1000
+        )
+        self.assertIn(signal.iloc[-1], [-1, 0, 1], "Sygnał powinien być -1, 0 lub 1")
+
+    def test_breakout_strategy(self):
+        """Test strategii przełamania."""
+        # Dane z nagłym wzrostem
+        close_prices = np.ones(50) * 100
+        close_prices[30:] = 120  # Gwałtowny wzrost po 30 dniu
+        volumes = np.random.randint(1000, 2000, 50)
+        df = pd.DataFrame({
+            "close": close_prices,
+            "volume": volumes
+        }, index=self.dates)
+        
+        signal = breakout_strategy(df, window=10)
+        
+        self.assertIsNotNone(signal)
+        self.assertTrue(isinstance(signal, pd.Series))
+        self.assertEqual(len(signal), len(df))
+        # Powinna być przynajmniej jedna wartość 1 (sygnał kupna)
+        self.assertTrue((signal == 1).any())
 
     def test_breakout_strategy_buy(self) -> None:
         df_copy = self.df.copy()
