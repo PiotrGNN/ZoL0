@@ -44,7 +44,10 @@ def optimize_portfolio_markowitz(
     def negative_sharpe(weights):
         return -portfolio_performance(weights)[2]
 
-    constraints = {"type": "eq", "fun": lambda x: np.sum(x) - 1}
+    constraints = {
+        "type": "eq",
+        "fun": lambda x: np.sum(x) - 1
+    }
     bounds = tuple((0, 1) for _ in range(n_assets))
     initial_guess = np.full(n_assets, 1.0 / n_assets)
 

@@ -1,4 +1,3 @@
-
 """
 model_loader.py
 --------------
@@ -14,9 +13,54 @@ Funkcjonalności:
 import os
 import logging
 import traceback
+import sys
+import importlib
+from datetime import datetime
 from typing import Dict, Any, List, Optional, Union
 
-from python_libs.model_tester import ModelTester
+# Dodanie ścieżki do python_libs, jeśli jest potrzebna
+python_libs_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'python_libs')
+if python_libs_path not in sys.path:
+    sys.path.append(python_libs_path)
+    print(f"Dodano katalog python_libs do ścieżki Pythona.")
+
+try:
+    from python_libs.model_tester import ModelTester
+except ImportError as e:
+    print(f"Nie można zaimportować modułu model_loader: {e}")
+    # Tworzymy prostą wersję zastępczą ModelTester
+    class ModelTester:
+        def __init__(self, models_path='ai_models', log_path='logs/model_loader.log'):
+            self.models_path = models_path
+            self.log_path = log_path
+            self.loaded_models = []
+            print(f"Utworzono zastępczą klasę ModelTester (brak właściwego modułu)")
+            
+        def run_tests(self):
+            print("Uruchomienie zastępczej metody run_tests")
+            # Tu powinniśmy zaimplementować podstawową funkcjonalność ładowania modeli
+            # aby program działał nawet bez właściwego ModelTester
+            try:
+                # Próba bezpośredniego importu znanych modeli
+                from ai_models.sentiment_ai import SentimentAnalyzer
+                from ai_models.anomaly_detection import AnomalyDetector
+                from ai_models.model_recognition import ModelRecognizer
+                
+                self.loaded_models = [
+                    {"name": "sentimentanalyzer", "instance": SentimentAnalyzer(), 
+                     "module": "sentiment_ai", "class": "SentimentAnalyzer"},
+                    {"name": "anomalydetector", "instance": AnomalyDetector(), 
+                     "module": "anomaly_detection", "class": "AnomalyDetector"},
+                    {"name": "modelrecognizer", "instance": ModelRecognizer(), 
+                     "module": "model_recognition", "class": "ModelRecognizer"}
+                ]
+            except Exception as e:
+                print(f"Nie można załadować podstawowych modeli: {e}")
+            
+            return {"status": "zastępcza implementacja"}
+            
+        def get_loaded_models(self):
+            return self.loaded_models
 
 # Konfiguracja logowania
 logging.basicConfig(
@@ -70,6 +114,7 @@ class ModelLoader:
             loaded_models = self.model_tester.get_loaded_models()
             
             # Przechowanie modeli w słowniku
+            self.models = {}  # Reset słownika modeli
             for model_info in loaded_models:
                 model_name = model_info['name']
                 self.models[model_name] = model_info['instance']
@@ -81,7 +126,45 @@ class ModelLoader:
         except Exception as e:
             logger.error(f"Błąd podczas ładowania modeli: {e}")
             traceback.print_exc()
-            return {}
+            
+            # Jeśli wystąpił błąd, spróbuj załadować podstawowe modele bezpośrednio
+            try:
+                self._load_fallback_models()
+            except Exception as fallback_error:
+                logger.error(f"Również nie udało się załadować modeli zapasowych: {fallback_error}")
+                
+            return self.models
+    
+    def _load_fallback_models(self):
+        """
+        Awaryjne ładowanie podstawowych modeli w przypadku problemów z testerem.
+        """
+        logger.info("Próba awaryjnego ładowania podstawowych modeli...")
+        self.models = {}  # Reset słownika modeli
+        
+        try:
+            # Bezpośredni import znanych modeli
+            from ai_models.sentiment_ai import SentimentAnalyzer
+            self.models["sentimentanalyzer"] = SentimentAnalyzer()
+            logger.info("Załadowano model: sentimentanalyzer")
+        except Exception as e:
+            logger.error(f"Nie udało się załadować modelu SentimentAnalyzer: {e}")
+            
+        try:
+            from ai_models.anomaly_detection import AnomalyDetector
+            self.models["anomalydetector"] = AnomalyDetector()
+            logger.info("Załadowano model: anomalydetector")
+        except Exception as e:
+            logger.error(f"Nie udało się załadować modelu AnomalyDetector: {e}")
+            
+        try:
+            from ai_models.model_recognition import ModelRecognizer
+            self.models["modelrecognizer"] = ModelRecognizer()
+            logger.info("Załadowano model: modelrecognizer")
+        except Exception as e:
+            logger.error(f"Nie udało się załadować modelu ModelRecognizer: {e}")
+            
+        logger.info(f"Awaryjnie załadowano {len(self.models)} modeli")
             
     def predict(self, data=None):
         """

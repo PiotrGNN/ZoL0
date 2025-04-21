@@ -112,12 +112,26 @@ class HistoricalDataManager:
                 msg = "Ścieżka CSV nie została określona."
                 logging.error(msg)
                 raise ValueError(msg)
+
+            # Konwertuj timestamp na datetime jeśli jeszcze nie jest
+            if "timestamp" in new_data.columns and not pd.api.types.is_datetime64_any_dtype(new_data["timestamp"]):
+                new_data = new_data.copy()
+                new_data["timestamp"] = pd.to_datetime(new_data["timestamp"])
+
             # Jeśli plik istnieje, wczytujemy go i łączymy z nowymi danymi
             if os.path.exists(self.csv_path):
                 df_existing = pd.read_csv(self.csv_path)
+                if "timestamp" in df_existing.columns:
+                    df_existing["timestamp"] = pd.to_datetime(df_existing["timestamp"])
                 df_combined = pd.concat([df_existing, new_data], ignore_index=True)
             else:
                 df_combined = new_data
+
+            # Formatuj timestamp do formatu YYYY-MM-DD przed zapisem
+            if "timestamp" in df_combined.columns:
+                df_combined = df_combined.copy()
+                df_combined["timestamp"] = df_combined["timestamp"].dt.strftime("%Y-%m-%d")
+
             df_combined.to_csv(self.csv_path, index=False)
             logging.info("Plik CSV został zaktualizowany: %s", self.csv_path)
         except Exception as e:

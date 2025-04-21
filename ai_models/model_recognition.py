@@ -1,4 +1,3 @@
-
 """
 model_recognition.py
 ------------------
@@ -12,12 +11,6 @@ import pandas as pd
 from typing import Dict, Any, Optional, List, Union
 
 class ModelRecognizer:
-    """
-    Klasa do rozpoznawania wzorców rynkowych i modelowania formacji cenowych.
-    Identyfikuje charakterystyczne wzorce takie jak: head and shoulders, double top/bottom,
-    triangle patterns, bull/bear flags, itd.
-    """
-    
     def __init__(self):
         """Inicjalizacja rozpoznawania modeli rynkowych."""
         self.logger = logging.getLogger(__name__)
@@ -34,17 +27,7 @@ class ModelRecognizer:
         self.logger.info("ModelRecognizer zainicjalizowany")
 
     def identify_model_type(self, data: Optional[pd.DataFrame]) -> Dict[str, Any]:
-        """
-        Identyfikuje typ modelu rynkowego na podstawie danych.
-        
-        Args:
-            data: DataFrame z danymi OHLCV
-            
-        Returns:
-            Dict zawierający informacje o rozpoznanym modelu
-        """
         if data is None:
-            # Jeśli brak danych, generujemy przykładowy wynik dla testów
             return {
                 "type": "Bull Flag",
                 "name": "Bullish Continuation Pattern",
@@ -53,7 +36,6 @@ class ModelRecognizer:
             }
         
         try:
-            # Sprawdź każdy wzorzec i wybierz ten z największą pewnością
             results = []
             for pattern_name, detector_func in self.patterns.items():
                 result = detector_func(data)
@@ -65,16 +47,15 @@ class ModelRecognizer:
                         "description": result["description"]
                     })
             
-            # Wybierz wzorzec z najwyższą pewnością
             if results:
                 return max(results, key=lambda x: x["confidence"])
-            else:
-                return {
-                    "type": "Unknown",
-                    "name": "No Recognizable Pattern",
-                    "confidence": 0.0,
-                    "description": "Nie rozpoznano żadnego charakterystycznego wzorca."
-                }
+            
+            return {
+                "type": "Unknown",
+                "name": "No Recognizable Pattern",
+                "confidence": 0.0,
+                "description": "Nie rozpoznano żadnego charakterystycznego wzorca."
+            }
                 
         except Exception as e:
             self.logger.error(f"Błąd podczas identyfikacji modelu: {e}")
@@ -205,44 +186,28 @@ class ModelRecognizer:
             }
     
     def predict(self, data: Union[pd.DataFrame, np.ndarray, List]) -> Dict[str, Any]:
-        """
-        Przewiduje wzorce na podstawie podanych danych.
-        
-        Args:
-            data: Dane wejściowe do analizy (DataFrame, numpy array lub lista)
-            
-        Returns:
-            Dict: Wynik analizy wzorców
-        """
         try:
             if isinstance(data, list):
-                # Konwertuj listę na DataFrame, jeśli to możliwe
                 if len(data) > 0 and isinstance(data[0], dict):
                     data = pd.DataFrame(data)
                 else:
-                    # Twórz prosty DataFrame z wartościami
                     data = pd.DataFrame({'value': data})
-            
             elif isinstance(data, np.ndarray):
-                # Konwertuj numpy array na DataFrame
                 if data.ndim == 1:
                     data = pd.DataFrame({'value': data})
                 else:
                     cols = [f'feature_{i}' for i in range(data.shape[1])]
                     data = pd.DataFrame(data, columns=cols)
             
-            # Identyfikuj model i analizuj trend
             model_result = self.identify_model_type(data)
             trend_result = self.analyze_trend(data)
             
-            # Połącz wyniki w jeden słownik
-            result = {
+            return {
                 'model': model_result,
                 'trend': trend_result,
                 'timestamp': datetime.now().isoformat()
             }
             
-            return result
         except Exception as e:
             self.logger.error(f"Błąd podczas predykcji: {e}")
             return {
@@ -274,3 +239,44 @@ class ModelRecognizer:
         except Exception as e:
             self.logger.error(f"Błąd podczas treningu modelu: {e}")
             return False
+
+    def find_patterns(self, data: pd.DataFrame) -> Dict[str, Any]:
+        """
+        Wyszukuje wzorce rynkowe w danych cenowych.
+        
+        Args:
+            data: DataFrame z danymi cenowymi (OHLCV)
+            
+        Returns:
+            Dict zawierający znalezione wzorce i ich pewności
+        """
+        patterns_found = {}
+        try:
+            # Sprawdź każdy z dostępnych wzorców
+            for pattern_name, detector_func in self.patterns.items():
+                result = detector_func(data)
+                if result.get("detected", False):
+                    patterns_found[pattern_name] = {
+                        "name": result.get("name", ""),
+                        "confidence": result.get("confidence", 0.0),
+                        "description": result.get("description", "")
+                    }
+            
+            # Dodaj dane o trendzie
+            trend_data = self.analyze_trend(data)
+            patterns_found["trend"] = trend_data
+            
+            return {
+                "patterns": patterns_found,
+                "count": len(patterns_found),
+                "strongest_pattern": max(patterns_found.items(), key=lambda x: x[1]["confidence"])[0] if patterns_found else None,
+                "timestamp": datetime.now().isoformat()
+            }
+        except Exception as e:
+            self.logger.error(f"Błąd podczas wyszukiwania wzorców: {e}")
+            return {
+                "patterns": {},
+                "count": 0,
+                "error": str(e),
+                "timestamp": datetime.now().isoformat()
+            }

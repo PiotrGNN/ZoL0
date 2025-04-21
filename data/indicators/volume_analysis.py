@@ -59,16 +59,18 @@ def calculate_cmf(df: pd.DataFrame, period: int = 20) -> pd.Series:
     """
     try:
         # Obliczenie Money Flow Multiplier
-        mfm = ((df["close"] - df["low"]) - (df["high"] - df["close"])) / (
-            df["high"] - df["low"]
-        ).replace(0, np.nan)
+        mfm = (
+            ((df["close"] - df["low"]) - (df["high"] - df["close"])) /
+            (df["high"] - df["low"]).replace(0, np.nan)
+        )
         # Obliczenie Money Flow Volume
         mfv = mfm * df["volume"]
         # Suma Money Flow Volume i wolumenu
         cmf = (
-            mfv.rolling(window=period, min_periods=1).sum()
-            / df["volume"].rolling(window=period, min_periods=1).sum()
+            mfv.rolling(window=period, min_periods=1).sum() /
+            df["volume"].rolling(window=period, min_periods=1).sum()
         )
+        
         logging.info("CMF obliczone pomyślnie dla okresu %d.", period)
         return cmf.fillna(0)
     except Exception as e:
@@ -113,8 +115,12 @@ def detect_volume_anomalies(volumes: pd.Series, threshold: float = 2.0) -> pd.Se
     try:
         mean_vol = volumes.mean()
         std_vol = volumes.std()
-        z_scores = (volumes - mean_vol) / std_vol
+        z_scores = (
+            (volumes - mean_vol) /
+            std_vol
+        )
         anomalies = z_scores.abs() > threshold
+        
         logging.info(
             "Wykryto %d anomalii wolumenowych przy progu %.2f.",
             anomalies.sum(),

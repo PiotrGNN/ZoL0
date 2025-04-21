@@ -122,18 +122,19 @@ def fuzzy_hybrid_signal(
         pd.Series: Hybrydowy sygnał tradingowy.
     """
     try:
-        # Oblicz procentową zmianę ceny
+        # Obliczenia składowych sygnału
         price_change = price_series.pct_change().fillna(0)
-        # Oblicz różnicę w OBV
-        obv_change = obv_series.diff().fillna(0) / obv_series.replace(0, np.nan)
-        obv_change = obv_change.fillna(0)
+        obv_change = (
+            obv_series.diff().fillna(0) / 
+            obv_series.replace(0, np.nan)
+        ).fillna(0)
 
-        # Ustal wagi dla poszczególnych wskaźników (można dostosować lub ułatwić testy A/B)
+        # Wagi wskaźników
         price_weight = 0.5
         obv_weight = 0.3
         zscore_weight = 0.2
 
-        # Normalizujemy wskaźniki: sygnał kupna (+1) lub sprzedaży (-1)
+        # Sygnały składowe
         price_signal = price_change.apply(
             lambda x: 1 if x > price_threshold else (-1 if x < -price_threshold else 0)
         )
@@ -141,27 +142,110 @@ def fuzzy_hybrid_signal(
             lambda x: 1 if x > obv_threshold else (-1 if x < -obv_threshold else 0)
         )
         zscore_signal = zscore_series.apply(
-            lambda x: (
-                1 if x > zscore_threshold else (-1 if x < -zscore_threshold else 0)
-            )
+            lambda x: 1 if x > zscore_threshold else (-1 if x < -zscore_threshold else 0)
         )
 
-        # Łączymy sygnały z wagami
+        # Połączenie sygnałów
         combined_score = (
-            price_weight * price_signal
-            + obv_weight * obv_signal
-            + zscore_weight * zscore_signal
+            price_weight * price_signal +
+            obv_weight * obv_signal +
+            zscore_weight * zscore_signal
         )
 
-        # Interpretacja hybrydowego sygnału: jeśli wynik > 0, sygnał kupna; < 0, sygnał sprzedaży; 0 - neutralny.
+        # Finalna interpretacja
         hybrid_signal = combined_score.apply(
             lambda x: 1 if x > 0 else (-1 if x < 0 else 0)
         )
+        
         logging.info("Hybrydowy sygnał tradingowy obliczony pomyślnie.")
         return hybrid_signal
+        
     except Exception as e:
         logging.error("Błąd przy generowaniu hybrydowego sygnału: %s", e)
         raise
+
+
+def calculate_pivot_points(high: pd.Series, low: pd.Series, close: pd.Series) -> pd.DataFrame:
+    """
+    Oblicza poziomy pivot points metodą standardową.
+    """
+    pivot = (high + low + close) / 3
+    r1 = 2 * pivot - low
+    r2 = pivot + (high - low)
+    s1 = 2 * pivot - high 
+    s2 = pivot - (high - low)
+    
+    return pd.DataFrame({
+        'pivot': pivot,
+        'r1': r1,
+        'r2': r2,
+        's1': s1,
+        's2': s2
+    })
+
+def calculate_momentum_quality(close: pd.Series, volume: pd.Series, period: int = 14) -> pd.Series:
+    """
+    Oblicza wskaźnik jakości momentum uwzględniający cenę i wolumen.
+    """
+    price_change = close.pct_change(period)
+    volume_change = volume.pct_change(period)
+    
+    # Normalizacja zmian
+    norm_price = (price_change - price_change.mean()) / price_change.std()
+    norm_volume = (volume_change - volume_change.mean()) / volume_change.std()
+    
+    # Połączenie sygnałów ceny i wolumenu
+    momentum_quality = norm_price * np.where(norm_volume > 0, 1 + norm_volume, 1 / (1 - norm_volume))
+    
+    return momentum_quality
+
+def calculate_market_depth(bid_volume: pd.Series, ask_volume: pd.Series, window: int = 20) -> pd.DataFrame:
+    """
+    Oblicza wskaźnik głębokości rynku na podstawie wolumenów bid/ask.
+    """
+    total_volume = bid_volume + ask_volume
+    bid_ratio = bid_volume / total_volume
+    ask_ratio = ask_volume / total_volume
+    
+    # Średnia krocząca różnicy między bid i ask
+    depth_imbalance = (bid_ratio - ask_ratio).rolling(window=window).mean()
+    
+    # Wskaźnik płynności
+    liquidity_score = (
+        total_volume.rolling(window=window).mean() / 
+        total_volume.rolling(window=window).std()
+    )
+    
+    return pd.DataFrame({
+        'depth_imbalance': depth_imbalance,
+        'liquidity_score': liquidity_score,
+        'bid_ratio': bid_ratio,
+        'ask_ratio': ask_ratio
+    })
+
+def calculate_volatility_breakout(high: pd.Series, low: pd.Series, close: pd.Series, 
+                                atr_period: int = 14, multiplier: float = 2.0) -> pd.DataFrame:
+    """
+    Oblicza poziomy przełamania zmienności używając ATR.
+    """
+    # Obliczenie True Range
+    tr1 = high - low
+    tr2 = abs(high - close.shift(1))
+    tr3 = abs(low - close.shift(1))
+    tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
+    
+    # Average True Range
+    atr = tr.rolling(window=atr_period).mean()
+    
+    # Poziomy przełamania
+    upper_band = close + (multiplier * atr)
+    lower_band = close - (multiplier * atr)
+    
+    return pd.DataFrame({
+        'atr': atr,
+        'upper_band': upper_band,
+        'lower_band': lower_band
+    })
 
 
 # -------------------- Przykładowe testy jednostkowe --------------------

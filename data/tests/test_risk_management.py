@@ -1,3 +1,33 @@
+import logging
+import unittest
+import numpy as np
+import pandas as pd
+from typing import Any, Dict, List
+
+# Import modułów zarządzania ryzykiem
+from ..risk_management.portfolio_risk import PortfolioRiskManager
+from ..risk_management.position_sizing import (
+    dynamic_position_size,
+    fixed_fractional_position_size,
+    kelly_criterion_position_size,
+    risk_parity_position_size
+)
+from ..risk_management.risk_metrics import (
+    calculate_risk_metrics,
+    calculate_var,
+    calculate_cvar
+)
+from ..risk_management.stop_loss_manager import (
+    atr_based_stop_loss,
+    fixed_stop_loss,
+    time_based_stop_loss,
+    trailing_stop_loss
+)
+from ..risk_management.leverage_optimizer import (
+    dynamic_leverage_model,
+    limit_max_leverage
+)
+
 """
 test_risk_management.py
 -----------------------
@@ -11,71 +41,7 @@ Weryfikujemy poprawność obliczeń funkcji stop-loss (fixed, trailing, ATR-base
 oraz funkcji optymalizacji dźwigni finansowej.
 """
 
-import logging
-import unittest
-from typing import Any
-
-import numpy as np
-import pandas as pd
-from data.data.historical_data import HistoricalDataManager
-
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
-
-try:
-    from data.risk_management.stop_loss_manager import (
-        atr_based_stop_loss,
-        fixed_stop_loss,
-        time_based_stop_loss,
-        trailing_stop_loss,
-    )
-except ImportError as e:
-    logging.error("Błąd importu w stop_loss_manager.py: %s", e)
-    atr_based_stop_loss = None
-    fixed_stop_loss = None
-    time_based_stop_loss = None
-    trailing_stop_loss = None
-
-try:
-    from data.risk_management.portfolio_risk import (
-        assess_portfolio_risk,
-        calculate_cvar,
-        calculate_var,
-        herfindahl_index,
-        monte_carlo_var,
-        recommend_rebalancing,
-    )
-except ImportError as e:
-    logging.error("Błąd importu w portfolio_risk.py: %s", e)
-    assess_portfolio_risk = None
-    calculate_cvar = None
-    calculate_var = None
-    herfindahl_index = None
-    monte_carlo_var = None
-    recommend_rebalancing = None
-
-try:
-    from data.risk_management.position_sizing import (
-        dynamic_position_size,
-        fixed_fractional_position_size,
-        kelly_criterion_position_size,
-        risk_parity_position_size,
-    )
-except ImportError as e:
-    logging.error("Błąd importu w position_sizing.py: %s", e)
-    dynamic_position_size = None
-    fixed_fractional_position_size = None
-    kelly_criterion_position_size = None
-    risk_parity_position_size = None
-
-try:
-    from data.risk_management.leverage_optimizer import (
-        dynamic_leverage_model,
-        limit_max_leverage,
-    )
-except ImportError as e:
-    logging.error("Błąd importu w leverage_optimizer.py: %s", e)
-    dynamic_leverage_model = None
-    limit_max_leverage = None
 
 
 class TestRiskManagementModules(unittest.TestCase):

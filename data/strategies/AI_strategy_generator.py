@@ -10,6 +10,12 @@ import random
 import time
 from typing import Dict, List, Any, Optional, Tuple, Union
 
+import numpy as np
+import pandas as pd
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor, VotingRegressor
+from sklearn.model_selection import GridSearchCV, cross_val_score
+from sklearn.metrics import mean_squared_error, r2_score
+
 # Konfiguracja logowania
 logger = logging.getLogger("ai_strategy_generator")
 if not logger.handlers:
@@ -21,25 +27,40 @@ if not logger.handlers:
     logger.addHandler(file_handler)
     logger.setLevel(logging.INFO)
 
-
 class AIStrategyGenerator:
     """
     Klasa do generowania strategii tradingowych przy użyciu AI.
     """
 
-    def __init__(self, model_type: str = "xgboost"):
+    def __init__(self, data: pd.DataFrame = None, model_type: str = "xgboost", target: str = None):
         """
         Inicjalizuje generator strategii AI.
 
         Parameters:
-            model_type (str): Typ modelu ('xgboost', 'lstm', 'random_forest').
+            data (pd.DataFrame, optional): DataFrame z danymi treningowymi
+            model_type (str): Typ modelu ('xgboost', 'lstm', 'random_forest')
+            target (str, optional): Nazwa kolumny zawierającej zmienną docelową
         """
         self.model_type = model_type
         self.best_model = None
         self.models = []
         self.training_history = []
+        self.data = data
+        self.target = target
+        self.best_params = {}
+
+        if data is not None and target is not None:
+            self.X = data.drop(columns=[target])
+            self.y = data[target]
+        else:
+            self.X = None
+            self.y = None
 
         logger.info(f"Zainicjalizowano generator strategii AI z modelem: {model_type}")
+        if data is not None:
+            logger.info(f"Załadowano dane o wymiarach: {data.shape}")
+        if target is not None:
+            logger.info(f"Ustawiono zmienną docelową: {target}")
 
     def load_data(self, data: Any) -> bool:
         """
@@ -133,32 +154,36 @@ class AIStrategyGenerator:
 
     def generate_strategy(self) -> Dict[str, Any]:
         """
-        Generuje strategię tradingową.
+        Generuje kompletną strategię tradingową.
 
         Returns:
-            Dict[str, Any]: Wygenerowana strategia.
+            Dict[str, Any]: Skonfigurowana strategia
         """
         try:
             if self.best_model is None:
-                raise ValueError("Nie ustawiono najlepszego modelu przed generowaniem strategii.")
+                # Jeśli nie ma modelu, najpierw zbuduj ensemble
+                self.build_ensemble()
 
-            # Implementacja generowania strategii
-            # W szablonie zwracamy dummy dane
+            # Przeprowadź ewaluację
+            evaluation = self.evaluate_strategy()
+
             strategy = {
                 "name": f"AI_{self.model_type}_Strategy",
                 "type": self.model_type,
                 "parameters": {
-                    "window": random.randint(5, 50),
-                    "threshold": random.uniform(0.1, 0.9),
-                    "stop_loss": random.uniform(0.01, 0.05),
-                    "take_profit": random.uniform(0.02, 0.1)
+                    "window": 20,
+                    "threshold": 0.5,
+                    "stop_loss": 0.02,
+                    "take_profit": 0.04
                 },
-                "model": self.best_model,
+                "best_hyperparameters": self.best_params,
+                "evaluation": evaluation,
                 "generated_at": time.time()
             }
 
             logger.info(f"Wygenerowano strategię: {strategy}")
             return strategy
+
         except Exception as e:
             logger.error(f"Błąd podczas generowania strategii: {e}")
             return {"name": "Fallback_Strategy", "error": str(e)}
@@ -231,6 +256,132 @@ class AIStrategyGenerator:
         except Exception as e:
             logger.error(f"Błąd podczas ewaluacji modelu: {e}")
             return {"accuracy": 0.0, "error": str(e)}
+
+    def feature_selection(self, k: int = 2) -> pd.DataFrame:
+        """
+        Wybiera k najlepszych cech na podstawie korelacji ze zmienną docelową.
+
+        Parameters:
+            k (int): Liczba cech do wybrania
+
+        Returns:
+            pd.DataFrame: DataFrame zawierający wybrane cechy
+        """
+        if self.X is None or self.y is None:
+            raise ValueError("Brak danych do selekcji cech")
+
+        try:
+            # Oblicz korelacje między cechami a zmienną docelową
+            correlations = pd.Series()
+            for column in self.X.columns:
+                correlations[column] = abs(self.X[column].corr(self.y))
+
+            # Wybierz k najlepszych cech
+            top_features = correlations.nlargest(k).index
+            selected_features = self.X[top_features]
+
+            logger.info(f"Wybrano {k} najlepszych cech: {list(top_features)}")
+            return selected_features
+
+        except Exception as e:
+            logger.error(f"Błąd podczas selekcji cech: {e}")
+            raise
+
+    def hyperparameter_tuning(self, model: Any, param_grid: Dict[str, List[Any]], cv: int = 3) -> Any:
+        """
+        Przeprowadza tuning hiperparametrów modelu.
+
+        Parameters:
+            model: Model do dostrojenia
+            param_grid: Siatka parametrów do przeszukania
+            cv: Liczba foldów w cross-validation
+
+        Returns:
+            Any: Najlepszy model
+        """
+        if self.X is None or self.y is None:
+            raise ValueError("Brak danych do tuningu hiperparametrów")
+
+        try:
+            # Przeprowadź grid search
+            grid_search = GridSearchCV(model, param_grid, cv=cv, scoring='neg_mean_squared_error')
+            grid_search.fit(self.X, self.y)
+
+            # Zapisz najlepsze parametry
+            self.best_params = grid_search.best_params_
+            self.best_model = grid_search.best_estimator_
+
+            logger.info(f"Najlepsze parametry: {self.best_params}")
+            return self.best_model
+
+        except Exception as e:
+            logger.error(f"Błąd podczas tuningu hiperparametrów: {e}")
+            raise
+
+    def build_ensemble(self, n_models: int = 3) -> Any:
+        """
+        Buduje ensemble modeli.
+
+        Parameters:
+            n_models (int): Liczba modeli w ensemble
+
+        Returns:
+            Any: Wytrenowany ensemble
+        """
+        if self.X is None or self.y is None:
+            raise ValueError("Brak danych do budowy ensemble")
+
+        try:
+            # Utwórz podstawowe modele
+            models = [
+                ('rf', RandomForestRegressor(n_estimators=100)),
+                ('gb', GradientBoostingRegressor(n_estimators=100))
+            ][:n_models]
+
+            # Utwórz i wytrenuj ensemble
+            ensemble = VotingRegressor(estimators=models)
+            ensemble.fit(self.X, self.y)
+
+            self.best_model = ensemble
+            logger.info(f"Zbudowano ensemble z {n_models} modeli")
+            return ensemble
+
+        except Exception as e:
+            logger.error(f"Błąd podczas budowy ensemble: {e}")
+            raise
+
+    def evaluate_strategy(self) -> Dict[str, float]:
+        """
+        Ocenia skuteczność strategii.
+
+        Returns:
+            Dict[str, float]: Słownik z metrykami oceny
+        """
+        if self.best_model is None:
+            raise ValueError("Brak modelu do ewaluacji")
+
+        try:
+            # Oblicz predykcje
+            predictions = self.best_model.predict(self.X)
+
+            # Oblicz metryki
+            mse = mean_squared_error(self.y, predictions)
+            r2 = r2_score(self.y, predictions)
+            cv_scores = cross_val_score(self.best_model, self.X, self.y, cv=3)
+
+            evaluation = {
+                'MSE': mse,
+                'R2': r2,
+                'CV_mean': cv_scores.mean(),
+                'CV_std': cv_scores.std()
+            }
+
+            logger.info(f"Wyniki ewaluacji strategii: {evaluation}")
+            return evaluation
+
+        except Exception as e:
+            logger.error(f"Błąd podczas ewaluacji strategii: {e}")
+            raise
 
 # -------------------- Przykładowe użycie --------------------
 if __name__ == "__main__":

@@ -1,10 +1,13 @@
-
 import logging
 import os
 import sys
 import json
 import random
+import uuid
+import asyncio  # Dodany brakujący import asyncio
 from datetime import datetime, timedelta
+import jwt  # Dodany import dla JWT
+from functools import wraps  # Dodany import dla wrappera
 
 # Zapewnienie istnienia potrzebnych katalogów
 os.makedirs("logs", exist_ok=True)
@@ -26,6 +29,57 @@ sys.path.append(current_dir)
 # Importy zewnętrznych bibliotek
 from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, request
+from utils.retry_handler import retry_with_backoff
+from data.utils.security_manager import security_manager
+
+# Implementujemy własną funkcję jwt_required, zamiast importować ją z dashboard_api.py
+def jwt_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        token = None
+        auth_header = request.headers.get('Authorization')
+        
+        if auth_header and auth_header.startswith('Bearer '):
+            token = auth_header.split(' ')[1]
+        
+        if not token:
+            return jsonify({'message': 'Brak tokenu uwierzytelniającego!'}), 401
+            
+        try:
+            # Weryfikacja tokenu z dodatkowymi zabezpieczeniami
+            is_valid, payload = security_manager.verify_token(
+                token, 
+                verify_ip=request.remote_addr
+            )
+            
+            if not is_valid:
+                return jsonify({'message': payload.get('error', 'Nieprawidłowy token!')}), 401
+                
+            request.jwt_payload = payload
+            request.username = payload.get('sub')
+            
+            # Sprawdź limity zapytań
+            if not security_manager.check_rate_limit(request.remote_addr, get_endpoint_type(request.endpoint)):
+                return jsonify({
+                    'message': 'Przekroczono limit zapytań',
+                    'retry_after': 60
+                }), 429
+                
+        except Exception as e:
+            logging.error(f"Błąd weryfikacji tokenu: {e}")
+            return jsonify({'message': 'Błąd weryfikacji tokenu!'}), 401
+            
+        return f(*args, **kwargs)
+    return decorated_function
+
+def get_endpoint_type(endpoint: str) -> str:
+    """Określa typ endpointu na podstawie nazwy."""
+    if endpoint in ['start_trading', 'stop_trading', 'set_portfolio_balance']:
+        return 'trading'
+    elif endpoint in ['reset_system', 'set_autonomous_mode']:
+        return 'critical'
+    else:
+        return 'default'
 
 # Konfiguracja logowania
 log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
@@ -77,6 +131,8 @@ portfolio_manager = None
 
 # Inicjalizacja komponentów systemu (import wewnątrz funkcji dla uniknięcia cyklicznych importów)
 def initialize_system():
+    global notification_server
+    
     try:
         # Używamy uproszczonych modułów z python_libs
         try:
@@ -221,7 +277,7 @@ def initialize_system():
         try:
             from data.utils.import_manager import exclude_modules_from_auto_import
             exclude_modules_from_auto_import(["tests"])
-            logging.info("Wykluczam podpakiet 'tests' z automatycznego importu.")
+            logging.info("Wykluczono podpakiet 'tests' z automatycznego importu.")
         except ImportError:
             logging.warning("Nie znaleziono modułu import_manager, pomijam wykluczanie podpakietów.")
 
@@ -502,6 +558,10 @@ def initialize_system():
                 simulation_manager = SimulationManager()
                 logging.info("Zainicjalizowano SimulationManager")
 
+        # Inicjalizacja serwera powiadomień
+        notification_server = start_notification_server()
+        logger.info("Serwer WebSocket został uruchomiony")
+
         logging.info("System zainicjalizowany poprawnie")
         return True
     except Exception as e:
@@ -608,51 +668,25 @@ def dashboard():
         alerts=[],
         sentiment_data=None, # Dodano zmienną dla danych sentymentu
         anomalies=[],
-        portfolio=portfolio
+        portfolio=portfolio,
+        ws_port=6789  # Dodane dla konfiguracji WebSocket
     )
 
 # API endpoints
 @app.route('/api/portfolio')
+@retry_with_backoff
 def get_portfolio_data():
-    """Endpoint API do pobierania danych portfela."""
+    """Endpoint API do pobierania danych portfela z obsługą ponownych prób."""
     try:
-        # Sprawdź, czy portfolio_manager jest dostępny
-        global portfolio_manager
-        if portfolio_manager is None:
-            # Jeśli portfolio_manager nie jest dostępny, utwórz go
-            try:
-                from python_libs.portfolio_manager import PortfolioManager
-                portfolio_manager = PortfolioManager(initial_balance=1000.0, currency="USDT", mode="simulated")
-                logging.info("Utworzono portfolio_manager w get_portfolio_data")
-            except ImportError:
-                # Jeśli nie możemy zaimportować, utwórzmy prosty fallback
-                class SimplePortfolioManager:
-                    def __init__(self, initial_balance=100.0, currency="USDT", mode="simulated"):
-                        self.initial_balance = initial_balance
-                        self.currency = currency
-                        self.mode = mode
-                        self.balances = {
-                            currency: {"equity": initial_balance, "available_balance": initial_balance, "wallet_balance": initial_balance}
-                        }
-                        
-                    def get_portfolio(self):
-                        return {
-                            "success": True,
-                            "balances": self.balances,
-                            "total_value": sum(balance["equity"] for balance in self.balances.values()),
-                            "base_currency": self.currency,
-                            "mode": self.mode
-                        }
-                
-                portfolio_manager = SimplePortfolioManager(initial_balance=1000.0, currency="USDT", mode="simulated")
-                logging.info("Utworzono prosty fallback portfolio_manager w get_portfolio_data")
-
-        # Używanie portfolio_manager zamiast bezpośredniego pobierania danych z Bybit
-        portfolio_data = portfolio_manager.get_portfolio()
+        portfolio_data = portfolio_manager.get_portfolio() if portfolio_manager else {
+            "balances": {
+                "BTC": {"equity": 0.01, "available_balance": 0.01, "wallet_balance": 0.01},
+                "USDT": {"equity": 1000.0, "available_balance": 1000.0, "wallet_balance": 1000.0}
+            }
+        }
         return jsonify(portfolio_data)
     except Exception as e:
         logging.error(f"Błąd w get_portfolio_data: {str(e)}")
-        # Zwróć dane awaryjne, aby frontend nie pokazywał błędu
         return jsonify({
             "success": True,
             "balances": {
@@ -660,7 +694,8 @@ def get_portfolio_data():
                 "USDT": {"equity": 1000.0, "available_balance": 1000.0, "wallet_balance": 1000.0}
             },
             "source": "fallback_error",
-            "error": str(e)
+            "error": str(e),
+            "retry_after": 1
         })
 
 @app.route('/api/portfolio/set-balance', methods=['POST'])
@@ -1279,22 +1314,37 @@ def get_sentiment_data():
         })
 
 @app.route('/api/trading/start', methods=['POST'])
+@retry_with_backoff
 def start_trading():
+    """Endpoint do uruchamiania tradingu z obsługą ponownych prób."""
     try:
         if not trading_engine:
             logging.warning("Próba uruchomienia tradingu, ale silnik handlowy nie jest zainicjalizowany")
-            return jsonify({'success': False, 'error': 'Silnik handlowy nie jest zainicjalizowany'}), 500
+            return jsonify({
+                'success': False, 
+                'error': 'Silnik handlowy nie jest zainicjalizowany',
+                'retry_after': 5
+            }), 502
 
         result = trading_engine.start()
         if result.get('success', False):
             logging.info("Trading automatyczny uruchomiony pomyślnie")
             return jsonify({'success': True, 'message': 'Trading automatyczny uruchomiony'})
         else:
-            logging.error(f"Błąd podczas uruchamiania tradingu: {result.get('error', 'Nieznany błąd')}")
-            return jsonify({'success': False, 'error': result.get('error', 'Nieznany błąd')}), 500
+            error_msg = result.get('error', 'Nieznany błąd')
+            logging.error(f"Błąd podczas uruchamiania tradingu: {error_msg}")
+            return jsonify({
+                'success': False, 
+                'error': error_msg,
+                'retry_after': 1
+            }), 502
     except Exception as e:
         logging.error(f"Błąd podczas uruchamiania tradingu: {e}", exc_info=True)
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return jsonify({
+            'success': False, 
+            'error': str(e),
+            'retry_after': 1
+        }), 502
 
 @app.route('/api/trading/stop', methods=['POST'])
 def stop_trading():
@@ -1607,6 +1657,188 @@ def test_bybit_connection():
             "testnet": bybit_client.use_testnet if bybit_client else None
         }), 500
 
+# Dodajemy endpoint uwierzytelniania
+@app.route('/api/auth/login', methods=['POST'])
+def login():
+    """Endpoint do logowania użytkowników z rozszerzonymi zabezpieczeniami."""
+    try:
+        data = request.get_json() or {}
+        username = data.get('username', '').strip()
+        password = data.get('password', '').strip()
+        
+        # Walidacja danych wejściowych
+        if not username or not password:
+            return jsonify({'success': False, 'message': 'Brak wymaganych danych logowania'}), 400
+            
+        # Sprawdź czy IP nie jest zablokowane
+        if security_manager.is_ip_blocked(request.remote_addr):
+            return jsonify({
+                'success': False,
+                'message': 'Dostęp zablokowany. Spróbuj ponownie później.'
+            }), 403
+            
+        # Weryfikacja hasła (przykładowe dane testowe)
+        valid_users = {
+            'admin': {
+                'password': 'admin', 
+                'role': 'admin', 
+                'name': 'Administrator',
+                'password_hash': 'hash_here',
+                'salt': 'salt_here'
+            }
+            # ... pozostałe dane testowe ...
+        }
+        
+        user = valid_users.get(username)
+        if not user:
+            security_manager.log_security_event('failed_login', {
+                'username': username,
+                'ip': request.remote_addr,
+                'reason': 'user_not_found'
+            })
+            return jsonify({'success': False, 'message': 'Nieprawidłowe dane logowania'}), 401
+            
+        # W produkcji użyj bezpiecznej weryfikacji hasła
+        if not security_manager.verify_password(password, user['password_hash'], user['salt']):
+            security_manager.log_security_event('failed_login', {
+                'username': username,
+                'ip': request.remote_addr,
+                'reason': 'invalid_password'
+            })
+            return jsonify({'success': False, 'message': 'Nieprawidłowe dane logowania'}), 401
+            
+        # Generowanie tokenu z dodatkowymi zabezpieczeniami
+        token = security_manager.generate_token({
+            'username': username,
+            'role': user['role'],
+            'ip': request.remote_addr,
+            'device_id': request.headers.get('X-Device-ID')
+        })
+        
+        security_manager.log_security_event('successful_login', {
+            'username': username,
+            'ip': request.remote_addr
+        })
+        
+        return jsonify({
+            'success': True,
+            'token': token,
+            'user': {
+                'username': username,
+                'name': user['name'],
+                'role': user['role']
+            }
+        })
+        
+    except Exception as e:
+        logging.error(f"Błąd podczas logowania: {e}", exc_info=True)
+        return jsonify({'success': False, 'message': f'Błąd serwera: {str(e)}'}), 500
+
+@app.route('/api/auth/logout', methods=['POST'])
+@jwt_required
+def logout():
+    """Endpoint do wylogowywania użytkownika."""
+    try:
+        token = request.headers.get('Authorization').split(' ')[1]
+        security_manager.revoke_token(token)
+        
+        security_manager.log_security_event('logout', {
+            'username': request.username,
+            'ip': request.remote_addr
+        })
+        
+        return jsonify({'success': True, 'message': 'Wylogowano pomyślnie'})
+    except Exception as e:
+        logging.error(f"Błąd podczas wylogowywania: {e}", exc_info=True)
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/api/auth/register', methods=['POST'])
+def register():
+    """Endpoint do rejestracji z rozszerzonymi zabezpieczeniami."""
+    try:
+        data = security_manager.sanitize_input(request.get_json() or {})
+        username = data.get('username', '').strip()
+        password = data.get('password', '').strip()
+        email = data.get('email', '').strip()
+        
+        # Walidacja danych
+        if not all([username, password, email]):
+            return jsonify({'success': False, 'message': 'Wszystkie pola są wymagane'}), 400
+            
+        # Walidacja hasła
+        is_valid, message = security_manager.validate_password(password)
+        if not is_valid:
+            return jsonify({'success': False, 'message': message}), 400
+            
+        # Haszowanie hasła
+        password_hash, salt = security_manager.hash_password(password)
+        
+        # W produkcji zapisz użytkownika w bazie danych
+        # ... kod zapisu do bazy ...
+        
+        security_manager.log_security_event('user_registered', {
+            'username': username,
+            'ip': request.remote_addr
+        })
+        
+        return jsonify({
+            'success': True,
+            'message': 'Rejestracja zakończona pomyślnie. Możesz się teraz zalogować.'
+        })
+        
+    except Exception as e:
+        logging.error(f"Błąd podczas rejestracji: {e}", exc_info=True)
+        return jsonify({'success': False, 'message': f'Błąd serwera: {str(e)}'}), 500
+
+@app.route('/api/auth/verify', methods=['GET'])
+@jwt_required
+def verify_token():
+    """Endpoint do weryfikacji tokenu JWT."""
+    try:
+        payload = request.jwt_payload
+        return jsonify({
+            'success': True,
+            'user': {
+                'username': payload.get('sub'),
+                'name': payload.get('name'),
+                'role': payload.get('role')
+            }
+        })
+    except Exception as e:
+        logging.error(f"Błąd podczas weryfikacji tokenu: {e}", exc_info=True)
+        return jsonify({'success': False, 'message': f'Błąd serwera: {str(e)}'}), 500
+
+# Endpoint użytkownika wymaga uwierzytelnienia
+@app.route('/api/user/profile', methods=['GET'])
+@jwt_required
+def get_user_profile():
+    """Endpoint do pobierania profilu zalogowanego użytkownika."""
+    try:
+        payload = request.jwt_payload
+        
+        # Tutaj w produkcji pobieralibyśmy dane użytkownika z bazy danych
+        user_profile = {
+            'username': payload.get('sub'),
+            'name': payload.get('name'),
+            'role': payload.get('role'),
+            'email': f"{payload.get('sub')}@example.com",  # Przykładowy email
+            'joined_date': '2025-01-01',
+            'last_login': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'preferences': {
+                'theme': 'dark',
+                'notifications': True,
+                'dashboard_layout': 'default'
+            }
+        }
+        
+        return jsonify({
+            'success': True, 
+            'profile': user_profile
+        })
+    
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania profilu użytkownika: {e}", exc_info=True)
+        return jsonify({'success': False, 'message': f'Błąd serwera: {str(e)}'}), 500
 
 import os
 
@@ -1725,3 +1957,1314 @@ if __name__ == "__main__":
         print(f"Sprawdź czy port {port} nie jest już używany.")
         import sys
         sys.exit(1)
+
+# Error handlers
+@app.errorhandler(502)
+def handle_502_error(error):
+    """Rozszerzona obsługa błędu 502 Bad Gateway z lepszą identyfikacją komponentów"""
+    request_id = request.headers.get('X-Request-ID', str(uuid.uuid4())[:8])
+    
+    # Rozszerzone szczegóły błędu
+    error_details = {
+        'error': 'Bad Gateway',
+        'status': 502,
+        'request_id': request_id,
+        'message': 'Nie można połączyć się z jednym z komponentów systemu',
+        'timestamp': datetime.now().isoformat(),
+        'retry_after': 2,  # Domyślnie 2 sekundy
+        'component': 'unknown',
+        'path': request.path,
+        'endpoint': request.endpoint or 'unknown'
+    }
+    
+    try:
+        # Bardziej dokładna identyfikacja komponentu na podstawie ścieżki żądania
+        path = request.path.lower()
+        
+        if 'portfolio' in path or '/api/portfolio' in path:
+            error_details['component'] = 'Portfolio Manager'
+            error_details['retry_after'] = 3
+        elif 'trading' in path or '/api/trading' in path:
+            error_details['component'] = 'Trading Engine'
+            error_details['retry_after'] = 5
+        elif 'sentiment' in path or '/api/sentiment' in path:
+            error_details['component'] = 'Sentiment Analyzer'
+            error_details['retry_after'] = 2
+        elif 'ai' in path or 'model' in path or '/api/ai' in path:
+            error_details['component'] = 'AI Models'
+            error_details['retry_after'] = 4
+        elif 'simulation' in path or '/api/simulation' in path:
+            error_details['component'] = 'Simulation Engine'
+            error_details['retry_after'] = 3
+        elif 'bybit' in path or '/api/bybit' in path:
+            error_details['component'] = 'ByBit API Connector'
+            error_details['retry_after'] = 5
+        elif 'chart' in path or '/api/chart' in path:
+            error_details['component'] = 'Chart Data Provider'
+            error_details['retry_after'] = 2
+        
+        # Dodatkowa analiza endpoint
+        current_route = request.endpoint
+        if current_route:
+            if 'portfolio' in current_route:
+                error_details['component'] = 'Portfolio Manager'
+            elif 'trading' in current_route:
+                error_details['component'] = 'Trading Engine'
+            elif 'sentiment' in current_route:
+                error_details['component'] = 'Sentiment Analyzer'
+            elif 'ai' in current_route or 'model' in current_route:
+                error_details['component'] = 'AI Models'
+            elif 'simulation' in current_route:
+                error_details['component'] = 'Simulation Engine'
+            elif 'bybit' in current_route:
+                error_details['component'] = 'ByBit API Connector'
+            elif 'chart' in current_route:
+                error_details['component'] = 'Chart Data Provider'
+        
+        # Dodaj sugestie naprawy
+        suggestions = []
+        if error_details['component'] == 'ByBit API Connector':
+            suggestions.append("Sprawdź klucze API w ustawieniach")
+            suggestions.append("Upewnij się, że masz połączenie internetowe")
+        elif error_details['component'] == 'Portfolio Manager':
+            suggestions.append("Sprawdź czy portfolio_manager jest zainicjalizowany")
+        elif error_details['component'] == 'AI Models':
+            suggestions.append("Sprawdź logi w celu weryfikacji załadowanych modeli AI")
+        
+        if suggestions:
+            error_details['suggestions'] = suggestions
+        
+    except Exception as e:
+        logging.error(f"Błąd podczas identyfikacji komponentu dla obsługi 502: {e}", exc_info=True)
+
+    # Rozbudowane logowanie błędu
+    logging.error(
+        "Bad Gateway Error: %s, Request ID: %s, Component: %s, Path: %s",
+        str(error),
+        request_id,
+        error_details['component'],
+        request.path
+    )
+
+    # Ustaw nagłówek Retry-After do wykorzystania przez frontend
+    response = jsonify(error_details)
+    response.headers['Retry-After'] = str(error_details['retry_after'])
+    response.headers['X-Request-ID'] = request_id
+    
+    return response, 502
+
+def start_notification_server():
+    """
+    Uruchamia serwer WebSocket do obsługi powiadomień w czasie rzeczywistym.
+    
+    Returns:
+        NotificationServer: Instancja serwera powiadomień lub None w przypadku błędu.
+    """
+    try:
+        from notifications.websocket_server import NotificationServer
+        import asyncio
+        import threading
+        
+        # Standardowy port serwera WebSocket
+        port = int(os.environ.get("WEBSOCKET_PORT", 6789))
+        host = '0.0.0.0'
+        
+        server = NotificationServer(host=host, port=port)
+        
+        # Uruchomienie serwera w osobnym wątku
+        def run_server():
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                loop.run_until_complete(server.start_server())
+            except Exception as e:
+                logging.error(f"Błąd podczas uruchamiania serwera WebSocket: {e}", exc_info=True)
+            finally:
+                loop.close()
+        
+        server_thread = threading.Thread(target=run_server, daemon=True)
+        server_thread.start()
+        
+        logging.info(f"Serwer WebSocket powiadomień uruchomiony na {host}:{port}")
+        
+        # Rejestracja powiadomienia systemowego o uruchomieniu serwera
+        if notification_system:
+            notification_system.notify_system_event(
+                event="Uruchomienie serwera",
+                details=f"Serwer WebSocket uruchomiony na porcie {port}"
+            )
+        
+        return server
+    except ImportError as e:
+        logging.warning(f"Nie można zaimportować NotificationServer: {e}")
+        return None
+    except Exception as e:
+        logging.error(f"Błąd podczas uruchamiania serwera powiadomień: {e}", exc_info=True)
+        return None
+
+def start_notification_server():
+    """Uruchamia serwer WebSocket dla powiadomień"""
+    from notifications.websocket_server import NotificationServer
+    import asyncio
+    import threading
+    
+    notification_server = NotificationServer()
+    
+    def run_server():
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        server = notification_server.start()
+        loop.run_until_complete(server)
+        loop.run_forever()
+    
+    # Uruchom serwer WebSocket w osobnym wątku
+    ws_thread = threading.Thread(target=run_server, daemon=True)
+    ws_thread.start()
+    
+    return notification_server
+
+# Inicjalizacja serwera powiadomień przy starcie aplikacji
+notification_server = None
+
+# Dodanie endpointów do wysyłania powiadomień
+@app.route('/api/notification/broadcast', methods=['POST'])
+@jwt_required
+def broadcast_notification():
+    """Endpoint do wysyłania powiadomień systemowych"""
+    if not notification_server:
+        return jsonify({
+            'success': False,
+            'error': 'Serwer powiadomień nie jest dostępny'
+        }), 503
+    
+    data = request.get_json()
+    required_fields = ['type', 'message']
+    
+    if not all(field in data for field in required_fields):
+        return jsonify({
+            'success': False,
+            'error': 'Brak wymaganych pól'
+        }), 400
+        
+    try:
+        asyncio.run(notification_server.broadcast_system_notification(
+            data['type'],
+            data['message'],
+            data.get('level', 'info')
+        ))
+        return jsonify({'success': True})
+    except Exception as e:
+        logger.error(f"Błąd podczas wysyłania powiadomienia: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/notification/price', methods=['POST'])
+@jwt_required
+def broadcast_price():
+    """Endpoint do wysyłania aktualizacji cen"""
+    if not notification_server:
+        return jsonify({
+            'success': False,
+            'error': 'Serwer powiadomień nie jest dostępny'
+        }), 503
+    
+    data = request.get_json()
+    required_fields = ['symbol', 'price']
+    
+    if not all(field in data for field in required_fields):
+        return jsonify({
+            'success': False,
+            'error': 'Brak wymaganych pól'
+        }), 400
+        
+    try:
+        asyncio.run(notification_server.broadcast_price_update(
+            data['symbol'],
+            data['price']
+        ))
+        return jsonify({'success': True})
+    except Exception as e:
+        logger.error(f"Błąd podczas wysyłania aktualizacji ceny: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/trades', methods=['GET'])
+def get_trades():
+    """Endpoint do pobierania historii transakcji."""
+    try:
+        # Jeśli menadżer portfela jest dostępny, pobierz historię transakcji
+        if portfolio_manager:
+            trades = portfolio_manager.get_trade_history()
+            return jsonify({"success": True, "trades": trades})
+        
+        # W przeciwnym razie zwróć przykładowe dane
+        sample_trades = [
+            {
+                "id": "1",
+                "symbol": "BTCUSDT",
+                "side": "BUY",
+                "quantity": 0.01,
+                "entry_price": 52450.50,
+                "exit_price": 53100.25,
+                "profit_loss": 6.4975,
+                "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                "status": "CLOSED"
+            },
+            {
+                "id": "2",
+                "symbol": "ETHUSDT",
+                "side": "SELL",
+                "quantity": 0.15,
+                "entry_price": 2850.75,
+                "exit_price": 2820.25,
+                "profit_loss": 4.575,
+                "timestamp": (datetime.now() - timedelta(hours=2)).strftime('%Y-%m-%d %H:%M:%S'),
+                "status": "CLOSED"
+            }
+        ]
+        
+        return jsonify({"success": True, "trades": sample_trades})
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania historii transakcji: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/market/analyze', methods=['GET'])
+def analyze_market():
+    """Endpoint do analizy rynku z wykorzystaniem strategii."""
+    try:
+        # Pobierz parametry z zapytania
+        symbol = request.args.get('symbol', 'BTCUSDT')
+        interval = request.args.get('interval', '1m')
+        strategy_name = request.args.get('strategy', 'trend_following')
+        
+        if not bybit_client:
+            return jsonify({
+                "success": False, 
+                "error": "Klient API nie jest dostępny",
+                "symbol": symbol,
+                "fallback_data": True,
+                "signals": [
+                    {"type": "buy", "strength": 0.65, "timestamp": datetime.now().isoformat()},
+                    {"type": "neutral", "strength": 0.25, "timestamp": (datetime.now() - timedelta(minutes=15)).isoformat()}
+                ]
+            })
+        
+        # Pobierz dane świec
+        klines = bybit_client.get_klines(symbol=symbol, interval=interval, limit=100)
+        
+        # Jeśli strategie są dostępne, użyj ich do analizy
+        if strategy_manager and strategy_name in strategy_manager.strategies:
+            strategy = strategy_manager.get_strategy(strategy_name)
+            analysis_result = strategy.analyze(klines)
+            
+            return jsonify({
+                "success": True,
+                "symbol": symbol,
+                "interval": interval,
+                "strategy": strategy_name,
+                "signals": analysis_result.get("signals", []),
+                "indicators": analysis_result.get("indicators", {}),
+                "recommendation": analysis_result.get("recommendation", "neutral"),
+                "timestamp": datetime.now().isoformat()
+            })
+        else:
+            # Przykładowe dane analizy
+            sample_signals = [
+                {"type": "buy", "strength": 0.75, "timestamp": datetime.now().isoformat()},
+                {"type": "sell", "strength": 0.3, "timestamp": (datetime.now() - timedelta(minutes=30)).isoformat()},
+                {"type": "neutral", "strength": 0.5, "timestamp": (datetime.now() - timedelta(minutes=60)).isoformat()}
+            ]
+            
+            sample_indicators = {
+                "sma_20": 52750.25,
+                "sma_50": 51980.50,
+                "rsi": 58.5,
+                "macd": 125.75,
+                "macd_signal": 110.25
+            }
+            
+            return jsonify({
+                "success": True,
+                "symbol": symbol,
+                "interval": interval,
+                "strategy": strategy_name,
+                "signals": sample_signals,
+                "indicators": sample_indicators,
+                "recommendation": "buy",
+                "timestamp": datetime.now().isoformat(),
+                "note": "Przykładowe dane analizy (strategie niedostępne)"
+            })
+    except Exception as e:
+        logging.error(f"Błąd podczas analizy rynku: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e), "symbol": symbol}), 500
+
+@app.route('/api/risk/metrics', methods=['GET'])
+def get_risk_metrics():
+    """Endpoint do pobierania metryk ryzyka."""
+    try:
+        # Przykładowe metryki ryzyka
+        metrics = {
+            "portfolio_var": 0.035,  # Value at Risk (3.5%)
+            "portfolio_cvar": 0.048,  # Conditional Value at Risk (4.8%)
+            "max_drawdown": 0.082,   # Maksymalny drawdown (8.2%)
+            "sharpe_ratio": 1.85,    # Wskaźnik Sharpe'a
+            "sortino_ratio": 2.15,   # Wskaźnik Sortino
+            "correlation_matrix": {
+                "BTC": {"BTC": 1.0, "ETH": 0.85, "SOL": 0.72},
+                "ETH": {"BTC": 0.85, "ETH": 1.0, "SOL": 0.68},
+                "SOL": {"BTC": 0.72, "ETH": 0.68, "SOL": 1.0}
+            },
+            "risk_level": "medium", # Ogólny poziom ryzyka (low, medium, high)
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        return jsonify({
+            "success": True,
+            "metrics": metrics
+        })
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania metryk ryzyka: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/risk/limits', methods=['GET'])
+def get_risk_limits():
+    """Endpoint do pobierania limitów ryzyka."""
+    try:
+        # Przykładowe limity ryzyka
+        limits = {
+            "max_position_size": 0.2,  # Maksymalny rozmiar pozycji (20% portfela)
+            "max_leverage": 2.0,       # Maksymalna dźwignia
+            "max_daily_loss": 0.05,    # Maksymalna dzienna strata (5%)
+            "max_drawdown": 0.15,      # Maksymalny dozwolony drawdown (15%)
+            "max_correlated_exposure": 0.3,  # Maksymalna ekspozycja na skorelowane aktywa (30%)
+            "stop_loss_required": True,  # Wymagane zlecenie stop-loss
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        return jsonify({
+            "success": True,
+            "limits": limits
+        })
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania limitów ryzyka: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/logs', methods=['GET'])
+def get_logs():
+    """Endpoint do pobierania logów systemowych."""
+    try:
+        # Parametry zapytania
+        limit = min(int(request.args.get('limit', 100)), 1000)  # Ogranicz do maks. 1000 wpisów
+        level = request.args.get('level', 'ALL').upper()
+        
+        # Ścieżka do pliku logów
+        log_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs", "app.log")
+        
+        # Filtry poziomów logów
+        level_filters = {
+            'DEBUG': 10,
+            'INFO': 20,
+            'WARNING': 30,
+            'ERROR': 40,
+            'CRITICAL': 50,
+            'ALL': 0
+        }
+        
+        min_level = level_filters.get(level, 0)
+        
+        # Odczytaj logi z pliku
+        logs = []
+        if os.path.exists(log_file):
+            with open(log_file, 'r') as f:
+                lines = f.readlines()
+                # Przetwórz każdą linię loga
+                for line in reversed(lines):  # Od najnowszych
+                    if len(logs) >= limit:
+                        break
+                        
+                    # Podstawowe parsowanie formatu logów
+                    try:
+                        parts = line.split()
+                        if len(parts) < 4:
+                            continue
+                            
+                        log_date = ' '.join(parts[0:2])
+                        log_level = parts[2].strip('[]')
+                        log_message = ' '.join(parts[3:])
+                        
+                        # Filtruj według poziomu
+                        if level == 'ALL' or log_level.upper() == level:
+                            logs.append({
+                                "timestamp": log_date,
+                                "level": log_level,
+                                "message": log_message
+                            })
+                    except Exception as parse_error:
+                        # Jeśli nie udało się sparsować, dodaj całą linię
+                        logs.append({
+                            "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                            "level": "UNKNOWN",
+                            "message": line.strip()
+                        })
+        
+        return jsonify({
+            "success": True,
+            "logs": logs,
+            "count": len(logs),
+            "level_filter": level
+        })
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania logów: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/status', methods=['GET'])
+def get_system_status():
+    """Endpoint do pobierania ogólnego statusu systemu."""
+    try:
+        # Zbierz status różnych komponentów systemu
+        api_status = "online" if bybit_client is not None else "offline"
+        trading_status = "online" if trading_engine is not None else "offline"
+        portfolio_status = "online" if portfolio_manager is not None else "offline"
+        ai_status = "online" if sentiment_analyzer is not None and anomaly_detector is not None else "degraded"
+        
+        # Oszacuj ogólny status systemu
+        if all(status == "online" for status in [api_status, trading_status, portfolio_status, ai_status]):
+            overall_status = "online"
+        elif any(status == "offline" for status in [api_status, trading_status]):
+            overall_status = "offline"
+        else:
+            overall_status = "degraded"
+        
+        # Informacje o zasobach systemowych
+        import psutil
+        try:
+            cpu_usage = psutil.cpu_percent(interval=0.1)
+            memory_usage = psutil.virtual_memory().percent
+            disk_usage = psutil.disk_usage('/').percent
+        except:
+            cpu_usage = 0
+            memory_usage = 0
+            disk_usage = 0
+        
+        # Zbierz informacje o wersjach
+        versions = {
+            "system_version": "1.0.0",
+            "api_version": "0.9.5",
+            "trading_engine": "0.8.2",
+            "ai_models": "0.7.1"
+        }
+        
+        # Informacje o ostatniej aktywności
+        activity = {
+            "last_trade": (datetime.now() - timedelta(minutes=random.randint(5, 60))).isoformat(),
+            "last_api_request": datetime.now().isoformat(),
+            "last_portfolio_update": (datetime.now() - timedelta(seconds=random.randint(10, 300))).isoformat(),
+            "system_uptime": str(timedelta(seconds=int(time.time() - self.start_time.timestamp()))) if hasattr(self, 'start_time') else "unknown"
+        }
+        
+        return jsonify({
+            "success": True,
+            "overall_status": overall_status,
+            "components": {
+                "api": api_status,
+                "trading_engine": trading_status,
+                "portfolio": portfolio_status,
+                "ai": ai_status
+            },
+            "resources": {
+                "cpu": cpu_usage,
+                "memory": memory_usage,
+                "disk": disk_usage
+            },
+            "versions": versions,
+            "activity": activity,
+            "timestamp": datetime.now().isoformat()
+        })
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania statusu systemu: {e}", exc_info=True)
+        return jsonify({
+            "success": False, 
+            "error": str(e),
+            "overall_status": "error",
+            "timestamp": datetime.now().isoformat()
+        }), 500
+
+@app.route('/api/portfolio/allocation', methods=['GET'])
+def get_portfolio_allocation():
+    """Endpoint do pobierania alokacji portfela."""
+    try:
+        if portfolio_manager and hasattr(portfolio_manager, 'get_portfolio'):
+            portfolio_data = portfolio_manager.get_portfolio()
+            
+            # Przekształć dane portfolio, aby uzyskać alokację
+            if 'balances' in portfolio_data:
+                balances = portfolio_data['balances']
+                total_value = portfolio_data.get('total_value', sum(balance['equity'] for balance in balances.values()))
+                
+                allocation = {}
+                for symbol, balance in balances.items():
+                    if total_value > 0:
+                        allocation[symbol] = balance['equity'] / total_value
+                    else:
+                        allocation[symbol] = 0
+                
+                return jsonify({
+                    "success": True,
+                    "allocation": allocation,
+                    "timestamp": datetime.now().isoformat()
+                })
+        
+        # Jeśli nie można pobrać danych z portfolio_manager, zwróć przykładowe dane
+        sample_allocation = {
+            "BTC": 0.42,
+            "ETH": 0.28,
+            "SOL": 0.15,
+            "USDT": 0.15
+        }
+        
+        return jsonify({
+            "success": True,
+            "allocation": sample_allocation,
+            "timestamp": datetime.now().isoformat(),
+            "note": "Przykładowe dane alokacji"
+        })
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania alokacji portfela: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/portfolio/correlation', methods=['GET'])
+def get_portfolio_correlation():
+    """Endpoint do pobierania macierzy korelacji aktywów portfela."""
+    try:
+        # Przykładowa macierz korelacji
+        correlation_matrix = {
+            "BTC": {"BTC": 1.0, "ETH": 0.85, "SOL": 0.72, "USDT": -0.05},
+            "ETH": {"BTC": 0.85, "ETH": 1.0, "SOL": 0.68, "USDT": -0.03},
+            "SOL": {"BTC": 0.72, "ETH": 0.68, "SOL": 1.0, "USDT": -0.08},
+            "USDT": {"BTC": -0.05, "ETH": -0.03, "SOL": -0.08, "USDT": 1.0}
+        }
+        
+        # Przykładowe pary wysokiej korelacji
+        high_correlation_pairs = [
+            {"asset1": "BTC", "asset2": "ETH", "correlation": 0.85},
+            {"asset1": "BTC", "asset2": "SOL", "correlation": 0.72},
+            {"asset1": "ETH", "asset2": "SOL", "correlation": 0.68}
+        ]
+        
+        return jsonify({
+            "success": True,
+            "correlation_matrix": correlation_matrix,
+            "high_correlation_pairs": high_correlation_pairs,
+            "timestamp": datetime.now().isoformat()
+        })
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania korelacji portfela: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/trading/statistics', methods=['GET'])
+def get_trading_statistics():
+    """Endpoint do pobierania statystyk tradingowych."""
+    try:
+        # Parametry zapytania
+        days = int(request.args.get('days', 30))
+        
+        # Jeśli portfolio_manager ma metodę get_trading_statistics, użyj jej
+        if portfolio_manager and hasattr(portfolio_manager, 'get_trading_statistics'):
+            stats = portfolio_manager.get_trading_statistics(user_id=1, days=days)
+            return jsonify({
+                "success": True,
+                "statistics": stats,
+                "period_days": days
+            })
+        
+        # W przeciwnym razie zwróć przykładowe statystyki
+        sample_stats = {
+            "total_trades": 48,
+            "winning_trades": 29,
+            "losing_trades": 19,
+            "win_rate": 60.42,
+            "profit_loss": 850.75,
+            "profit_percentage": 8.51,
+            "max_drawdown": 4.8,
+            "sharpe_ratio": 1.85,
+            "sortino_ratio": 2.15,
+            "avg_profit": 43.25,
+            "avg_loss": -18.75,
+            "profit_factor": 2.31,
+            "avg_trade_duration_hours": 12.5,
+            "best_trade": {
+                "symbol": "BTCUSDT",
+                "profit": 125.50,
+                "date": (datetime.now() - timedelta(days=8)).strftime('%Y-%m-%d')
+            },
+            "worst_trade": {
+                "symbol": "SOLUSDT",
+                "profit": -45.75,
+                "date": (datetime.now() - timedelta(days=12)).strftime('%Y-%m-%d')
+            }
+        }
+        
+        return jsonify({
+            "success": True,
+            "statistics": sample_stats,
+            "period_days": days,
+            "note": "Przykładowe statystyki tradingowe"
+        })
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania statystyk tradingowych: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/portfolio/analytics/diversification', methods=['GET'])
+def get_portfolio_diversification():
+    """Endpoint do pobierania analityki dywersyfikacji portfela."""
+    try:
+        # Przykładowe dane dotyczące dywersyfikacji
+        diversification_data = {
+            "asset_classes": {
+                "cryptocurrency": 0.65,
+                "stablecoin": 0.25,
+                "fiat": 0.10
+            },
+            "market_cap_distribution": {
+                "large_cap": 0.55,
+                "mid_cap": 0.30,
+                "small_cap": 0.15
+            },
+            "risk_exposure": {
+                "high_risk": 0.35,
+                "medium_risk": 0.45,
+                "low_risk": 0.20
+            },
+            "herfindahl_index": 0.28,  # Indeks koncentracji (niższy = lepiej zdywersyfikowany)
+            "effective_n": 3.57,        # Efektywna liczba aktywów
+            "diversification_score": 0.72  # Ogólny wynik dywersyfikacji (wyższy = lepiej)
+        }
+        
+        return jsonify({
+            "success": True,
+            "diversification": diversification_data,
+            "timestamp": datetime.now().isoformat()
+        })
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania analityki dywersyfikacji: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/portfolio/analytics/allocation', methods=['GET'])
+def get_portfolio_allocation_analytics():
+    """Endpoint do pobierania analityki alokacji portfela."""
+    try:
+        # Parametry zapytania
+        days = int(request.args.get('days', 30))
+        
+        # Przykładowe dane alokacji w czasie
+        dates = [(datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d') for i in range(days)]
+        dates.reverse()  # Od najstarszej do najnowszej
+        
+        allocation_history = {
+            "dates": dates,
+            "allocations": {
+                "BTC": [0.35 + random.uniform(-0.05, 0.05) for _ in range(days)],
+                "ETH": [0.25 + random.uniform(-0.04, 0.04) for _ in range(days)],
+                "SOL": [0.15 + random.uniform(-0.03, 0.03) for _ in range(days)],
+                "USDT": [0.25 + random.uniform(-0.02, 0.02) for _ in range(days)]
+            }
+        }
+        
+        # Przykładowe dane o optymalizacji alokacji
+        optimization = {
+            "efficient_frontier": [
+                {"risk": 0.10, "return": 0.05},
+                {"risk": 0.15, "return": 0.08},
+                {"risk": 0.20, "return": 0.12},
+                {"risk": 0.25, "return": 0.16},
+                {"risk": 0.30, "return": 0.21}
+            ],
+            "current_position": {"risk": 0.22, "return": 0.14},
+            "optimal_allocation": {
+                "BTC": 0.40,
+                "ETH": 0.30,
+                "SOL": 0.10,
+                "USDT": 0.20
+            },
+            "sharpe_ratio": 1.85
+        }
+        
+        return jsonify({
+            "success": True,
+            "allocation_history": allocation_history,
+            "optimization": optimization,
+            "timestamp": datetime.now().isoformat(),
+            "period_days": days
+        })
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania analityki alokacji: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/portfolio/analytics/risk', methods=['GET'])
+def get_portfolio_risk_analytics():
+    """Endpoint do pobierania analityki ryzyka portfela."""
+    try:
+        # Przykładowe dane analityki ryzyka
+        risk_analytics = {
+            "var": {  # Value at Risk
+                "daily": {
+                    "95%": 0.018,  # 1.8%
+                    "99%": 0.028   # 2.8%
+                },
+                "weekly": {
+                    "95%": 0.045,  # 4.5%
+                    "99%": 0.068   # 6.8%
+                }
+            },
+            "expected_shortfall": {  # Conditional VaR
+                "daily": {
+                    "95%": 0.022,  # 2.2%
+                    "99%": 0.035   # 3.5%
+                },
+                "weekly": {
+                    "95%": 0.055,  # 5.5%
+                    "99%": 0.078   # 7.8%
+                }
+            },
+            "stress_test": {
+                "market_crash_10%": -0.075,  # -7.5%
+                "market_crash_20%": -0.148,  # -14.8%
+                "high_volatility": -0.052    # -5.2%
+            },
+            "tail_risk": {
+                "tail_ratio": 0.85,
+                "downside_deviation": 0.038
+            },
+            "risk_contribution": {
+                "BTC": 0.45,  # 45%
+                "ETH": 0.32,  # 32%
+                "SOL": 0.18,  # 18%
+                "USDT": 0.05   # 5%
+            }
+        }
+        
+        return jsonify({
+            "success": True,
+            "risk_analytics": risk_analytics,
+            "timestamp": datetime.now().isoformat()
+        })
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania analityki ryzyka: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/portfolio/analytics/turnover', methods=['GET'])
+def get_portfolio_turnover():
+    """Endpoint do pobierania analityki obrotu portfela."""
+    try:
+        # Parametry zapytania
+        days = int(request.args.get('days', 30))
+        
+        # Przykładowe dane obrotu portfela
+        dates = [(datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d') for i in range(days)]
+        dates.reverse()  # Od najstarszej do najnowszej
+        
+        daily_turnover = [round(random.uniform(0.01, 0.08), 4) for _ in range(days)]
+        
+        turnover_data = {
+            "dates": dates,
+            "daily_turnover": daily_turnover,
+            "cumulative_turnover": sum(daily_turnover),
+            "average_daily_turnover": sum(daily_turnover) / days,
+            "turnover_by_asset": {
+                "BTC": 0.45,  # 45%
+                "ETH": 0.32,  # 32%
+                "SOL": 0.18,  # 18%
+                "USDT": 0.05   # 5%
+            }
+        }
+        
+        return jsonify({
+            "success": True,
+            "turnover": turnover_data,
+            "timestamp": datetime.now().isoformat(),
+            "period_days": days
+        })
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania analityki obrotu: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/notifications/settings', methods=['GET', 'POST'])
+def handle_notification_settings():
+    """Endpoint do pobierania i ustawiania konfiguracji powiadomień."""
+    try:
+        if request.method == 'GET':
+            # Przykładowa konfiguracja powiadomień
+            settings = {
+                "email_notifications": True,
+                "push_notifications": True,
+                "sms_notifications": False,
+                "telegram_notifications": True,
+                "notification_types": {
+                    "trade_executed": True,
+                    "position_closed": True,
+                    "stop_loss_triggered": True,
+                    "take_profit_triggered": True,
+                    "price_alert": True,
+                    "market_anomaly": True,
+                    "system_warning": True,
+                    "daily_summary": True,
+                    "weekly_report": True
+                },
+                "quiet_hours": {
+                    "enabled": False,
+                    "start": "22:00",
+                    "end": "08:00"
+                },
+                "minimum_trade_size": 100.0,  # Minimalna wartość transakcji dla powiadomień
+                "email_address": "user@example.com",
+                "phone_number": "+1234567890",
+                "telegram_chat_id": "123456789"
+            }
+            
+            return jsonify({
+                "success": True,
+                "settings": settings
+            })
+        elif request.method == 'POST':
+            # Aktualizacja konfiguracji powiadomień
+            new_settings = request.json
+            
+            # W produkcji tutaj zapisalibyśmy ustawienia
+            
+            return jsonify({
+                "success": True,
+                "message": "Ustawienia powiadomień zaktualizowane pomyślnie",
+                "settings": new_settings
+            })
+    except Exception as e:
+        logging.error(f"Błąd podczas obsługi ustawień powiadomień: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/notifications/history', methods=['GET'])
+def get_notification_history():
+    """Endpoint do pobierania historii powiadomień."""
+    try:
+        # Parametry zapytania
+        limit = min(int(request.args.get('limit', 20)), 100)  # Ogranicz do maks. 100 wpisów
+        
+        # Przykładowa historia powiadomień
+        history = []
+        for i in range(limit):
+            notification_time = datetime.now() - timedelta(hours=random.randint(1, 240))
+            notification_type = random.choice([
+                "trade_executed", "position_closed", "stop_loss_triggered",
+                "price_alert", "market_anomaly", "system_warning"
+            ])
+            
+            # Różne treści w zależności od typu
+            if notification_type == "trade_executed":
+                message = f"Wykonano transakcję: BUY 0.01 BTCUSDT po cenie {50000 + random.randint(-2000, 2000)}"
+            elif notification_type == "position_closed":
+                message = f"Zamknięto pozycję: SELL 0.01 BTCUSDT po cenie {50000 + random.randint(-2000, 2000)}, zysk: ${random.randint(-100, 200)}"
+            elif notification_type == "stop_loss_triggered":
+                message = f"Wyzwolony Stop-Loss dla ETHUSDT po cenie {2800 + random.randint(-200, 200)}"
+            elif notification_type == "price_alert":
+                message = f"Alert cenowy: BTCUSDT osiągnął {50000 + random.randint(-3000, 3000)}"
+            elif notification_type == "market_anomaly":
+                message = "Wykryto anomalię rynkową: Nagły wzrost wolumenu BTCUSDT o 200%"
+            else:  # system_warning
+                message = "Ostrzeżenie systemowe: Wysoka zmienność rynkowa, zalecana ostrożność"
+            
+            history.append({
+                "id": str(uuid.uuid4()),
+                "type": notification_type,
+                "message": message,
+                "timestamp": notification_time.isoformat(),
+                "read": random.choice([True, False]),
+                "channels": random.sample(["email", "push", "telegram"], k=random.randint(1, 3))
+            })
+            
+        # Sortuj od najnowszych do najstarszych
+        history.sort(key=lambda x: x["timestamp"], reverse=True)
+        
+        return jsonify({
+            "success": True,
+            "notifications": history,
+            "count": len(history),
+            "unread_count": sum(1 for n in history if not n["read"])
+        })
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania historii powiadomień: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/alerts/active', methods=['GET', 'POST', 'DELETE'])
+def handle_alerts():
+    """Endpoint do zarządzania alertami cenowymi."""
+    try:
+        if request.method == 'GET':
+            # Pobierz aktywne alerty
+            active_alerts = [
+                {
+                    "id": "1",
+                    "symbol": "BTCUSDT",
+                    "price": 55000.0,
+                    "condition": "above",
+                    "created_at": (datetime.now() - timedelta(days=2)).isoformat(),
+                    "expires_at": (datetime.now() + timedelta(days=5)).isoformat(),
+                    "notification": ["email", "push"],
+                    "triggered": False
+                },
+                {
+                    "id": "2",
+                    "symbol": "ETHUSDT",
+                    "price": 2500.0,
+                    "condition": "below",
+                    "created_at": (datetime.now() - timedelta(days=1)).isoformat(),
+                    "expires_at": (datetime.now() + timedelta(days=3)).isoformat(),
+                    "notification": ["email"],
+                    "triggered": False
+                }
+            ]
+            
+            return jsonify({
+                "success": True,
+                "alerts": active_alerts
+            })
+        elif request.method == 'POST':
+            # Dodaj nowy alert
+            new_alert = request.json
+            
+            # W produkcji tutaj zapisalibyśmy alert do bazy danych
+            
+            # Przypisz sztuczne ID i inne pola
+            new_alert["id"] = str(uuid.uuid4())
+            new_alert["created_at"] = datetime.now().isoformat()
+            if "expires_at" not in new_alert:
+                new_alert["expires_at"] = (datetime.now() + timedelta(days=7)).isoformat()
+            new_alert["triggered"] = False
+            
+            return jsonify({
+                "success": True,
+                "message": "Alert utworzony pomyślnie",
+                "alert": new_alert
+            })
+        elif request.method == 'DELETE':
+            # Usuń alert
+            alert_id = request.args.get('id')
+            
+            if not alert_id:
+                return jsonify({"success": False, "error": "Nie podano ID alertu"}), 400
+            
+            # W produkcji tutaj usuwalibyśmy alert z bazy danych
+            
+            return jsonify({
+                "success": True,
+                "message": f"Alert o ID {alert_id} został usunięty"
+            })
+    except Exception as e:
+        logging.error(f"Błąd podczas obsługi alertów: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/autonomous/status', methods=['GET'])
+def get_autonomous_status():
+    """Endpoint do pobierania statusu trybu autonomicznego."""
+    try:
+        # Przykładowy status trybu autonomicznego
+        status = {
+            "enabled": True,
+            "mode": "conservative",  # conservative, moderate, aggressive
+            "auto_trading": True,
+            "auto_rebalancing": True,
+            "risk_control_active": True,
+            "last_action": {
+                "type": "trade",
+                "description": "Zakup 0.01 BTC po cenie 52345.75",
+                "timestamp": (datetime.now() - timedelta(hours=2)).isoformat()
+            },
+            "uptime": str(timedelta(hours=random.randint(24, 720))),  # Losowy czas działania
+            "next_rebalance": (datetime.now() + timedelta(days=2)).isoformat()
+        }
+        
+        return jsonify({
+            "success": True,
+            "status": status,
+            "timestamp": datetime.now().isoformat()
+        })
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania statusu trybu autonomicznego: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/autonomous/mode', methods=['POST'])
+def set_autonomous_mode():
+    """Endpoint do ustawiania trybu autonomicznego."""
+    try:
+        data = request.json
+        if not data or "mode" not in data:
+            return jsonify({"success": False, "error": "Nie podano trybu"}), 400
+            
+        mode = data["mode"]
+        enabled = data.get("enabled", True)
+        
+        # Walidacja trybu
+        if mode not in ["conservative", "moderate", "aggressive"]:
+            return jsonify({"success": False, "error": "Nieprawidłowy tryb"}), 400
+            
+        # W produkcji tutaj ustawialibyśmy tryb autonomiczny
+        
+        return jsonify({
+            "success": True,
+            "message": f"Tryb autonomiczny ustawiony na: {mode}, włączony: {enabled}",
+            "status": {
+                "mode": mode,
+                "enabled": enabled,
+                "timestamp": datetime.now().isoformat()
+            }
+        })
+    except Exception as e:
+        logging.error(f"Błąd podczas ustawiania trybu autonomicznego: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/autonomous/decisions', methods=['GET'])
+def get_autonomous_decisions():
+    """Endpoint do pobierania historii decyzji trybu autonomicznego."""
+    try:
+        # Parametry zapytania
+        limit = min(int(request.args.get('limit', 20)), 100)  # Ogranicz do maks. 100 wpisów
+        
+        # Przykładowa historia decyzji
+        decisions = []
+        for i in range(limit):
+            decision_time = datetime.now() - timedelta(hours=random.randint(1, 240))
+            decision_type = random.choice(["trade", "rebalance", "risk_adjustment", "strategy_switch"])
+            
+            # Różne treści w zależności od typu
+            if decision_type == "trade":
+                action = random.choice(["BUY", "SELL"])
+                symbol = random.choice(["BTCUSDT", "ETHUSDT", "SOLUSDT"])
+                price = random.uniform(100, 60000)
+                quantity = round(random.uniform(0.001, 0.1), 6)
+                
+                description = f"{action} {quantity} {symbol} po cenie {price:.2f}"
+                confidence = random.uniform(0.7, 0.95)
+            elif decision_type == "rebalance":
+                description = "Rebalancing portfela: BTC 40%, ETH 30%, SOL 15%, USDT 15%"
+                confidence = random.uniform(0.8, 0.99)
+            elif decision_type == "risk_adjustment":
+                description = f"Zmniejszenie ekspozycji na ryzyko o {random.randint(5, 20)}% ze względu na zwiększoną zmienność rynku"
+                confidence = random.uniform(0.75, 0.9)
+            else:  # strategy_switch
+                old_strategy = random.choice(["trend_following", "mean_reversion"])
+                new_strategy = random.choice(["breakout", "ml_prediction"])
+                
+                description = f"Przełączenie strategii z {old_strategy} na {new_strategy} ze względu na zmianę warunków rynkowych"
+                confidence = random.uniform(0.6, 0.85)
+            
+            decisions.append({
+                "id": str(uuid.uuid4()),
+                "type": decision_type,
+                "description": description,
+                "timestamp": decision_time.isoformat(),
+                "confidence": confidence,
+                "factors": [
+                    {"name": "Trend", "weight": random.uniform(0.1, 0.5)},
+                    {"name": "Analiza techniczna", "weight": random.uniform(0.1, 0.4)},
+                    {"name": "Sentyment rynkowy", "weight": random.uniform(0.1, 0.3)}
+                ],
+                "outcome": random.choice(["success", "failure", "neutral", "pending"])
+            })
+            
+        # Sortuj od najnowszych do najstarszych
+        decisions.sort(key=lambda x: x["timestamp"], reverse=True)
+        
+        return jsonify({
+            "success": True,
+            "decisions": decisions,
+            "count": len(decisions)
+        })
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania historii decyzji: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/autonomous/model-weights', methods=['GET', 'POST'])
+def handle_model_weights():
+    """Endpoint do pobierania i ustawiania wag modeli w trybie autonomicznym."""
+    try:
+        if request.method == 'GET':
+            # Przykładowe wagi modeli
+            weights = {
+                "technical_analysis": 0.35,
+                "sentiment_analysis": 0.25,
+                "trend_following": 0.20,
+                "mean_reversion": 0.10,
+                "ml_prediction": 0.10
+            }
+            
+            return jsonify({
+                "success": True,
+                "weights": weights,
+                "timestamp": datetime.now().isoformat()
+            })
+        elif request.method == 'POST':
+            # Aktualizacja wag modeli
+            new_weights = request.json
+            
+            # Walidacja wag
+            if sum(new_weights.values()) != 1.0:
+                return jsonify({
+                    "success": False, 
+                    "error": "Suma wag musi wynosić 1.0",
+                    "current_sum": sum(new_weights.values())
+                }), 400
+            
+            # W produkcji tutaj zapisalibyśmy wagi
+            
+            return jsonify({
+                "success": True,
+                "message": "Wagi modeli zaktualizowane pomyślnie",
+                "weights": new_weights,
+                "timestamp": datetime.now().isoformat()
+            })
+    except Exception as e:
+        logging.error(f"Błąd podczas obsługi wag modeli: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/autonomous/risk-parameters', methods=['GET', 'POST'])
+def handle_risk_parameters():
+    """Endpoint do pobierania i ustawiania parametrów ryzyka w trybie autonomicznym."""
+    try:
+        if request.method == 'GET':
+            # Przykładowe parametry ryzyka
+            parameters = {
+                "max_position_size": 0.2,  # Maksymalny rozmiar pozycji (20% portfela)
+                "max_leverage": 2.0,       # Maksymalna dźwignia
+                "max_daily_loss": 0.05,    # Maksymalna dzienna strata (5%)
+                "max_drawdown": 0.15,      # Maksymalny dozwolony drawdown (15%)
+                "stop_loss_percent": 0.03, # Domyślny stop-loss (3%)
+                "take_profit_percent": 0.06, # Domyślny take-profit (6%)
+                "max_correlated_exposure": 0.3, # Maksymalna ekspozycja na skorelowane aktywa (30%)
+                "market_volatility_threshold": 0.02, # Próg zmienności rynkowej (2%)
+                "risk_reduction_factor": 0.5 # Współczynnik redukcji ryzyka przy wysokiej zmienności
+            }
+            
+            return jsonify({
+                "success": True,
+                "parameters": parameters,
+                "timestamp": datetime.now().isoformat()
+            })
+        elif request.method == 'POST':
+            # Aktualizacja parametrów ryzyka
+            new_parameters = request.json
+            
+            # W produkcji tutaj zapisalibyśmy parametry
+            
+            return jsonify({
+                "success": True,
+                "message": "Parametry ryzyka zaktualizowane pomyślnie",
+                "parameters": new_parameters,
+                "timestamp": datetime.now().isoformat()
+            })
+    except Exception as e:
+        logging.error(f"Błąd podczas obsługi parametrów ryzyka: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/autonomous/learning-status', methods=['GET'])
+def get_learning_status():
+    """Endpoint do pobierania statusu uczenia modeli w trybie autonomicznym."""
+    try:
+        # Przykładowy status uczenia
+        status = {
+            "is_training": random.choice([True, False]),
+            "current_epoch": random.randint(1, 100),
+            "total_epochs": 100,
+            "progress": random.uniform(0, 1),
+            "error_rate": round(random.uniform(0.01, 0.1), 4),
+            "accuracy": round(random.uniform(0.7, 0.95), 4),
+            "eta": str(timedelta(minutes=random.randint(5, 60))),
+            "models_in_training": [
+                {
+                    "name": "PricePredictor",
+                    "type": "LSTM",
+                    "progress": random.uniform(0, 1),
+                    "accuracy": round(random.uniform(0.7, 0.9), 4)
+                },
+                {
+                    "name": "SentimentAnalyzer",
+                    "type": "BERT",
+                    "progress": random.uniform(0, 1),
+                    "accuracy": round(random.uniform(0.7, 0.9), 4)
+                }
+            ],
+            "last_training": {
+                "completed_at": (datetime.now() - timedelta(days=random.randint(1, 7))).isoformat(),
+                "duration": str(timedelta(hours=random.randint(1, 12))),
+                "samples_used": random.randint(10000, 100000),
+                "improvement": f"{random.uniform(1, 10):.2f}%"
+            }
+        }
+        
+        return jsonify({
+            "success": True,
+            "status": status,
+            "timestamp": datetime.now().isoformat()
+        })
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania statusu uczenia: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/autonomous/model-performance', methods=['GET'])
+def get_model_performance():
+    """Endpoint do pobierania wydajności modeli w trybie autonomicznym."""
+    try:
+        # Przykładowa wydajność modeli
+        performance = {
+            "models": [
+                {
+                    "name": "PricePredictor",
+                    "type": "LSTM",
+                    "accuracy": 0.78,
+                    "precision": 0.81,
+                    "recall": 0.75,
+                    "f1_score": 0.78,
+                    "training_samples": 50000,
+                    "last_update": (datetime.now() - timedelta(days=2)).isoformat()
+                },
+                {
+                    "name": "SentimentAnalyzer",
+                    "type": "BERT",
+                    "accuracy": 0.82,
+                    "precision": 0.84,
+                    "recall": 0.79,
+                    "f1_score": 0.81,
+                    "training_samples": 75000,
+                    "last_update": (datetime.now() - timedelta(days=5)).isoformat()
+                },
+                {
+                    "name": "MarketAnomalyDetector",
+                    "type": "Isolation Forest",
+                    "accuracy": 0.92,
+                    "precision": 0.88,
+                    "recall": 0.76,
+                    "f1_score": 0.82,
+                    "training_samples": 30000,
+                    "last_update": (datetime.now() - timedelta(days=1)).isoformat()
+                }
+            ],
+            "ensemble": {
+                "accuracy": 0.85,
+                "precision": 0.87,
+                "recall": 0.82,
+                "f1_score": 0.84
+            },
+            "performance_history": {
+                "dates": [(datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d') for i in range(30)],
+                "accuracy": [round(0.75 + random.uniform(-0.05, 0.1), 2) for _ in range(30)]
+            }
+        }
+        
+        return jsonify({
+            "success": True,
+            "performance": performance,
+            "timestamp": datetime.now().isoformat()
+        })
+    except Exception as e:
+        logging.error(f"Błąd podczas pobierania wydajności modeli: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500

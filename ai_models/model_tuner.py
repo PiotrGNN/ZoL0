@@ -13,9 +13,14 @@ Funkcjonalności:
 """
 
 import logging
-
 import numpy as np
-# # # # import optuna  # Zakomentowano - opcjonalny pakiet  # Zakomentowano - opcjonalny pakiet  # Zakomentowano - opcjonalny pakiet  # Zakomentowano - opcjonalny pakiet
+try:
+    import optuna
+    OPTUNA_AVAILABLE = True
+except ImportError:
+    OPTUNA_AVAILABLE = False
+    logging.warning("Biblioteka optuna nie jest zainstalowana. Niektóre funkcje będą niedostępne.")
+
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 from sklearn.model_selection import KFold
 
@@ -139,6 +144,9 @@ class ModelTuner:
         Returns:
             tuple: (najlepsze hiperparametry, najlepszy wynik)
         """
+        if not OPTUNA_AVAILABLE:
+            raise ImportError("Biblioteka optuna jest wymagana do przeprowadzenia tuningu. Zainstaluj ją używając: pip install optuna")
+            
         self.X = X
         self.y = y
         self.study = optuna.create_study(
@@ -188,11 +196,9 @@ if __name__ == "__main__":
                 "feature2": np.random.uniform(0, 1, data_size),
             }
         )
-        y = (
-            X["feature1"] * 2.0
-            + X["feature2"] * (-1.0)
-            + np.random.normal(0, 0.1, data_size)
-        )
+        y = (X["feature1"] * 2.0 +
+             X["feature2"] * (-1.0) +
+             np.random.normal(0, 0.1, data_size))
 
         # Definicja przestrzeni hiperparametrów dla RandomForestRegressor
         param_space = {

@@ -1,24 +1,192 @@
 // Konfiguracja aplikacji
 const CONFIG = {
-    updateInterval: 30000, // 30 sekund
-    chartUpdateInterval: 60000, // 1 minuta
-    maxErrors: 3,
+    // Ogólne ustawienia
+    updateInterval: 30000,              // 30 sekund - podstawowy interwał aktualizacji
+    chartUpdateInterval: 60000,         // 1 minuta - interwał aktualizacji wykresów
+    maxErrors: 3,                       // Maksymalna liczba błędów przed pokazaniem powiadomienia
+    debugMode: false,                   // Tryb debugowania (więcej logów)
+
+    // Wszystkie endpointy API w jednym miejscu (dla łatwej zmiany i konsystencji)
     apiEndpoints: {
-        portfolio: '/api/portfolio',
+        // Autoryzacja
+        auth: {
+            login: '/api/auth/login',
+            verify: '/api/auth/verify',
+            register: '/api/auth/register',
+            logout: '/api/auth/logout'
+        },
+        
+        // Główne dane dashboardu
         dashboard: '/api/dashboard/data',
         componentStatus: '/api/component-status',
+        
+        // Portfolio i wykresy
+        portfolio: '/api/portfolio',
+        setBalance: '/api/portfolio/set-balance',
         chartData: '/api/chart/data',
-        aiModelsStatus: '/api/ai-models-status',
-        simulationResults: '/api/simulation-results',
-        sentiment: '/api/sentiment', // Added endpoint for sentiment data
-        systemStatus: '/api/system/status' // Added endpoint for system status
+        
+        // Handel
+        trading: {
+            start: '/api/trading/start',
+            stop: '/api/trading/stop',
+            status: '/api/trading/status',
+            history: '/api/trades/history'
+        },
+        
+        // Zarządzanie systemem
+        system: {
+            reset: '/api/system/reset',
+            settings: '/api/system/settings',
+            notifications: '/api/notifications',
+            status: '/api/system/status'
+        },
+        
+        // Modele AI i symulacje
+        ai: {
+            modelsStatus: '/api/ai-models-status',
+            thoughts: '/api/ai/thoughts',
+            learningStatus: '/api/ai/learning-status',
+            train: '/api/ai/train'
+        },
+        
+        // Symulacje i wyniki
+        simulation: {
+            run: '/api/simulation/run',
+            results: '/api/simulation-results',
+            learn: '/api/simulation/learn'
+        },
+        
+        // Analiza sentymentu
+        sentiment: {
+            main: '/api/sentiment',           // Główny endpoint dla sentymentu
+            latest: '/api/sentiment/latest',   // Endpoint dla najnowszych danych sentymentu
+            history: '/api/sentiment/history'  // Historia sentymentu
+        }
     }
 };
 
+// Konfiguracja retry mechanizmu
+const RETRY_CONFIG = {
+    maxRetries: 3,
+    initialDelay: 1000, // 1 sekunda
+    maxDelay: 5000, // 5 sekund
+    backoffFactor: 2,
+    retryableStatuses: [502, 503, 504]
+};
+
+// Funkcja pomocnicza do wykonywania fetch z automatycznymi ponownymi próbami
+async function fetchWithRetry(url, options = {}) {
+    let attempt = 0;
+    let delay = RETRY_CONFIG.initialDelay;
+    
+    // Wyodrębnij nazwę endpointu z URL do celów diagnostycznych
+    const endpointName = url.split('/').pop().replace(/[^a-zA-Z]/g, '') || 'unknown';
+    
+    // Sprawdź, czy żądanie jest już w toku - zapobiegaj duplikatom
+    if (appState.isRequestInProgress(endpointName)) {
+        console.log(`Żądanie do ${endpointName} jest już w toku, pomijam duplikat`);
+        return new Promise((resolve) => {
+            // Poczekaj chwilę i sprawdź, czy dane są dostępne
+            setTimeout(() => {
+                // Możemy zwrócić success response z pustym body
+                resolve(new Response('{}', { 
+                    status: 200, 
+                    headers: { 'Content-Type': 'application/json' }
+                }));
+            }, 500);
+        });
+    }
+    
+    // Oznacz żądanie jako w toku
+    appState.startRequest(endpointName);
+    
+    try {
+        while (attempt < RETRY_CONFIG.maxRetries) {
+            try {
+                const response = await fetch(url, options);
+                
+                // Oznacz żądanie jako zakończone
+                appState.endRequest(endpointName);
+                
+                // Jeśli status nie jest retryable, zwróć odpowiedź
+                if (!RETRY_CONFIG.retryableStatuses.includes(response.status)) {
+                    return response;
+                }
+                
+                // Pobierz dane o błędzie jeśli to możliwe
+                let errorData = {};
+                try {
+                    errorData = await response.clone().json();
+                } catch (e) {
+                    // Ignoruj błędy parsowania JSON
+                }
+                
+                // Jeśli to błąd 502, 503, 504, spróbuj ponownie
+                attempt++;
+                if (attempt < RETRY_CONFIG.maxRetries) {
+                    // Pobierz czas oczekiwania z nagłówka odpowiedzi lub użyj domyślnego
+                    const retryAfter = response.headers.get('Retry-After');
+                    const waitTime = retryAfter ? parseInt(retryAfter) * 1000 : delay;
+                    
+                    // Pokaż informację o ponownej próbie
+                    const componentName = errorData.component || 'serwera';
+                    showNotification('warning', 
+                        `Problem z połączeniem do ${componentName}. ` +
+                        `Ponowna próba za ${Math.round(waitTime/1000)} sekund... (${attempt}/${RETRY_CONFIG.maxRetries})`
+                    );
+                    
+                    await new Promise(resolve => setTimeout(resolve, waitTime));
+                    delay = Math.min(delay * RETRY_CONFIG.backoffFactor, RETRY_CONFIG.maxDelay);
+                    continue;
+                }
+                
+                // Jeśli wszystkie próby się nie powiodły, wywołaj handleApiError i zwróć odpowiedź
+                handleApiError(endpointName, new Error(`Wszystkie próby (${RETRY_CONFIG.maxRetries}) nie powiodły się`), response);
+                return response;
+                
+            } catch (error) {
+                // Obsługa błędów sieciowych (np. brak połączenia)
+                if (attempt === RETRY_CONFIG.maxRetries - 1) {
+                    // Oznacz żądanie jako zakończone w przypadku błędu
+                    appState.endRequest(endpointName);
+                    
+                    console.error(`Ostateczny błąd po ${RETRY_CONFIG.maxRetries} próbach połączenia z ${url}:`, error);
+                    handleApiError(endpointName, error);
+                    throw error;
+                }
+                
+                attempt++;
+                
+                // Pokaż powiadomienie o problemie z siecią
+                showNotification('warning',
+                    `Problem z połączeniem sieciowym. ` +
+                    `Ponowna próba za ${delay/1000} sekund... (${attempt}/${RETRY_CONFIG.maxRetries})`
+                );
+                
+                await new Promise(resolve => setTimeout(resolve, delay));
+                delay = Math.min(delay * RETRY_CONFIG.backoffFactor, RETRY_CONFIG.maxDelay);
+            }
+        }
+    } finally {
+        // Zawsze oznacz żądanie jako zakończone, nawet w przypadku wyjątku
+        appState.endRequest(endpointName);
+    }
+    
+    // Zabezpieczenie na wypadek wyjścia z pętli bez zwrócenia odpowiedzi
+    throw new Error(`Nie udało się wykonać zapytania do ${url} po ${RETRY_CONFIG.maxRetries} próbach.`);
+}
+
 // Funkcja do pobierania statusu komponentów
 function fetchComponentStatus() {
-    fetch(CONFIG.apiEndpoints.systemStatus)
-        .then(response => response.json())
+    fetchWithRetry('/api/component-status', {
+        headers: getAuthHeaders()
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Błąd HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 // Aktualizacja statusu komponentów
@@ -29,16 +197,26 @@ function fetchComponentStatus() {
                         element.querySelector('.status-text').innerText = data.components[component].status;
                     }
                 });
+                
+                // Aktualizacja ostatniego czasu odświeżenia danych
+                updateLastRefreshed();
             } else {
                 console.error('Błąd podczas pobierania statusu komponentów:', data.error);
+                showNotification('warning', 'Nie udało się pobrać statusu komponentów');
             }
         })
-        .catch(error => console.error('Błąd podczas pobierania statusu komponentów:', error));
+        .catch(error => {
+            console.error('Błąd podczas pobierania statusu komponentów:', error);
+            showNotification('error', 'Problem z połączeniem do serwera');
+            handleApiError('componentStatus');
+        });
 }
 
 // Funkcja do pobierania statusu modeli AI
 function fetchAIStatus() {
-    fetch('/api/ai-models-status')
+    fetchWithRetry(CONFIG.apiEndpoints.ai.modelsStatus, {
+        headers: getAuthHeaders()
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Błąd HTTP: ${response.status}`);
@@ -46,12 +224,35 @@ function fetchAIStatus() {
             return response.json();
         })
         .then(data => {
+            // Zapisz dane w stanie aplikacji
+            appState.updateData('aiModelsData', data);
+            
+            // Zaktualizuj interfejs
             updateAIModelsStatus(data);
+            
+            // Zaaktualizuj również status odświeżenia
             updateLastRefreshed();
         })
         .catch(error => {
-            console.log("Błąd podczas pobierania statusu modeli AI:", error);
+            console.error("Błąd podczas pobierania statusu modeli AI:", error);
+            
+            // Pobierz kontener modeli AI
+            const aiModelsContainer = findElement(['#ai-models-container', '#ai-models-status'], 'ai-models-container');
+            
+            if (aiModelsContainer) {
+                aiModelsContainer.innerHTML = `
+                    <div class="error-message">
+                        <h4>Błąd podczas pobierania statusu modeli AI</h4>
+                        <p>${error.message || 'Problem z połączeniem z serwerem'}</p>
+                        <button class="retry-button" onclick="fetchAIStatus()">Spróbuj ponownie</button>
+                    </div>
+                `;
+            }
+            
             showNotification('error', 'Nie udało się pobrać statusu modeli AI');
+            
+            // Zarejestruj błąd
+            handleApiError('aiModels', error);
         });
 }
 
@@ -88,31 +289,129 @@ function updateComponentStatusUI(data) {
 
 // Stan aplikacji
 const appState = {
-    activeDashboard: true,
-    errorCounts: {},
-    retryDelays: {},
-    portfolioData: null,
-    dashboardData: null,
+    // Ustawienia ogólne
+    activeDashboard: true,  // Flaga aktywności dashboardu (gdy karta jest widoczna)
+    isAuthenticated: false, // Status uwierzytelnienia
+    token: null,            // Token uwierzytelniający
+    
+    // Liczniki i dane diagnostyczne
+    errorCounts: {},       // Liczniki błędów dla różnych endpointów
+    retryDelays: {},       // Opóźnienia dla mechanizmu ponownych prób
+    requestsInProgress: {}, // Flagi dla równoległych żądań, aby uniknąć duplikacji
+    
+    // Dane aplikacji
+    portfolioData: null,   // Dane portfela
+    dashboardData: null,   // Główne dane dashboardu
+    sentimentData: null,   // Dane sentymentu
+    aiModelsData: null,    // Dane modeli AI
+    simulationData: null,  // Dane symulacji
+    
+    // Znaczniki czasu ostatnich aktualizacji
     lastUpdated: {
         portfolio: 0,
         dashboard: 0,
         chart: 0,
-        components: 0
+        components: 0,
+        sentiment: 0,
+        aiModels: 0,
+        simulation: 0
     },
-    portfolioChart: null
+    
+    // Referencje do obiektów
+    portfolioChart: null,  // Referencja do wykresu portfela
+    
+    // Metody pomocnicze do zarządzania stanem
+    updateData: function(key, data) {
+        this[key] = data;
+        this.lastUpdated[key] = Date.now();
+    },
+    
+    isStale: function(key, maxAge = 30000) {
+        return Date.now() - (this.lastUpdated[key] || 0) > maxAge;
+    },
+    
+    startRequest: function(endpointName) {
+        this.requestsInProgress[endpointName] = true;
+    },
+    
+    endRequest: function(endpointName) {
+        this.requestsInProgress[endpointName] = false;
+    },
+    
+    isRequestInProgress: function(endpointName) {
+        return this.requestsInProgress[endpointName] === true;
+    }
 };
 
 // Inicjalizacja po załadowaniu dokumentu
 document.addEventListener('DOMContentLoaded', function() {
     console.log("Dashboard załadowany");
-    setupEventListeners();
-    setupTabNavigation(); // Dodano jawne wywołanie
-    initializeUI();
-    startDataUpdates();
+    // Wymuś pokazanie formularza logowania przy starcie
+    const token = localStorage.getItem('token');
+    if (!token) {
+        showLoginForm();
+        return;
+    }
+
+    // Sprawdź ważność tokenu tylko jeśli istnieje
+    fetch(CONFIG.apiEndpoints.auth.verify, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Token invalid');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.valid) {
+            appState.token = token;
+            appState.isAuthenticated = true;
+            initializeUI();
+        } else {
+            localStorage.removeItem('token');
+            showLoginForm();
+        }
+    })
+    .catch(() => {
+        localStorage.removeItem('token');
+        showLoginForm();
+    });
 });
 
 // Inicjalizacja interfejsu użytkownika
 function initializeUI() {
+    // Pokaż główną treść dashboardu
+    const dashboardContent = document.getElementById('dashboard-content');
+    if (dashboardContent) {
+        dashboardContent.style.display = 'block';
+    }
+
+    // Ukryj kontener autoryzacji
+    const authContainer = document.getElementById('auth-container');
+    if (authContainer) {
+        authContainer.style.display = 'none';
+    }
+
+    // Inicjalizacja nawigacji zakładek
+    setupTabNavigation();
+    
+    // Dodaj przycisk wylogowania
+    const header = document.querySelector('header') || document.body;
+    const logoutBtn = document.getElementById('logout-btn');
+    if (!logoutBtn) {
+        const newLogoutBtn = document.createElement('button');
+        newLogoutBtn.textContent = 'Wyloguj';
+        newLogoutBtn.className = 'btn btn-outline-secondary';
+        newLogoutBtn.id = 'logout-btn';
+        newLogoutBtn.onclick = logout;
+        header.appendChild(newLogoutBtn);
+    } else {
+        logoutBtn.onclick = logout;
+    }
+
     // Inicjalizacja wykresu portfela
     initializePortfolioChart();
 
@@ -121,6 +420,12 @@ function initializeUI() {
     updateComponentStatus();
     updatePortfolioData();
     updateAIModelsStatus();
+    
+    // Uruchom aktualizacje danych
+    startDataUpdates();
+    
+    // Dodaj obsługę eventów dla przycisków
+    setupEventListeners();
 }
 
 // Rozpoczęcie automatycznych aktualizacji danych
@@ -150,7 +455,9 @@ function startDataUpdates() {
 
 // Aktualizacja statusu modeli AI
 function updateAIModelsStatus() {
-    fetch('/api/ai-models-status')
+    fetch('/api/ai-models-status', {
+        headers: getAuthHeaders()
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Błąd HTTP: ${response.status}`);
@@ -349,7 +656,9 @@ function initializePortfolioChart() {
 function updateChartData() {
     if (!appState.portfolioChart) return;
 
-    fetch('/api/chart-data')
+    fetch('/api/chart-data', {
+        headers: getAuthHeaders()
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Błąd HTTP: ${response.status}`);
@@ -374,7 +683,10 @@ function updateChartData() {
 
 // Aktualizacja danych portfela
 function updatePortfolioData() {
-    fetch('/api/portfolio')
+    // Użyjemy naszej nowej funkcji fetchWithRetry dla lepszej obsługi błędów
+    fetchWithRetry(CONFIG.apiEndpoints.portfolio, {
+        headers: getAuthHeaders()
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Błąd HTTP: ${response.status}`);
@@ -382,126 +694,164 @@ function updatePortfolioData() {
             return response.json();
         })
         .then(data => {
-            // Próbujemy znaleźć portfolio-container zamiast portfolio-data
-            let portfolioContainer = document.getElementById('portfolio-container');
-
-            // Sprawdźmy również portfolio-data jako alternatywę
-            if (!portfolioContainer) {
-                portfolioContainer = document.getElementById('portfolio-data');
-            }
-
-            // Jeśli nadal nie znaleziono, spróbuj znaleźć dowolny element z klasą portfolio-data
-            if (!portfolioContainer) {
-                const possibleContainers = document.getElementsByClassName('portfolio-data');
-                if (possibleContainers.length > 0) {
-                    portfolioContainer = possibleContainers[0];
-                }
-            }
+            // Zapamiętaj dane w stanie aplikacji
+            appState.updateData('portfolioData', data);
+            
+            // Znajdź kontener portfolio za pomocą naszej nowej funkcji pomocniczej
+            // Szukamy elementu za pomocą różnych selektorów dla kompatybilności
+            const portfolioContainer = findElement([
+                '#portfolio-container', 
+                '#portfolio-data', 
+                '.portfolio-data'
+            ], 'portfolio-container');
 
             if (!portfolioContainer) {
-                console.error("Element portfolio-container ani portfolio-data nie istnieje");
-                
-                // Stwórz element portfolio-container, jeśli nie istnieje
-                const mainContent = document.querySelector('.dashboard-grid');
-                if (mainContent) {
-                    const newContainer = document.createElement('div');
-                    newContainer.id = 'portfolio-container';
-                    newContainer.className = 'portfolio-data';
-                    
-                    const firstCard = mainContent.querySelector('.card');
-                    if (firstCard) {
-                        firstCard.appendChild(newContainer);
-                        portfolioContainer = newContainer;
-                    }
-                }
-                
-                if (!portfolioContainer) return;
+                console.error("Nie udało się znaleźć ani utworzyć kontenera portfolio");
+                return;
             }
 
+            // Aktualizacja kontenera danymi
             if (data && data.success === true && data.balances && Object.keys(data.balances).length > 0) {
-                portfolioContainer.innerHTML = ''; // Wyczyść kontener
+                // Przygotuj zawartość HTML
+                let portfolioHTML = '<div class="portfolio-summary">';
+                
+                // Dodaj nagłówek z podsumowaniem
+                const total = Object.values(data.balances).reduce(
+                    (sum, bal) => sum + (parseFloat(bal.equity) || 0), 0
+                ).toFixed(2);
+                
+                portfolioHTML += `<div class="portfolio-total">Całkowita wartość: <span class="value">${total} USD</span></div>`;
+                portfolioHTML += '</div><div class="portfolio-assets">';
 
                 // Przetwarzanie danych portfela
                 for (const [currency, details] of Object.entries(data.balances)) {
                     if (details) {
-                        const balanceItem = document.createElement('div');
-                        balanceItem.className = 'balance-item';
-
                         // Bezpieczne wyświetlanie wartości z obsługą wartości null/undefined
                         const equity = typeof details.equity === 'number' ? details.equity.toFixed(4) : '0.0000';
                         const available = typeof details.available_balance === 'number' ? details.available_balance.toFixed(4) : '0.0000';
                         const wallet = typeof details.wallet_balance === 'number' ? details.wallet_balance.toFixed(4) : '0.0000';
+                        
+                        // Oblicz zmianę procentową jeśli dostępna
+                        let changeClass = '';
+                        let changeHTML = '';
+                        if (details.change_24h) {
+                            changeClass = details.change_24h > 0 ? 'positive' : 'negative';
+                            changeHTML = `<div class="balance-change ${changeClass}">${details.change_24h > 0 ? '+' : ''}${details.change_24h.toFixed(2)}%</div>`;
+                        }
 
-                        balanceItem.innerHTML = `
-                            <div class="currency">${currency}</div>
-                            <div class="balance-details">
-                                <div class="balance-row"><span>Equity:</span> <span>${equity}</span></div>
-                                <div class="balance-row"><span>Available:</span> <span>${available}</span></div>
-                                <div class="balance-row"><span>Wallet:</span> <span>${wallet}</span></div>
+                        portfolioHTML += `
+                            <div class="balance-item">
+                                <div class="currency-header">
+                                    <div class="currency">${currency}</div>
+                                    ${changeHTML}
+                                </div>
+                                <div class="balance-details">
+                                    <div class="balance-row"><span>Equity:</span> <span>${equity}</span></div>
+                                    <div class="balance-row"><span>Available:</span> <span>${available}</span></div>
+                                    <div class="balance-row"><span>Wallet:</span> <span>${wallet}</span></div>
+                                </div>
                             </div>
                         `;
-                        portfolioContainer.appendChild(balanceItem);
                     }
                 }
+                portfolioHTML += '</div>';
+                
+                // Aktualizuj kontener
+                portfolioContainer.innerHTML = portfolioHTML;
+                
+                // Zaaktualizuj również status odświeżenia
+                updateLastRefreshed();
             } else {
-                portfolioContainer.innerHTML = '<div class="error-message">Brak danych portfela lub problem z połączeniem z ByBit. Sprawdź klucze API w ustawieniach.</div>';
+                // Pokaż komunikat o błędzie
+                portfolioContainer.innerHTML = `
+                    <div class="error-message">
+                        <h4>Brak danych portfela</h4>
+                        <p>Problem z połączeniem z ByBit. Sprawdź klucze API w ustawieniach.</p>
+                        <div class="error-details">${data?.error || 'Nieznany błąd'}</div>
+                        <button class="retry-button" onclick="updatePortfolioData()">Spróbuj ponownie</button>
+                    </div>
+                `;
 
                 // Wyświetl dane diagnostyczne w logach konsoli
                 console.log("Otrzymane dane portfela:", data);
-                if (data && data.error) {
-                    console.log("Błąd API:", data.error);
-                }
             }
         })
         .catch(err => {
             console.error("Błąd podczas pobierania danych portfela:", err);
-            const possibleContainers = [
-                document.getElementById('portfolio-container'),
-                document.getElementById('portfolio-data'),
-                ...Array.from(document.getElementsByClassName('portfolio-data'))
-            ].filter(Boolean);
-
-            if (possibleContainers.length > 0) {
-                possibleContainers[0].innerHTML = '<div class="error-message">Błąd podczas pobierania danych portfela. Sprawdź połączenie internetowe.</div>';
+            
+            // Znajdź kontener
+            const portfolioContainer = findElement([
+                '#portfolio-container', 
+                '#portfolio-data', 
+                '.portfolio-data'
+            ], 'portfolio-container');
+            
+            if (portfolioContainer) {
+                portfolioContainer.innerHTML = `
+                    <div class="error-message">
+                        <h4>Błąd podczas pobierania danych portfela</h4>
+                        <p>${err.message || 'Problem z połączeniem internetowym'}</p>
+                        <button class="retry-button" onclick="updatePortfolioData()">Spróbuj ponownie</button>
+                    </div>
+                `;
             }
+            
+            // Zarejestruj błąd w systemie obsługi błędów
+            handleApiError('portfolio', err);
         });
 }
 
 // Aktualizacja głównych danych dashboardu
-function updateDashboardData() {
-    console.log("Aktualizacja danych dashboardu...");
-    fetch('/api/dashboard/data')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Błąd HTTP: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                // Bezpieczne aktualizowanie elementów z kontrolą istnienia
-                updateElementById('profit-value', `${data.balance.toFixed(2)} USDT`);
-                updateElementById('trades-value', data.total_trades);
-                updateElementById('win-rate-value', `${data.win_rate.toFixed(1)}%`);
-                updateElementById('drawdown-value', `${data.max_drawdown.toFixed(1)}%`);
-
-                // Aktualizacja sekcji sentymentu w zakładce analityki
-                if (data.sentiment_data) {
-                    updateSentimentSection(data.sentiment_data);
-                }
-
-                // Aktualizacja czasu
-                updateLastRefreshed();
-            } else {
-                console.error("Błąd podczas pobierania danych dashboardu:", data.error);
-            }
-        })
-        .catch(error => {
-            console.error("Błąd podczas pobierania danych dashboardu:", error);
+async function updateDashboardData() {
+    try {
+        const response = await fetchWithRetry('/api/dashboard/data', {
+            headers: getAuthHeaders()
         });
+        
+        if (!response.ok) {
+            if (response.status === 502) {
+                const errorData = await response.json();
+                showErrorMessage(
+                    `Błąd połączenia z komponentem ${errorData.component}. ` +
+                    `ID żądania: ${errorData.request_id}. ` +
+                    `Spróbuj odświeżyć stronę lub sprawdź status serwera.`
+                );
+                // Dodaj próbę ponownego połączenia
+                setTimeout(() => {
+                    updateDashboardData();
+                }, 5000); // Próba ponownego połączenia po 5 sekundach
+                return;
+            }
+            throw new Error(`Błąd HTTP: ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (data.success) {
+            // Bezpieczne aktualizowanie elementów z kontrolą istnienia
+            updateElementById('profit-value', `${data.balance.toFixed(2)} USDT`);
+            updateElementById('trades-value', data.total_trades);
+            updateElementById('win-rate-value', `${data.win_rate.toFixed(1)}%`);
+            updateElementById('drawdown-value', `${data.max_drawdown.toFixed(1)}%`);
+
+            // Aktualizacja sekcji sentymentu w zakładce analityki
+            if (data.sentiment_data) {
+                updateSentimentSection(data.sentiment_data);
+            }
+
+            // Aktualizacja czasu
+            updateLastRefreshed();
+        } else {
+            console.error("Błąd podczas pobierania danych dashboardu:", data.error);
+        }
+    } catch (error) {
+        console.error('Błąd podczas aktualizacji danych dashboardu:', error);
+        handleApiError('dashboardData');
+    }
 
     // Pobierz wyniki symulacji tradingu
-    fetch('/api/simulation-results')
+    fetch('/api/simulation-results', {
+        headers: getAuthHeaders()
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error('Błąd HTTP: ' + response.status);
@@ -519,7 +869,10 @@ function updateDashboardData() {
 
 // Funkcja do aktualizacji danych sentymentu
 function updateSentimentData() {
-    fetch('/api/sentiment')
+    // Użyj nowej struktury CONFIG.apiEndpoints
+    fetchWithRetry(CONFIG.apiEndpoints.sentiment.main, {
+        headers: getAuthHeaders()
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -527,46 +880,68 @@ function updateSentimentData() {
             return response.json();
         })
         .then(data => {
+            // Zapisz dane w stanie aplikacji
+            appState.updateData('sentimentData', data);
+            
             // Aktualizuj kontener sentymentu z otrzymanymi danymi
-            const sentimentContainer = document.getElementById('sentiment-container');
+            const sentimentContainer = findElement(['#sentiment-container'], 'sentiment-container');
+            
             if (sentimentContainer && data) {
                 if (data.value !== undefined && data.analysis) {
-                    // Aktualizacja głównej wartości sentymentu
-                    const sentimentValue = document.getElementById('sentiment-value');
-                    if (sentimentValue) {
-                        sentimentValue.textContent = data.analysis;
-
-                        // Usunięcie poprzednich klas
-                        sentimentValue.classList.remove('positive', 'negative', 'neutral');
-
-                        // Dodanie właściwej klasy na podstawie wartości
-                        if (data.value > 0.1) {
-                            sentimentValue.classList.add('positive');
-                        } else if (data.value < -0.1) {
-                            sentimentValue.classList.add('negative');
-                        } else {
-                            sentimentValue.classList.add('neutral');
-                        }
-                    }
-
-                    // Aktualizacja danych źródłowych, jeśli są dostępne
+                    // Przygotuj HTML z danymi sentymentu
+                    let sentimentHTML = `
+                        <div class="sentiment-header">
+                            <h3>Analiza Sentymentu Rynkowego</h3>
+                            <span class="last-updated">Zaktualizowano: ${new Date().toLocaleTimeString()}</span>
+                        </div>
+                        <div class="sentiment-content">
+                    `;
+                    
+                    // Określ klasę sentymentu na podstawie wartości
+                    let sentimentClass = 'neutral';
+                    if (data.value > 0.1) sentimentClass = 'positive';
+                    if (data.value < -0.1) sentimentClass = 'negative';
+                    
+                    // Dodaj główną wartość sentymentu
+                    sentimentHTML += `
+                        <div class="sentiment-value-container">
+                            <div class="sentiment-label">Ogólny sentyment:</div>
+                            <div class="sentiment-value ${sentimentClass}">
+                                ${data.analysis || 'Neutralny'} (${data.value.toFixed(2)})
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Dodaj źródła danych, jeśli są dostępne
                     if (data.sources) {
-                        const sourcesContainer = document.getElementById('sentiment-sources');
-                        if (sourcesContainer) {
-                            let sourcesHtml = '';
-                            for (const [source, info] of Object.entries(data.sources)) {
-                                const scoreClass = info.score > 0 ? 'positive' : info.score < 0 ? 'negative' : 'neutral';
-                                sourcesHtml += `
-                                    <div class="source-item">
-                                        <div class="source-name">${source}</div>
-                                        <div class="source-score ${scoreClass}">${info.score.toFixed(2)}</div>
-                                        <div class="source-volume">${info.volume} wzmianek</div>
-                                    </div>
-                                `;
-                            }
-                            sourcesContainer.innerHTML = sourcesHtml || '<div class="no-data">Brak danych źródłowych</div>';
+                        sentimentHTML += `<div class="sentiment-sources">
+                            <h4>Źródła danych</h4>
+                            <div class="sources-list">`;
+                            
+                        for (const [source, info] of Object.entries(data.sources)) {
+                            const scoreClass = info.score > 0 ? 'positive' : info.score < 0 ? 'negative' : 'neutral';
+                            sentimentHTML += `
+                                <div class="source-item">
+                                    <div class="source-name">${source}</div>
+                                    <div class="source-score ${scoreClass}">${info.score.toFixed(2)}</div>
+                                    <div class="source-volume">${info.volume} wzmianek</div>
+                                </div>
+                            `;
                         }
+                        
+                        sentimentHTML += `</div></div>`;
                     }
+                    
+                    // Dodaj przycisk odświeżania
+                    sentimentHTML += `
+                        </div>
+                        <div class="sentiment-footer">
+                            <button onclick="updateSentimentData()" class="btn btn-sm">Odśwież dane sentymentu</button>
+                        </div>
+                    `;
+                    
+                    // Aktualizuj kontener
+                    sentimentContainer.innerHTML = sentimentHTML;
                 } else {
                     sentimentContainer.innerHTML = '<div class="no-data">Brak danych sentymentu rynkowego</div>';
                 }
@@ -574,23 +949,58 @@ function updateSentimentData() {
         })
         .catch(error => {
             console.error('Błąd podczas pobierania danych sentymentu:', error);
-            const sentimentContainer = document.getElementById('sentiment-container');
+            
+            // Użyj findElement zamiast bezpośredniego getElementById
+            const sentimentContainer = findElement(['#sentiment-container'], 'sentiment-container');
+            
             if (sentimentContainer) {
                 sentimentContainer.innerHTML = '<div class="error-message">Błąd podczas pobierania danych sentymentu</div>';
                 
-                // Wyświetl dane zastępcze
-                setTimeout(() => {
-                    sentimentContainer.innerHTML = `
-                        <div class="sentiment-score">
-                            <div class="sentiment-label">Ogólny sentyment (dane zastępcze):</div>
-                            <div class="sentiment-value neutral">Neutralny</div>
-                        </div>
-                        <div class="sentiment-details">
-                            <p>Serwer sentymentu jest niedostępny. Wyświetlam dane testowe.</p>
-                        </div>
-                    `;
-                }, 3000);
+                // Spróbuj użyć endpoint sentimentLatest jako zapasowy
+                fetchWithRetry(CONFIG.apiEndpoints.sentiment.latest, {
+                    headers: getAuthHeaders()
+                })
+                    .then(response => {
+                        if (!response.ok) throw new Error('Backup endpoint failed');
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data && data.value !== undefined) {
+                            sentimentContainer.innerHTML = `
+                                <div class="sentiment-score">
+                                    <div class="sentiment-label">Ogólny sentyment (dane zapasowe):</div>
+                                    <div class="sentiment-value ${data.value > 0.1 ? 'positive' : data.value < -0.1 ? 'negative' : 'neutral'}">
+                                        ${data.analysis || (data.value > 0.1 ? 'Pozytywny' : data.value < -0.1 ? 'Negatywny' : 'Neutralny')}
+                                    </div>
+                                </div>
+                                <div class="sentiment-footer">
+                                    <button onclick="updateSentimentData()" class="btn btn-sm">Odśwież</button>
+                                </div>
+                            `;
+                            showNotification('info', 'Wyświetlono zapasowe dane sentymentu');
+                        }
+                    })
+                    .catch(backupError => {
+                        console.error('Błąd zapasowego endpointu sentymentu:', backupError);
+                        
+                        // Wyświetl dane zastępcze po krótkim opóźnieniu
+                        setTimeout(() => {
+                            sentimentContainer.innerHTML = `
+                                <div class="sentiment-score">
+                                    <div class="sentiment-label">Ogólny sentyment (dane testowe):</div>
+                                    <div class="sentiment-value neutral">Neutralny</div>
+                                </div>
+                                <div class="sentiment-details">
+                                    <p>Serwer sentymentu jest niedostępny. Wyświetlam dane testowe.</p>
+                                    <button onclick="updateSentimentData()" class="btn btn-sm">Odśwież</button>
+                                </div>
+                            `;
+                        }, 2000);
+                    });
             }
+            
+            // Zgłoś błąd do systemu obsługi błędów
+            handleApiError('sentiment', error);
         });
 }
 
@@ -833,7 +1243,9 @@ function updateElementValue(elementId, value, isNumeric = false, prefix = '', su
 
 // Aktualizacja statusu komponentów
 function updateComponentStatus() {
-    fetch('/api/component-status')
+    fetch('/api/component-status', {
+        headers: getAuthHeaders()
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Błąd HTTP: ${response.status}`);
@@ -911,33 +1323,8 @@ function getSeverityClass(severity) {
     }
 }
 
-// Obsługa błędów API
-function handleApiError(endpoint) {
-    // Zwiększ licznik błędów dla danego endpointu
-    appState.errorCounts[endpoint] = (appState.errorCounts[endpoint] || 0) + 1;
-
-    // Jeśli przekroczono limit błędów, pokaż komunikat
-    if (appState.errorCounts[endpoint] >= CONFIG.maxErrors) {
-        showErrorMessage(`Zbyt wiele błędów podczas komunikacji z API (${endpoint}). Sprawdź logi.`);
-    }
-}
-
-// Wyświetlanie komunikatu o błędzie
-function showErrorMessage(message) {
-    const errorContainer = document.getElementById('error-container');
-    if (errorContainer) {
-        errorContainer.textContent = message;
-        errorContainer.style.display = 'block';
-
-        // Automatyczne ukrycie po 10 sekundach
-        setTimeout(() => {
-            errorContainer.style.display = 'none';
-        }, 10000);
-    }
-}
-
-// Wyświetlanie powiadomień
-function showNotification(type, message) {
+// Uniwersalny system powiadomień
+function showNotification(type, message, duration = 5000) {
     // Sprawdź, czy kontener istnieje
     let container = document.getElementById('notifications-container');
 
@@ -952,29 +1339,217 @@ function showNotification(type, message) {
     // Stwórz element powiadomienia
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
-    notification.textContent = message;
-
-    // Dodaj do kontenera powiadomień
-    container.appendChild(notification);
-
-    // Usuń po 5 sekundach
-    setTimeout(() => {
+    
+    // Dodaj ikonę zależnie od typu powiadomienia
+    const icon = document.createElement('span');
+    icon.className = 'notification-icon';
+    
+    switch(type) {
+        case 'success':
+            icon.innerHTML = '✓';
+            break;
+        case 'error':
+            icon.innerHTML = '✗';
+            break;
+        case 'warning':
+            icon.innerHTML = '⚠';
+            break;
+        case 'info':
+        default:
+            icon.innerHTML = 'ℹ';
+            break;
+    }
+    
+    notification.appendChild(icon);
+    
+    // Dodaj tekst powiadomienia
+    const text = document.createElement('span');
+    text.className = 'notification-text';
+    text.textContent = message;
+    notification.appendChild(text);
+    
+    // Dodaj przycisk zamknięcia
+    const closeBtn = document.createElement('span');
+    closeBtn.className = 'notification-close';
+    closeBtn.innerHTML = '×';
+    closeBtn.addEventListener('click', () => {
         notification.classList.add('fade-out');
         setTimeout(() => {
             if (container.contains(notification)) {
                 container.removeChild(notification);
             }
-        }, 500);
-    }, 5000);
+        }, 300);
+    });
+    notification.appendChild(closeBtn);
+
+    // Dodaj do kontenera powiadomień
+    container.appendChild(notification);
+
+    // Usuń po określonym czasie
+    setTimeout(() => {
+        if (container.contains(notification)) {
+            notification.classList.add('fade-out');
+            setTimeout(() => {
+                if (container.contains(notification)) {
+                    container.removeChild(notification);
+                }
+            }, 300);
+        }
+    }, duration);
+    
+    // Zapisz informację o powiadomieniu w logu
+    if (type === 'error') {
+        console.error(message);
+    } else if (type === 'warning') {
+        console.warn(message);
+    } else {
+        console.log(message);
+    }
+    
+    return notification;
+}
+
+// Jednolita obsługa błędów API z retry mechanizmem
+function handleApiError(endpoint, error, response) {
+    // Zwiększ licznik błędów dla danego endpointu
+    appState.errorCounts[endpoint] = (appState.errorCounts[endpoint] || 0) + 1;
+    
+    // Zapisz informację o błędzie w konsoli
+    console.error(`Błąd API (${endpoint}):`, error);
+    
+    // Ustal typ błędu i odpowiednią wiadomość
+    let errorMsg = 'Wystąpił nieoczekiwany błąd';
+    let shouldRetry = false;
+    let retryDelay = 5000; // Domyślne opóźnienie ponownej próby
+    
+    // Analizuj odpowiedź HTTP, jeśli istnieje
+    if (response) {
+        if (response.status === 401 || response.status === 403) {
+            errorMsg = 'Brak autoryzacji lub sesja wygasła. Zaloguj się ponownie.';
+            // Możemy tutaj wylogować użytkownika
+            logout();
+            return;
+        } 
+        else if (response.status === 404) {
+            errorMsg = `Zasób nie został znaleziony (${endpoint})`;
+        }
+        else if (response.status === 429) {
+            errorMsg = 'Przekroczony limit zapytań. Spróbuj ponownie za chwilę.';
+            shouldRetry = true;
+            retryDelay = 10000; // Większe opóźnienie dla rate limit
+        }
+        else if (response.status >= 500) {
+            errorMsg = `Problem z serwerem (${response.status}). Spróbuj ponownie za chwilę.`;
+            shouldRetry = true;
+            
+            // Sprawdź czy jest informacja o opóźnieniu w nagłówku
+            const retryAfter = response.headers?.get('Retry-After');
+            if (retryAfter) {
+                retryDelay = parseInt(retryAfter) * 1000;
+            }
+        }
+    }
+    
+    // Jeśli przekroczono limit błędów, pokaż bardziej szczegółowy komunikat
+    if (appState.errorCounts[endpoint] >= CONFIG.maxErrors) {
+        errorMsg = `Powtarzający się problem z ${endpoint}. Odśwież stronę lub skontaktuj się z administratorem.`;
+        showErrorMessage(errorMsg, false); // Nie ukrywaj automatycznie poważnych błędów
+    } else {
+        // Dla mniej krytycznych błędów pokaż zwykłe powiadomienie
+        showNotification('error', errorMsg);
+    }
+    
+    // Automatyczna ponowna próba dla niektórych typów błędów
+    if (shouldRetry) {
+        // Zapisz informację o zaplanowanej ponownej próbie
+        appState.retryDelays[endpoint] = retryDelay;
+        
+        // Pokaż informację o ponownej próbie
+        showNotification('info', `Zaplanowano ponowną próbę połączenia za ${retryDelay/1000} sekund`);
+        
+        // Zaplanuj ponowną próbę
+        setTimeout(() => {
+            // Sprawdź, czy dashboard jest nadal aktywny
+            if (appState.activeDashboard) {
+                showNotification('info', `Ponowne połączenie z ${endpoint}...`);
+                
+                // Wywołaj odpowiednią funkcję zależnie od endpointu
+                switch (endpoint) {
+                    case 'componentStatus':
+                        fetchComponentStatus();
+                        break;
+                    case 'portfolio':
+                        fetchPortfolioData();
+                        break;
+                    case 'aiModelsStatus':
+                        fetchAIStatus();
+                        break;
+                    case 'chartData':
+                        updateChartData();
+                        break;
+                    case 'dashboardData':
+                        updateDashboardData();
+                        break;
+                    case 'simulationResults':
+                        fetchSimulationResults();
+                        break;
+                    case 'sentiment':
+                        updateSentimentData();
+                        break;
+                    default:
+                        // Dla nieznanych endpointów nie robimy nic
+                        console.log(`Brak obsługi automatycznego retry dla endpointu: ${endpoint}`);
+                }
+            }
+        }, retryDelay);
+    }
+}
+
+// Ujednolicona funkcja wyświetlania błędu
+function showErrorMessage(message, autoHide = true, duration = 10000) {
+    // Pokaż w kontenerze błędów, jeśli istnieje
+    const errorContainer = document.getElementById('error-container');
+    const errorText = document.getElementById('error-text');
+    
+    if (errorContainer && errorText) {
+        errorText.textContent = message;
+        errorContainer.style.display = 'flex';
+        
+        // Dodaj przycisk ponowienia próby
+        const retryButton = errorContainer.querySelector('.retry-button');
+        if (!retryButton && autoHide) {
+            const newRetryButton = document.createElement('button');
+            newRetryButton.className = 'retry-button';
+            newRetryButton.textContent = 'Odśwież dane';
+            newRetryButton.onclick = () => {
+                hideError();
+                
+                // Pobierz dane ponownie
+                fetchComponentStatus();
+                updateDashboardData();
+                
+                showNotification('info', 'Odświeżanie danych...');
+            };
+            
+            // Znajdź element, do którego możemy dodać przycisk
+            const buttonContainer = errorContainer.querySelector('.error-message') || errorContainer;
+            buttonContainer.appendChild(newRetryButton);
+        }
+        
+        if (autoHide) {
+            setTimeout(hideError, duration);
+        }
+    } else {
+        // Jeśli nie ma kontenera błędów, użyj systemu powiadomień
+        showNotification('error', message, duration);
+    }
 }
 
 // Funkcje zarządzania stanem tradingu
 function startTrading() {
     fetch('/api/trading/start', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        }
+        headers: getAuthHeaders()
     })
     .then(response => {
         if (!response.ok) {
@@ -999,9 +1574,7 @@ function startTrading() {
 function stopTrading() {
     fetch('/api/trading/stop', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        }
+        headers: getAuthHeaders()
     })
     .then(response => {
         if (!response.ok) {
@@ -1026,9 +1599,7 @@ function stopTrading() {
 function resetSystem() {
     fetch('/api/system/reset', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        }
+        headers: getAuthHeaders()
     })
     .then(response=> {
         if (!response.ok) {
@@ -1136,7 +1707,9 @@ function setupEventListeners() {
 
 // Funkcje obsługujące poszczególne zakładki
 function fetchTradesHistory() {
-    fetch('/api/trades/history')
+    fetch('/api/trades/history', {
+        headers: getAuthHeaders()
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -1186,7 +1759,9 @@ function fetchSystemSettings() {
 function fetchNotifications() {
     // Funkcja pobierająca powiadomienia
     console.log("Ładowanie powiadomień...");
-    fetch('/api/notifications')
+    fetch('/api/notifications', {
+        headers: getAuthHeaders()
+    })
         .then(response => response.json())
         .catch(error => {
             console.error('Błąd podczas pobierania powiadomień:', error);
@@ -1213,9 +1788,7 @@ function runSimulation() {
 
     fetch('/api/simulation/run', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify(simulationData)
     })
     .then(response => response.json())
@@ -1235,7 +1808,9 @@ function runSimulation() {
 
 // Funkcja do pobierania danych portfela
 function fetchPortfolioData() {
-    fetch('/api/portfolio')
+    fetch('/api/portfolio', {
+        headers: getAuthHeaders()
+    })
         .then(response => response.json())
         .then(data => {
             // Pobierz element, który ma być aktualizowany
@@ -1327,11 +1902,9 @@ function fetchPortfolioData() {
 
 // Funkcja do ustawiania nowego saldo
 function setBalance(amount, currency) {
-    fetch('/api/portfolio/set-balance', {
+    fetch(CONFIG.apiEndpoints.portfolio.setBalance, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
             amount: amount,
             currency: currency
@@ -1354,7 +1927,9 @@ function setBalance(amount, currency) {
 
 // Funkcja do pobierania danych sentymentu
 function fetchSentimentData() {
-    fetch('/api/sentiment')
+    fetch('/api/sentiment', {
+        headers: getAuthHeaders()
+    })
         .then(response => response.json())
         .then(data => {
             // Pobierz element, który ma być aktualizowany
@@ -1451,8 +2026,15 @@ function fetchSentimentData() {
 
 // Pobieranie statusu komponentów
 function fetchComponentStatus() {
-    fetch('/api/component-status')
-        .then(response => response.json())
+    fetchWithRetry(CONFIG.apiEndpoints.componentStatus, {
+        headers: getAuthHeaders()
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Błąd HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             // Aktualizacja statusu API
             updateComponentStatus('api-connector', data.api);
@@ -1475,7 +2057,9 @@ function fetchComponentStatus() {
 
 // Pobieranie danych portfela
 function fetchPortfolioData() {
-    fetch('/api/portfolio')
+    fetch(CONFIG.apiEndpoints.portfolio, {
+        headers: getAuthHeaders()
+    })
         .then(response => response.json())
         .then(data => {
             const container = document.getElementById('portfolio-container');
@@ -1535,8 +2119,15 @@ function updateComponentStatus(elementId, status) {
 
 // Funkcja pobierająca status modeli AI
 function fetchAIStatus() {
-    fetch('/api/ai-models-status')
-        .then(response => response.json())
+    fetchWithRetry(CONFIG.apiEndpoints.ai.modelsStatus, {
+        headers: getAuthHeaders()
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Błąd HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             updateAIModelsStatus(data);
             updateLastRefreshed();
@@ -1589,50 +2180,168 @@ function initDashboard() {
     }
 
     isInitializing = true;
-    console.log("Aktualizacja danych dashboardu...");
+    console.log("Inicjalizacja dashboardu...");
 
-    // Pobierz dane startowe (po jednym, z opóźnieniem, aby uniknąć zawieszenia)
-    setTimeout(() => fetchComponentStatus(), 500);
-    setTimeout(() => fetchPortfolioData(), 1000);
-    setTimeout(() => fetchSentimentData(), 1500);
-    setTimeout(() => fetchAIStatus(), 2000);
-    setTimeout(() => fetchSimulationResults(), 2500);
-    setTimeout(() => fetchAIThoughts(), 3000);
-    setTimeout(() => updateChartData(), 3500);
+    // Pobierz początkowe dane wstępne z różnymi odstępami, aby nie przeciążać serwera
+    const initialLoads = [
+        { delay: 500, fn: fetchComponentStatus, name: 'status komponentów' },
+        { delay: 1000, fn: fetchPortfolioData, name: 'dane portfela' },
+        { delay: 1500, fn: fetchAIStatus, name: 'status modeli AI' },
+        { delay: 2000, fn: updateSentimentData, name: 'dane sentymentu' },
+        { delay: 2500, fn: fetchSimulationResults, name: 'wyniki symulacji' },
+        { delay: 3000, fn: updateChartData, name: 'dane wykresu' }
+    ];
 
-    // Ustaw interwały dla automatycznego odświeżania (różne czasy, aby rozłożyć obciążenie)
+    // Funkcja do pobrania danych początkowych z pokazywaniem postępu
+    let loadedCount = 0;
+    initialLoads.forEach(item => {
+        setTimeout(() => {
+            try {
+                console.log(`Ładowanie: ${item.name}...`);
+                item.fn();
+                
+                // Aktualizuj procent załadowania
+                loadedCount++;
+                const percent = Math.round((loadedCount / initialLoads.length) * 100);
+                
+                // Pokaż postęp ładowania, jeśli istnieje element do tego
+                const loadingElement = document.getElementById('loading-progress');
+                if (loadingElement) {
+                    loadingElement.textContent = `Ładowanie danych: ${percent}%`;
+                    loadingElement.style.width = `${percent}%`;
+                }
+                
+                // Po załadowaniu wszystkiego, ukryj pasek postępu
+                if (loadedCount === initialLoads.length) {
+                    setTimeout(() => {
+                        const loadingContainer = document.getElementById('loading-container');
+                        if (loadingContainer) {
+                            loadingContainer.style.display = 'none';
+                        }
+                    }, 500);
+                }
+            } catch (e) {
+                console.error(`Błąd podczas ładowania ${item.name}:`, e);
+            }
+        }, item.delay);
+    });
+
+    // Ustaw interwały dla automatycznego odświeżania
     setTimeout(() => {
-        // Sprawdzamy przed ustawieniem interwału, czy strona jest aktywna
-        if (appState.activeDashboard) {
-            setInterval(() => {
-                if (appState.activeDashboard) fetchComponentStatus();
-            }, 11000); // Co 11 sekund
-
-            setInterval(() => {
-                if (appState.activeDashboard) fetchPortfolioData();
-            }, 31000);   // Co 31 sekund
-
-            setInterval(() => {
-                if (appState.activeDashboard) fetchSentimentData();
-            }, 61000);   // Co 61 sekund
-
-            setInterval(() => {
-                if (appState.activeDashboard) fetchAIStatus();
-            }, 33000);   // Co 33 sekundy
-
-            setInterval(() => {
-                if (appState.activeDashboard) fetchSimulationResults();
-            }, 63000);   // Co 63 sekundy
-
-            setInterval(() => {
-                if (appState.activeDashboard) updateChartData();
-            }, 65000);   // Co 65 sekund
-        }
-
+        setupRefreshIntervals();
         isInitializing = false;
         isInitialized = true;
-        console.log("Dashboard załadowany");
+        console.log("Dashboard w pełni załadowany");
     }, 4000);
+}
+
+// Ustawienie inteligentnych interwałów odświeżania z przesunięciami czasowymi
+function setupRefreshIntervals() {
+    // Funkcja do sprawdzania, czy element jest widoczny na ekranie
+    function isElementVisible(el) {
+        if (!el) return false;
+        const rect = el.getBoundingClientRect();
+        return (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
+    }
+
+    // Konfiguracja odświeżania - przesunięte czasowo, aby uniknąć nakładania się żądań
+    const refreshConfig = [
+        { 
+            fn: fetchComponentStatus, 
+            interval: 15000,  // Co 15s
+            selector: '#component-status',
+            key: 'components',
+            criticalData: true // Dane krytyczne - odświeżaj nawet gdy niewidoczne
+        },
+        { 
+            fn: updatePortfolioData, 
+            interval: 25000,  // Co 25s
+            selector: '#portfolio-container',
+            key: 'portfolio',
+            criticalData: true // Dane krytyczne - odświeżaj nawet gdy niewidoczne  
+        },
+        { 
+            fn: fetchAIStatus, 
+            interval: 35000,  // Co 35s
+            selector: '#ai-models-container',
+            key: 'aiModels',
+            criticalData: false  
+        },
+        { 
+            fn: updateSentimentData, 
+            interval: 65000,  // Co 65s 
+            selector: '#sentiment-container',
+            key: 'sentiment',
+            criticalData: false  
+        },
+        { 
+            fn: updateChartData, 
+            interval: 75000,  // Co 75s
+            selector: '#main-chart',
+            key: 'chart',
+            criticalData: false  
+        },
+        { 
+            fn: fetchSimulationResults, 
+            interval: 90000,  // Co 90s
+            selector: '#simulation-results',
+            key: 'simulation',
+            criticalData: false  
+        }
+    ];
+
+    // Utwórz interwały odświeżania z dynamicznym sprawdzaniem widoczności
+    refreshConfig.forEach((config, index) => {
+        // Dodaj małe losowe opóźnienie do każdego interwału, aby uniknąć nakładania się
+        const randomOffset = Math.floor(Math.random() * 1000); // 0-1000ms
+        const initialDelay = 5000 + (index * 2000) + randomOffset;
+
+        // Ustaw timeout początkowy, aby uniknąć nakładania się pierwszych odświeżeń
+        setTimeout(() => {
+            // Potem ustaw regularny interwał
+            setInterval(() => {
+                // Sprawdź, czy dokument jest aktywny
+                if (!appState.activeDashboard && !config.criticalData) {
+                    console.log(`Pomijam odświeżanie ${config.key} - karta nieaktywna`);
+                    return;
+                }
+
+                // Sprawdź, czy element jest widoczny na ekranie
+                const el = document.querySelector(config.selector);
+                const isVisible = config.criticalData || isElementVisible(el);
+                
+                // Sprawdź, czy dane są nieaktualne i wymagają odświeżenia
+                const isStale = appState.isStale(config.key, config.interval * 0.8);
+                
+                // Sprawdź, czy żądanie jest już w toku
+                const isInProgress = appState.isRequestInProgress(config.key);
+                
+                if (isStale && !isInProgress && (isVisible || config.criticalData)) {
+                    console.log(`Odświeżanie ${config.key}...`);
+                    config.fn();
+                }
+            }, config.interval);
+        }, initialDelay);
+    });
+
+    // Obsługa widoczności karty (document.visibilityState)
+    document.addEventListener('visibilitychange', function() {
+        appState.activeDashboard = document.visibilityState === 'visible';
+        
+        if (appState.activeDashboard) {
+            console.log("Karta aktywna - wznawiam odświeżanie danych");
+            // Jeśli karta została przywrócona, od razu odśwież krytyczne dane
+            fetchComponentStatus();
+            updatePortfolioData();
+        } else {
+            console.log("Karta nieaktywna - wstrzymuję odświeżanie nieistotnych danych");
+        }
+    });
 }
 
 // Wywołaj funkcję inicjalizującą po załadowaniu strony
@@ -1640,24 +2349,47 @@ document.addEventListener('DOMContentLoaded', initDashboard);
 
 // Funkcja do pobierania wyników symulacji
 function fetchSimulationResults() {
-    fetch('/api/simulation-results')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Błąd HTTP: ' + response.status);
-            }
-            return response.json();
-        })
-        .then(data => {
-            updateSimulationResults(data);
-        })
-        .catch(error => {
-            console.error("Błąd podczas pobierania wyników symulacji:", error);
-        });
+    fetchWithRetry(CONFIG.apiEndpoints.simulation.results, {
+        headers: getAuthHeaders()
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Błąd HTTP: ' + response.status);
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Zapisz w stanie aplikacji
+        appState.updateData('simulationData', data);
+        
+        // Zaktualizuj interfejs
+        updateSimulationResults(data);
+    })
+    .catch(error => {
+        console.error("Błąd podczas pobierania wyników symulacji:", error);
+        
+        // Znajdź kontener wyników symulacji
+        const simulationContainer = findElement(['#simulationResults', '#simulation-results'], 'simulation-results');
+        if (simulationContainer) {
+            simulationContainer.innerHTML = `
+                <div class="error-message">
+                    <h4>Błąd podczas pobierania wyników symulacji</h4>
+                    <p>${error.message || 'Problem z połączeniem z serwerem'}</p>
+                    <button class="retry-button" onclick="fetchSimulationResults()">Spróbuj ponownie</button>
+                </div>
+            `;
+        }
+        
+        // Rejestruj błąd
+        handleApiError('simulationResults', error);
+    });
 }
 
 // Funkcja do pobierania myśli AI
 function fetchAIThoughts() {
-    fetch('/api/ai/thoughts')
+    fetchWithRetry(CONFIG.apiEndpoints.ai.thoughts, {
+        headers: getAuthHeaders()
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Błąd HTTP: ${response.status}`);
@@ -1665,17 +2397,74 @@ function fetchAIThoughts() {
             return response.json();
         })
         .then(data => {
-            // Jeśli istnieje specyficzna obsługa w dashboardzie, dodaj ją tutaj
+            // Zapisz w stanie aplikacji
+            appState.updateData('aiThoughts', data);
+            
+            // Znajdź kontener myśli AI
+            const thoughtsContainer = findElement(['#ai-thoughts-list', '.ai-thoughts-container'], 'ai-thoughts-list');
+            
+            if (thoughtsContainer && data && data.thoughts) {
+                // Przygotuj HTML z myślami AI
+                let thoughtsHTML = '<h3>Przemyślenia AI</h3>';
+                
+                if (data.thoughts.length > 0) {
+                    thoughtsHTML += '<div class="thoughts-list">';
+                    
+                    data.thoughts.forEach(thought => {
+                        // Określ klasę na podstawie pewności
+                        let confidenceClass = 'low';
+                        if (thought.confidence > 70) confidenceClass = 'high';
+                        else if (thought.confidence > 40) confidenceClass = 'medium';
+                        
+                        thoughtsHTML += `
+                            <div class="thought-card">
+                                <div class="thought-header">
+                                    <div class="thought-model">${thought.model}</div>
+                                    <div class="thought-confidence ${confidenceClass}">Pewność: ${thought.confidence.toFixed(1)}%</div>
+                                </div>
+                                <div class="thought-content">${thought.thought}</div>
+                                <div class="thought-timestamp">${thought.timestamp}</div>
+                            </div>
+                        `;
+                    });
+                    
+                    thoughtsHTML += '</div>';
+                } else {
+                    thoughtsHTML += '<p>Brak dostępnych przemyśleń AI</p>';
+                }
+                
+                // Zaktualizuj kontener
+                thoughtsContainer.innerHTML = thoughtsHTML;
+            }
+            
             console.log("Pobrano myśli AI:", data);
         })
         .catch(error => {
             console.error("Błąd podczas pobierania myśli AI:", error);
+            
+            // Znajdź kontener myśli AI
+            const thoughtsContainer = findElement(['#ai-thoughts-list', '.ai-thoughts-container'], 'ai-thoughts-list');
+            
+            if (thoughtsContainer) {
+                thoughtsContainer.innerHTML = `
+                    <div class="error-message">
+                        <h4>Błąd podczas pobierania przemyśleń AI</h4>
+                        <p>${error.message || 'Problem z połączeniem z serwerem'}</p>
+                        <button class="retry-button" onclick="fetchAIThoughts()">Spróbuj ponownie</button>
+                    </div>
+                `;
+            }
+            
+            // Zarejestruj błąd
+            handleApiError('aiThoughts', error);
         });
 }
 
 // Funkcja do pobierania statusu AI
 function fetchAIStatus() {
-    fetch('/api/ai-models-status')
+    fetchWithRetry(CONFIG.apiEndpoints.ai.modelsStatus, {
+        headers: getAuthHeaders()
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Błąd HTTP: ${response.status}`);
@@ -1683,11 +2472,398 @@ function fetchAIStatus() {
             return response.json();
         })
         .then(data => {
+            // Zapisz dane w stanie aplikacji
+            appState.updateData('aiModelsData', data);
+            
+            // Zaktualizuj interfejs
             updateAIModelsStatus(data);
+            
+            // Zaaktualizuj również status odświeżenia
             updateLastRefreshed();
         })
         .catch(error => {
-            console.log("Błąd podczas pobierania statusu modeli AI:", error);
+            console.error("Błąd podczas pobierania statusu modeli AI:", error);
+            
+            // Pobierz kontener modeli AI
+            const aiModelsContainer = findElement(['#ai-models-container', '#ai-models-status'], 'ai-models-container');
+            
+            if (aiModelsContainer) {
+                aiModelsContainer.innerHTML = `
+                    <div class="error-message">
+                        <h4>Błąd podczas pobierania statusu modeli AI</h4>
+                        <p>${error.message || 'Problem z połączeniem z serwerem'}</p>
+                        <button class="retry-button" onclick="fetchAIStatus()">Spróbuj ponownie</button>
+                    </div>
+                `;
+            }
+            
             showNotification('error', 'Nie udało się pobrać statusu modeli AI');
+            
+            // Zarejestruj błąd
+            handleApiError('aiModels', error);
         });
+}
+
+// Funkcje uwierzytelniania
+function login(username, password) {
+    fetch(CONFIG.apiEndpoints.auth.login, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.token) {
+            appState.token = data.token;
+            appState.isAuthenticated = true;
+            localStorage.setItem('token', data.token);
+            initializeUI();
+            showNotification('success', 'Zalogowano pomyślnie');
+        } else {
+            showNotification('error', data.message || 'Błąd logowania');
+        }
+    })
+    .catch(error => {
+        console.error('Błąd logowania:', error);
+        showNotification('error', 'Błąd logowania');
+    });
+}
+
+function checkAuth() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        showLoginForm();
+        return false;
+    }
+
+    fetch(CONFIG.apiEndpoints.auth.verify, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.valid) {
+            appState.token = token;
+            appState.isAuthenticated = true;
+            initializeUI();
+        } else {
+            showLoginForm();
+        }
+    })
+    .catch(() => {
+        showLoginForm();
+    });
+}
+
+function logout() {
+    appState.token = null;
+    appState.isAuthenticated = false;
+    localStorage.removeItem('token');
+    showLoginForm();
+}
+
+function showLoginForm() {
+    const mainContent = document.querySelector('.container');
+    if (mainContent) {
+        mainContent.innerHTML = `
+            <div class="login-container">
+                <h2>Logowanie</h2>
+                <form id="login-form" class="login-form">
+                    <div class="form-group">
+                        <label for="username">Użytkownik:</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Hasło:</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Zaloguj</button>
+                    <div class="form-links">
+                        <a href="#" id="show-register">Nie masz konta? Zarejestruj się</a>
+                    </div>
+                </form>
+            </div>
+        `;
+
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            login(username, password);
+        });
+
+        document.getElementById('show-register').addEventListener('click', (e) => {
+            e.preventDefault();
+            showRegisterForm();
+        });
+    }
+}
+
+function showRegisterForm() {
+    const mainContent = document.querySelector('.container');
+    if (mainContent) {
+        mainContent.innerHTML = `
+            <div class="login-container">
+                <h2>Rejestracja</h2>
+                <form id="register-form" class="login-form">
+                    <div class="form-group">
+                        <label for="reg-username">Użytkownik:</label>
+                        <input type="text" id="reg-username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-email">Email:</label>
+                        <input type="email" id="reg-email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-password">Hasło:</label>
+                        <input type="password" id="reg-password" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-password-confirm">Potwierdź hasło:</label>
+                        <input type="password" id="reg-password-confirm" name="password-confirm" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Zarejestruj</button>
+                    <div class="form-links">
+                        <a href="#" id="show-login">Masz już konto? Zaloguj się</a>
+                    </div>
+                </form>
+            </div>
+        `;
+
+        document.getElementById('register-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('reg-username').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            const passwordConfirm = document.getElementById('reg-password-confirm').value;
+
+            if (password !== passwordConfirm) {
+                showNotification('error', 'Hasła nie są identyczne');
+                return;
+            }
+
+            register(username, email, password);
+        });
+
+        document.getElementById('show-login').addEventListener('click', (e) => {
+            e.preventDefault();
+            showLoginForm();
+        });
+    }
+}
+
+function register(username, email, password) {
+    fetch(CONFIG.apiEndpoints.auth.register, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, email, password })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.token) {
+            appState.token = data.token;
+            appState.isAuthenticated = true;
+            localStorage.setItem('token', data.token);
+            initializeUI();
+            showNotification('success', 'Zarejestrowano pomyślnie');
+        } else {
+            showNotification('error', data.message || 'Błąd rejestracji');
+        }
+    })
+    .catch(error => {
+        console.error('Błąd rejestracji:', error);
+        showNotification('error', 'Błąd rejestracji');
+    });
+}
+
+// Modyfikacja funkcji wysyłających żądania API, aby dodawały token do nagłówków
+function getAuthHeaders() {
+    return appState.token ? {
+        'Authorization': `Bearer ${appState.token}`,
+        'Content-Type': 'application/json'
+    } : {
+        'Content-Type': 'application/json'
+    };
+}
+
+// Funkcje obsługi błędów
+
+// Pokaż błąd w kontenerze błędów
+function showError(message) {
+    const errorContainer = document.getElementById('error-container');
+    const errorText = document.getElementById('error-text');
+    
+    if (errorContainer && errorText) {
+        errorText.textContent = message;
+        errorContainer.style.display = 'flex';
+    }
+}
+
+// Ukryj kontener błędów
+function hideError() {
+    const errorContainer = document.getElementById('error-container');
+    if (errorContainer) {
+        errorContainer.style.display = 'none';
+    }
+}
+
+// Pokaż błąd w kontenerze błędów z opcjonalnym timeoutem
+function showErrorMessage(message, autoHide = true) {
+    showError(message);
+    
+    if (autoHide) {
+        setTimeout(hideError, 5000); // Automatyczne ukrycie po 5 sekundach
+    }
+}
+
+/**
+ * Funkcja bezpiecznego dostępu do elementów DOM - wyszukuje element według różnych identyfikatorów
+ * 
+ * @param {string|string[]} selectors - Pojedynczy selektor lub tablica selektorów do wyszukania elementu
+ * @param {string} fallbackId - ID elementu, który zostanie utworzony jeśli żaden element nie zostanie znaleziony
+ * @param {HTMLElement} parentElement - Opcjonalny element nadrzędny do wyszukiwania (domyślnie document)
+ * @returns {HTMLElement|null} - Znaleziony lub utworzony element, lub null jeśli nie znaleziono/nie utworzono
+ */
+function findElement(selectors, fallbackId = null, parentElement = document) {
+    // Konwertuj pojedynczy selektor na tablicę, jeśli potrzeba
+    const selectorsArray = Array.isArray(selectors) ? selectors : [selectors];
+    
+    // Przetwarzaj selektory w kolejności (ID mają pierwszeństwo)
+    for (const selector of selectorsArray) {
+        // Sprawdź, czy to jest ID (zaczyna się od #), klasa (zaczyna się od .) lub tag
+        if (selector.startsWith('#')) {
+            const element = document.getElementById(selector.substring(1));
+            if (element) return element;
+        } else if (selector.startsWith('.')) {
+            const elements = parentElement.getElementsByClassName(selector.substring(1));
+            if (elements.length > 0) return elements[0];
+        } else {
+            const elements = parentElement.getElementsByTagName(selector);
+            if (elements.length > 0) return elements[0];
+        }
+    }
+    
+    // Jeśli nic nie znaleziono, a podano fallbackId, utwórz nowy element
+    if (fallbackId) {
+        console.log(`Tworzę nowy element z ID: ${fallbackId}`);
+        
+        // Znajdź odpowiednie miejsce na wstawienie elementu
+        let container;
+        
+        // Próbuj znaleźć typowe kontenery
+        const containers = [
+            document.querySelector('.dashboard-content'),
+            document.querySelector('.container'),
+            document.querySelector('main'),
+            document.body
+        ].filter(Boolean);
+        
+        if (containers.length > 0) {
+            container = containers[0];
+            
+            // Utwórz nowy element div
+            const newElement = document.createElement('div');
+            newElement.id = fallbackId;
+            
+            // Dodaj klasę z tym samym imieniem co ID dla kompatybilności
+            newElement.className = fallbackId.replace(/[^a-zA-Z0-9-_]/g, '-');
+            
+            // Ustaw style, aby element był widoczny
+            newElement.style.padding = '15px';
+            newElement.style.margin = '15px 0';
+            newElement.style.backgroundColor = '#f8f9fa';
+            newElement.style.border = '1px solid #dee2e6';
+            newElement.style.borderRadius = '4px';
+            
+            // Dodaj pusty nagłówek
+            const header = document.createElement('h3');
+            header.textContent = fallbackId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            newElement.appendChild(header);
+            
+            // Dodaj do kontenera
+            container.appendChild(newElement);
+            
+            return newElement;
+        }
+    }
+    
+    // Nic nie znaleziono i nie można utworzyć
+    return null;
+}
+
+/**
+ * Funkcja bezpiecznej aktualizacji elementu DOM
+ * 
+ * @param {string|string[]} selectors - Selektor lub tablica selektorów do znalezienia elementu
+ * @param {string|Function} content - Zawartość lub funkcja zwracająca zawartość
+ * @param {boolean} asHTML - Czy traktować zawartość jako HTML
+ * @returns {HTMLElement|null} - Zaktualizowany element lub null
+ */
+function updateElement(selectors, content, asHTML = false) {
+    const element = findElement(selectors);
+    if (!element) {
+        console.warn(`Nie znaleziono elementu dla selektorów: ${JSON.stringify(selectors)}`);
+        return null;
+    }
+    
+    // Określ zawartość (jeśli to funkcja, wykonaj ją)
+    const finalContent = typeof content === 'function' ? content(element) : content;
+    
+    // Aktualizuj zawartość elementu
+    if (asHTML) {
+        element.innerHTML = finalContent;
+    } else {
+        element.textContent = finalContent;
+    }
+    
+    return element;
+}
+
+/**
+ * Funkcja do tworzenia elementu z szablonem HTML
+ * 
+ * @param {string} tagName - Nazwa znacznika HTML
+ * @param {Object} attributes - Obiekt atrybutów
+ * @param {string|HTMLElement|Array} children - Dzieci elementu (tekst, element lub tablica)
+ * @returns {HTMLElement} - Utworzony element
+ */
+function createElement(tagName, attributes = {}, children = null) {
+    const element = document.createElement(tagName);
+    
+    // Dodaj atrybuty
+    Object.entries(attributes).forEach(([key, value]) => {
+        if (key === 'className') {
+            element.className = value;
+        } else if (key === 'style' && typeof value === 'object') {
+            Object.entries(value).forEach(([prop, val]) => {
+                element.style[prop] = val;
+            });
+        } else {
+            element.setAttribute(key, value);
+        }
+    });
+    
+    // Dodaj dzieci
+    if (children !== null) {
+        if (Array.isArray(children)) {
+            children.forEach(child => {
+                if (typeof child === 'string') {
+                    element.appendChild(document.createTextNode(child));
+                } else if (child instanceof HTMLElement) {
+                    element.appendChild(child);
+                }
+            });
+        } else if (typeof children === 'string') {
+            element.textContent = children;
+        } else if (children instanceof HTMLElement) {
+            element.appendChild(children);
+        }
+    }
+    
+    return element;
 }
