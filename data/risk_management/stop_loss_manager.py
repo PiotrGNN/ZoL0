@@ -4,20 +4,55 @@ stop_loss_manager.py
 Moduł zarządzania mechanizmami stop-loss.
 
 Funkcjonalności:
-- Obsługa różnych typów stop-loss: fixed, trailing, ATR-based, time-based.
-- Integracja z modułami strategii i wykonawczymi.
-- Możliwość dynamicznej regulacji poziomów stop-loss w zależności od warunków rynkowych.
+- Obsługa różnych typów stop-loss: fixed, trailing
+- Integracja z modułami strategii i wykonawczymi
+- Dynamiczna regulacja poziomów stop-loss
 """
 
 import logging
-
 import pandas as pd
 
 # Konfiguracja logowania
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
+def calculate_stop_loss(entry_price: float, risk_percent: float) -> float:
+    """
+    Oblicza poziom stop-loss na podstawie ceny wejścia i procentowego ryzyka.
+
+    Parameters:
+        entry_price (float): Cena wejścia w pozycję
+        risk_percent (float): Akceptowalny procent straty (np. 0.02 dla 2%)
+
+    Returns:
+        float: Poziom stop-loss
+    """
+    if entry_price <= 0 or risk_percent <= 0:
+        raise ValueError("Cena wejścia i procent ryzyka muszą być dodatnie")
+    
+    stop_loss = entry_price * (1 - risk_percent)
+    logging.info(f"Obliczony stop-loss: {stop_loss:.2f} dla ceny wejścia {entry_price:.2f}")
+    return stop_loss
+
+def calculate_trailing_stop(entry_price: float, current_price: float, risk_percent: float) -> float:
+    """
+    Oblicza trailing stop-loss, który podąża za ceną gdy rośnie.
+
+    Parameters:
+        entry_price (float): Początkowa cena wejścia
+        current_price (float): Aktualna cena
+        risk_percent (float): Procent odległości stop-lossa od najwyższej ceny
+
+    Returns:
+        float: Poziom trailing stop-loss
+    """
+    if entry_price <= 0 or current_price <= 0 or risk_percent <= 0:
+        raise ValueError("Ceny i procent ryzyka muszą być dodatnie")
+    
+    initial_stop = calculate_stop_loss(entry_price, risk_percent)
+    if current_price > entry_price:
+        trailing_stop = current_price * (1 - risk_percent)
+        return max(trailing_stop, initial_stop)
+    return initial_stop
 
 def fixed_stop_loss(entry_price: float, stop_loss_percent: float) -> float:
     """

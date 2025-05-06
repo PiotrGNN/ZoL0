@@ -1,75 +1,57 @@
-"""
-Inicjalizacja pakietu.
-
-Ten plik __init__.py automatycznie importuje wszystkie moduły (.py) znajdujące się w bieżącym katalogu
-(bez __init__.py) oraz wszystkie podpakiety (czyli katalogi zawierające plik __init__.py).
-Dzięki temu, importując pakiet, masz dostęp do wszystkich jego składników poprzez:
-    from package_name import *
-oraz bez konieczności znajomości dokładnej struktury katalogów.
-"""
+"""Configuration management package."""
 
 import os
 import importlib
-from typing import List
+from typing import List, Dict, Any
+from pathlib import Path
+import logging
+from .config_loader import ConfigLoader, merge_dicts
+from data.logging.system_logger import get_logger
 
-__all__: List[str] = []
+logger = get_logger()
 
+def _is_python_file(file_path: Path) -> bool:
+    """Check if file is a Python module."""
+    return file_path.is_file() and file_path.suffix == '.py' and not file_path.name.startswith('_')
 
-def _import_all_modules_from_directory(directory: str, package: str) -> None:
-    """
-    Importuje wszystkie moduły .py z danego katalogu (z wyłączeniem __init__.py)
-    i dodaje ich nazwy do listy __all__.
+def _is_excluded_package(package_name: str) -> bool:
+    """Check if package should be excluded from auto-import."""
+    excluded = {'tests', 'examples', '__pycache__'}
+    if package_name in excluded:
+        logger.log_info(f"Excluding package '{package_name}' from auto-import")
+        return True
+    return False
 
-    Args:
-        directory: Ścieżka do katalogu, w którym szukamy plików .py.
-        package: Nazwa pakietu używana przy importach względnych.
-    """
-    for filename in os.listdir(directory):
-        if filename.endswith(".py") and filename != "__init__.py":
-            module_name: str = filename[:-3]
-            try:
-                module = importlib.import_module(f".{module_name}", package=package)
-            except Exception as error:
-                raise ImportError(
-                    f"Nie udało się zaimportować modułu '{module_name}' z pakietu '{package}'."
-                ) from error
-            globals()[module_name] = module
-            __all__.append(module_name)
+def _import_module(module_path: str, package: str) -> None:
+    """Import a module and handle any errors."""
+    try:
+        importlib.import_module(module_path, package)
+    except ImportError as e:
+        logger.log_warning(
+            f"Skipping package '{package}' due to error: {str(e)}",
+            warning_type="ImportWarning"
+        )
 
+def _import_all_modules_from_directory(directory: Path, package: str) -> None:
+    """Import all Python modules from a directory."""
+    for item in directory.iterdir():
+        if item.is_file() and _is_python_file(item):
+            module_name = item.stem
+            _import_module(f".{module_name}", package)
+        elif item.is_dir() and not _is_excluded_package(item.name):
+            subpackage = f"{package}.{item.name}"
+            _import_module(subpackage, package)
 
-def _import_all_subpackages(directory: str, package: str) -> None:
-    """
-    Importuje wszystkie podkatalogi, które są pakietami (zawierają __init__.py),
-    i dodaje ich nazwy do listy __all__.
+def _load_config() -> Dict[str, Any]:
+    """Load configuration from all sources."""
+    config_loader = ConfigLoader()
+    return config_loader.load()
 
-    Args:
-        directory: Ścieżka do katalogu, w którym szukamy podpakietów.
-        package: Nazwa pakietu używana przy importach względnych.
-    """
-    for item in os.listdir(directory):
-        subdir: str = os.path.join(directory, item)
-        if os.path.isdir(subdir) and os.path.exists(os.path.join(subdir, "__init__.py")):
-            try:
-                subpackage = importlib.import_module(f".{item}", package=package)
-            except Exception as error:
-                raise ImportError(
-                    f"Nie udało się zaimportować podpakietu '{item}' z pakietu '{package}'."
-                ) from error
-            globals()[item] = subpackage
-            __all__.append(item)
+# Current directory path
+_current_dir = Path(__file__).parent
 
+# Import all modules
+_import_all_modules_from_directory(_current_dir, __name__)
 
-def _import_all(directory: str, package: str) -> None:
-    """
-    Importuje wszystkie moduły i podpakiety z podanego katalogu.
-
-    Args:
-        directory: Ścieżka do katalogu, z którego mają być importowane składniki.
-        package: Nazwa pakietu używana przy importach względnych.
-    """
-    _import_all_modules_from_directory(directory, package)
-    _import_all_subpackages(directory, package)
-
-
-_current_dir: str = os.path.dirname(os.path.abspath(__file__))
-_import_all(_current_dir, __name__)
+# Load configuration
+CONFIG = _load_config()

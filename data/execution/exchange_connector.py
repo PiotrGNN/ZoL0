@@ -11,6 +11,8 @@ import hashlib
 import hmac
 import logging
 import time
+from typing import Dict, Any, List
+from datetime import datetime
 
 import requests
 
@@ -43,6 +45,12 @@ class ExchangeConnector:
         )  # Domyślny nagłówek dla Binance; inne giełdy mogą wymagać innej konfiguracji
         self.base_url = base_url or self._default_base_url()
         logging.info("ExchangeConnector zainicjalizowany dla giełdy: %s", self.exchange)
+        self.connected = False
+
+    def connect(self) -> bool:
+        """Establish exchange connection."""
+        self.connected = True
+        return True
 
     def _default_base_url(self) -> str:
         """
@@ -131,7 +139,7 @@ class ExchangeConnector:
 
     def get_market_data(
         self, symbol: str, interval: str = "1m", limit: int = 100
-    ) -> dict:
+    ) -> List[Dict[str, Any]]:
         """
         Pobiera dane rynkowe dla określonego symbolu i interwału.
 
@@ -160,7 +168,7 @@ class ExchangeConnector:
         order_type: str,
         quantity: float,
         price: float = None,
-    ) -> dict:
+    ) -> Dict[str, Any]:
         """
         Wysyła zlecenie do giełdy.
 

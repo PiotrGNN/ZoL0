@@ -694,47 +694,171 @@ except Exception as e:
     logging.error(f"Nie udało się skonfigurować automatycznego czyszczenia cache: {e}")
 
 class CacheManager:
-    """
-    Klasa do zarządzania cache'em danych w systemie.
-    Optymalizuje dostęp do danych poprzez przechowywanie wyników obliczeń i danych rynkowych.
-    Implementuje wzorzec Singleton dla zapewnienia jednej instancji w całym systemie.
-    """
-
-    # Przechowuje pojedynczą instancję klasy
-    _instance = None
-    _initialized = False
-
-    def __new__(cls, cache_dir="./data/cache", max_cache_size_mb=500, ttl_seconds=3600):
+    """Enhanced cache management system with memory optimization."""
+    
+    def __init__(
+        self,
+        cache_dir: str = "data/cache",
+        max_memory_mb: int = 512,
+        cleanup_interval: int = 3600,
+        max_age_hours: int = 24
+    ):
         """
-        Implementacja wzorca Singleton - zapewnia tylko jedną instancję klasy.
-        """
-        if cls._instance is None:
-            cls._instance = super(CacheManager, cls).__new__(cls)
-        return cls._instance
-
-    def __init__(self, cache_dir="./data/cache", max_cache_size_mb=500, ttl_seconds=3600):
-        """
-        Inicjalizacja managera cache.
-
+        Initialize cache manager.
+        
         Args:
-            cache_dir: Katalog przechowywania plików cache.
-            max_cache_size_mb: Maksymalny rozmiar cache w MB.
-            ttl_seconds: Czas życia elementów w cache (time to live).
+            cache_dir: Directory for cache storage
+            max_memory_mb: Maximum memory usage in MB
+            cleanup_interval: Cleanup interval in seconds
+            max_age_hours: Maximum age of cache entries in hours
         """
-        # Zabezpieczenie przed wielokrotną inicjalizacją tej samej instancji
-        if CacheManager._initialized:
-            return
-
-        # Oznacz instancję jako zainicjalizowaną
-        CacheManager._initialized = True
-        
-        # Log tylko przy pierwszej inicjalizacji
-        logging.info(f"Inicjalizacja CacheManager (Singleton) - cache_dir: {cache_dir}")
-        
-        # Wykonaj inicjalizację tylko raz
         self.cache_dir = cache_dir
-        self.max_cache_size_mb = max_cache_size_mb
-        self.ttl_seconds = ttl_seconds
+        self.max_memory = max_memory_mb * 1024 * 1024  # Convert to bytes
+        self.cleanup_interval = cleanup_interval
+        self.max_age = timedelta(hours=max_age_hours)
         
-        # Upewniamy się, że katalog istnieje
-        os.makedirs(self.cache_dir, exist_ok=True)
+        # Create cache directory
+        os.makedirs(cache_dir, exist_ok=True)
+        
+        # Memory cache with weak references
+        self._memory_cache = weakref.WeakValueDictionary()
+        
+        # Start cleanup thread
+        self._stop_cleanup = threading.Event()
+        self._cleanup_thread = threading.Thread(target=self._cleanup_loop, daemon=True)
+        self._cleanup_thread.start()
+        
+        logger.info(f"Cache manager initialized: {cache_dir} (max: {max_memory_mb}MB)")
+
+    def get(self, key: str) -> Optional[Any]:
+        """Get value from cache."""
+        try:
+            # Try memory cache first
+            if key in self._memory_cache:
+                return self._memory_cache[key]
+            
+            # Try file cache
+            cache_file = os.path.join(self.cache_dir, f"{self._hash_key(key)}.json")
+            if os.path.exists(cache_file):
+                modification_time = datetime.fromtimestamp(os.path.getmtime(cache_file))
+                if datetime.now() - modification_time <= self.max_age:
+                    with open(cache_file, 'r') as f:
+                        data = json.load(f)
+                        self._memory_cache[key] = data
+                        return data
+                else:
+                    os.remove(cache_file)
+            
+            return None
+        except Exception as e:
+            logger.error(f"Error reading from cache: {e}")
+            return None
+
+    def set(self, key: str, value: Any) -> bool:
+        """Set value in cache."""
+        try:
+            # Store in memory cache
+            self._memory_cache[key] = value
+            
+            # Store in file cache
+            cache_file = os.path.join(self.cache_dir, f"{self._hash_key(key)}.json")
+            with open(cache_file, 'w') as f:
+                json.dump(value, f)
+            
+            # Check memory usage
+            self._check_memory_usage()
+            
+            return True
+        except Exception as e:
+            logger.error(f"Error writing to cache: {e}")
+            return False
+
+    def delete(self, key: str) -> bool:
+        """Delete value from cache."""
+        try:
+            # Remove from memory cache
+            self._memory_cache.pop(key, None)
+            
+            # Remove from file cache
+            cache_file = os.path.join(self.cache_dir, f"{self._hash_key(key)}.json")
+            if os.path.exists(cache_file):
+                os.remove(cache_file)
+            
+            return True
+        except Exception as e:
+            logger.error(f"Error deleting from cache: {e}")
+            return False
+
+    def clear(self) -> bool:
+        """Clear all cache."""
+        try:
+            # Clear memory cache
+            self._memory_cache.clear()
+            
+            # Clear file cache
+            shutil.rmtree(self.cache_dir)
+            os.makedirs(self.cache_dir, exist_ok=True)
+            
+            return True
+        except Exception as e:
+            logger.error(f"Error clearing cache: {e}")
+            return False
+
+    def _cleanup_loop(self) -> None:
+        """Background cleanup loop."""
+        while not self._stop_cleanup.is_set():
+            try:
+                self._cleanup_expired()
+                self._check_memory_usage()
+            except Exception as e:
+                logger.error(f"Error in cleanup loop: {e}")
+            
+            self._stop_cleanup.wait(self.cleanup_interval)
+
+    def _cleanup_expired(self) -> None:
+        """Clean up expired cache entries."""
+        now = datetime.now()
+        for file in os.listdir(self.cache_dir):
+            try:
+                file_path = os.path.join(self.cache_dir, file)
+                if now - datetime.fromtimestamp(os.path.getmtime(file_path)) > self.max_age:
+                    os.remove(file_path)
+            except Exception as e:
+                logger.error(f"Error cleaning up file {file}: {e}")
+
+    def _check_memory_usage(self) -> None:
+        """Check and optimize memory usage."""
+        try:
+            import psutil
+            process = psutil.Process()
+            memory_use = process.memory_info().rss
+            
+            if memory_use > self.max_memory:
+                # Clear memory cache if usage is too high
+                self._memory_cache.clear()
+                logger.warning(f"Memory usage too high ({memory_use/1024/1024:.1f}MB), cleared memory cache")
+        except ImportError:
+            logger.warning("psutil not available, cannot check memory usage")
+        except Exception as e:
+            logger.error(f"Error checking memory usage: {e}")
+
+    def _hash_key(self, key: str) -> str:
+        """Create hash from cache key."""
+        return hashlib.md5(key.encode()).hexdigest()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._stop_cleanup.set()
+        self._cleanup_thread.join()
+
+    def __del__(self):
+        self._stop_cleanup.set()
+
+# Global cache manager instance
+cache_manager = CacheManager()
+
+def get_cache_manager() -> CacheManager:
+    """Get global cache manager instance."""
+    return cache_manager

@@ -1,0 +1,39 @@
+[run]
+branch = True
+source = data/
+omit =
+    */tests/*
+    */migrations/*
+    setup.py
+    docs/*
+    */site-packages/*
+    .venv/*
+    venv/*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    pass
+    raise ImportError
+    raise AssertionError
+    raise NotImplementedError
+    if False:
+    if typing.TYPE_CHECKING:
+    class .*\bProtocol\):
+    @(abc\.)?abstractmethod
+    if self\.debug:
+
+[paths]
+source =
+    data/
+    */site-packages/data/
+
+[html]
+directory = coverage_html
+title = Trading System Test Coverage Report
+
+[xml]
+output = coverage.xml

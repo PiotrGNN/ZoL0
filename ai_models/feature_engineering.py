@@ -1,269 +1,428 @@
 """
-feature_engineering.py
-----------------------
-Moduł zawierający funkcje do inżynierii cech dla danych finansowych.
-
-Zawiera zarówno proste funkcje (add_rsi, add_macd, feature_pipeline) jak i bardziej
-zaawansowane (compute_rsi, compute_macd, compute_bollinger_bands, itp.).
-
-Możesz użyć dowolnego zestawu tych funkcji w swoim pipeline, w zależności od potrzeb.
+Advanced feature engineering with pattern recognition and GPU acceleration.
 """
 
 import logging
+from typing import Dict, List, Optional, Union, Tuple, Any
+from dataclasses import dataclass
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import torch
+import ta
+from ta.trend import SMAIndicator, EMAIndicator
+from ta.momentum import RSIIndicator, StochasticOscillator
+from ta.volatility import BollingerBands
+from ta.volume import OnBalanceVolumeIndicator, VolumeWeightedAveragePrice
+from sklearn.decomposition import PCA
+from sklearn.feature_selection import mutual_info_regression
 
-# Konfiguracja logowania
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
-)
+from .scalar import FeatureScaler
+from .model_recognition import PatternType, ModelRecognizer
 
+@dataclass
+class FeatureConfig:
+    """Configuration for feature generation"""
+    # Price features
+    use_returns: bool = True
+    return_periods: List[int] = (1, 5, 10, 20)
+    use_log_returns: bool = True
+    
+    # Technical indicators
+    use_ma: bool = True
+    ma_periods: List[int] = (5, 10, 20, 50, 100)
+    use_volatility: bool = True
+    volatility_periods: List[int] = (5, 10, 20)
+    use_momentum: bool = True
+    momentum_periods: List[int] = (14, 28)
+    
+    # Pattern features
+    use_patterns: bool = True
+    min_pattern_confidence: float = 0.7
+    pattern_window: int = 100
+    
+    # Volume features
+    use_volume: bool = True
+    volume_ma_periods: List[int] = (5, 10, 20)
+    use_vwap: bool = True
+    
+    # Feature selection
+    n_components: Optional[int] = None
+    importance_threshold: float = 0.01
+    use_gpu: bool = True
 
-# -------------------- Podstawowe funkcje (z poprzedniego pliku) --------------------
-def add_rsi(df: pd.DataFrame, period: int = 14) -> pd.DataFrame:
-    """
-    Dodaje kolumnę 'rsi' do DataFrame z cenami w kolumnie 'close'.
-    """
-    delta = df["close"].diff()
-    gain = (delta.where(delta > 0, 0)).rolling(window=period, min_periods=period).mean()
-    loss = (
-        (-delta.where(delta < 0, 0)).rolling(window=period, min_periods=period).mean()
-    )
-    rs = gain / loss.replace({0: np.nan})
-    rsi = 100 - (100 / (1 + rs))
-    df["rsi"] = rsi
-    return df
-
-
-def add_macd(
-    df: pd.DataFrame, fast: int = 12, slow: int = 26, signal: int = 9
-) -> pd.DataFrame:
-    """
-    Dodaje kolumny 'macd' i 'macd_signal' do DataFrame z cenami w kolumnie 'close'.
-    """
-    df["ema_fast"] = df["close"].ewm(span=fast, adjust=False).mean()
-    df["ema_slow"] = df["close"].ewm(span=slow, adjust=False).mean()
-    df["macd"] = df["ema_fast"] - df["ema_slow"]
-    df["macd_signal"] = df["macd"].ewm(span=signal, adjust=False).mean()
-    return df
-
-
-def feature_pipeline(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Pipeline inżynierii cech: dodaje RSI, MACD, usuwa zbędne kolumny pomocnicze itp.
-    """
-    df = add_rsi(df, period=14)
-    df = add_macd(df, fast=12, slow=26, signal=9)
-    # Możesz usunąć kolumny tymczasowe, np. 'ema_fast', 'ema_slow', jeśli nie chcesz ich w finalnym DF
-    # df.drop(['ema_fast', 'ema_slow'], axis=1, inplace=True)
-    return df
-
-
-# -------------------- Zaawansowane funkcje (nowe) --------------------
-def compute_rsi(prices: pd.Series, window: int = 14) -> pd.Series:
-    """
-    Oblicza RSI dla serii cen. Bardziej rozbudowana wersja,
-    korzystająca z wykładniczych średnich kroczących.
-    """
-    try:
-        delta = prices.diff()
-        gain = delta.clip(lower=0)
-        loss = -delta.clip(upper=0)
-
-        avg_gain = gain.ewm(alpha=1 / window, min_periods=window).mean()
-        avg_loss = loss.ewm(alpha=1 / window, min_periods=window).mean()
-
-        rs = avg_gain / avg_loss.replace({0: np.nan})
-        rsi = 100 - (100 / (1 + rs))
-        logging.info("RSI obliczone (okno=%d).", window)
-        return rsi
-    except Exception as e:
-        logging.error("Błąd przy obliczaniu RSI: %s", e)
-        raise
-
-
-def compute_macd(
-    prices: pd.Series,
-    fast_period: int = 12,
-    slow_period: int = 26,
-    signal_period: int = 9,
-) -> pd.DataFrame:
-    """
-    Oblicza MACD, linię sygnału oraz histogram.
-    Zwraca DataFrame z kolumnami 'MACD', 'Signal', 'Histogram'.
-    """
-    try:
-        ema_fast = prices.ewm(span=fast_period, adjust=False).mean()
-        ema_slow = prices.ewm(span=slow_period, adjust=False).mean()
-        macd = ema_fast - ema_slow
-        signal = macd.ewm(span=signal_period, adjust=False).mean()
-        histogram = macd - signal
-
-        df_macd = pd.DataFrame({"MACD": macd, "Signal": signal, "Histogram": histogram})
-        logging.info(
-            "MACD obliczone (fast=%d, slow=%d, signal=%d).",
-            fast_period,
-            slow_period,
-            signal_period,
+class FeatureEngineer:
+    """Advanced feature engineering with GPU acceleration"""
+    
+    def __init__(
+        self,
+        config: Optional[FeatureConfig] = None,
+        device: Optional[str] = None
+    ):
+        self.config = config or FeatureConfig()
+        self.device = torch.device(
+            device or ('cuda' if torch.cuda.is_available() else 'cpu')
         )
-        return df_macd
-    except Exception as e:
-        logging.error("Błąd przy obliczaniu MACD: %s", e)
-        raise
-
-
-def compute_bollinger_bands(
-    prices: pd.Series, window: int = 20, num_std: float = 2.0
-) -> pd.DataFrame:
-    """
-    Oblicza Bollinger Bands na podstawie serii cen.
-    Zwraca DataFrame z kolumnami 'Middle', 'Upper', 'Lower'.
-    """
-    try:
-        middle = prices.rolling(window=window).mean()
-        std = prices.rolling(window=window).std()
-        upper = middle + num_std * std
-        lower = middle - num_std * std
-
-        bands = pd.DataFrame({"Middle": middle, "Upper": upper, "Lower": lower})
-        logging.info(
-            "Bollinger Bands obliczone (okno=%d, odch.std=%.2f).", window, num_std
+        self.logger = logging.getLogger(__name__)
+        
+        # Initialize components
+        self.pattern_recognizer = ModelRecognizer(device=str(self.device))
+        self.scaler = FeatureScaler(device=str(self.device))
+        self.pca = None
+        self.feature_importance = None
+        
+        # Cache for pattern features
+        self._pattern_cache = {}
+    
+    def _calculate_returns(
+        self,
+        prices: pd.Series,
+        periods: List[int],
+        log_returns: bool = True
+    ) -> pd.DataFrame:
+        """Calculate price returns"""
+        returns = pd.DataFrame(index=prices.index)
+        
+        for period in periods:
+            if log_returns:
+                ret = np.log(prices / prices.shift(period))
+                returns[f'log_return_{period}'] = ret
+            else:
+                ret = prices.pct_change(period)
+                returns[f'return_{period}'] = ret
+        
+        return returns
+    
+    def _calculate_technical_indicators(
+        self,
+        data: pd.DataFrame
+    ) -> pd.DataFrame:
+        """Calculate technical indicators"""
+        indicators = pd.DataFrame(index=data.index)
+        
+        if self.config.use_ma:
+            for period in self.config.ma_periods:
+                # SMA
+                sma = SMAIndicator(data['close'], period).sma_indicator()
+                indicators[f'sma_{period}'] = sma
+                
+                # EMA
+                ema = EMAIndicator(data['close'], period).ema_indicator()
+                indicators[f'ema_{period}'] = ema
+                
+                # MA Crossovers
+                if period < max(self.config.ma_periods):
+                    next_period = next(p for p in self.config.ma_periods if p > period)
+                    indicators[f'ma_cross_{period}_{next_period}'] = (
+                        (sma > SMAIndicator(data['close'], next_period).sma_indicator())
+                        .astype(int)
+                    )
+        
+        if self.config.use_momentum:
+            for period in self.config.momentum_periods:
+                # RSI
+                rsi = RSIIndicator(data['close'], period).rsi()
+                indicators[f'rsi_{period}'] = rsi
+                
+                # Stochastic
+                stoch = StochasticOscillator(
+                    data['high'],
+                    data['low'],
+                    data['close'],
+                    period
+                )
+                indicators[f'stoch_k_{period}'] = stoch.stoch()
+                indicators[f'stoch_d_{period}'] = stoch.stoch_signal()
+        
+        if self.config.use_volatility:
+            for period in self.config.volatility_periods:
+                # Bollinger Bands
+                bb = BollingerBands(data['close'], period)
+                indicators[f'bb_upper_{period}'] = bb.bollinger_hband()
+                indicators[f'bb_lower_{period}'] = bb.bollinger_lband()
+                indicators[f'bb_width_{period}'] = (
+                    (bb.bollinger_hband() - bb.bollinger_lband()) /
+                    bb.bollinger_mavg()
+                )
+        
+        if self.config.use_volume:
+            # OBV
+            obv = OnBalanceVolumeIndicator(
+                data['close'],
+                data['volume']
+            ).on_balance_volume()
+            indicators['obv'] = obv
+            
+            # Volume MA
+            for period in self.config.volume_ma_periods:
+                vol_ma = data['volume'].rolling(period).mean()
+                indicators[f'volume_ma_{period}'] = vol_ma
+                indicators[f'volume_ma_ratio_{period}'] = (
+                    data['volume'] / vol_ma
+                )
+        
+        if self.config.use_vwap:
+            # VWAP
+            vwap = VolumeWeightedAveragePrice(
+                high=data['high'],
+                low=data['low'],
+                close=data['close'],
+                volume=data['volume']
+            ).volume_weighted_average_price()
+            indicators['vwap'] = vwap
+            indicators['vwap_ratio'] = data['close'] / vwap
+        
+        return indicators
+    
+    def _extract_pattern_features(
+        self,
+        data: pd.DataFrame
+    ) -> pd.DataFrame:
+        """Extract pattern-based features"""
+        if not self.config.use_patterns:
+            return pd.DataFrame(index=data.index)
+        
+        # Check cache
+        cache_key = hash(str(data.iloc[-self.config.pattern_window:].values))
+        if cache_key in self._pattern_cache:
+            return self._pattern_cache[cache_key]
+        
+        # Initialize pattern features
+        pattern_features = pd.DataFrame(
+            0,
+            index=data.index,
+            columns=[p.value for p in PatternType]
         )
-        return bands
-    except Exception as e:
-        logging.error("Błąd przy obliczaniu Bollinger Bands: %s", e)
-        raise
-
-
-def log_price_transformation(prices: pd.Series) -> pd.Series:
-    """
-    Zwraca logarytmiczną transformację cen.
-    """
-    try:
-        log_prices = np.log(prices.replace(0, np.nan)).dropna()
-        logging.info("Logarytmiczna transformacja cen wykonana pomyślnie.")
-        return log_prices
-    except Exception as e:
-        logging.error("Błąd przy transformacji logarytmicznej cen: %s", e)
-        raise
-
-
-def create_lag_features(
-    df: pd.DataFrame, column: str, lags: list = [1, 2, 3]
-) -> pd.DataFrame:
-    """
-    Tworzy cechy opóźnione (lag features) dla wskazanej kolumny.
-    """
-    try:
-        df_lagged = df.copy()
-        for lag in lags:
-            new_col = f"{column}_lag_{lag}"
-            df_lagged[new_col] = df_lagged[column].shift(lag)
-            logging.info("Stworzono cechę lag: %s", new_col)
-        return df_lagged
-    except Exception as e:
-        logging.error("Błąd przy tworzeniu cech lag: %s", e)
-        raise
-
-
-def compute_moving_average(prices: pd.Series, window: int = 10) -> pd.Series:
-    """
-    Oblicza średnią kroczącą dla serii cen.
-    """
-    try:
-        ma = prices.rolling(window=window).mean()
-        logging.info("Średnia krocząca obliczona (okno=%d).", window)
-        return ma
-    except Exception as e:
-        logging.error("Błąd przy obliczaniu średniej kroczącej: %s", e)
-        raise
-
-
-def adaptive_feature_selection(
-    df: pd.DataFrame, target_column: str, volatility_threshold: float = 0.02
-) -> pd.DataFrame:
-    """
-    Dobiera cechy dynamicznie w zależności od zmienności rynku.
-    Jeżeli zmienność przekracza próg, dodaje cechy lag, MA, RSI, MACD.
-    """
-    try:
-        df_selected = df.copy()
-        price_std = df[target_column].pct_change().std()
-        logging.info("Zmienność (std) cen: %f", price_std)
-        if price_std > volatility_threshold:
-            logging.info(
-                "Zmienność przekracza próg. Dodawanie cech opóźnionych i wskaźników technicznych."
+        
+        # Detect patterns
+        for i in range(len(data) - self.config.pattern_window + 1):
+            window = data.iloc[i:i + self.config.pattern_window]
+            patterns = self.pattern_recognizer.identify_patterns(
+                window,
+                min_confidence=self.config.min_pattern_confidence
             )
-            # Dodaj cechy lag
-            df_selected = create_lag_features(
-                df_selected, target_column, lags=[1, 2, 3]
+            
+            for pattern in patterns['patterns']:
+                pattern_features.iloc[i + self.config.pattern_window - 1][
+                    pattern['type']
+                ] = pattern['confidence']
+        
+        # Cache results
+        self._pattern_cache[cache_key] = pattern_features
+        
+        return pattern_features
+    
+    def _select_features(
+        self,
+        features: pd.DataFrame,
+        target: Optional[pd.Series] = None
+    ) -> pd.DataFrame:
+        """Select most important features"""
+        # Convert to numpy for processing
+        feature_array = features.values
+        
+        if self.config.n_components:
+            # Apply PCA
+            if self.pca is None:
+                self.pca = PCA(n_components=self.config.n_components)
+                feature_array = self.pca.fit_transform(feature_array)
+            else:
+                feature_array = self.pca.transform(feature_array)
+            
+            # Create DataFrame with PCA components
+            selected = pd.DataFrame(
+                feature_array,
+                index=features.index,
+                columns=[f'PC_{i+1}' for i in range(self.config.n_components)]
             )
-            # Dodaj średnią kroczącą
-            df_selected[f"{target_column}_ma_10"] = compute_moving_average(
-                df_selected[target_column], window=10
-            )
-            # Dodaj RSI
-            df_selected[f"{target_column}_rsi"] = compute_rsi(
-                df_selected[target_column], window=14
-            )
-            # Dodaj MACD
-            macd_df = compute_macd(df_selected[target_column])
-            df_selected = pd.concat([df_selected, macd_df], axis=1)
+        
+        elif target is not None:
+            # Calculate feature importance using mutual information
+            if self.feature_importance is None:
+                self.feature_importance = mutual_info_regression(
+                    feature_array,
+                    target.values
+                )
+                
+                # Select features above threshold
+                important_features = [
+                    col for col, imp in zip(features.columns, self.feature_importance)
+                    if imp > self.config.importance_threshold
+                ]
+                
+                selected = features[important_features]
+            else:
+                selected = features[
+                    [col for col, imp in zip(features.columns, self.feature_importance)
+                     if imp > self.config.importance_threshold]
+                ]
         else:
-            logging.info("Zmienność poniżej progu. Używane są tylko podstawowe cechy.")
-        return df_selected.dropna()
-    except Exception as e:
-        logging.error("Błąd w adaptive_feature_selection: %s", e)
-        raise
+            selected = features
+        
+        return selected
+    
+    def generate_features(
+        self,
+        data: pd.DataFrame,
+        target: Optional[pd.Series] = None,
+        fit: bool = True
+    ) -> Tuple[pd.DataFrame, Dict[str, Any]]:
+        """Generate features from market data"""
+        try:
+            if not all(col in data.columns for col in ['open', 'high', 'low', 'close', 'volume']):
+                raise ValueError("Data must contain OHLCV columns")
+            
+            feature_sets = {}
+            
+            # Price-based features
+            if self.config.use_returns:
+                returns = self._calculate_returns(
+                    data['close'],
+                    self.config.return_periods,
+                    self.config.use_log_returns
+                )
+                feature_sets['returns'] = returns
+            
+            # Technical indicators
+            indicators = self._calculate_technical_indicators(data)
+            feature_sets['technical'] = indicators
+            
+            # Pattern features
+            if self.config.use_patterns:
+                patterns = self._extract_pattern_features(data)
+                feature_sets['patterns'] = patterns
+            
+            # Combine all features
+            features = pd.concat(feature_sets.values(), axis=1)
+            
+            # Handle missing values
+            features = features.fillna(method='ffill').fillna(0)
+            
+            # Select features
+            features = self._select_features(features, target)
+            
+            # Scale features
+            if fit:
+                self.scaler.fit(features)
+            scaled_features = self.scaler.transform(features)
+            
+            # Move to GPU if needed
+            if self.config.use_gpu:
+                scaled_features = torch.from_numpy(
+                    scaled_features.values
+                ).float().to(self.device)
+            
+            return scaled_features, {
+                'n_features': features.shape[1],
+                'feature_sets': {
+                    name: set(df.columns)
+                    for name, df in feature_sets.items()
+                }
+            }
+            
+        except Exception as e:
+            self.logger.error(f"Error generating features: {e}")
+            raise
+    
+    def save(self, path: Union[str, Path]):
+        """Save feature engineering state"""
+        path = Path(path)
+        path.mkdir(parents=True, exist_ok=True)
+        
+        # Save configuration
+        with open(path / 'config.json', 'w') as f:
+            import json
+            json.dump(vars(self.config), f, indent=4)
+        
+        # Save scaler
+        self.scaler.save(path / 'scaler')
+        
+        # Save PCA if used
+        if self.pca is not None:
+            import joblib
+            joblib.dump(self.pca, path / 'pca.joblib')
+        
+        # Save feature importance if calculated
+        if self.feature_importance is not None:
+            np.save(path / 'feature_importance.npy', self.feature_importance)
+    
+    @classmethod
+    def load(
+        cls,
+        path: Union[str, Path],
+        device: Optional[str] = None
+    ) -> 'FeatureEngineer':
+        """Load feature engineering state"""
+        path = Path(path)
+        
+        # Load configuration
+        with open(path / 'config.json', 'r') as f:
+            import json
+            config_dict = json.load(f)
+            config = FeatureConfig(**config_dict)
+        
+        # Create instance
+        instance = cls(config=config, device=device)
+        
+        # Load scaler
+        instance.scaler = FeatureScaler.load(path / 'scaler', device=device)
+        
+        # Load PCA if exists
+        pca_path = path / 'pca.joblib'
+        if pca_path.exists():
+            import joblib
+            instance.pca = joblib.load(pca_path)
+        
+        # Load feature importance if exists
+        importance_path = path / 'feature_importance.npy'
+        if importance_path.exists():
+            instance.feature_importance = np.load(importance_path)
+        
+        return instance
 
-
-def validate_data(df: pd.DataFrame) -> bool:
-    """
-    Weryfikuje jakość danych: sprawdza brakujące wartości oraz typy kolumn.
-    """
+def run_tests():
+    """Run unit tests"""
     try:
-        if df.isnull().values.any():
-            missing = df.isnull().sum().sum()
-            logging.error("Wykryto %d brakujących wartości w danych.", missing)
-            raise ValueError(f"Dane zawierają {missing} brakujących wartości.")
-        if not all(np.issubdtype(dtype, np.number) for dtype in df.dtypes):
-            logging.error("Wykryto kolumny z nie-numerycznymi typami danych.")
-            raise ValueError("Nie wszystkie kolumny są numeryczne.")
-        logging.info("Walidacja danych przebiegła pomyślnie.")
-        return True
+        # Generate sample data
+        np.random.seed(42)
+        dates = pd.date_range('2023-01-01', periods=1000, freq='H')
+        data = pd.DataFrame({
+            'open': np.random.randn(1000).cumsum() + 100,
+            'high': np.random.randn(1000).cumsum() + 102,
+            'low': np.random.randn(1000).cumsum() + 98,
+            'close': np.random.randn(1000).cumsum() + 100,
+            'volume': np.random.randint(1000, 10000, 1000)
+        }, index=dates)
+        
+        # Test with default config
+        engineer = FeatureEngineer()
+        features, info = engineer.generate_features(data)
+        
+        # Test with custom config
+        config = FeatureConfig(
+            use_patterns=True,
+            n_components=10,
+            use_gpu=True
+        )
+        engineer = FeatureEngineer(config=config)
+        features, info = engineer.generate_features(data)
+        
+        # Test persistence
+        tmp_path = Path('test_features')
+        engineer.save(tmp_path)
+        loaded = FeatureEngineer.load(tmp_path)
+        features2, _ = loaded.generate_features(data, fit=False)
+        
+        # Cleanup
+        import shutil
+        shutil.rmtree(tmp_path)
+        
+        logging.info("All feature engineering tests passed!")
+        
     except Exception as e:
-        logging.error("Błąd podczas walidacji danych: %s", e)
+        logging.error(f"Feature engineering test failed: {e}")
         raise
 
-
-# -------------------- Przykładowe użycie --------------------
 if __name__ == "__main__":
-    try:
-        # Przykładowe dane
-        dates = pd.date_range(start="2023-01-01", periods=100, freq="D")
-        prices = pd.Series(
-            np.random.uniform(50, 150, size=100), index=dates, name="close"
-        )
-        df_example = pd.DataFrame(prices)
-
-        # Walidacja danych
-        validate_data(df_example)
-
-        # Proste wskaźniki RSI i MACD
-        df_example = add_rsi(df_example, period=14)
-        df_example = add_macd(df_example, fast=12, slow=26, signal=9)
-
-        # Bardziej zaawansowane wskaźniki
-        macd_df = compute_macd(df_example["close"])
-        df_example = pd.concat([df_example, macd_df], axis=1)
-        bollinger_df = compute_bollinger_bands(df_example["close"])
-        df_example = pd.concat([df_example, bollinger_df], axis=1)
-        df_example["log_close"] = log_price_transformation(df_example["close"])
-        df_features = adaptive_feature_selection(
-            df_example, "close", volatility_threshold=0.02
-        )
-
-        logging.info("Przykładowe dane z cechami:\n%s", df_features.head())
-    except Exception as e:
-        logging.error("Wystąpił błąd w przykładowym użyciu: %s", e)
+    run_tests()

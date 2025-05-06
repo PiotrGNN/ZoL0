@@ -1,4 +1,3 @@
-
 """
 model_loader.py
 --------------
@@ -15,6 +14,7 @@ import os
 import logging
 import traceback
 from typing import Dict, Any, List, Optional, Union
+import threading
 
 from python_libs.model_tester import ModelTester
 
@@ -50,38 +50,81 @@ class ModelLoader:
         self.models: Dict[str, Any] = {}
         self.model_tester = ModelTester(models_path=models_path, log_path='logs/model_loader.log')
         self.training_data = None
+        self._initialized = False
+        self._load_lock = threading.Lock()
         
         logger.info(f"Inicjalizacja ModelLoader dla ścieżki: {models_path}")
-    
+        
     def load_models(self) -> Dict[str, Any]:
         """
-        Ładuje wszystkie dostępne modele.
+        Ładuje wszystkie dostępne modele z obsługą współbieżności.
         
         Returns:
             Dict[str, Any]: Słownik załadowanych modeli
         """
-        logger.info("Rozpoczęcie ładowania modeli...")
-        
-        try:
-            # Uruchomienie testera modeli
-            self.model_tester.run_tests()
-            
-            # Pobranie załadowanych modeli
-            loaded_models = self.model_tester.get_loaded_models()
-            
-            # Przechowanie modeli w słowniku
-            for model_info in loaded_models:
-                model_name = model_info['name']
-                self.models[model_name] = model_info['instance']
-                logger.info(f"Załadowano model: {model_name}")
-            
-            logger.info(f"Załadowano {len(self.models)} modeli")
+        if self._initialized:
             return self.models
             
+        with self._load_lock:
+            if self._initialized:  # Double-check pattern
+                return self.models
+                
+            logger.info("Rozpoczęcie ładowania modeli...")
+            
+            try:
+                # Uruchomienie testera modeli
+                self.model_tester.run_tests()
+                
+                # Pobranie załadowanych modeli
+                loaded_models = self.model_tester.get_loaded_models()
+                
+                # Przechowanie modeli w słowniku
+                for model_info in loaded_models:
+                    model_name = model_info['name']
+                    if self._validate_model(model_info['instance']):
+                        self.models[model_name] = model_info['instance']
+                        logger.info(f"Załadowano model: {model_name}")
+                    else:
+                        logger.warning(f"Model {model_name} nie przeszedł walidacji")
+                
+                self._initialized = True
+                logger.info(f"Załadowano {len(self.models)} modeli")
+                return self.models
+                
+            except Exception as e:
+                logger.error(f"Błąd podczas ładowania modeli: {e}")
+                traceback.print_exc()
+                return {}
+                
+    def _validate_model(self, model: Any) -> bool:
+        """
+        Sprawdza czy model spełnia wymagane kryteria.
+        
+        Args:
+            model: Model do sprawdzenia
+            
+        Returns:
+            bool: True jeśli model jest poprawny
+        """
+        try:
+            # Sprawdź czy model ma wymagane metody
+            required_methods = ['predict']
+            optional_methods = ['fit', 'transform', 'score']
+            
+            for method in required_methods:
+                if not hasattr(model, method):
+                    logger.warning(f"Model nie ma wymaganej metody: {method}")
+                    return False
+            
+            # Loguj informacje o opcjonalnych metodach
+            for method in optional_methods:
+                if hasattr(model, method):
+                    logger.debug(f"Model posiada opcjonalną metodę: {method}")
+            
+            return True
         except Exception as e:
-            logger.error(f"Błąd podczas ładowania modeli: {e}")
-            traceback.print_exc()
-            return {}
+            logger.error(f"Błąd podczas walidacji modelu: {e}")
+            return False
             
     def predict(self, data=None):
         """

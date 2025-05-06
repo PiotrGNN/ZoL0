@@ -1,0 +1,9 @@
+Defaulting to user installation because normal site-packages is not writeable
+Requirement already satisfied: pybit in /home/vscode/.local/lib/python3.11/site-packages (5.5.0)
+Requirement already satisfied: requests in /home/vscode/.local/lib/python3.11/site-packages (from pybit) (2.32.3)
+Requirement already satisfied: websocket-client in /home/vscode/.local/lib/python3.11/site-packages (from pybit) (1.8.0)
+Requirement already satisfied: websockets in /home/vscode/.local/lib/python3.11/site-packages (from pybit) (15.0.1)
+Requirement already satisfied: charset-normalizer<4,>=2 in /home/vscode/.local/lib/python3.11/site-packages (from requests->pybit) (3.4.1)
+Requirement already satisfied: idna<4,>=2.5 in /home/vscode/.local/lib/python3.11/site-packages (from requests->pybit) (3.10)
+Requirement already satisfied: urllib3<3,>=1.21.1 in /home/vscode/.local/lib/python3.11/site-packages (from requests->pybit) (2.4.0)
+Requirement already satisfied: certifi>=2017.4.17 in /home/vscode/.local/lib/python3.11/site-packages (from requests->pybit) (2025.4.26)

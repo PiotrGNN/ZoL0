@@ -1,0 +1,155 @@
+# Trading System Configuration
+
+environment:
+  mode: "development"  # development, test, production
+  debug: true
+  log_level: "INFO"
+
+strategies:
+  breakout:
+    enabled: true
+    indicators:
+    - BB
+    - Volume
+    timeframes:
+    - 1h
+  mean_reversion:
+    enabled: false
+    indicators:
+    - BB
+    - RSI
+    timeframes:
+    - 15m
+    - 1h
+  trend_following:
+    enabled: true
+    indicators:
+    - EMA
+    - RSI
+    timeframes:
+    - 1h
+    - 4h
+
+trading:
+  exchange: "bybit"
+  symbols: ["BTCUSDT", "ETHUSDT"]
+  timeframes: ["1h", "4h"]
+  risk:
+    max_position_size: 1000
+    stop_loss_pct: 2.0
+    take_profit_pct: 4.0
+    max_risk_per_trade: 0.02
+    max_daily_drawdown: 0.05
+
+models:
+  anomaly_detector:
+    threshold: 0.95
+    window_size: 100
+  sentiment_analyzer:
+    model_type: "bert"
+    confidence_threshold: 0.8
+  
+api:
+  timeout: 30
+  retry_attempts: 3
+  base_url: "https://api-testnet.bybit.com"
+
+database:
+  path: "data/trading.db"
+  backup_interval: 3600
+
+logging:
+  level: "INFO"
+  file: "logs/trading.log"
+  max_size: 10485760  # 10MB
+  backup_count: 5
+
+# Trading system configuration
+
+# Database configuration
+database:
+  path: "data/trading.db"
+
+# Trading configuration
+trading:
+  auto_trading_enabled: false  # Set to true to enable live trading
+  symbols:
+    - "BTCUSDT"
+    - "ETHUSDT"
+  timeframes:
+    - "1h"
+    - "4h"
+    - "1d"
+  risk:
+    max_position_size: 1000
+    max_risk_per_trade: 0.02  # 2% per trade
+    max_daily_drawdown: 0.05  # 5% daily max drawdown
+    max_leverage: 3.0
+    max_portfolio_risk: 0.1  # 10% total portfolio risk
+
+# Strategy configuration
+strategies:
+  trend_following:
+    enabled: true
+    timeframes: ["4h", "1d"]
+    indicators: ["EMA", "RSI", "Volume"]
+    
+  mean_reversion:
+    enabled: true
+    timeframes: ["1h", "4h"]
+    indicators: ["BB", "RSI", "Volume"]
+    
+  breakout:
+    enabled: true
+    timeframes: ["1h", "4h", "1d"]
+    indicators: ["BB", "Volume"]
+
+# Model configuration
+models:
+  sentiment_analyzer:
+    enabled: true
+    update_interval: 3600  # 1 hour
+    
+  anomaly_detector:
+    enabled: true
+    confidence_threshold: 0.8
+    
+  market_regime:
+    enabled: true
+    timeframes: ["4h", "1d"]
+
+# Monitoring configuration
+monitoring:
+  enabled: true
+  thresholds:
+    cpu_usage: 80.0
+    memory_usage: 80.0
+    api_error_rate: 0.1
+    drawdown: 0.1
+  metrics_interval: 300  # 5 minutes
+
+# Notification configuration
+notifications:
+  enabled: true
+  min_level: "WARNING"  # INFO/WARNING/ERROR/CRITICAL
+  email:
+    enabled: false
+    host: "smtp.gmail.com"
+    port: 587
+    user: ""  # Set in .env
+    password: ""  # Set in .env
+    from: ""  # Set in .env
+    to: ""  # Set in .env
+  telegram:
+    enabled: false
+    token: ""  # Set in .env
+    chat_id: ""  # Set in .env
+
+# Performance tracking
+performance:
+  backtest:
+    initial_capital: 10000
+    fee_rate: 0.001  # 0.1% trading fee
+  metrics:
+    max_trades_history: 1000
+    update_interval: 3600  # 1 hour

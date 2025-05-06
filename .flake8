@@ -1,8 +1,22 @@
-
 [flake8]
 max-line-length = 100
-exclude = .git,__pycache__,*.egg-info,build,dist,.venv,venv,env
-ignore = E203, W503, E501
+max-complexity = 10
+exclude = .git,__pycache__,build,dist,*.egg-info,.eggs,docs/_build
+extend-ignore = E203, W503
+ignore = W292,E501,W291,W293,E303
+select = C,E,F,W,B,B950
 per-file-ignores =
-    __init__.py:F401,F403
-    */tests/*:E712
+    __init__.py: F401
+    tests/*: D100,D101,D102,D103
+    setup.py: D100
+
+# Explanations:
+# E203: Whitespace before ':' (black formatting conflict)
+# W503: Line break before binary operator (black formatting conflict)
+# W292: No newline at end of file
+# E501: Line too long
+# W291: Trailing whitespace
+# W293: Blank line contains whitespace
+# E303: Too many blank lines
+# F401: Module imported but unused (allowed in __init__.py)
+# D100-D103: Missing docstrings (allowed in tests)

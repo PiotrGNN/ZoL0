@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trading-system
+  labels:
+    app: trading-system
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: trading-system
+  template:
+    metadata:
+      labels:
+        app: trading-system
+    spec:
+      containers:
+      - name: trading-api
+        image: trading-system:latest
+        command: ["python", "main.py"]
+        ports:
+        - containerPort: 5000
+        env:
+        - name: ENVIRONMENT
+          value: "production"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        volumeMounts:
+        - name: config
+          mountPath: /app/config
+        - name: logs
+          mountPath: /app/logs
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: 5000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        
+      - name: trading-engine
+        image: trading-system:latest
+        command: ["python", "run.py"]
+        env:
+        - name: ENVIRONMENT
+          value: "production"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+        volumeMounts:
+        - name: config
+          mountPath: /app/config
+        - name: models
+          mountPath: /app/models
+        - name: logs
+          mountPath: /app/logs
+        
+      - name: dashboard
+        image: trading-system:latest
+        command: ["streamlit", "run", "dashboard.py"]
+        ports:
+        - containerPort: 8501
+        env:
+        - name: ENVIRONMENT
+          value: "production"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        volumeMounts:
+        - name: config
+          mountPath: /app/config
+        - name: logs
+          mountPath: /app/logs
+        
+      volumes:
+      - name: config
+        configMap:
+          name: trading-system-config
+      - name: logs
+        persistentVolumeClaim:
+          claimName: logs-pvc
+      - name: models
+        persistentVolumeClaim:
+          claimName: models-pvc

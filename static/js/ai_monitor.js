@@ -121,10 +121,16 @@ function updateAIModelsTable(models) {
 
 // Pobieranie myśli AI
 function fetchAIThoughts() {
+    const thoughtsContainer = document.getElementById('ai-thoughts-list');
+    if (!thoughtsContainer) {
+        console.warn('Element ai-thoughts-list not found');
+        return;
+    }
+
     fetch('/api/ai/thoughts')
         .then(response => {
             if (!response.ok) {
-                throw new Error(`Błąd HTTP: ${response.status}`);
+                throw new Error(`HTTP error: ${response.status}`);
             }
             return response.json();
         })
@@ -135,8 +141,12 @@ function fetchAIThoughts() {
             }
         })
         .catch(error => {
-            console.error("Błąd podczas pobierania przemyśleń AI:", error);
-            showNotification('error', 'Nie udało się pobrać przemyśleń AI');
+            console.error("Error fetching AI thoughts:", error);
+            thoughtsContainer.innerHTML = `
+                <div class="error-message">
+                    Failed to load AI thoughts. 
+                    <button class="retry-button" onclick="fetchAIThoughts()">Retry</button>
+                </div>`;
         });
 }
 

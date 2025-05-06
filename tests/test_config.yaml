@@ -1,0 +1,36 @@
+test_environment:
+  exchange: bybit
+  market: BTCUSDT
+  timeframe: 5min
+  test_mode: true
+
+test_parameters:
+  trade_size: 0.001
+  max_position: 0.01
+  stop_loss_pct: 0.02
+  take_profit_pct: 0.03
+  max_slippage: 0.001
+
+model_parameters:
+  confidence_threshold: 0.7
+  lookback_period: 100
+  pattern_min_bars: 10
+  pattern_max_bars: 50
+
+risk_parameters:
+  max_drawdown: 0.10
+  max_daily_trades: 10
+  max_open_trades: 3
+  position_sizing: dynamic
+
+test_data_paths:
+  market_data: tests/data/market_data.csv
+  patterns: tests/data/patterns.json
+  trades: tests/data/trades.json
+  results: tests/results/
+
+monitoring:
+  log_level: INFO
+  performance_tracking: true
+  error_tracking: true
+  metrics_collection: true

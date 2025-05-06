@@ -1,0 +1,40 @@
+{
+  "total_models": 3,
+  "successful_tests": 3,
+  "failed_tests": 0,
+  "model_results": {
+    "AnomalyDetector": {
+      "success": {
+        "success": true,
+        "accuracy": 84.6,
+        "predict_time": 0.12436127662658691,
+        "model": "AnomalyDetector"
+      },
+      "test_time": "0.12s",
+      "has_predict": true,
+      "has_fit": true
+    },
+    "ModelRecognizer": {
+      "success": {
+        "success": true,
+        "accuracy": 73.0,
+        "predict_time": 0.00028228759765625,
+        "model": "ModelRecognizer"
+      },
+      "test_time": "0.00s",
+      "has_predict": true,
+      "has_fit": true
+    },
+    "SentimentAnalyzer": {
+      "success": {
+        "success": true,
+        "accuracy": 86.4,
+        "predict_time": 2.765655517578125e-05,
+        "model": "SentimentAnalyzer"
+      },
+      "test_time": "0.00s",
+      "has_predict": true,
+      "has_fit": true
+    }
+  }
+}

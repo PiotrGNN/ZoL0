@@ -1,0 +1,191 @@
+openapi: 3.0.0
+info:
+  title: Trading System API
+  version: 1.0.0
+  description: API for managing trading operations and AI models
+
+servers:
+  - url: http://localhost:8501/api/v1
+    description: Development server
+
+paths:
+  /trading/start:
+    post:
+      summary: Start automated trading
+      description: Initiates automated trading with specified parameters
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                symbols:
+                  type: array
+                  items:
+                    type: string
+                  example: ["BTC/USDT"]
+                strategy:
+                  type: string
+                  example: "trend_following"
+      responses:
+        '200':
+          description: Trading started successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+
+  /trading/stop:
+    post:
+      summary: Stop automated trading
+      responses:
+        '200':
+          description: Trading stopped successfully
+
+  /models/train:
+    post:
+      summary: Train a new AI model
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                model_type:
+                  type: string
+                  enum: [randomforest, xgboost, gradientboosting]
+                parameters:
+                  type: object
+      responses:
+        '200':
+          description: Model trained successfully
+
+  /models/predict:
+    post:
+      summary: Get model predictions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                model_name:
+                  type: string
+                features:
+                  type: object
+      responses:
+        '200':
+          description: Prediction successful
+
+  /system/health:
+    get:
+      summary: Get system health status
+      responses:
+        '200':
+          description: System health information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [healthy, warning, error]
+                  metrics:
+                    type: object
+                  warnings:
+                    type: array
+                    items:
+                      type: string
+
+  /metrics/trading:
+    get:
+      summary: Get trading performance metrics
+      parameters:
+        - name: timeframe
+          in: query
+          schema:
+            type: string
+            enum: [1h, 24h, 7d, 30d]
+      responses:
+        '200':
+          description: Trading metrics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_trades:
+                    type: integer
+                  win_rate:
+                    type: number
+                  profit_factor:
+                    type: number
+                  sharpe_ratio:
+                    type: number
+
+components:
+  schemas:
+    Trade:
+      type: object
+      properties:
+        id:
+          type: integer
+        symbol:
+          type: string
+        direction:
+          type: string
+          enum: [long, short]
+        entry_price:
+          type: number
+        exit_price:
+          type: number
+        quantity:
+          type: number
+        status:
+          type: string
+          enum: [open, closed, cancelled]
+        profit_loss:
+          type: number
+
+    Strategy:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        parameters:
+          type: object
+
+    ModelMetadata:
+      type: object
+      properties:
+        model_name:
+          type: string
+        model_type:
+          type: string
+        training_date:
+          type: string
+          format: date-time
+        metrics:
+          type: object
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+security:
+  - ApiKeyAuth: []

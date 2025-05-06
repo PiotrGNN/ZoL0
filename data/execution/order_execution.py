@@ -14,6 +14,7 @@ Funkcjonalności:
 
 import logging
 import time
+from typing import Dict, Any
 
 # Konfiguracja logowania
 logging.basicConfig(
@@ -22,88 +23,43 @@ logging.basicConfig(
 
 
 class OrderExecution:
-    def __init__(self, connector, max_retries=3, retry_delay=2):
-        """
-        Inicjalizuje moduł wysyłania zleceń.
-
-        Parameters:
-            connector: Instancja klasy ExchangeConnector do komunikacji z API giełdowym.
-            max_retries (int): Maksymalna liczba prób wysłania zlecenia.
-            retry_delay (int): Opóźnienie pomiędzy próbami (w sekundach).
-        """
+    """Order execution handler."""
+    
+    def __init__(self, connector):
+        """Initialize with exchange connector."""
         self.connector = connector
-        self.max_retries = max_retries
-        self.retry_delay = retry_delay
-
+        
     def send_order(
-        self, symbol, side, order_type, quantity, price=None, time_in_force="GTC"
-    ):
-        """
-        Wysyła zlecenie do giełdy i monitoruje jego status.
-
-        Parameters:
-            symbol (str): Symbol pary walutowej (np. "BTCUSDT").
-            side (str): Kierunek zlecenia ("BUY" lub "SELL").
-            order_type (str): Typ zlecenia ("MARKET", "LIMIT", "STOP_LIMIT", "OCO").
-            quantity (float): Rozmiar zlecenia.
-            price (float, optional): Cena zlecenia (wymagana dla LIMIT, STOP_LIMIT).
-            time_in_force (str): Parametr time-in-force dla zleceń LIMIT (domyślnie "GTC").
-
-        Returns:
-            dict: Odpowiedź API dotycząca zlecenia.
-        """
-        attempt = 0
-        order_response = None
-        while attempt < self.max_retries:
-            try:
-                if order_type.upper() == "LIMIT":
-                    order_response = self.connector.place_order(
-                        symbol=symbol,
-                        side=side,
-                        order_type=order_type,
-                        quantity=quantity,
-                        price=price,
-                    )
-                elif order_type.upper() == "MARKET":
-                    order_response = self.connector.place_order(
-                        symbol=symbol,
-                        side=side,
-                        order_type=order_type,
-                        quantity=quantity,
-                    )
-                elif order_type.upper() in ["STOP_LIMIT", "OCO"]:
-                    # Dla zleceń STOP_LIMIT i OCO wymagane mogą być dodatkowe parametry,
-                    # które należy zaimplementować zgodnie z dokumentacją API.
-                    order_response = self.connector.place_order(
-                        symbol=symbol,
-                        side=side,
-                        order_type=order_type,
-                        quantity=quantity,
-                        price=price,
-                    )
-                else:
-                    raise ValueError(f"Nieobsługiwany typ zlecenia: {order_type}")
-
-                # Sprawdzamy, czy odpowiedź zawiera potwierdzenie wykonania zlecenia
-                if "orderId" in order_response:
-                    logging.info("Zlecenie wysłane pomyślnie: %s", order_response)
-                    return order_response
-                else:
-                    logging.warning(
-                        "Zlecenie nie zostało potwierdzone: %s", order_response
-                    )
-                    raise Exception("Brak potwierdzenia zlecenia")
-            except Exception as e:
-                attempt += 1
-                logging.error(
-                    "Błąd przy wysyłaniu zlecenia (próba %d/%d): %s",
-                    attempt,
-                    self.max_retries,
-                    e,
-                )
-                time.sleep(self.retry_delay)
-        logging.error("Nie udało się wysłać zlecenia po %d próbach.", self.max_retries)
-        return order_response
+        self,
+        symbol: str,
+        side: str,
+        quantity: float,
+        order_type: str = "MARKET",
+        price: float = None,
+        stop_loss: float = None,
+        take_profit: float = None
+    ) -> Dict[str, Any]:
+        """Send an order to the exchange."""
+        # Validate inputs
+        if not symbol or not side or quantity <= 0:
+            raise ValueError("Invalid order parameters")
+            
+        if order_type == "LIMIT" and not price:
+            raise ValueError("Limit order requires price")
+            
+        # Prepare order
+        order = {
+            "symbol": symbol,
+            "side": side,
+            "type": order_type,
+            "quantity": quantity
+        }
+        
+        if price:
+            order["price"] = price
+            
+        # Send order to exchange
+        return self.connector.place_order(order)
 
     def monitor_order(self, order_id, symbol, poll_interval=2, timeout=30):
         """

@@ -1,4 +1,3 @@
-
 """
 anomaly_detection.py
 ------------------
@@ -10,279 +9,234 @@ import numpy as np
 import pandas as pd
 from typing import Dict, List, Optional, Tuple, Union, Any
 import logging
+from datetime import datetime, timedelta
+import hashlib
 
 class AnomalyDetector:
     """
-    Klasa do wykrywania anomalii w danych cenowych i sygnałach transakcyjnych.
-    Użyteczna do identyfikacji potencjalnych błędów w strategiach lub manipulacji rynkiem.
+    Detector anomalii wykorzystujący Isolation Forest z fallbackiem do prostszych metod.
+    Zapewnia mechanizmy odporności na błędy i automatycznego przywracania.
     """
     
     def __init__(self, model_path: Optional[str] = None, sensitivity: float = 0.05):
         """
-        Inicjalizacja detektora anomalii.
+        Initialize anomaly detector with fallback mechanisms.
         
         Args:
-            model_path: Opcjonalna ścieżka do zapisanego modelu
-            sensitivity: Poziom czułości wykrywania anomalii (0.01-0.1, gdzie niższe wartości oznaczają większą czułość)
+            model_path: Optional path to saved model
+            sensitivity: Contamination parameter (0 to 1)
         """
+        self.logger = logging.getLogger(__name__)
+        self.sensitivity = max(0.01, min(sensitivity, 0.5))  # Clamp between 1% and 50%
         self.model = None
-        self.sensitivity = max(0.01, min(0.1, sensitivity))  # Zakres 0.01-0.1
+        self.is_initialized = False
+        self._backup_scores = []
+        self._cache = {}
+        self._cache_timeout = timedelta(minutes=30)
+        self._last_cache_cleanup = datetime.now()
         
-        if model_path and os.path.exists(model_path):
+        if model_path:
             try:
-                import pickle
-                with open(model_path, 'rb') as f:
-                    self.model = pickle.load(f)
-                logging.info(f"Załadowano model detekcji anomalii z {model_path}")
+                self._load_model(model_path)
             except Exception as e:
-                logging.error(f"Nie udało się załadować modelu detekcji anomalii: {e}")
+                self.logger.error(f"Failed to load model from {model_path}: {e}")
                 self._initialize_default_model()
         else:
             self._initialize_default_model()
-    
+
     def _initialize_default_model(self):
-        """Inicjalizuje domyślny model detekcji anomalii."""
+        """Initialize default anomaly detection model with error handling."""
         try:
             from sklearn.ensemble import IsolationForest
             self.model = IsolationForest(
-                contamination=self.sensitivity,  # Oczekiwany procent anomalii w danych
+                contamination=self.sensitivity,
                 random_state=42,
                 n_estimators=100
             )
-            logging.info("Zainicjalizowano domyślny model detekcji anomalii (Isolation Forest)")
+            
+            # Generate and fit with sample data to ensure model is ready
+            sample_size = 1000
+            sample_data = np.random.randn(sample_size, 5)  # 5 features
+            self.model.fit(sample_data)
+            
+            self.is_initialized = True
+            self.logger.info("Initialized and fitted default IsolationForest model")
         except ImportError:
-            logging.warning("Nie można zaimportować scikit-learn. Używam prostego modelu zastępczego.")
-            self.model = None
-    
-    def fit(self, data: Union[pd.DataFrame, np.ndarray]) -> None:
-        """
-        Trenuje model detekcji anomalii na danych.
-        
-        Args:
-            data: Dane treningowe (DataFrame lub np.ndarray)
-        """
-        if self.model is None:
-            self._initialize_default_model()
-            
-        if self.model is None:
-            logging.warning("Brak modelu do treningu (scikit-learn niedostępny)")
-            return
-            
-        try:
-            # Przygotuj dane do treningu
-            X = self._prepare_data(data)
-            
-            # Trenuj model
-            self.model.fit(X)
-            logging.info(f"Wytrenowano model detekcji anomalii na {X.shape[0]} próbkach")
+            self.logger.warning("scikit-learn not available. Using statistical fallback.")
+            self._initialize_statistical_fallback()
         except Exception as e:
-            logging.error(f"Błąd podczas treningu modelu detekcji anomalii: {e}")
-    
-    def detect(self, data: Union[pd.DataFrame, np.ndarray]) -> Dict[str, Any]:
-        """
-        Wykrywa anomalie w danych.
+            self.logger.error(f"Error initializing default model: {e}")
+            self._initialize_statistical_fallback()
+
+    def _initialize_statistical_fallback(self):
+        """Initialize simple statistical anomaly detection as fallback."""
+        self.model = None
+        self.is_initialized = True
+        self.logger.info("Initialized statistical fallback detection")
+
+    def _load_model(self, model_path: str):
+        """Load saved model with validation."""
+        import joblib
         
-        Args:
-            data: Dane do analizy (DataFrame lub np.ndarray)
-            
-        Returns:
-            Dict: Wyniki detekcji zawierające indeksy anomalii i ich wyniki
-        """
-        try:
-            if self.model is None:
-                return self._fallback_detect(data)
-                
-            # Przygotuj dane
-            X = self._prepare_data(data)
-            
-            # Wykonaj predykcję (-1 to anomalia, 1 to normalne dane)
-            predictions = self.model.predict(X)
-            scores = self.model.decision_function(X)
-            
-            # Znajdź indeksy anomalii
-            anomaly_indices = np.where(predictions == -1)[0]
-            
-            # Jeśli dane zawierają indeks czasowy, użyj go
-            timestamps = None
-            if isinstance(data, pd.DataFrame) and isinstance(data.index, pd.DatetimeIndex):
-                timestamps = data.index[anomaly_indices].tolist()
-            
-            # Stwórz wynik
-            result = {
-                "anomaly_indices": anomaly_indices.tolist(),
-                "anomaly_scores": scores[anomaly_indices].tolist(),
-                "anomaly_count": len(anomaly_indices),
-                "total_samples": X.shape[0],
-                "anomaly_ratio": len(anomaly_indices) / X.shape[0] if X.shape[0] > 0 else 0,
-                "timestamps": timestamps
-            }
-            
-            return result
-        except Exception as e:
-            logging.error(f"Błąd podczas wykrywania anomalii: {e}")
-            return self._fallback_detect(data)
-    
-    def _fallback_detect(self, data: Union[pd.DataFrame, np.ndarray]) -> Dict[str, Any]:
-        """
-        Prosta metoda zastępcza do wykrywania anomalii bez modelu.
+        self.logger.info(f"Loading model from {model_path}")
+        loaded_model = joblib.load(model_path)
         
-        Args:
-            data: Dane do analizy
-            
-        Returns:
-            Dict: Wyniki detekcji
-        """
-        try:
-            # Konwertuj dane do numpy array jeśli potrzeba
-            if isinstance(data, pd.DataFrame):
-                X = data.select_dtypes(include=['number']).values
-            else:
-                X = data
-                
-            # Metoda zastępcza - użyj prostej metody z-score do wykrywania anomalii
-            mean = np.mean(X, axis=0)
-            std = np.std(X, axis=0) + 1e-10  # Unikaj dzielenia przez 0
-            
-            # Oblicz z-scores
-            z_scores = np.abs((X - mean) / std)
-            
-            # Użyj maksymalnego z-score każdej próbki jako wyniku anomalii
-            max_z_scores = np.max(z_scores, axis=1)
-            
-            # Próg z-score odpowiadający czułości
-            threshold = max(2.5, 3.0 - self.sensitivity * 10)
-            
-            # Znajdź indeksy anomalii
-            anomaly_indices = np.where(max_z_scores > threshold)[0]
-            
-            # Jeśli dane zawierają indeks czasowy, użyj go
-            timestamps = None
-            if isinstance(data, pd.DataFrame) and isinstance(data.index, pd.DatetimeIndex):
-                timestamps = data.index[anomaly_indices].tolist()
-            
-            # Stwórz wynik
-            result = {
-                "anomaly_indices": anomaly_indices.tolist(),
-                "anomaly_scores": max_z_scores[anomaly_indices].tolist(),
-                "anomaly_count": len(anomaly_indices),
-                "total_samples": X.shape[0],
-                "anomaly_ratio": len(anomaly_indices) / X.shape[0] if X.shape[0] > 0 else 0,
-                "timestamps": timestamps,
-                "method": "z_score_fallback"
-            }
-            
-            return result
-        except Exception as e:
-            logging.error(f"Błąd podczas zastępczego wykrywania anomalii: {e}")
-            return {
-                "anomaly_indices": [],
-                "anomaly_scores": [],
-                "anomaly_count": 0,
-                "total_samples": 0,
-                "anomaly_ratio": 0,
-                "error": str(e),
-                "method": "failed_fallback"
-            }
-    
-    def _prepare_data(self, data: Union[pd.DataFrame, np.ndarray]) -> np.ndarray:
-        """
-        Przygotowuje dane do analizy.
-        
-        Args:
-            data: Dane wejściowe (DataFrame lub np.ndarray)
-            
-        Returns:
-            np.ndarray: Przygotowane dane
-        """
-        if isinstance(data, pd.DataFrame):
-            # Wybierz tylko kolumny numeryczne
-            numeric_data = data.select_dtypes(include=['number'])
-            
-            # Dodaj cechy techniczne jeśli są dostępne odpowiednie kolumny
-            if all(col in data.columns for col in ['open', 'high', 'low', 'close']):
-                price_volatility = data['high'] - data['low']
-                price_change = data['close'] - data['open']
-                numeric_data['price_volatility'] = price_volatility
-                numeric_data['price_change'] = price_change
-            
-            # Wypełnij braki danych
-            numeric_data = numeric_data.fillna(method='ffill').fillna(0)
-            
-            return numeric_data.values
+        # Validate loaded model
+        if hasattr(loaded_model, 'fit') and hasattr(loaded_model, 'predict'):
+            self.model = loaded_model
+            self.is_initialized = True
+            self.logger.info("Successfully loaded and validated model")
         else:
-            # Zakładamy, że dane są już w formacie np.ndarray
-            # Wypełnij braki danych
-            if np.isnan(data).any():
-                data = np.nan_to_num(data, nan=0.0)
-            return data
-    
-    def predict(self, data: Union[pd.DataFrame, np.ndarray]) -> np.ndarray:
+            raise ValueError("Loaded model missing required methods")
+
+    def fit(self, data: Union[pd.DataFrame, np.ndarray]) -> bool:
         """
-        Kompatybilność ze standardowym interfejsem - przewiduje, czy dane są anomaliami.
+        Train anomaly detection model.
         
         Args:
-            data: Dane do analizy
+            data: Training data
             
         Returns:
-            np.ndarray: Wynik detekcji (-1 dla anomalii, 1 dla normalnych danych)
-        """
-        try:
-            if self.model is None:
-                self._initialize_default_model()
-                
-            if self.model is None:
-                # Fallback gdy model jest niedostępny
-                X = self._prepare_data(data)
-                result = np.ones(X.shape[0])
-                detection = self._fallback_detect(data)
-                result[detection["anomaly_indices"]] = -1
-                return result
-            
-            # Przygotuj dane
-            X = self._prepare_data(data)
-            
-            # Sprawdź czy model został wytrenowany, jeśli nie, trenuj na bieżących danych
-            try:
-                # Próba wywołania predict może spowodować wyjątek jeśli model nie jest wytrenowany
-                self.model.predict(X[:1])
-            except Exception as e:
-                if "not fitted yet" in str(e):
-                    logging.info("Model IsolationForest nie był wytrenowany. Trenuję na bieżących danych...")
-                    self.model.fit(X)
-                    logging.info(f"Model wytrenowany na {X.shape[0]} próbkach")
-                else:
-                    raise e
-            
-            # Wykonaj predykcję
-            return self.model.predict(X)
-        except Exception as e:
-            logging.error(f"Błąd podczas przewidywania anomalii: {e}")
-            # W przypadku błędu zwróć wszystkie dane jako normalne
-            if isinstance(data, pd.DataFrame):
-                return np.ones(data.shape[0])
-            else:
-                return np.ones(data.shape[0] if len(data.shape) > 1 else len(data))
-                
-    def save_model(self, path: str) -> bool:
-        """
-        Zapisuje model do pliku.
-        
-        Args:
-            path: Ścieżka do pliku
-            
-        Returns:
-            bool: True jeśli zapis się powiódł, False w przeciwnym razie
+            bool: Success status
         """
         try:
             if self.model is not None:
-                import pickle
-                with open(path, 'wb') as f:
-                    pickle.dump(self.model, f)
-                logging.info(f"Model detekcji anomalii zapisany w {path}")
-                return True
+                # Use ML model if available
+                self.model.fit(self._prepare_data(data))
+                self.logger.info("Successfully trained ML model")
             else:
-                logging.warning("Brak modelu do zapisania")
-                return False
+                # Use statistical approach
+                self._fit_statistical(data)
+                self.logger.info("Fitted statistical parameters")
+            return True
         except Exception as e:
-            logging.error(f"Błąd podczas zapisywania modelu: {e}")
+            self.logger.error(f"Error during training: {e}")
             return False
+
+    def _fit_statistical(self, data: Union[pd.DataFrame, np.ndarray]):
+        """Fit statistical parameters for fallback detection."""
+        prepared_data = self._prepare_data(data)
+        self._mean = np.mean(prepared_data, axis=0)
+        self._std = np.std(prepared_data, axis=0)
+        self._threshold = 3  # Number of standard deviations
+
+    def detect(self, data: Union[pd.DataFrame, np.ndarray]) -> Dict[str, Any]:
+        """
+        Detect anomalies in data.
+        
+        Args:
+            data: Data to analyze
+            
+        Returns:
+            Dict with anomaly indices and scores
+        """
+        if not self.is_initialized:
+            try:
+                self._initialize_default_model()
+            except Exception as e:
+                return {"error": f"Initialization failed: {e}"}
+        
+        try:
+            # Check cache
+            cache_key = self._get_cache_key(data)
+            if cache_key in self._cache:
+                return self._cache[cache_key]
+            
+            prepared_data = self._prepare_data(data)
+            
+            if self.model is not None:
+                # Use ML model
+                predictions = self.model.predict(prepared_data)
+                scores = self.model.score_samples(prepared_data)
+                anomaly_indices = np.where(predictions == -1)[0]
+            else:
+                # Use statistical approach
+                z_scores = np.abs((prepared_data - self._mean) / self._std)
+                anomaly_indices = np.where(np.any(z_scores > self._threshold, axis=1))[0]
+                scores = -np.max(z_scores, axis=1)  # Negative to match IsolationForest convention
+            
+            result = {
+                "anomaly_indices": anomaly_indices.tolist(),
+                "anomaly_scores": scores.tolist(),
+                "timestamp": datetime.now().isoformat(),
+                "model_type": "ml" if self.model else "statistical"
+            }
+            
+            # Cache result
+            self._cache[cache_key] = result
+            self._cleanup_cache()
+            
+            return result
+            
+        except Exception as e:
+            self.logger.error(f"Error during anomaly detection: {e}")
+            return {"error": str(e)}
+
+    def _prepare_data(self, data: Union[pd.DataFrame, np.ndarray]) -> np.ndarray:
+        """Prepare input data for processing."""
+        if isinstance(data, pd.DataFrame):
+            return data.values
+        return np.asarray(data)
+
+    def _get_cache_key(self, data: Union[pd.DataFrame, np.ndarray]) -> str:
+        """Generate cache key from input data."""
+        if isinstance(data, pd.DataFrame):
+            return hashlib.md5(pd.util.hash_pandas_object(data).values).hexdigest()
+        return hashlib.md5(data.tobytes()).hexdigest()
+
+    def _cleanup_cache(self):
+        """Clean up expired cache entries."""
+        now = datetime.now()
+        if (now - self._last_cache_cleanup) > timedelta(minutes=5):
+            expired = [k for k, v in self._cache.items() 
+                      if 'timestamp' in v and 
+                      (now - datetime.fromisoformat(v['timestamp'])) > self._cache_timeout]
+            for k in expired:
+                del self._cache[k]
+            self._last_cache_cleanup = now
+
+    def save_model(self, path: str) -> bool:
+        """
+        Save the current model to disk.
+        
+        Args:
+            path: Path to save the model
+            
+        Returns:
+            bool: Success status
+        """
+        if not self.model:
+            self.logger.warning("No ML model to save")
+            return False
+            
+        try:
+            import joblib
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            joblib.dump(self.model, path)
+            self.logger.info(f"Successfully saved model to {path}")
+            return True
+        except Exception as e:
+            self.logger.error(f"Error saving model: {e}")
+            return False
+
+    def predict(self, data: Union[pd.DataFrame, np.ndarray]) -> np.ndarray:
+        """
+        Predict method for scikit-learn compatibility.
+        
+        Args:
+            data: Input data
+            
+        Returns:
+            np.ndarray: Predictions (-1 for anomalies, 1 for normal)
+        """
+        try:
+            result = self.detect(data)
+            if "error" in result:
+                raise RuntimeError(result["error"])
+                
+            predictions = np.ones(len(data))
+            predictions[result["anomaly_indices"]] = -1
+            return predictions
+        except Exception as e:
+            self.logger.error(f"Error during prediction: {e}")
+            return np.ones(len(data))  # Return all normal in case of error

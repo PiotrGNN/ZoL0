@@ -1,4 +1,3 @@
-
 """
 test_environment.py
 ------------------
@@ -149,6 +148,13 @@ def main():
     """
     Główna funkcja testująca środowisko.
     """
+    # Inicjalizacja statystyk
+    stats = {
+        "py_files_scanned": 0,
+        "models_checked": 0,
+        "libs_checked": 0
+    }
+    
     print("🔍 Sprawdzanie środowiska Python...")
     print(f"Python: {sys.version}")
     print(f"Ścieżka wykonywalna: {sys.executable}")
@@ -156,9 +162,15 @@ def main():
     
     print("\n📚 Sprawdzanie wymaganych bibliotek...")
     lib_results = check_required_libs()
+    stats["libs_checked"] = len(lib_results)
     
     print("\n🤖 Sprawdzanie dostępności modeli AI...")
     model_results = check_ai_models()
+    stats["models_checked"] = len(model_results)
+    
+    # Policz pliki .py w projekcie
+    for root, _, files in os.walk(os.getcwd()):
+        stats["py_files_scanned"] += len([f for f in files if f.endswith('.py')])
     
     # Sprawdzenie metod w modelach
     check_model_methods()
@@ -194,7 +206,7 @@ def main():
     
     if libs_ok and models_ok:
         print("\n🎉 Środowisko jest gotowe do pracy!")
-        returnn 0
+        return 0
     else:
         print("\n⚠️ Środowisko wymaga konfiguracji!")
         return 1

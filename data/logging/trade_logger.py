@@ -123,6 +123,34 @@ class TradeLogger:
             "max_loss": min(profits) if profits else 0
         }
 
+    def has_more_trades(self, current_index: int) -> bool:
+        """
+        Sprawdza czy są kolejne transakcje do przetworzenia.
+
+        Parameters:
+            current_index (int): Aktualny indeks w liście transakcji.
+
+        Returns:
+            bool: True jeśli są kolejne transakcje, False w przeciwnym razie.
+        """
+        return current_index < len(self.trades) - 1
+    
+    def get_next_trade(self, current_index: int) -> tuple[Dict[str, Any], int]:
+        """
+        Pobiera następną transakcję z listy.
+
+        Parameters:
+            current_index (int): Aktualny indeks w liście transakcji.
+
+        Returns:
+            tuple[Dict[str, Any], int]: Krotka zawierająca następną transakcję i nowy indeks.
+            Jeśli nie ma więcej transakcji, zwraca None i ten sam indeks.
+        """
+        if self.has_more_trades(current_index):
+            next_index = current_index + 1
+            return self.trades[next_index], next_index
+        return None, current_index
+
 
 # Singleton instancja dla łatwego dostępu z różnych modułów
 trade_logger = TradeLogger()

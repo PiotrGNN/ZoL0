@@ -1,121 +1,141 @@
-"""
-test_utils.py
--------------
-Testy jednostkowe dla modułów narzędziowych, takich jak:
-  - config_loader.py,
-  - database_manager.py,
-  - data_validator.py,
-  - import_manager.py,
-  - notification_system.py.
+"""Test utilities and mock classes."""
 
-Testy weryfikują poprawność ładowania konfiguracji, operacji na bazie danych,
-walidacji danych, importu modułów oraz wysyłki powiadomień.
-"""
-
-import json
 import os
 import tempfile
-import unittest
-from typing import Any
-
+import numpy as np
 import pandas as pd
+from typing import Dict, Any, List, Optional, Union
+from .base_test import BaseTestCase
 
-
-class DummyConfigLoader:
-    """Dummy loader konfiguracji."""
-
-    def __init__(self, config_files: list[str], env_prefix: str, cache_enabled: bool = True) -> None:
-        self.config_files = config_files
-        self.env_prefix = env_prefix
-        self.cache_enabled = cache_enabled
-
-    def load(self) -> dict[str, Any]:
-        # Zwracamy stałą konfigurację
-        return {"database": {"host": "localhost", "port": 3306}, "api_key": "dummy_api_key"}
-
-
-class DummyDatabaseManager:
-    """Dummy manager bazy danych."""
-
-    def __init__(self, db_path: str) -> None:
-        self.db_path = db_path
-        self.conn = None
-
+class MockDB:
+    """Mock database for testing."""
+    def __init__(self):
+        self.connected = False
+        self.queries = []
+        self.data = {}
+        
     def connect(self) -> bool:
-        self.conn = True
-        return self.conn
+        self.connected = True
+        return True
+        
+    def disconnect(self) -> bool:
+        self.connected = False
+        return True
+        
+    def is_connected(self) -> bool:
+        return self.connected
+        
+    def execute_query(self, query: str, params: Optional[tuple] = None) -> Any:
+        self.queries.append((query, params))
+        return "mock_result"
+        
+    def get_last_query(self) -> Union[tuple, None]:
+        return self.queries[-1] if self.queries else None
 
-    def execute_query(self, query: str) -> Any:
-        return "dummy_result"
+class MockCache:
+    """Mock cache for testing."""
+    def __init__(self):
+        self.data = {}
+        self._valid = {}
+        
+    def get(self, key: str) -> Any:
+        return self.data.get(key)
+        
+    def set(self, key: str, value: Any) -> None:
+        self.data[key] = value
+        self._valid[key] = True
+        
+    def delete(self, key: str) -> None:
+        self.data.pop(key, None)
+        self._valid.pop(key, None)
+        
+    def clear(self) -> None:
+        self.data.clear()
+        self._valid.clear()
+        
+    def is_valid(self, key: str) -> bool:
+        return self._valid.get(key, False)
 
+class MockNotifier:
+    """Mock notification system for testing."""
+    def __init__(self):
+        self.notifications = []
+        self.alerts = []
+        
+    def send_notification(self, message: str, level: str = "info") -> Dict[str, Any]:
+        self.notifications.append({"message": message, "level": level})
+        return {"status": "sent", "id": len(self.notifications)}
+        
+    def send_alert(self, message: str, level: str = "warning") -> bool:
+        self.alerts.append({"message": message, "level": level})
+        return True
+        
+    def get_notifications(self) -> List[Dict[str, Any]]:
+        return self.notifications
+        
+    def get_alerts(self) -> List[Dict[str, Any]]:
+        return self.alerts
 
-class DummyDataValidator:
-    """Dummy validator danych."""
+class MockTestCase(BaseTestCase):
+    """Base test case with common mock objects."""
+    
+    def setUp(self):
+        """Set up test case resources including mock objects."""
+        super().setUp()
+        self.mock_db = MockDB()
+        self.mock_cache = MockCache()
+        self.mock_notifier = MockNotifier()
+        
+    def tearDown(self):
+        """Clean up test resources including mock connections."""
+        if hasattr(self.mock_db, 'disconnect') and self.mock_db.is_connected():
+            self.mock_db.disconnect()
+        super().tearDown()
 
-    def validate(self, data: Any) -> bool:
-        return bool(data)
+def create_test_dataframe(
+    periods: int = 100,
+    frequency: str = "D",
+    random_seed: Optional[int] = None
+) -> pd.DataFrame:
+    """Create a DataFrame with test data."""
+    if random_seed is not None:
+        np.random.seed(random_seed)
+        
+    dates = pd.date_range("2023-01-01", periods=periods, freq=frequency)
+    df = pd.DataFrame({
+        "timestamp": dates,
+        "open": np.random.uniform(100, 110, periods),
+        "high": np.random.uniform(110, 120, periods),
+        "low": np.random.uniform(90, 100, periods),
+        "close": np.random.uniform(100, 115, periods),
+        "volume": np.random.randint(1000, 2000, periods),
+    })
+    return df
 
+def with_temp_file(suffix: str = ""):
+    """Decorator to create a temporary file for test."""
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
+                try:
+                    kwargs["temp_path"] = tmp.name
+                    return func(*args, **kwargs)
+                finally:
+                    if os.path.exists(tmp.name):
+                        os.remove(tmp.name)
+        return wrapper
+    return decorator
 
-class DummyImportManager:
-    """Dummy import manager."""
-
-    def import_module(self, module_name: str) -> bool:
-        if module_name == "dummy":
-            return True
-        else:
-            raise ImportError("Module not found.")
-
-
-class DummyNotificationSystem:
-    """Dummy system powiadomień."""
-
-    def send_notification(self, message: str) -> str:
-        return f"Notification sent: {message}"
-
-
-class TestUtilsModules(unittest.TestCase):
-    """Testy modułów narzędziowych."""
-
-    def test_config_loader(self) -> None:
-        with tempfile.NamedTemporaryFile(mode="w+", suffix=".json", delete=False) as tmp:
-            config_data = {"database": {"host": "127.0.0.1", "port": 5432}}
-            json.dump(config_data, tmp)
-            tmp_path = tmp.name
-        try:
-            loader = DummyConfigLoader(config_files=[tmp_path], env_prefix="APP")
-            config = loader.load()
-            self.assertIn("database", config, "Konfiguracja powinna zawierać sekcję 'database'.")
-            self.assertEqual(config["database"]["host"], "localhost")
-        finally:
-            os.remove(tmp_path)
-
-    def test_database_manager(self) -> None:
-        with tempfile.NamedTemporaryFile(delete=False) as tmp:
-            db_path = tmp.name
-        try:
-            db_manager = DummyDatabaseManager(db_path)
-            self.assertTrue(db_manager.connect(), "Połączenie z bazą powinno być aktywne.")
-            result = db_manager.execute_query("SELECT 1")
-            self.assertEqual(result, "dummy_result", "Wynik zapytania powinien być 'dummy_result'.")
-        finally:
-            os.remove(db_path)
-
-    def test_data_validator(self) -> None:
-        validator = DummyDataValidator()
-        self.assertTrue(validator.validate([1, 2, 3]), "Dane nie powinny być puste.")
-        self.assertFalse(validator.validate([]), "Pusta lista powinna być niepoprawna.")
-
-    def test_import_manager(self) -> None:
-        import_manager = DummyImportManager()
-        self.assertTrue(import_manager.import_module("dummy"), "Import modułu 'dummy' powinien się powieść.")
-        with self.assertRaises(ImportError):
-            import_manager.import_module("nonexistent")
-
-    def test_notification_system(self) -> None:
-        notification = DummyNotificationSystem()
-        response = notification.send_notification("Test message")
-        self.assertIn("Notification sent", response, "Odpowiedź powinna zawierać 'Notification sent'.")
-
-
-if __name__ == "__main__":
-    unittest.main()
+def assert_dataframe_valid(
+    df: pd.DataFrame,
+    required_columns: Optional[list[str]] = None,
+    check_nulls: bool = True
+) -> None:
+    """Validate DataFrame structure and content."""
+    if required_columns:
+        missing = set(required_columns) - set(df.columns)
+        if missing:
+            raise AssertionError(f"Missing required columns: {missing}")
+    
+    if check_nulls and df.isnull().values.any():
+        raise AssertionError("DataFrame contains null values")

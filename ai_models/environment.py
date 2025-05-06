@@ -2,27 +2,21 @@
 environment.py
 ---------------
 Moduł definiujący środowisko symulacyjne dla uczenia maszynowego (RL lub innych algorytmów).
-Implementuje metody reset(), step(action) oraz reward() odzwierciedlające zachowania rynku,
-takie jak zmiany cen, prowizje czy poślizgi (slippage). Środowisko obsługuje różne typy akcji
-(kupno, sprzedaż, wstrzymanie) oraz stany rynkowe (trend wzrostowy, spadkowy, ruch boczny).
-Umożliwia konfigurację parametrów takich jak dźwignia, dostępny kapitał czy ograniczenia ryzyka,
-co pozwala skalować środowisko dla portfeli o różnej wielkości.
-Dodatkowo, moduł zapewnia obsługę wyjątków, spójne logowanie wyników poszczególnych epizodów
-oraz możliwość podłączenia się do realnych danych rynkowych w trybie testowym (paper trading)
-lub pełnym backtestingu.
 """
 
 import logging
-
+import gym
 import numpy as np
+from typing import Dict, Any, Tuple, Optional
+from gym import spaces
 
 # Konfiguracja logowania
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
+class MarketEnvironment(gym.Env):
+    """Custom Environment that follows gym interface"""
+    metadata = {'render.modes': ['human']}
 
-class MarketEnvironment:
     def __init__(
         self,
         initial_capital=10000,
@@ -30,218 +24,227 @@ class MarketEnvironment:
         risk_limit=0.05,
         data=None,
         mode="simulated",
+        commission=0.001  # 0.1% commission
     ):
-        """
-        Inicjalizacja środowiska.
-
-        Parameters:
-            initial_capital (float): Początkowy kapitał.
-            leverage (float): Dźwignia finansowa.
-            risk_limit (float): Maksymalny procentowy ryzyko na pojedynczą transakcję.
-            data (pandas.DataFrame): Opcjonalne dane rynkowe z kolumną 'price'.
-            mode (str): Tryb pracy środowiska: 'simulated', 'paper', 'backtesting'.
-        """
+        super(MarketEnvironment, self).__init__()
+        
         self.initial_capital = initial_capital
         self.current_capital = initial_capital
         self.leverage = leverage
         self.risk_limit = risk_limit
         self.mode = mode
-        self.data = data  # Jeśli dostępne, powinno zawierać kolumnę 'price'
+        self.data = data
+        self.commission = commission
         self.current_step = 0
-        self.position = 0  # 1 = long, -1 = short, 0 = brak pozycji
+        self.position = 0  # 1 = long, -1 = short, 0 = no position
         self.entry_price = None
+        self.trades_history = []
 
-        # Jeśli nie przekazano danych, generujemy symulowane ceny
+        # Action space: 0 = hold, 1 = buy, 2 = sell
+        self.action_space = spaces.Discrete(3)
+        
+        # Observation space: [price, position, capital, unrealized_pnl]
+        self.observation_space = spaces.Box(
+            low=np.array([0, -1, 0, -np.inf]),
+            high=np.array([np.inf, 1, np.inf, np.inf]),
+            dtype=np.float32
+        )
+
         if self.data is None:
             self.simulated_prices = self._generate_simulated_data()
         else:
             self.simulated_prices = None
 
         logging.info(
-            "MarketEnvironment zainicjalizowane w trybie '%s' z kapitałem: %f",
+            "MarketEnvironment initialized in mode '%s' with capital: %f",
             self.mode,
             self.initial_capital,
         )
 
     def _generate_simulated_data(self, steps=1000):
-        """
-        Generuje symulowane dane rynkowe.
-        Uwzględnia losowe trendy wzrostowe, spadkowe oraz ruch boczny.
-        """
-        np.random.seed(42)
-        prices = [100.0]  # Cena początkowa
-        for i in range(1, steps):
-            trend = np.random.choice(["up", "down", "sideways"], p=[0.3, 0.3, 0.4])
-            if trend == "up":
-                change = np.random.uniform(0, 1)
-            elif trend == "down":
-                change = -np.random.uniform(0, 1)
-            else:
-                change = np.random.uniform(-0.5, 0.5)
-            prices.append(prices[-1] + change)
+        """Generates simulated market data with realistic patterns"""
+        prices = [100.0]
+        trend = 0
+        volatility = 0.02
+        
+        for _ in range(1, steps):
+            # Update trend with mean reversion
+            trend = 0.99 * trend + 0.01 * np.random.randn()
+            
+            # Generate price movement
+            price_change = (
+                trend +  # Trend component
+                volatility * np.random.randn() +  # Random walk
+                0.001 * np.sin(len(prices) / 100)  # Cyclical component
+            )
+            
+            new_price = max(0.01, prices[-1] * (1 + price_change))
+            prices.append(new_price)
+            
         return np.array(prices)
 
-    def reset(self):
-        """
-        Resetuje środowisko do stanu początkowego.
-        """
+    def reset(self) -> np.ndarray:
+        """Resets the environment to initial state"""
         self.current_capital = self.initial_capital
         self.current_step = 0
         self.position = 0
         self.entry_price = None
-        logging.info(
-            "Reset środowiska: kapitał = %f, krok = %d",
+        self.trades_history = []
+        
+        return self._get_observation()
+
+    def _get_observation(self) -> np.ndarray:
+        """Returns the current state observation"""
+        price = self._get_current_price()
+        unrealized_pnl = self._calculate_unrealized_reward(price)
+        
+        return np.array([
+            price,
+            self.position,
             self.current_capital,
-            self.current_step,
-        )
-        return self._get_state()
+            unrealized_pnl
+        ], dtype=np.float32)
 
-    def _get_state(self):
-        """
-        Zwraca aktualny stan środowiska (np. bieżąca cena, kapitał, pozycja).
-        """
+    def _get_current_price(self) -> float:
+        """Returns current price from data or simulation"""
         if self.data is not None:
-            price = self.data.iloc[self.current_step]["price"]
-        else:
-            price = self.simulated_prices[self.current_step]
-        state = {
-            "price": price,
-            "capital": self.current_capital,
-            "position": self.position,
-        }
-        return state
+            return self.data.iloc[self.current_step]["price"]
+        return self.simulated_prices[self.current_step]
 
-    def step(self, action):
+    def step(self, action: int) -> Tuple[np.ndarray, float, bool, Dict[str, Any]]:
         """
-        Wykonuje krok w środowisku na podstawie podanej akcji.
-
-        Actions:
-            'buy'  - otwarcie pozycji long lub zamknięcie short i otwarcie long,
-            'sell' - otwarcie pozycji short lub zamknięcie long i otwarcie short,
-            'hold' - brak zmiany pozycji.
-
-        Zwraca:
-            next_state (dict): Nowy stan środowiska.
-            reward (float): Nagroda (zysk/strata) uzyskana w tym kroku.
-            done (bool): Flaga zakończenia epizodu.
-            info (dict): Dodatkowe informacje (np. krok, akcja, kapitał).
+        Execute one time step within the environment
+        
+        Args:
+            action (int): 0 = hold, 1 = buy, 2 = sell
+            
+        Returns:
+            observation (np.ndarray): Environment observation
+            reward (float): Reward for this step
+            done (bool): Whether the episode has ended
+            info (dict): Additional information
         """
         try:
-            state = self._get_state()
-            price = state["price"]
+            price = self._get_current_price()
             reward = 0.0
-
-            # Obsługa akcji
-            if action == "buy":
-                if self.position == 0:
-                    self.position = 1
-                    self.entry_price = price
-                    logging.info("Wykonano akcję BUY przy cenie: %f", price)
-                elif self.position == -1:
-                    # Zamknięcie pozycji short i otwarcie long
-                    reward = self._calculate_reward(price)
-                    self.current_capital += reward
-                    logging.info(
-                        "Zamknięcie short i otwarcie long, nagroda: %f", reward
-                    )
-                    self.position = 1
-                    self.entry_price = price
-                else:
-                    logging.info("Pozycja long już otwarta. Brak zmiany.")
-            elif action == "sell":
-                if self.position == 0:
-                    self.position = -1
-                    self.entry_price = price
-                    logging.info("Wykonano akcję SELL przy cenie: %f", price)
-                elif self.position == 1:
-                    # Zamknięcie pozycji long i otwarcie short
-                    reward = self._calculate_reward(price)
-                    self.current_capital += reward
-                    logging.info(
-                        "Zamknięcie long i otwarcie short, nagroda: %f", reward
-                    )
-                    self.position = -1
-                    self.entry_price = price
-                else:
-                    logging.info("Pozycja short już otwarta. Brak zmiany.")
-            elif action == "hold":
-                logging.info("Wykonano akcję HOLD - brak zmiany pozycji.")
-                # Jeśli pozycja jest otwarta, oblicz niezrealizowany zysk/stratę
+            
+            # Convert action to trade decision
+            if action == 1:  # Buy
+                reward = self._execute_trade(price, "buy")
+            elif action == 2:  # Sell
+                reward = self._execute_trade(price, "sell")
+            else:  # Hold
                 reward = self._calculate_unrealized_reward(price)
-            else:
-                raise ValueError("Nieznana akcja: {}".format(action))
 
-            # Aktualizacja stanu: przejście do następnego kroku
+            # Move to next step
             self.current_step += 1
-            done = (
-                self.current_step
-                >= (
-                    len(self.data)
-                    if self.data is not None
-                    else len(self.simulated_prices)
-                )
-                - 1
-            )
-
-            next_state = self._get_state()
+            done = self._is_episode_done()
+            
+            # Get new observation
+            observation = self._get_observation()
+            
             info = {
                 "step": self.current_step,
-                "action": action,
-                "reward": reward,
-                "capital": self.current_capital,
+                "action": ["hold", "buy", "sell"][action],
+                "price": price,
                 "position": self.position,
+                "capital": self.current_capital,
+                "reward": reward
             }
-            logging.info(
-                "Krok %d: akcja = %s, nagroda = %f, kapitał = %f",
-                self.current_step,
-                action,
-                reward,
-                self.current_capital,
-            )
-            return next_state, reward, done, info
+            
+            return observation, reward, done, info
 
         except Exception as e:
-            logging.error("Błąd w metodzie step: %s", e)
+            logging.error(f"Error in step: {str(e)}")
             raise
 
-    def _calculate_reward(self, current_price):
-        """
-        Oblicza nagrodę przy zamykaniu otwartej pozycji.
-        """
-        if self.position == 1 and self.entry_price is not None:
-            profit = (current_price - self.entry_price) * self.leverage
-        elif self.position == -1 and self.entry_price is not None:
-            profit = (self.entry_price - current_price) * self.leverage
-        else:
-            profit = 0.0
-        return profit
+    def _execute_trade(self, price: float, action: str) -> float:
+        """Executes a trade and returns the reward"""
+        reward = 0.0
+        
+        if action == "buy":
+            if self.position <= 0:
+                # Close short position if exists
+                if self.position == -1:
+                    reward = self._close_position(price)
+                # Open long position
+                self.position = 1
+                self.entry_price = price
+                reward -= price * self.commission  # Apply commission
+        
+        elif action == "sell":
+            if self.position >= 0:
+                # Close long position if exists
+                if self.position == 1:
+                    reward = self._close_position(price)
+                # Open short position
+                self.position = -1
+                self.entry_price = price
+                reward -= price * self.commission  # Apply commission
+        
+        return reward
 
-    def _calculate_unrealized_reward(self, current_price):
-        """
-        Oblicza niezrealizowany zysk/stratę dla aktualnie otwartej pozycji.
-        """
-        if self.position == 1 and self.entry_price is not None:
-            profit = (current_price - self.entry_price) * self.leverage
-        elif self.position == -1 and self.entry_price is not None:
-            profit = (self.entry_price - current_price) * self.leverage
-        else:
-            profit = 0.0
-        return profit
+    def _close_position(self, price: float) -> float:
+        """Closes current position and returns the reward"""
+        if self.entry_price is None:
+            return 0.0
+            
+        # Calculate profit/loss
+        if self.position == 1:
+            pnl = (price - self.entry_price) * self.leverage
+        else:  # short position
+            pnl = (self.entry_price - price) * self.leverage
+            
+        # Apply commission
+        pnl -= price * self.commission
+        
+        # Update capital
+        self.current_capital += pnl
+        
+        # Record trade
+        self.trades_history.append({
+            "entry_price": self.entry_price,
+            "exit_price": price,
+            "position": self.position,
+            "pnl": pnl
+        })
+        
+        return pnl
 
-    def reward(self):
-        """
-        Dodatkowa funkcja wyliczająca nagrodę na podstawie bieżącego stanu (np. niezrealizowany zysk/strata).
-        """
-        try:
-            state = self._get_state()
-            price = state["price"]
-            reward_value = self._calculate_unrealized_reward(price)
-            logging.info("Niezrealizowana nagroda: %f", reward_value)
-            return reward_value
-        except Exception as e:
-            logging.error("Błąd przy obliczaniu nagrody: %s", e)
-            raise
+    def _calculate_unrealized_reward(self, current_price: float) -> float:
+        """Calculates unrealized PnL for current position"""
+        if self.position == 0 or self.entry_price is None:
+            return 0.0
+            
+        if self.position == 1:
+            return (current_price - self.entry_price) * self.leverage
+        else:  # short position
+            return (self.entry_price - current_price) * self.leverage
 
+    def _is_episode_done(self) -> bool:
+        """Checks if episode is finished"""
+        # End if we've run out of data
+        if self.data is not None:
+            if self.current_step >= len(self.data) - 1:
+                return True
+        elif self.current_step >= len(self.simulated_prices) - 1:
+            return True
+            
+        # End if we've lost too much capital
+        if self.current_capital <= self.initial_capital * 0.5:  # 50% max drawdown
+            return True
+            
+        return False
+
+    def render(self, mode='human'):
+        """Renders the environment"""
+        if mode == 'human':
+            print(f"\nStep: {self.current_step}")
+            print(f"Price: {self._get_current_price():.2f}")
+            print(f"Position: {self.position}")
+            print(f"Capital: {self.current_capital:.2f}")
+            if self.position != 0:
+                print(f"Unrealized PnL: {self._calculate_unrealized_reward(self._get_current_price()):.2f}")
 
 # -------------------- Przykładowe użycie --------------------
 
@@ -252,7 +255,7 @@ if __name__ == "__main__":
 
     while not done:
         # Przykładowo: strategia losowa
-        action = np.random.choice(["buy", "sell", "hold"])
+        action = np.random.choice([0, 1, 2])  # 0 = hold, 1 = buy, 2 = sell
         next_state, reward, done, info = env.step(action)
         print(
             f"Krok: {info['step']}, Akcja: {info['action']}, Nagroda: {reward:.2f}, Kapitał: {info['capital']:.2f}"

@@ -2,65 +2,43 @@
 
 # 🔹 Ustawienia serwera
 server:
-  host: "0.0.0.0"           # Adres hosta, na którym uruchomiony jest serwer
-  port: 8080                # Port, na którym serwer nasłuchuje
+  host: "0.0.0.0"
+  port: 5000
 
 # 🔹 Ścieżki do kluczowych katalogów
 paths:
-  data_dir: "./data"        # Katalog z danymi wejściowymi
-  logs_dir: "./logs"        # Katalog na pliki logów
-  models_dir: "./saved_models"  # Katalog z zapisanymi modelami
+  data_dir: "./data"
+  logs_dir: "./logs"
+  models_dir: "./saved_models"
 
 # 🔹 Ustawienia bazy danych
 database:
-  host: "localhost"         # Adres serwera bazy danych
-  port: 5432                # Port bazy danych
-  user: "dbuser"            # Użytkownik bazy danych
-  password: "dbpassword"    # Hasło do bazy danych
-  name: "trading_db"        # Nazwa bazy danych
-  connection_timeout: 30    # Timeout połączenia (w sekundach)
+  path: "trading.db"
+  backup_dir: "./data/backups"
 
-# 🔹 Ustawienia API giełdowe (Binance, Bybit itp.)
+# 🔹 Ustawienia handlu
+trading:
+  commission: 0.001
+  spread: 0.0005
+  slippage: 0.0005
+  max_position_size: 0.2
+  max_risk: 0.05
+  max_drawdown: 0.1
+
+# 🔹 Ustawienia API
 api:
   binance:
-    base_url: "https://api.binance.com"
-    testnet_url: "https://testnet.binance.vision"
+    use_testnet: true
+    base_url: "https://testnet.binance.vision"
   bybit:
-    base_url: "https://api.bybit.com"
-    testnet_url: "https://api-testnet.bybit.com"
-  retry_attempts: 3         # Maksymalna liczba prób połączenia
-  request_timeout: 10       # Timeout zapytania (w sekundach)
+    use_testnet: true
 
 # 🔹 Ustawienia bezpieczeństwa
 security:
-  enable_access_restrictions: false  # Ograniczenia dostępu (np. IP whitelist)
-  enforce_password_encryption: true  # Szyfrowanie haseł w bazie danych
+  access_restrictions: false
+  password_encryption: false
 
-# 🔹 Ustawienia strategii handlowych
-trading:
-  max_positions: 10         # Maksymalna liczba jednoczesnych pozycji
-  risk_limit: 0.05          # Maksymalny procent ryzyka na pojedynczą transakcję
-  max_drawdown: 0.2         # Maksymalny dozwolony drawdown
-  commission: 0.001         # Standardowa prowizja transakcyjna
-  spread: 0.0005            # Przewidywany spread
-  slippage: 0.0005          # Szacowany poślizg ceny
-
-# 🔹 Dodatkowe ustawienia strategii (łatwe do rozszerzenia)
-strategy:
-  momentum_threshold: 0.1       # Próg momentum do aktywacji strategii
-  mean_reversion_window: 20     # Okres dla strategii powrotu do średniej
-  stop_loss: 0.02               # Stop-loss jako % od ceny wejścia
-  take_profit: 0.05             # Take-profit jako % od ceny wejścia
-
-# 🔹 Ustawienia egzekucji transakcji
-execution:
-  order_type: "market"      # Domyślny typ zlecenia (market/limit/stop-limit)
-  slippage_tolerance: 0.001 # Maksymalna tolerancja na poślizg cenowy
-  risk_adjustment: true     # Czy bot dostosowuje ryzyko na podstawie zmienności rynku
-
-# 🔹 Ustawienia logowania aplikacji
+# 🔹 Ustawienia logowania
 logging:
-  level: "INFO"             # Poziom logowania (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-  file: "app.log"           # Nazwa pliku logów
-  rotation: "7d"            # Rotacja logów co 7 dni
-  max_size_mb: 10           # Maksymalny rozmiar pliku logów w MB
+  level: "INFO"
+  file: "app.log"

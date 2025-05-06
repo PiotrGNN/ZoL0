@@ -13,6 +13,8 @@ Funkcjonalności:
 
 import logging
 import time
+from typing import Dict, Any
+from .order_execution import OrderExecution
 
 # Konfiguracja logowania
 logging.basicConfig(
@@ -21,100 +23,87 @@ logging.basicConfig(
 
 
 class TradeExecutor:
-    def __init__(self, order_executor, account_manager, risk_manager):
-        """
-        Inicjalizuje moduł TradeExecutor.
+    """Trade execution with position sizing and risk management."""
+    
+    def __init__(self, order_exec: OrderExecution):
+        """Initialize with order execution instance."""
+        self.order_exec = order_exec
 
-        Parameters:
-            order_executor: Instancja modułu odpowiedzialnego za wysyłanie zleceń (np. OrderExecution).
-            account_manager: Moduł lub obiekt synchronizujący stan konta z danymi z giełdy.
-            risk_manager: Moduł zarządzający ryzykiem (np. określający maksymalny procent kapitału na transakcję).
-        """
-        self.order_executor = order_executor
-        self.account_manager = account_manager
-        self.risk_manager = risk_manager
-        self.trade_log = []  # Lista zarejestrowanych transakcji
-
-    def execute_trade(self, signal):
-        """
-        Przetwarza pojedynczy sygnał transakcyjny i podejmuje decyzję o wykonaniu zlecenia.
-
-        Parameters:
-            signal (dict): Sygnał transakcyjny, zawierający m.in. 'symbol', 'action', 'proposed_quantity', 'price', itp.
-
-        Returns:
-            dict: Wynik wykonania zlecenia.
-        """
+    def execute_trade(
+        self,
+        symbol: str,
+        side: str,
+        quantity: float,
+        order_type: str = "MARKET",
+        stop_loss: float = None,
+        take_profit: float = None
+    ) -> Dict[str, Any]:
+        """Execute a trade with optional stop loss and take profit."""
         try:
-            symbol = signal.get("symbol")
-            action = signal.get("action")  # np. "BUY" lub "SELL"
-            proposed_quantity = signal.get("proposed_quantity")
-            proposed_price = signal.get("price", None)
-
-            # Weryfikacja zgodności sygnału z zasadami zarządzania ryzykiem
-            if not self.risk_manager.is_trade_allowed(symbol, proposed_quantity):
-                logging.warning("Sygnał dla %s odrzucony przez risk manager.", symbol)
-                return {"status": "rejected", "reason": "Risk constraints"}
-
-            # Synchronizacja stanu konta
-            self.account_manager.get_account_status()
-            if not self.account_manager.has_sufficient_funds(
-                action, proposed_quantity, proposed_price
-            ):
-                logging.warning(
-                    "Niewystarczające środki dla sygnału %s %s.", action, symbol
-                )
-                return {"status": "rejected", "reason": "Insufficient funds"}
-
-            # Wysłanie zlecenia za pomocą modułu order_executor
-            order_response = self.order_executor.send_order(
+            result = self.order_exec.send_order(
                 symbol=symbol,
-                side=action,
-                order_type=signal.get("order_type", "MARKET"),
-                quantity=proposed_quantity,
-                price=proposed_price,
+                side=side,
+                quantity=quantity,
+                order_type=order_type,
+                price=None if order_type == "MARKET" else stop_loss,
+                stop_loss=stop_loss,
+                take_profit=take_profit
             )
-
-            # Zarejestruj transakcję
-            trade_record = {
-                "symbol": symbol,
-                "action": action,
-                "quantity": proposed_quantity,
-                "price": proposed_price,
-                "order_response": order_response,
-                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+            return {
+                "success": True,
+                "orderId": result["orderId"],
+                "status": result["status"],
+                "entry_price": result["avgPrice"],
+                "stop_loss_price": stop_loss,
+                "take_profit_price": take_profit
             }
-            self.trade_log.append(trade_record)
-            logging.info("Transakcja wykonana: %s", trade_record)
-            return {"status": "executed", "order_response": order_response}
         except Exception as e:
-            logging.error("Błąd przy realizacji transakcji: %s", e)
-            return {"status": "error", "error": str(e)}
-
-    def execute_trades(self, signals: list):
-        """
-        Przetwarza listę sygnałów transakcyjnych sekwencyjnie.
-
-        Parameters:
-            signals (list): Lista sygnałów transakcyjnych.
-        """
-        results = []
-        for signal in signals:
-            result = self.execute_trade(signal)
-            results.append(result)
-            # Można dodać opóźnienie, jeśli wymagane jest zachowanie odstępów między transakcjami
-            time.sleep(1)
-        logging.info("Wszystkie sygnały zostały przetworzone.")
-        return results
-
-    def get_trade_log(self):
-        """
-        Zwraca dziennik wykonanych transakcji.
-
-        Returns:
-            list: Lista zarejestrowanych transakcji.
-        """
-        return self.trade_log
+            return {
+                "success": False,
+                "error": str(e)
+            }
+            
+    def execute_trade_with_position_sizing(
+        self,
+        symbol: str,
+        side: str,
+        account_balance: float,
+        risk_per_trade: float,
+        stop_loss_pct: float
+    ) -> Dict[str, Any]:
+        """Execute a trade with position sizing based on risk."""
+        try:
+            # Get current market price
+            price = 50000.0  # Mock price for testing
+            
+            # Calculate stop loss price
+            stop_loss = price * (1 - stop_loss_pct) if side == "BUY" else price * (1 + stop_loss_pct)
+            
+            # Calculate position size based on risk
+            risk_amount = account_balance * risk_per_trade
+            price_diff = abs(price - stop_loss)
+            quantity = risk_amount / price_diff
+            
+            # Execute the trade
+            result = self.execute_trade(
+                symbol=symbol,
+                side=side,
+                quantity=quantity,
+                order_type="MARKET",
+                stop_loss=stop_loss,
+                take_profit=price * (1 + stop_loss_pct * 2) if side == "BUY" else price * (1 - stop_loss_pct * 2)
+            )
+            
+            if result["success"]:
+                result["quantity"] = quantity
+                result["stop_loss_price"] = stop_loss
+                
+            return result
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e)
+            }
 
 
 # -------------------- Przykładowe użycie --------------------

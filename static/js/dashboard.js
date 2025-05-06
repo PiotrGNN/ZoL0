@@ -1235,93 +1235,48 @@ function runSimulation() {
 
 // Funkcja do pobierania danych portfela
 function fetchPortfolioData() {
+    const container = document.getElementById('portfolio-container');
+    if (!container) {
+        console.warn('Element portfolio-container not found');
+        return;
+    }
+
+    // Show loading state
+    container.innerHTML = '<div class="loading-indicator">Loading portfolio data...</div>';
+
     fetch('/api/portfolio')
-        .then(response => response.json())
-        .then(data => {
-            // Pobierz element, który ma być aktualizowany
-            const portfolioElement = document.getElementById('portfolio-data');
-            if (!portfolioElement) {
-                console.error("Element 'portfolio-data' nie istnieje");
-                return;
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error: ${response.status}`);
             }
-
-            // Sprawdź czy dane są dostępne
-            if (data && data.balances) {
-                // Wyczyść obecną zawartość
-                portfolioElement.innerHTML = '';
-
-                // Utwórz nagłówek tabeli
-                const table = document.createElement('table');
-                table.className = 'portfolio-table';
-                table.innerHTML = `
-                    <thead>
-                        <tr>
-                            <th>Waluta</th>
-                            <th>Kapitał</th>
-                            <th>Dostępne</th>
-                            <th>Akcje</th>
-                        </tr>
-                    </thead>
-                    <tbody id="portfolio-body"></tbody>
-                `;
-                portfolioElement.appendChild(table);
-
-                const tbody = document.getElementById('portfolio-body');
-
-                // Dodaj wiersze dla każdej waluty
-                Object.keys(data.balances).forEach(currency => {
-                    const balance = data.balances[currency];
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${currency}</td>
-                        <td>${parseFloat(balance.equity).toFixed(6)}</td>
-                        <td>${parseFloat(balance.available_balance).toFixed(6)}</td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary" 
-                                    onclick="setBalance(${parseFloat(balance.equity).toFixed(6)}, '${currency}')">
-                                Ustaw
-                            </button>
-                        </td>
-                    `;
-                    tbody.appendChild(row);
-                });
-
-                // Dodaj formularz do ustawienia nowego salda
-                const formRow = document.createElement('div');
-                formRow.className = 'mt-3';
-                formRow.innerHTML = `
-                    <form id="set-balance-form" class="row g-3 align-items-center">
-                        <div class="col-auto">
-                            <input type="number" step="0.01" min="0" class="form-control" id="balance-amount" placeholder="Kwota" required>
-                        </div>
-                        <div class="col-auto">
-                            <input type="text" class="form-control" id="balance-currency" placeholder="USDT" value="USDT" required>
-                        </div>
-                        <div class="col-auto">
-                            <button type="submit" class="btn btn-primary">Ustaw nowe saldo</button>
-                        </div>
-                    </form>
-                `;
-                portfolioElement.appendChild(formRow);
-
-                // Dodaj obsługę formularza
-                document.getElementById('set-balance-form').addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const amount = document.getElementById('balance-amount').value;
-                    const currency = document.getElementById('balance-currency').value;
-                    setBalance(amount, currency);
-                });
-
+            return response.json();
+        })
+        .then(data => {
+            if (data.success && data.balances) {
+                let html = '';
+                for (const [currency, balance] of Object.entries(data.balances)) {
+                    if (!balance) continue; // Skip null/undefined balances
+                    
+                    html += `
+                    <div class="portfolio-item">
+                        <div class="coin-name">${currency}</div>
+                        <div class="coin-balance">Balance: ${Number(balance.wallet_balance).toFixed(8)}</div>
+                        <div class="coin-value">Available: ${Number(balance.available_balance).toFixed(8)}</div>
+                    </div>`;
+                }
+                container.innerHTML = html || '<div class="no-data">No portfolio data available</div>';
             } else {
-                portfolioElement.innerHTML = '<p>Nie można pobrać danych portfela.</p>';
+                throw new Error(data.error || 'Invalid portfolio data received');
             }
         })
         .catch(error => {
-            console.error('Błąd podczas pobierania danych portfela:', error);
-            const portfolioElement = document.getElementById('portfolio-data');
-            if (portfolioElement) {
-                portfolioElement.innerHTML = '<p>Wystąpił błąd podczas pobierania danych portfela.</p>';
-            }
+            console.error('Portfolio data fetch error:', error);
+            container.innerHTML = `
+                <div class="error-message">
+                    Failed to load portfolio data. 
+                    <button class="retry-button" onclick="fetchPortfolioData()">Retry</button>
+                    <div class="error-details">${error.message}</div>
+                </div>`;
         });
 }
 
@@ -1475,40 +1430,48 @@ function fetchComponentStatus() {
 
 // Pobieranie danych portfela
 function fetchPortfolioData() {
-    fetch('/api/portfolio')
-        .then(response => response.json())
-        .then(data => {
-            const container = document.getElementById('portfolio-container');
-            if (!container) {
-                console.warn("Element 'portfolio-data' nie istnieje");
-                return;
-            }
+    const container = document.getElementById('portfolio-container');
+    if (!container) {
+        console.warn('Element portfolio-container not found');
+        return;
+    }
 
+    // Show loading state
+    container.innerHTML = '<div class="loading-indicator">Loading portfolio data...</div>';
+
+    fetch('/api/portfolio')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
             if (data.success && data.balances) {
                 let html = '';
                 for (const [currency, balance] of Object.entries(data.balances)) {
+                    if (!balance) continue; // Skip null/undefined balances
+                    
                     html += `
                     <div class="portfolio-item">
                         <div class="coin-name">${currency}</div>
-                        <div class="coin-balance">Balans: ${balance.wallet_balance}</div>
-                        <div class="coin-value">Dostępne: ${balance.available_balance}</div>
+                        <div class="coin-balance">Balance: ${Number(balance.wallet_balance).toFixed(8)}</div>
+                        <div class="coin-value">Available: ${Number(balance.available_balance).toFixed(8)}</div>
                     </div>`;
                 }
-                container.innerHTML = html;
+                container.innerHTML = html || '<div class="no-data">No portfolio data available</div>';
             } else {
-                container.innerHTML = `
-                <div class="no-data">Brak danych portfela lub problem z połączeniem z ByBit.</div>
-                <div class="error-details">${data.error || ''}</div>`;
+                throw new Error(data.error || 'Invalid portfolio data received');
             }
         })
         .catch(error => {
-            console.error('Błąd podczas pobierania danych portfela:', error);
-            const container = document.getElementById('portfolio-container');
-            if (container) {
-                container.innerHTML = `
-                <div class="no-data">Błąd podczas ładowania danych portfela.</div>
-                <div class="error-details">${error.message}</div>`;
-            }
+            console.error('Portfolio data fetch error:', error);
+            container.innerHTML = `
+                <div class="error-message">
+                    Failed to load portfolio data. 
+                    <button class="retry-button" onclick="fetchPortfolioData()">Retry</button>
+                    <div class="error-details">${error.message}</div>
+                </div>`;
         });
 }
 

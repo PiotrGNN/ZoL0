@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  dashboard:
+    build: .
+    command: dashboard
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./models:/app/models
+    environment:
+      - ENVIRONMENT=production
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  api:
+    build: .
+    command: api
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    environment:
+      - ENVIRONMENT=production
+    restart: unless-stopped
+
+  trading:
+    build: .
+    command: trading
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./models:/app/models
+      - ./saved_models:/app/saved_models
+    environment:
+      - ENVIRONMENT=production
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  monitoring:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  grafana_data:

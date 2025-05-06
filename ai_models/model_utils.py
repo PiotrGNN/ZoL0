@@ -1,4 +1,3 @@
-
 """
 model_utils.py
 -------------
@@ -86,173 +85,85 @@ if not logger.handlers:
     logger.addHandler(handler)
     logger.setLevel(logging.INFO)
 
-def load_model(model_path: str) -> Tuple[Optional[Any], Dict[str, Any]]:
+def load_model(path: str) -> Tuple[Optional[Any], Dict[str, Any]]:
     """
-    Ładuje model z pliku .pkl wraz z metadanymi.
+    Load model with version compatibility checking.
     
     Args:
-        model_path: Ścieżka do pliku modelu
+        path: Path to the model file
         
     Returns:
-        Tuple: (model, metadata)
+        Tuple of (model, metadata) or (None, error_info)
     """
-    model = None
-    metadata = {}
-    
     try:
-        # Sprawdź czy plik istnieje
-        if not os.path.exists(model_path):
-            logger.error(f"Plik modelu {model_path} nie istnieje")
-            return None, {"error": f"Plik modelu {model_path} nie istnieje"}
+        import joblib
+        import sklearn
         
-        # Sprawdź rozszerzenie pliku
-        _, ext = os.path.splitext(model_path)
+        logger.info(f"Loading model from {path}")
+        model_data = joblib.load(path)
         
-        # Załaduj model w zależności od rozszerzenia
-        if ext.lower() == '.pkl':
-            with open(model_path, 'rb') as f:
-                try:
-                    # Najpierw spróbuj załadować jako słownik z modelem i metadanymi
-                    data = pickle.load(f)
-                    if isinstance(data, dict) and 'model' in data and 'metadata' in data:
-                        model = data['model']
-                        metadata = data['metadata']
-                        logger.info(f"Załadowano model z metadanymi z {model_path}")
-                    else:
-                        # Jeśli to nie słownik z metadanymi, zakładamy że to sam model
-                        model = data
-                        # Stwórz podstawowe metadane na podstawie pliku
-                        metadata = {
-                            "name": os.path.basename(model_path).split('.')[0],
-                            "train_date": datetime.fromtimestamp(os.path.getmtime(model_path)).isoformat(),
-                            "file_path": model_path,
-                            "model_type": str(type(model))
-                        }
-                        logger.info(f"Załadowano model (bez metadanych) z {model_path}")
-                except Exception as e:
-                    logger.error(f"Błąd podczas ładowania modelu z {model_path}: {e}")
-                    return None, {"error": str(e)}
-        elif ext.lower() == '.h5':
-            try:
-                # Załaduj model Keras/TensorFlow
-                import tensorflow as tf
-                model = tf.keras.models.load_model(model_path)
-                # Stwórz podstawowe metadane
-                metadata = {
-                    "name": os.path.basename(model_path).split('.')[0],
-                    "train_date": datetime.fromtimestamp(os.path.getmtime(model_path)).isoformat(),
-                    "file_path": model_path,
-                    "model_type": "tensorflow.keras.Model"
-                }
-                logger.info(f"Załadowano model TensorFlow z {model_path}")
-            except ImportError:
-                logger.error("Nie można zaimportować TensorFlow. Zainstaluj pakiet tensorflow.")
-                return None, {"error": "Nie można zaimportować TensorFlow"}
-            except Exception as e:
-                logger.error(f"Błąd podczas ładowania modelu TensorFlow z {model_path}: {e}")
-                return None, {"error": str(e)}
+        if isinstance(model_data, dict) and "sklearn_version" in model_data:
+            saved_version = model_data["sklearn_version"]
+            current_version = sklearn.__version__
+            
+            # Check major version compatibility
+            if saved_version.split('.')[0] != current_version.split('.')[0]:
+                logger.warning(f"Model was saved with scikit-learn {saved_version}, "
+                             f"but current version is {current_version}")
+            
+            model = model_data["model"]
+            metadata = {
+                **model_data.get("metadata", {}),
+                "sklearn_version": saved_version,
+                "current_sklearn_version": current_version,
+                "load_time": datetime.now().isoformat()
+            }
+            
+            return model, metadata
         else:
-            logger.error(f"Nieobsługiwane rozszerzenie pliku: {ext}")
-            return None, {"error": f"Nieobsługiwane rozszerzenie pliku: {ext}"}
-        
-        # Spróbuj załadować dodatkowe metadane, jeśli istnieją
-        metadata_path = model_path.replace(ext, '_metadata.json')
-        if os.path.exists(metadata_path):
-            try:
-                with open(metadata_path, 'r') as f:
-                    additional_metadata = json.load(f)
-                    # Łącz metadane, ale nie nadpisuj istniejących kluczy
-                    for key, value in additional_metadata.items():
-                        if key not in metadata:
-                            metadata[key] = value
-                logger.info(f"Załadowano dodatkowe metadane z {metadata_path}")
-            except Exception as e:
-                logger.warning(f"Błąd podczas ładowania dodatkowych metadanych z {metadata_path}: {e}")
-        
-        return model, metadata
+            # Handle old format models
+            return model_data, {
+                "note": "Legacy model format",
+                "current_sklearn_version": sklearn.__version__,
+                "load_time": datetime.now().isoformat()
+            }
     except Exception as e:
-        logger.error(f"Nieoczekiwany błąd podczas ładowania modelu: {e}")
+        logger.error(f"Error loading model: {e}")
         return None, {"error": str(e)}
 
-def save_model(model: Any, model_path: str, metadata: Optional[Dict[str, Any]] = None) -> bool:
+def save_model(model: Any, path: str, metadata: Optional[Dict[str, Any]] = None) -> bool:
     """
-    Zapisuje model do pliku wraz z metadanymi.
+    Save model with version compatibility handling.
     
     Args:
-        model: Model do zapisania
-        model_path: Ścieżka do pliku modelu
-        metadata: Metadane modelu (opcjonalne)
+        model: The model to save
+        path: Path to save the model
+        metadata: Optional metadata to save with the model
         
     Returns:
-        bool: True jeśli zapis się powiódł, False w przeciwnym razie
+        bool: Success status
     """
     try:
-        # Sprawdź rozszerzenie pliku
-        _, ext = os.path.splitext(model_path)
+        import joblib
+        import sklearn
         
-        # Upewnij się, że katalog istnieje
-        os.makedirs(os.path.dirname(os.path.abspath(model_path)), exist_ok=True)
+        # Create model data with version info
+        model_data = {
+            "model": model,
+            "sklearn_version": sklearn.__version__,
+            "metadata": metadata or {},
+            "saved_at": datetime.now().isoformat()
+        }
         
-        # Domyślne metadane, jeśli nie podano
-        if metadata is None:
-            metadata = {
-                "name": os.path.basename(model_path).split('.')[0],
-                "train_date": datetime.now().isoformat(),
-                "file_path": model_path,
-                "model_type": str(type(model))
-            }
-        else:
-            # Aktualizuj metadane o bieżące informacje
-            metadata["save_date"] = datetime.now().isoformat()
-            metadata["file_path"] = model_path
-            if "name" not in metadata:
-                metadata["name"] = os.path.basename(model_path).split('.')[0]
-            if "model_type" not in metadata:
-                metadata["model_type"] = str(type(model))
+        # Ensure directory exists
+        os.makedirs(os.path.dirname(path), exist_ok=True)
         
-        # Zapisz model w zależności od rozszerzenia
-        if ext.lower() == '.pkl':
-            with open(model_path, 'wb') as f:
-                # Zapisz jako słownik z modelem i metadanymi
-                pickle.dump({"model": model, "metadata": metadata}, f)
-            
-            # Dodatkowo zapisz metadane jako osobny plik JSON dla łatwego dostępu
-            metadata_path = model_path.replace(ext, '_metadata.json')
-            with open(metadata_path, 'w') as f:
-                json.dump(metadata, f, indent=4)
-                
-            logger.info(f"Zapisano model do {model_path} i metadane do {metadata_path}")
-            return True
-            
-        elif ext.lower() == '.h5':
-            try:
-                # Zapisz model Keras/TensorFlow
-                import tensorflow as tf
-                if isinstance(model, tf.keras.Model):
-                    model.save(model_path)
-                    
-                    # Zapisz metadane jako osobny plik JSON
-                    metadata_path = model_path.replace(ext, '_metadata.json')
-                    with open(metadata_path, 'w') as f:
-                        json.dump(metadata, f, indent=4)
-                        
-                    logger.info(f"Zapisano model TensorFlow do {model_path} i metadane do {metadata_path}")
-                    return True
-                else:
-                    logger.error(f"Model nie jest instancją tf.keras.Model, nie można zapisać jako .h5")
-                    return False
-            except ImportError:
-                logger.error("Nie można zaimportować TensorFlow. Zainstaluj pakiet tensorflow.")
-                return False
-            except Exception as e:
-                logger.error(f"Błąd podczas zapisywania modelu TensorFlow: {e}")
-                return False
-        else:
-            logger.error(f"Nieobsługiwane rozszerzenie pliku: {ext}")
-            return False
-            
+        # Save model with protocol=4 for better compatibility
+        joblib.dump(model_data, path, protocol=4)
+        logger.info(f"Successfully saved model to {path} (sklearn {sklearn.__version__})")
+        return True
     except Exception as e:
-        logger.error(f"Błąd podczas zapisywania modelu: {e}")
+        logger.error(f"Error saving model: {e}")
         return False
 
 def load_model_metadata(model_path: str) -> Dict[str, Any]:

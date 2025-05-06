@@ -1,365 +1,454 @@
 """
-performance_monitor.py
---------------------
-Moduł do monitorowania wydajności systemu i strategii tradingowych.
+Performance monitoring system with advanced metrics and analysis.
 """
 
-import logging
-import os
 import time
 import psutil
-import platform
 import threading
-from datetime import datetime
-from typing import Dict, List, Any, Optional, Tuple
-from functools import wraps
+import logging
+import json
+from typing import Dict, List, Any, Optional
+from datetime import datetime, timedelta
+from collections import deque
+import sqlite3
+import os
+from dataclasses import dataclass
+from statistics import mean, median, stdev
 
-# Konfiguracja logowania
-logger = logging.getLogger("performance_monitor")
-if not logger.handlers:
-    log_dir = "logs"
-    os.makedirs(log_dir, exist_ok=True)
-    file_handler = logging.FileHandler(os.path.join(log_dir, "performance_monitor.log"))
-    formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
-    file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
-    logger.setLevel(logging.INFO)
+# Import system logger
+from data.logging.system_logger import get_logger
+logger = get_logger()
 
+@dataclass
+class PerformanceMetrics:
+    """Container for performance metrics."""
+    cpu_percent: float
+    memory_percent: float
+    io_counters: Dict[str, int]
+    network_counters: Dict[str, int]
+    response_times: Dict[str, float]
+    error_rates: Dict[str, float]
+    timestamp: str
 
 class PerformanceMonitor:
-    """
-    Klasa do monitorowania wydajności systemu i strategii tradingowych.
-    """
-
-    def __init__(self, log_interval: int = 60):
-        """
-        Inicjalizuje monitor wydajności.
-
-        Parameters:
-            log_interval (int): Interwał logowania w sekundach.
-        """
-        self.log_interval = log_interval
-        self.last_log_time = 0
-        self.system_stats = {}
-        self.strategy_performance = {}
-        self.start_time = time.time()
-        self.running = False
-        self.monitor_thread = None
-        self.metrics = {
-            "cpu": [],
-            "memory": [],
-            "disk": [],
-            "network": [],
-            "timestamp": []
+    """Advanced performance monitoring system."""
+    
+    def __init__(self, db_path: str = "logs/performance.db"):
+        self.db_path = db_path
+        self._ensure_db_exists()
+        
+        # Initialize metrics storage
+        self.metrics_history = deque(maxlen=1000)
+        self.component_response_times: Dict[str, List[float]] = {}
+        self.error_counts: Dict[str, int] = {}
+        
+        # Monitoring settings
+        self.monitoring_interval = 60  # seconds
+        self.alert_thresholds = {
+            'cpu_percent': 80.0,
+            'memory_percent': 85.0,
+            'response_time_ms': 1000,
+            'error_rate': 0.1
         }
-        self.max_history = 1000  # Maksymalna liczba zapisanych pomiarów
-        logger.info(f"Zainicjalizowano monitor wydajności z interwałem logowania: {log_interval}s")
+        
+        # Start monitoring thread
+        self._stop_monitoring = threading.Event()
+        self._monitoring_thread = threading.Thread(target=self._monitor_loop, daemon=True)
+        self._monitoring_thread.start()
+        
+        logger.log_info("Performance monitor initialized")
 
-    def start(self):
-        """Rozpoczyna monitorowanie w osobnym wątku."""
-        if self.running:
-            logger.warning("Monitor już działa")
-            return
+    def _ensure_db_exists(self) -> None:
+        """Ensure performance database exists and has correct schema."""
+        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+        
+        conn = sqlite3.connect(self.db_path)
+        c = conn.cursor()
+        
+        # Create metrics table
+        c.execute('''CREATE TABLE IF NOT EXISTS performance_metrics
+                    (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                     timestamp DATETIME,
+                     cpu_percent REAL,
+                     memory_percent REAL,
+                     io_counters TEXT,
+                     network_counters TEXT,
+                     response_times TEXT,
+                     error_rates TEXT)''')
+        
+        # Create alerts table
+        c.execute('''CREATE TABLE IF NOT EXISTS performance_alerts
+                    (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                     timestamp DATETIME,
+                     alert_type TEXT,
+                     message TEXT,
+                     metrics TEXT)''')
+        
+        conn.commit()
+        conn.close()
 
-        self.running = True
-        self.monitor_thread = threading.Thread(target=self._monitor_loop)
-        self.monitor_thread.daemon = True
-        self.monitor_thread.start()
-        logger.info("Monitoring wydajności uruchomiony")
+    def _monitor_loop(self) -> None:
+        """Main monitoring loop."""
+        while not self._stop_monitoring.is_set():
+            try:
+                metrics = self._collect_metrics()
+                self._store_metrics(metrics)
+                self._analyze_metrics(metrics)
+            except Exception as e:
+                logger.log_error(f"Error in monitoring loop: {e}")
+            
+            self._stop_monitoring.wait(self.monitoring_interval)
 
-    def stop(self):
-        """Zatrzymuje monitorowanie."""
-        self.running = False
-        if self.monitor_thread and self.monitor_thread.is_alive():
-            self.monitor_thread.join(timeout=5)
-        logger.info("Monitoring wydajności zatrzymany")
-
-    def _monitor_loop(self):
-        """Główna pętla monitoringu."""
+    def _collect_metrics(self) -> PerformanceMetrics:
+        """Collect current performance metrics."""
         try:
-            while self.running:
-                self._collect_metrics()
-                time.sleep(self.log_interval)
+            process = psutil.Process()
+            
+            # Basic system metrics
+            cpu_percent = process.cpu_percent()
+            memory_percent = process.memory_percent()
+            
+            # IO metrics
+            io_counters = process.io_counters()._asdict()
+            
+            # Network metrics
+            network = psutil.net_io_counters()._asdict()
+            
+            # Component response times
+            response_times = {
+                component: mean(times) if times else 0
+                for component, times in self.component_response_times.items()
+            }
+            
+            # Error rates
+            total_requests = sum(len(times) for times in self.component_response_times.values())
+            error_rates = {
+                component: count / total_requests if total_requests > 0 else 0
+                for component, count in self.error_counts.items()
+            }
+            
+            return PerformanceMetrics(
+                cpu_percent=cpu_percent,
+                memory_percent=memory_percent,
+                io_counters=io_counters,
+                network_counters=network,
+                response_times=response_times,
+                error_rates=error_rates,
+                timestamp=datetime.now().isoformat()
+            )
         except Exception as e:
-            logger.error(f"Błąd w pętli monitoringu: {e}")
-            self.running = False
+            logger.log_error(f"Error collecting metrics: {e}")
+            return None
 
-    def monitor_system(self) -> Dict[str, Any]:
-        """
-        Monitoruje wydajność systemu.
-
-        Returns:
-            Dict[str, Any]: Statystyki systemowe
-        """
+    def _store_metrics(self, metrics: PerformanceMetrics) -> None:
+        """Store metrics in database."""
+        if not metrics:
+            return
+            
         try:
-            # Pobierz informacje o CPU, pamięci i dysku
-            cpu_percent = psutil.cpu_percent(interval=0.1)
-            memory = psutil.virtual_memory()
-            disk = psutil.disk_usage('/')
+            conn = sqlite3.connect(self.db_path)
+            c = conn.cursor()
+            
+            c.execute('''INSERT INTO performance_metrics
+                        (timestamp, cpu_percent, memory_percent, io_counters,
+                         network_counters, response_times, error_rates)
+                        VALUES (?, ?, ?, ?, ?, ?, ?)''',
+                     (metrics.timestamp,
+                      metrics.cpu_percent,
+                      metrics.memory_percent,
+                      json.dumps(metrics.io_counters),
+                      json.dumps(metrics.network_counters),
+                      json.dumps(metrics.response_times),
+                      json.dumps(metrics.error_rates)))
+            
+            conn.commit()
+            conn.close()
+            
+            # Store in memory buffer
+            self.metrics_history.append(metrics)
+        except Exception as e:
+            logger.log_error(f"Error storing metrics: {e}")
 
+    def _analyze_metrics(self, metrics: PerformanceMetrics) -> None:
+        """Analyze metrics and generate alerts if needed."""
+        if not metrics:
+            return
+            
+        try:
+            # Check CPU usage
+            if metrics.cpu_percent > self.alert_thresholds['cpu_percent']:
+                self._create_alert('cpu_usage', 
+                                 f"High CPU usage: {metrics.cpu_percent}%",
+                                 metrics)
+            
+            # Check memory usage
+            if metrics.memory_percent > self.alert_thresholds['memory_percent']:
+                self._create_alert('memory_usage',
+                                 f"High memory usage: {metrics.memory_percent}%",
+                                 metrics)
+            
+            # Check response times
+            for component, time in metrics.response_times.items():
+                if time > self.alert_thresholds['response_time_ms']:
+                    self._create_alert('response_time',
+                                     f"Slow response time for {component}: {time}ms",
+                                     metrics)
+            
+            # Check error rates
+            for component, rate in metrics.error_rates.items():
+                if rate > self.alert_thresholds['error_rate']:
+                    self._create_alert('error_rate',
+                                     f"High error rate for {component}: {rate*100}%",
+                                     metrics)
+        except Exception as e:
+            logger.log_error(f"Error analyzing metrics: {e}")
+
+    def _create_alert(self, alert_type: str, message: str, metrics: PerformanceMetrics) -> None:
+        """Create and store performance alert."""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            c = conn.cursor()
+            
+            c.execute('''INSERT INTO performance_alerts
+                        (timestamp, alert_type, message, metrics)
+                        VALUES (?, ?, ?, ?)''',
+                     (datetime.now().isoformat(),
+                      alert_type,
+                      message,
+                      json.dumps(metrics.__dict__)))
+            
+            conn.commit()
+            conn.close()
+            
+            logger.log_warning(f"Performance alert: {message}")
+        except Exception as e:
+            logger.log_error(f"Error creating alert: {e}")
+
+    def record_response_time(self, component: str, time_ms: float) -> None:
+        """Record component response time."""
+        if component not in self.component_response_times:
+            self.component_response_times[component] = deque(maxlen=100)
+        self.component_response_times[component].append(time_ms)
+
+    def record_error(self, component: str) -> None:
+        """Record component error."""
+        self.error_counts[component] = self.error_counts.get(component, 0) + 1
+
+    def get_metrics(self, 
+                   hours: Optional[int] = None,
+                   components: Optional[List[str]] = None) -> Dict[str, Any]:
+        """Get performance metrics for specified time period."""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            c = conn.cursor()
+            
+            query = "SELECT * FROM performance_metrics WHERE 1=1"
+            params = []
+            
+            if hours:
+                cutoff = (datetime.now() - timedelta(hours=hours)).isoformat()
+                query += " AND timestamp >= ?"
+                params.append(cutoff)
+            
+            c.execute(query, params)
+            columns = [description[0] for description in c.description]
+            metrics = []
+            
+            for row in c.fetchall():
+                metric = dict(zip(columns, row))
+                # Parse JSON fields
+                for field in ['io_counters', 'network_counters', 
+                            'response_times', 'error_rates']:
+                    metric[field] = json.loads(metric[field])
+                metrics.append(metric)
+            
+            # Filter by components if specified
+            if components:
+                metrics = [
+                    m for m in metrics
+                    if any(c in m['response_times'] for c in components)
+                ]
+            
+            # Calculate statistics
+            stats = self._calculate_statistics(metrics)
+            
+            return {
+                'metrics': metrics,
+                'statistics': stats,
+                'components': list(self.component_response_times.keys()),
+                'timestamp': datetime.now().isoformat()
+            }
+        except Exception as e:
+            logger.log_error(f"Error getting metrics: {e}")
+            return {
+                'error': str(e),
+                'timestamp': datetime.now().isoformat()
+            }
+
+    def _calculate_statistics(self, metrics: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """Calculate statistics from metrics."""
+        if not metrics:
+            return {}
+            
+        try:
+            cpu_values = [m['cpu_percent'] for m in metrics]
+            memory_values = [m['memory_percent'] for m in metrics]
+            
             stats = {
                 'cpu': {
-                    'percent': cpu_percent,
-                    'cores': psutil.cpu_count()
+                    'mean': mean(cpu_values),
+                    'median': median(cpu_values),
+                    'std_dev': stdev(cpu_values) if len(cpu_values) > 1 else 0,
+                    'min': min(cpu_values),
+                    'max': max(cpu_values)
                 },
                 'memory': {
-                    'total': memory.total,
-                    'available': memory.available,
-                    'percent': memory.percent
+                    'mean': mean(memory_values),
+                    'median': median(memory_values),
+                    'std_dev': stdev(memory_values) if len(memory_values) > 1 else 0,
+                    'min': min(memory_values),
+                    'max': max(memory_values)
                 },
-                'disk': {
-                    'total': disk.total,
-                    'free': disk.free,
-                    'percent': disk.percent
-                },
-                'uptime': time.time() - self.start_time
+                'response_times': {},
+                'error_rates': {}
             }
-
-            # Aktualizuj statystyki systemowe
-            self.system_stats.update(stats)
-
-            current_time = time.time()
-            if current_time - self.last_log_time > self.log_interval:
-                logger.info(f"Wydajność systemu: CPU: {cpu_percent}%, RAM: {memory.percent}%")
-                self.last_log_time = current_time
-
+            
+            # Calculate component-specific statistics
+            components = set()
+            for m in metrics:
+                components.update(m['response_times'].keys())
+            
+            for component in components:
+                response_times = [
+                    m['response_times'].get(component, 0) 
+                    for m in metrics
+                    if component in m['response_times']
+                ]
+                
+                if response_times:
+                    stats['response_times'][component] = {
+                        'mean': mean(response_times),
+                        'median': median(response_times),
+                        'std_dev': stdev(response_times) if len(response_times) > 1 else 0,
+                        'min': min(response_times),
+                        'max': max(response_times)
+                    }
+                
+                error_rates = [
+                    m['error_rates'].get(component, 0)
+                    for m in metrics
+                    if component in m['error_rates']
+                ]
+                
+                if error_rates:
+                    stats['error_rates'][component] = {
+                        'mean': mean(error_rates),
+                        'max': max(error_rates)
+                    }
+            
             return stats
         except Exception as e:
-            logger.error(f"Błąd podczas monitorowania systemu: {e}")
-            return {"error": str(e)}
+            logger.log_error(f"Error calculating statistics: {e}")
+            return {}
 
-    def _collect_metrics(self):
-        """Zbiera metryki systemu."""
+    def get_alerts(self, 
+                  hours: Optional[int] = None,
+                  alert_types: Optional[List[str]] = None) -> List[Dict[str, Any]]:
+        """Get performance alerts for specified time period."""
         try:
-            # Pobierz metryki
-            cpu_percent = psutil.cpu_percent()
-            memory = psutil.virtual_memory()
-            disk = psutil.disk_usage('/')
-
-            # Zapisz metryki
-            self.metrics["cpu"].append(cpu_percent)
-            self.metrics["memory"].append(memory.percent)
-            self.metrics["disk"].append(disk.percent)
-            self.metrics["timestamp"].append(time.time())
-
-            # Ogranicz historię
-            if len(self.metrics["cpu"]) > self.max_history:
-                for key in self.metrics:
-                    self.metrics[key] = self.metrics[key][-self.max_history:]
-
-            # Log jeśli wykryto wysokie zużycie
-            if cpu_percent > 80:
-                logger.warning(f"Wysokie zużycie CPU: {cpu_percent}%")
-            if memory.percent > 80:
-                logger.warning(f"Wysokie zużycie pamięci: {memory.percent}%")
-            if disk.percent > 80:
-                logger.warning(f"Niski poziom wolnej przestrzeni dyskowej: {disk.percent}%")
-
+            conn = sqlite3.connect(self.db_path)
+            c = conn.cursor()
+            
+            query = "SELECT * FROM performance_alerts WHERE 1=1"
+            params = []
+            
+            if hours:
+                cutoff = (datetime.now() - timedelta(hours=hours)).isoformat()
+                query += " AND timestamp >= ?"
+                params.append(cutoff)
+            
+            if alert_types:
+                placeholders = ','.join('?' for _ in alert_types)
+                query += f" AND alert_type IN ({placeholders})"
+                params.extend(alert_types)
+            
+            query += " ORDER BY timestamp DESC"
+            
+            c.execute(query, params)
+            columns = [description[0] for description in c.description]
+            alerts = []
+            
+            for row in c.fetchall():
+                alert = dict(zip(columns, row))
+                alert['metrics'] = json.loads(alert['metrics'])
+                alerts.append(alert)
+            
+            return alerts
         except Exception as e:
-            logger.error(f"Błąd podczas zbierania metryk: {e}")
+            logger.log_error(f"Error getting alerts: {e}")
+            return []
 
-    def monitor_strategy(self, strategy_name: str, performance_data: Dict[str, Any]) -> None:
-        """
-        Monitoruje wydajność strategii tradingowej.
-
-        Parameters:
-            strategy_name (str): Nazwa strategii.
-            performance_data (Dict[str, Any]): Dane wydajności.
-        """
+    def cleanup_old_data(self, days: int = 30) -> None:
+        """Clean up old performance data."""
         try:
-            # Aktualizacja danych wydajności
-            if strategy_name not in self.strategy_performance:
-                self.strategy_performance[strategy_name] = []
-
-            # Dodanie aktualnego czasu
-            performance_data["timestamp"] = time.time()
-
-            self.strategy_performance[strategy_name].append(performance_data)
-
-            # Ograniczenie liczby przechowywanych rekordów do 1000
-            if len(self.strategy_performance[strategy_name]) > 1000:
-                self.strategy_performance[strategy_name] = self.strategy_performance[strategy_name][-1000:]
-
-            logger.info(f"Zaaktualizowano wydajność strategii {strategy_name}: {performance_data}")
+            conn = sqlite3.connect(self.db_path)
+            c = conn.cursor()
+            
+            cutoff = (datetime.now() - timedelta(days=days)).isoformat()
+            
+            # Clean up metrics
+            c.execute("DELETE FROM performance_metrics WHERE timestamp < ?", (cutoff,))
+            metrics_deleted = c.rowcount
+            
+            # Clean up alerts
+            c.execute("DELETE FROM performance_alerts WHERE timestamp < ?", (cutoff,))
+            alerts_deleted = c.rowcount
+            
+            conn.commit()
+            conn.close()
+            
+            logger.log_info(
+                f"Cleaned up old performance data: {metrics_deleted} metrics, "
+                f"{alerts_deleted} alerts deleted"
+            )
         except Exception as e:
-            logger.error(f"Błąd podczas monitorowania strategii {strategy_name}: {e}")
+            logger.log_error(f"Error cleaning up old data: {e}")
 
-    def get_strategy_performance(self, strategy_name: str = None) -> Dict[str, List[Dict[str, Any]]]:
-        """
-        Zwraca metryki wydajności strategii.
+    def __del__(self):
+        """Cleanup on deletion."""
+        self._stop_monitoring.set()
+        if hasattr(self, '_monitoring_thread'):
+            self._monitoring_thread.join()
 
-        Parameters:
-            strategy_name (str, optional): Nazwa strategii. Jeśli None, zwraca wszystkie strategie.
-
-        Returns:
-            Dict[str, List[Dict[str, Any]]]: Metryki wydajności strategii.
-        """
-        if strategy_name:
-            return {strategy_name: self.strategy_performance.get(strategy_name, [])}
-        return self.strategy_performance
-
-    def get_system_report(self) -> Dict[str, Any]:
-        """
-        Generuje raport wydajności systemu.
-
-        Returns:
-            Dict[str, Any]: Raport wydajności.
-        """
-        # Aktualizacja statystyk
-        self.monitor_system()
-
-        # Przygotowanie raportu
-        report = {
-            "system": self.system_stats,
-            "strategies": {},
-            "timestamp": time.time(),
-            "datetime": datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-        }
-
-        # Dodanie danych wydajności strategii
-        for strategy_name, performance_data in self.strategy_performance.items():
-            if performance_data:
-                report["strategies"][strategy_name] = performance_data[-1]
-
-        return report
-
-    def log_execution_time(self, function_name: str, execution_time: float) -> None:
-        """
-        Zapisuje czas wykonania funkcji.
-
-        Parameters:
-            function_name (str): Nazwa funkcji.
-            execution_time (float): Czas wykonania w sekundach.
-        """
-        logger.info(f"Czas wykonania {function_name}: {execution_time:.6f}s")
-
-        # Dodanie do statystyk
-        if "execution_times" not in self.system_stats:
-            self.system_stats["execution_times"] = {}
-
-        if function_name not in self.system_stats["execution_times"]:
-            self.system_stats["execution_times"][function_name] = []
-
-        self.system_stats["execution_times"][function_name].append(execution_time)
-
-        # Ograniczenie liczby przechowywanych czasów do 1000
-        if len(self.system_stats["execution_times"][function_name]) > 1000:
-            self.system_stats["execution_times"][function_name] = self.system_stats["execution_times"][function_name][-1000:]
-
-    def get_current_usage(self) -> Dict[str, float]:
-        """
-        Pobiera aktualne zużycie zasobów.
-
-        Returns:
-            Dict[str, float]: Słownik zawierający bieżące zużycie zasobów
-        """
-        try:
-            cpu_percent = psutil.cpu_percent(interval=0.5)
-            memory = psutil.virtual_memory()
-            disk = psutil.disk_usage('/')
-
-            return {
-                "cpu": cpu_percent,
-                "memory": memory.percent,
-                "memory_available_mb": memory.available / (1024 * 1024),
-                "disk": disk.percent,
-                "disk_free_gb": disk.free / (1024 * 1024 * 1024),
-                "timestamp": time.time()
-            }
-        except Exception as e:
-            logger.error(f"Błąd podczas pobierania bieżącego zużycia: {e}")
-            return {
-                "cpu": 0.0,
-                "memory": 0.0,
-                "memory_available_mb": 0.0,
-                "disk": 0.0,
-                "disk_free_gb": 0.0,
-                "timestamp": time.time(),
-                "error": str(e)
-            }
-
-    def get_metrics_history(self) -> Dict[str, List[float]]:
-        """
-        Pobiera historię metryk.
-
-        Returns:
-            Dict[str, List[float]]: Słownik zawierający historię metryk
-        """
-        return self.metrics
-
-    def get_system_info(self) -> Dict[str, Any]:
-        """
-        Pobiera informacje o systemie.
-
-        Returns:
-            Dict[str, Any]: Informacje o systemie
-        """
-        try:
-            boot_time = psutil.boot_time()
-            boot_time_str = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(boot_time))
-
-            return {
-                "platform": platform.platform(),
-                "python_version": platform.python_version(),
-                "processor": platform.processor(),
-                "cpu_count": psutil.cpu_count(logical=True),
-                "physical_cpu_count": psutil.cpu_count(logical=False),
-                "total_memory_gb": psutil.virtual_memory().total / (1024 * 1024 * 1024),
-                "total_disk_gb": psutil.disk_usage('/').total / (1024 * 1024 * 1024),
-                "boot_time": boot_time_str,
-                "uptime_seconds": time.time() - boot_time
-            }
-        except Exception as e:
-            logger.error(f"Błąd podczas pobierania informacji o systemie: {e}")
-            return {
-                "error": str(e)
-            }
-
-
-# Singleton instancja dla łatwego dostępu z różnych modułów
+# Create global monitor instance
 performance_monitor = PerformanceMonitor()
 
-
-# Dekorator do mierzenia czasu wykonania funkcji
-def measure_time(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        start_time = time.time()
-        try:
-            result = func(*args, **kwargs)
-            return result
-        finally:
-            execution_time = time.time() - start_time
-            performance_monitor.log_execution_time(func.__name__, execution_time)
-    return wrapper
-
-
-def get_system_stats() -> Dict[str, Any]:
-    """
-    Funkcja pomocnicza do pobierania statystyk systemu.
-
-    Returns:
-        Dict[str, Any]: Statystyki systemu.
-    """
-    return performance_monitor.monitor_system()
-
-
-# Funkcje pomocnicze dla łatwiejszego dostępu do wspólnej instancji
 def get_performance_monitor() -> PerformanceMonitor:
-    """
-    Pobiera globalną instancję monitora wydajności.
-
-    Returns:
-        PerformanceMonitor: Instancja monitora wydajności
-    """
+    """Get global performance monitor instance."""
     return performance_monitor
 
-
-def get_system_usage() -> Dict[str, float]:
-    """
-    Pobiera aktualne zużycie zasobów systemowych.
-
-    Returns:
-        Dict[str, float]: Słownik zawierający bieżące zużycie zasobów
-    """
-    return performance_monitor.get_current_usage()
+# Example usage
+if __name__ == "__main__":
+    monitor = get_performance_monitor()
+    
+    # Simulate some activity
+    for i in range(5):
+        # Record response times
+        monitor.record_response_time("api", 100 + i * 10)
+        monitor.record_response_time("database", 50 + i * 5)
+        
+        # Record some errors
+        if i % 2 == 0:
+            monitor.record_error("api")
+        
+        time.sleep(2)
+    
+    # Get metrics
+    metrics = monitor.get_metrics(hours=1)
+    print("\nPerformance metrics:")
+    print(json.dumps(metrics, indent=2))
+    
+    # Get alerts
+    alerts = monitor.get_alerts(hours=1)
+    print("\nPerformance alerts:")
+    print(json.dumps(alerts, indent=2))
