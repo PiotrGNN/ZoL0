@@ -1,0 +1,39 @@
+# Production Environment Overrides
+
+environment:
+  mode: production
+  debug: false
+  log_level: WARNING
+
+api:
+  rate_limit: 30  # More conservative rate limit
+  timeout: 60     # Longer timeout
+
+trading:
+  mode: live      # Live trading in production
+  max_risk: 0.02  # More conservative risk settings
+  max_position_size: 0.1
+  max_drawdown: 0.05
+
+strategies:
+  trend_following:
+    enabled: true
+  breakout:
+    enabled: false  # Disable more aggressive strategies in production
+  mean_reversion:
+    enabled: false
+
+database:
+  backup_interval: 43200  # More frequent backups (12 hours)
+
+exchange:
+  use_testnet: false  # Use real exchange in production
+  retry_attempts: 5   # More retry attempts
+
+monitoring:
+  enabled: true
+  log_retention_days: 90  # Longer log retention
+
+security:
+  jwt_expiry_hours: 8    # Shorter token expiry
+  max_login_attempts: 3   # Stricter security settings

@@ -1,0 +1,35 @@
+image:
+  repository: ghcr.io/your-org/your-repo/api
+  tag: latest
+  pullPolicy: IfNotPresent
+uiImage:
+  repository: ghcr.io/your-org/your-repo/ui
+  tag: latest
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+
+service:
+  type: ClusterIP
+  apiPort: 5000
+  uiPort: 8501
+  prometheusPort: 9090
+  grafanaPort: 3000
+  lokiPort: 3100
+
+env:
+  APP_ENV: production
+  LOG_LEVEL: INFO
+  # Add more environment variables as needed
+
+resources:
+  limits:
+    cpu: 1
+    memory: 1Gi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+canary:
+  enabled: false
+

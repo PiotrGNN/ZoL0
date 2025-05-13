@@ -1,0 +1,5 @@
+/* Przykładowe style przeniesione z inline */
+.main-header { font-size: 2em; font-weight: bold; margin-bottom: 1em; }
+.section { margin: 2em 0; }
+.card { box-shadow: 0 2px 8px #ccc; padding: 1em; border-radius: 8px; background: #fff; }
+/* Dodaj tu więcej klas według potrzeb */

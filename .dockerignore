@@ -1,0 +1,23 @@
+# .dockerignore for Python/Node monorepo
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.env.*
+node_modules/
+logs/
+htmlcov/
+.DS_Store
+*.log
+*.db
+*.sqlite3
+coverage.xml
+*.pytest_cache/
+dashboard-new/node_modules/
+dashboard-new/.pnpm/
+dashboard-new/dist/
+dashboard-new/build/
+dashboard-new/.env
+dashboard-new/*.log
+dashboard-new/.DS_Store

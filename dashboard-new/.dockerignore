@@ -1,0 +1,7 @@
+node_modules/
+.pnpm/
+dist/
+build/
+.env
+*.log
+.DS_Store

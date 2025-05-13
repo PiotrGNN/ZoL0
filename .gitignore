@@ -1,0 +1,22 @@
+# Ignore Python virtual environments
+venv/
+
+# Ignore coverage and test output
+htmlcov/
+coverage/
+*.log
+
+# Ignore node_modules and frontend build
+node_modules/
+dashboard-new/dist/
+
+# Ignore Python cache
+__pycache__/
+
+# Ignore Sphinx and documentation build
+**/site-packages/
+**/sphinx/
+
+# Ignore system files
+.DS_Store
+Thumbs.db

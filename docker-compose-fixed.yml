@@ -1,0 +1,184 @@
+x-healthcheck: &default-healthcheck
+  interval: 10s
+  timeout: 5s
+  retries: 5
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.multi
+      target: runtime-py
+    image: trading-system-api:latest
+    container_name: trading-system-api
+    ports:
+      - "5000:5000"
+    environment:
+      - APP_ENV=${APP_ENV:-development}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+    env_file:
+      - .env
+    volumes:
+      - ./config:/app/config
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./saved_models:/app/saved_models
+    depends_on:
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      <<: *default-healthcheck
+    networks:
+      - trading-net
+    profiles: ["dev", "prod"]
+
+  ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.multi
+      target: nginx
+    image: trading-system-ui:latest
+    container_name: trading-system-ui
+    ports:
+      - "8501:80"
+    depends_on:
+      - api
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost"]
+      <<: *default-healthcheck
+    networks:
+      - trading-net
+    profiles: ["dev", "prod"]
+
+  redis:
+    image: redis:7-alpine
+    container_name: trading-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      <<: *default-healthcheck
+    networks:
+      - trading-net
+    profiles: ["dev", "prod"]
+
+  kafka:
+    image: bitnami/kafka:latest
+    container_name: trading-kafka
+    ports:
+      - "9092:9092"
+    environment:
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_NODE_ID=1
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@trading-kafka:9093
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://trading-kafka:9092
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "kafka-topics.sh", "--bootstrap-server", "localhost:9092", "--list"]
+      <<: *default-healthcheck
+    networks:
+      - trading-net
+    profiles: ["dev", "prod"]
+
+  zookeeper:
+    image: bitnami/zookeeper:latest
+    container_name: trading-zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    healthcheck:
+      test: ["CMD", "echo", "ruok", "|", "nc", "localhost", "2181"]
+      <<: *default-healthcheck
+    networks:
+      - trading-net
+    profiles: ["dev", "prod"]
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: trading-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus:/etc/prometheus
+      - ./ZoL0/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:9090/-/healthy"]
+      <<: *default-healthcheck
+    networks:
+      - trading-net
+    profiles: ["dev", "prod"]
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: trading-grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./monitoring/dashboards:/etc/grafana/dashboards
+      - ./monitoring/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/login"]
+      <<: *default-healthcheck
+    networks:
+      - trading-net
+    profiles: ["dev", "prod"]
+
+  loki:
+    image: grafana/loki:2.9.4
+    container_name: trading-loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3100/ready"]
+      <<: *default-healthcheck
+    networks:
+      - trading-net
+    profiles: ["dev", "prod"]
+
+  express-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.express
+    image: express-app:latest
+    container_name: express-app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - trading-net
+    profiles: ["dev", "prod"]
+
+networks:
+  trading-net:
+    driver: bridge

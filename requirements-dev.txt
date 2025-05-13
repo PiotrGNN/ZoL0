@@ -1,0 +1,8 @@
+# Dev Tools Setup
+
+ruff
+black
+mypy
+pytest
+hypothesis
+coverage

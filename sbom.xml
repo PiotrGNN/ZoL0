@@ -1,0 +1,700 @@
+{
+  "components": [
+    {
+      "bom-ref": "requirements-L2",
+      "description": "requirements line 2: Flask>=3.0.0",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/Flask/"
+        }
+      ],
+      "name": "Flask",
+      "purl": "pkg:pypi/flask",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L4",
+      "description": "requirements line 4: PyYAML>=6.0.1",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/PyYAML/"
+        }
+      ],
+      "name": "PyYAML",
+      "purl": "pkg:pypi/pyyaml",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L3",
+      "description": "requirements line 3: SQLAlchemy>=2.0.0",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/SQLAlchemy/"
+        }
+      ],
+      "name": "SQLAlchemy",
+      "purl": "pkg:pypi/sqlalchemy",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L42",
+      "description": "requirements line 42: black>=23.3.0",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/black/"
+        }
+      ],
+      "name": "black",
+      "purl": "pkg:pypi/black",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L20",
+      "description": "requirements line 20: ccxt>=3.0.0",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/ccxt/"
+        }
+      ],
+      "name": "ccxt",
+      "purl": "pkg:pypi/ccxt",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L9",
+      "description": "requirements line 9: cryptography>=42.0.0",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/cryptography/"
+        }
+      ],
+      "name": "cryptography",
+      "purl": "pkg:pypi/cryptography",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L43",
+      "description": "requirements line 43: flake8>=6.0.0",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/flake8/"
+        }
+      ],
+      "name": "flake8",
+      "purl": "pkg:pypi/flake8",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L26",
+      "description": "requirements line 26: gym>=0.26.0",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/gym/"
+        }
+      ],
+      "name": "gym",
+      "purl": "pkg:pypi/gym",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L44",
+      "description": "requirements line 44: mypy>=1.3.0",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/mypy/"
+        }
+      ],
+      "name": "mypy",
+      "purl": "pkg:pypi/mypy",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L12",
+      "description": "requirements line 12: numpy>=1.24.0",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/numpy/"
+        }
+      ],
+      "name": "numpy",
+      "purl": "pkg:pypi/numpy",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L27",
+      "description": "requirements line 27: optuna>=4.3.0",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/optuna/"
+        }
+      ],
+      "name": "optuna",
+      "purl": "pkg:pypi/optuna",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L13",
+      "description": "requirements line 13: pandas>=2.0.0",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/pandas/"
+        }
+      ],
+      "name": "pandas",
+      "purl": "pkg:pypi/pandas",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L30",
+      "description": "requirements line 30: prometheus-client>=0.17.1",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/prometheus-client/"
+        }
+      ],
+      "name": "prometheus-client",
+      "purl": "pkg:pypi/prometheus-client",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L18",
+      "description": "requirements line 18: pybit>=5.0.0",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/pybit/"
+        }
+      ],
+      "name": "pybit",
+      "purl": "pkg:pypi/pybit",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L45",
+      "description": "requirements line 45: pylint>=2.17.4",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/pylint/"
+        }
+      ],
+      "name": "pylint",
+      "purl": "pkg:pypi/pylint",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L36",
+      "description": "requirements line 36: pytest>=8.3.5",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/pytest/"
+        }
+      ],
+      "name": "pytest",
+      "purl": "pkg:pypi/pytest",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L38",
+      "description": "requirements line 38: pytest-asyncio>=0.23.5",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/pytest-asyncio/"
+        }
+      ],
+      "name": "pytest-asyncio",
+      "purl": "pkg:pypi/pytest-asyncio",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L37",
+      "description": "requirements line 37: pytest-cov>=4.1.0",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/pytest-cov/"
+        }
+      ],
+      "name": "pytest-cov",
+      "purl": "pkg:pypi/pytest-cov",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L39",
+      "description": "requirements line 39: pytest-timeout>=2.1.0",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/pytest-timeout/"
+        }
+      ],
+      "name": "pytest-timeout",
+      "purl": "pkg:pypi/pytest-timeout",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L19",
+      "description": "requirements line 19: python-binance>=1.0.16",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/python-binance/"
+        }
+      ],
+      "name": "python-binance",
+      "purl": "pkg:pypi/python-binance",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L5",
+      "description": "requirements line 5: python-dotenv>=1.0.0",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/python-dotenv/"
+        }
+      ],
+      "name": "python-dotenv",
+      "purl": "pkg:pypi/python-dotenv",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L8",
+      "description": "requirements line 8: python-jose[cryptography]>=3.3.0",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/python-jose/"
+        }
+      ],
+      "name": "python-jose",
+      "properties": [
+        {
+          "name": "cdx:python:package:required-extra",
+          "value": "cryptography"
+        }
+      ],
+      "purl": "pkg:pypi/python-jose",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L31",
+      "description": "requirements line 31: python-json-logger>=2.0.7",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/python-json-logger/"
+        }
+      ],
+      "name": "python-json-logger",
+      "purl": "pkg:pypi/python-json-logger",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L6",
+      "description": "requirements line 6: requests>=2.31.0",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/requests/"
+        }
+      ],
+      "name": "requests",
+      "purl": "pkg:pypi/requests",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L14",
+      "description": "requirements line 14: scikit-learn>=1.2.0",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/scikit-learn/"
+        }
+      ],
+      "name": "scikit-learn",
+      "purl": "pkg:pypi/scikit-learn",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L33",
+      "description": "requirements line 33: sentry-sdk>=1.32.0",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/sentry-sdk/"
+        }
+      ],
+      "name": "sentry-sdk",
+      "purl": "pkg:pypi/sentry-sdk",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L48",
+      "description": "requirements line 48: sphinx>=7.0.1",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/sphinx/"
+        }
+      ],
+      "name": "sphinx",
+      "purl": "pkg:pypi/sphinx",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L49",
+      "description": "requirements line 49: sphinx-rtd-theme>=1.2.1",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/sphinx-rtd-theme/"
+        }
+      ],
+      "name": "sphinx-rtd-theme",
+      "purl": "pkg:pypi/sphinx-rtd-theme",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L32",
+      "description": "requirements line 32: statsd>=4.0.1",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/statsd/"
+        }
+      ],
+      "name": "statsd",
+      "purl": "pkg:pypi/statsd",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L15",
+      "description": "requirements line 15: ta>=0.10.0",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/ta/"
+        }
+      ],
+      "name": "ta",
+      "purl": "pkg:pypi/ta",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L24",
+      "description": "requirements line 24: tensorflow>=2.12.0",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/tensorflow/"
+        }
+      ],
+      "name": "tensorflow",
+      "purl": "pkg:pypi/tensorflow",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L23",
+      "description": "requirements line 23: torch>=2.0.0",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/torch/"
+        }
+      ],
+      "name": "torch",
+      "purl": "pkg:pypi/torch",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L25",
+      "description": "requirements line 25: transformers>=4.28.0",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/transformers/"
+        }
+      ],
+      "name": "transformers",
+      "purl": "pkg:pypi/transformers",
+      "type": "library"
+    },
+    {
+      "bom-ref": "requirements-L7",
+      "description": "requirements line 7: websocket-client>=1.7.0",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "requirements.txt/websocket-client/"
+        }
+      ],
+      "name": "websocket-client",
+      "purl": "pkg:pypi/websocket-client",
+      "type": "library"
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "requirements-L12"
+    },
+    {
+      "ref": "requirements-L13"
+    },
+    {
+      "ref": "requirements-L14"
+    },
+    {
+      "ref": "requirements-L15"
+    },
+    {
+      "ref": "requirements-L18"
+    },
+    {
+      "ref": "requirements-L19"
+    },
+    {
+      "ref": "requirements-L2"
+    },
+    {
+      "ref": "requirements-L20"
+    },
+    {
+      "ref": "requirements-L23"
+    },
+    {
+      "ref": "requirements-L24"
+    },
+    {
+      "ref": "requirements-L25"
+    },
+    {
+      "ref": "requirements-L26"
+    },
+    {
+      "ref": "requirements-L27"
+    },
+    {
+      "ref": "requirements-L3"
+    },
+    {
+      "ref": "requirements-L30"
+    },
+    {
+      "ref": "requirements-L31"
+    },
+    {
+      "ref": "requirements-L32"
+    },
+    {
+      "ref": "requirements-L33"
+    },
+    {
+      "ref": "requirements-L36"
+    },
+    {
+      "ref": "requirements-L37"
+    },
+    {
+      "ref": "requirements-L38"
+    },
+    {
+      "ref": "requirements-L39"
+    },
+    {
+      "ref": "requirements-L4"
+    },
+    {
+      "ref": "requirements-L42"
+    },
+    {
+      "ref": "requirements-L43"
+    },
+    {
+      "ref": "requirements-L44"
+    },
+    {
+      "ref": "requirements-L45"
+    },
+    {
+      "ref": "requirements-L48"
+    },
+    {
+      "ref": "requirements-L49"
+    },
+    {
+      "ref": "requirements-L5"
+    },
+    {
+      "ref": "requirements-L6"
+    },
+    {
+      "ref": "requirements-L7"
+    },
+    {
+      "ref": "requirements-L8"
+    },
+    {
+      "ref": "requirements-L9"
+    }
+  ],
+  "metadata": {
+    "timestamp": "2025-05-09T03:25:22.723027+00:00",
+    "tools": {
+      "components": [
+        {
+          "description": "CycloneDX Software Bill of Materials (SBOM) generator for Python projects and environments",
+          "externalReferences": [
+            {
+              "type": "build-system",
+              "url": "https://github.com/CycloneDX/cyclonedx-python/actions"
+            },
+            {
+              "type": "distribution",
+              "url": "https://pypi.org/project/cyclonedx-bom/"
+            },
+            {
+              "type": "documentation",
+              "url": "https://cyclonedx-bom-tool.readthedocs.io/"
+            },
+            {
+              "type": "issue-tracker",
+              "url": "https://github.com/CycloneDX/cyclonedx-python/issues"
+            },
+            {
+              "type": "license",
+              "url": "https://github.com/CycloneDX/cyclonedx-python/blob/main/LICENSE"
+            },
+            {
+              "type": "release-notes",
+              "url": "https://github.com/CycloneDX/cyclonedx-python/blob/main/CHANGELOG.md"
+            },
+            {
+              "type": "vcs",
+              "url": "https://github.com/CycloneDX/cyclonedx-python/"
+            },
+            {
+              "type": "website",
+              "url": "https://github.com/CycloneDX/cyclonedx-python/#readme"
+            }
+          ],
+          "group": "CycloneDX",
+          "licenses": [
+            {
+              "license": {
+                "acknowledgement": "declared",
+                "id": "Apache-2.0"
+              }
+            }
+          ],
+          "name": "cyclonedx-py",
+          "type": "application",
+          "version": "6.0.0"
+        },
+        {
+          "description": "Python library for CycloneDX",
+          "externalReferences": [
+            {
+              "type": "build-system",
+              "url": "https://github.com/CycloneDX/cyclonedx-python-lib/actions"
+            },
+            {
+              "type": "distribution",
+              "url": "https://pypi.org/project/cyclonedx-python-lib/"
+            },
+            {
+              "type": "documentation",
+              "url": "https://cyclonedx-python-library.readthedocs.io/"
+            },
+            {
+              "type": "issue-tracker",
+              "url": "https://github.com/CycloneDX/cyclonedx-python-lib/issues"
+            },
+            {
+              "type": "license",
+              "url": "https://github.com/CycloneDX/cyclonedx-python-lib/blob/main/LICENSE"
+            },
+            {
+              "type": "release-notes",
+              "url": "https://github.com/CycloneDX/cyclonedx-python-lib/blob/main/CHANGELOG.md"
+            },
+            {
+              "type": "vcs",
+              "url": "https://github.com/CycloneDX/cyclonedx-python-lib"
+            },
+            {
+              "type": "website",
+              "url": "https://github.com/CycloneDX/cyclonedx-python-lib/#readme"
+            }
+          ],
+          "group": "CycloneDX",
+          "licenses": [
+            {
+              "license": {
+                "acknowledgement": "declared",
+                "id": "Apache-2.0"
+              }
+            }
+          ],
+          "name": "cyclonedx-python-lib",
+          "type": "library",
+          "version": "10.0.0"
+        }
+      ]
+    }
+  },
+  "serialNumber": "urn:uuid:c62f18f8-b083-481b-b4e9-e6d87534051c",
+  "version": 1,
+  "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.6"
+}

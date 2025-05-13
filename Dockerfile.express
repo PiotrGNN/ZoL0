@@ -1,0 +1,15 @@
+# syntax=docker/dockerfile:1.5
+FROM node:20-slim AS build
+WORKDIR /app
+COPY package.json tsconfig.json ./
+COPY src ./src
+RUN npm install && npm run build
+
+FROM node:20-slim AS runtime
+WORKDIR /app
+COPY --from=build /app/dist ./dist
+COPY package.json ./
+RUN npm install --omit=dev --ignore-scripts
+EXPOSE 3000
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 CMD curl -f http://localhost:3000/health || exit 1
+CMD ["node", "dist/app.js"]

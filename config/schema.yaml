@@ -1,0 +1,136 @@
+# Configuration Schema Definition
+
+required:
+  environment:
+    type: dict
+    required:
+      mode:
+        type: str
+        allowed: [development, production, test]
+      debug: 
+        type: bool
+      log_level:
+        type: str
+        allowed: [DEBUG, INFO, WARNING, ERROR, CRITICAL]
+
+  api:
+    type: dict
+    required:
+      port:
+        type: int
+        min: 1024
+        max: 65535
+      host:
+        type: str
+      rate_limit:
+        type: int
+        min: 1
+      timeout:
+        type: int
+        min: 1
+
+  trading:
+    type: dict
+    required:
+      mode:
+        type: str
+        allowed: [simulated, paper, live]
+      initial_balance:
+        type: float
+        min: 0
+      base_currency:
+        type: str
+      max_risk:
+        type: float
+        min: 0
+        max: 1
+      max_position_size:
+        type: float
+        min: 0
+        max: 1
+      max_drawdown:
+        type: float
+        min: 0
+        max: 1
+      allowed_pairs:
+        type: list
+        schema:
+          type: str
+
+  strategies:
+    type: dict
+    required:
+      trend_following:
+        type: dict
+        required:
+          enabled: 
+            type: bool
+          timeframes:
+            type: list
+            schema:
+              type: str
+          indicators:
+            type: list
+            schema:
+              type: str
+
+  database:
+    type: dict
+    required:
+      path:
+        type: str
+      backup_enabled:
+        type: bool
+      backup_interval:
+        type: int
+        min: 1
+
+  exchange:
+    type: dict
+    required:
+      name:
+        type: str
+      use_testnet:
+        type: bool
+      rate_limit_per_second:
+        type: int
+        min: 1
+      retry_attempts:
+        type: int
+        min: 1
+      retry_delay:
+        type: float
+        min: 0
+
+  monitoring:
+    type: dict
+    required:
+      enabled:
+        type: bool
+      metrics_port:
+        type: int
+        min: 1024
+        max: 65535
+      grafana_port:
+        type: int
+        min: 1024
+        max: 65535
+      log_retention_days:
+        type: int
+        min: 1
+
+  security:
+    type: dict
+    required:
+      jwt_expiry_hours:
+        type: int
+        min: 1
+      password_min_length:
+        type: int
+        min: 8
+      max_login_attempts:
+        type: int
+        min: 1
+      lockout_duration_minutes:
+        type: int
+        min: 1

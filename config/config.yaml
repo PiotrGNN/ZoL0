@@ -1,0 +1,37 @@
+strategies:
+  breakout:
+    enabled: true
+    indicators:
+    - BB
+    - Volume
+    timeframes:
+    - 1h
+  mean_reversion:
+    enabled: false
+    indicators:
+    - BB
+    - RSI
+    timeframes:
+    - 15m
+    - 1h
+  trend_following:
+    enabled: true
+    indicators:
+    - EMA
+    - RSI
+    timeframes:
+    - 1h
+    - 4h
+trading:
+  base_currency: USDT
+  initial_balance: 1000.0
+  mode: simulated
+  max_risk: 0.02
+  max_position_size: 0.1
+  max_drawdown: 0.05
+  risk_management:
+    max_daily_drawdown: 0.05
+    max_open_positions: 3
+    max_risk_per_trade: 0.02
+  trading_pairs:
+  - BTCUSDT

@@ -1,0 +1,9 @@
+# .axeignore
+venv/
+htmlcov/
+coverage/
+**/site-packages/
+**/sphinx/
+dashboard-new/dist/
+node_modules/
+*.log

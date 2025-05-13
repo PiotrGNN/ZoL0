@@ -1,0 +1,47 @@
+# syntax=docker/dockerfile:1.5
+
+###############################
+# STAGE 1: build-py (Python backend build)
+###############################
+FROM python:3.12-slim AS build-py
+LABEL org.opencontainers.image.source="https://github.com/your-org/your-repo"
+WORKDIR /app
+COPY requirements.txt ./
+RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
+COPY . .
+RUN pip install --no-cache-dir -r requirements-dev.txt || true
+RUN pytest --maxfail=1 --disable-warnings || true
+
+###############################
+# STAGE 2: runtime-py (Distroless Python)
+###############################
+FROM gcr.io/distroless/python3-debian12 AS runtime-py
+LABEL org.opencontainers.image.source="https://github.com/your-org/your-repo"
+WORKDIR /app
+COPY --from=build-py /app /app
+# Copy installed Python packages from build stage to runtime
+COPY --from=build-py /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1
+EXPOSE 5000 8501
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 CMD ["python", "-m", "http.server", "5000"]
+ENTRYPOINT ["python", "main.py"]
+
+###############################
+# STAGE 3: build-ui (Node 20 + pnpm)
+###############################
+FROM node:20-slim AS build-ui
+LABEL org.opencontainers.image.source="https://github.com/your-org/your-repo"
+WORKDIR /ui
+COPY dashboard-new ./dashboard-new
+RUN npm install -g pnpm && cd dashboard-new && pnpm install && pnpm build
+
+###############################
+# STAGE 4: nginx (serving static UI)
+###############################
+FROM nginx:alpine AS nginx
+LABEL org.opencontainers.image.source="https://github.com/your-org/your-repo"
+WORKDIR /usr/share/nginx/html
+COPY --from=build-ui /ui/dashboard-new/dist .
+COPY nginx.conf /etc/nginx/nginx.conf
+EXPOSE 80
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 CMD ["wget", "-qO-", "http://localhost"]

@@ -1,0 +1,167 @@
+{
+  "memory_usage": {
+    "20250513_070715": {
+      "data_processing": {
+        "initial_memory_mb": 6031.9140625,
+        "final_memory_mb": 6037.83984375,
+        "memory_increase_mb": 5.92578125
+      }
+    },
+    "20250513_074944": {
+      "data_processing": {
+        "initial_memory_mb": 668.015625,
+        "final_memory_mb": 669.2734375,
+        "memory_increase_mb": 1.2578125
+      }
+    },
+    "20250513_101744": {
+      "data_processing": {
+        "initial_memory_mb": 669.32421875,
+        "final_memory_mb": 670.5078125,
+        "memory_increase_mb": 1.18359375
+      }
+    },
+    "20250513_101959": {
+      "data_processing": {
+        "initial_memory_mb": 675.32421875,
+        "final_memory_mb": 676.390625,
+        "memory_increase_mb": 1.06640625
+      }
+    },
+    "20250513_103005": {
+      "data_processing": {
+        "initial_memory_mb": 678.2265625,
+        "final_memory_mb": 678.2265625,
+        "memory_increase_mb": 0.0
+      }
+    },
+    "20250513_111905": {
+      "data_processing": {
+        "initial_memory_mb": 669.37890625,
+        "final_memory_mb": 670.5078125,
+        "memory_increase_mb": 1.12890625
+      }
+    }
+  },
+  "data_processing": {
+    "20250513_070716": {
+      "small": {
+        "avg_time": 0.014558219909667968,
+        "records_per_second": 6868.971661404222,
+        "dataset_size": 100
+      },
+      "medium": {
+        "avg_time": 0.0033977985382080077,
+        "records_per_second": 294308.20831637597,
+        "dataset_size": 1000
+      },
+      "large": {
+        "avg_time": 0.003751039505004883,
+        "records_per_second": 2665927.667959067,
+        "dataset_size": 10000
+      }
+    },
+    "20250513_071825": {
+      "small": {
+        "avg_time": 0.0020130157470703127,
+        "records_per_second": 49676.71025203714,
+        "dataset_size": 100
+      },
+      "medium": {
+        "avg_time": 0.0019553184509277345,
+        "records_per_second": 511425.6450275569,
+        "dataset_size": 1000
+      },
+      "large": {
+        "avg_time": 0.002230072021484375,
+        "records_per_second": 4484160.109476565,
+        "dataset_size": 10000
+      }
+    },
+    "20250513_074945": {
+      "small": {
+        "avg_time": 0.003077840805053711,
+        "records_per_second": 32490.309386958343,
+        "dataset_size": 100
+      },
+      "medium": {
+        "avg_time": 0.0017787456512451173,
+        "records_per_second": 562193.9254215478,
+        "dataset_size": 1000
+      },
+      "large": {
+        "avg_time": 0.0018584251403808594,
+        "records_per_second": 5380900.087237646,
+        "dataset_size": 10000
+      }
+    },
+    "20250513_101744": {
+      "small": {
+        "avg_time": 0.0017465114593505859,
+        "records_per_second": 57256.99620498539,
+        "dataset_size": 100
+      },
+      "medium": {
+        "avg_time": 0.0013918876647949219,
+        "records_per_second": 718448.7838300788,
+        "dataset_size": 1000
+      },
+      "large": {
+        "avg_time": 0.0022893428802490236,
+        "records_per_second": 4368065.651621503,
+        "dataset_size": 10000
+      }
+    },
+    "20250513_101959": {
+      "small": {
+        "avg_time": 0.004020500183105469,
+        "records_per_second": 24872.527159732435,
+        "dataset_size": 100
+      },
+      "medium": {
+        "avg_time": 0.0035625457763671874,
+        "records_per_second": 280698.1475532712,
+        "dataset_size": 1000
+      },
+      "large": {
+        "avg_time": 0.004523658752441406,
+        "records_per_second": 2210599.9915672303,
+        "dataset_size": 10000
+      }
+    },
+    "20250513_103005": {
+      "small": {
+        "avg_time": 0.0034077644348144533,
+        "records_per_second": 29344.751350292445,
+        "dataset_size": 100
+      },
+      "medium": {
+        "avg_time": 0.0020260334014892576,
+        "records_per_second": 493575.27830732666,
+        "dataset_size": 1000
+      },
+      "large": {
+        "avg_time": 0.0060234546661376955,
+        "records_per_second": 1660176.851038228,
+        "dataset_size": 10000
+      }
+    },
+    "20250513_111905": {
+      "small": {
+        "avg_time": 0.0014011859893798828,
+        "records_per_second": 71368.11298281436,
+        "dataset_size": 100
+      },
+      "medium": {
+        "avg_time": 0.0014342784881591797,
+        "records_per_second": 697214.6680408258,
+        "dataset_size": 1000
+      },
+      "large": {
+        "avg_time": 0.002728128433227539,
+        "records_per_second": 3665516.578400014,
+        "dataset_size": 10000
+      }
+    }
+  }
+}
