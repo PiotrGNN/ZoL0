@@ -86,19 +86,37 @@ def run_application():
             f.write(str(time.time()))
         
         logger.info("Importuję główny moduł aplikacji...")
-        
-        # Import main powinien być wykonany tylko raz
+
+        # Import głównego modułu systemu
         import main
-        
+
+        # Sprawdź, czy main posiada aplikację Flask; jeśli nie, użyj dashboard_api
+        if hasattr(main, "app"):
+            flask_app = main.app
+        else:
+            try:
+                import dashboard_api
+                flask_app = dashboard_api.app
+            except Exception as import_err:
+                logger.error(f"Nie można zaimportować aplikacji Flask: {import_err}", exc_info=True)
+                raise
+
+        # Jeżeli dostępna jest funkcja inicjalizacji systemu, wywołaj ją
+        if hasattr(main, "initialize_system"):
+            try:
+                main.initialize_system()
+            except Exception as init_err:
+                logger.error(f"Błąd podczas inicjalizacji systemu: {init_err}", exc_info=True)
+
         # Uruchom aplikację Flask w trybie rozwojowym
         port = int(os.environ.get("PORT", 5000))
         host = "0.0.0.0"  # Używamy 0.0.0.0 dla dostępu zewnętrznego w środowisku Replit
-        
+
         try:
             logger.info(f"Uruchamianie serwera Flask na {host}:{port}")
             # Uruchamiamy serwer Flask w osobnym wątku, aby nie blokować głównego programu
             import threading
-            threading.Thread(target=lambda: main.app.run(host=host, port=port, debug=False)).start()
+            threading.Thread(target=lambda: flask_app.run(host=host, port=port, debug=False)).start()
             logger.info(f"Serwer Flask uruchomiony na {host}:{port}")
         except Exception as flask_err:
             logger.error(f"Błąd podczas uruchamiania serwera Flask: {flask_err}", exc_info=True)
