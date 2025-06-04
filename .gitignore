@@ -48,3 +48,4 @@ python_libs/*
 !python_libs/simplified_trading_engine.py
 !python_libs/simplified_strategy.py
 !python_libs/simplified_risk_manager.py
+!python_libs/model_tester.py
