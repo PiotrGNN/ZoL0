@@ -9,8 +9,10 @@ import json
 import logging
 import os
 import time
+import weakref
+import threading
 from typing import Any, Dict, List, Optional, Tuple, Union
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Konfiguracja logowania - Ulepszona wersja z oryginalnego kodu i edytora
 logger = logging.getLogger("cache_manager")
