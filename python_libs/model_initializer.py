@@ -1,6 +1,4 @@
-class ModelInitializer:
-    """Simple model initializer stub."""
-    def initialize_models(self):
-        return True
+"""Simple model initializer stub."""
 
-model_initializer = ModelInitializer()
+def model_initializer():
+    return True

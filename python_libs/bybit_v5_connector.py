@@ -1,6 +1,23 @@
+"""Minimal stub of Bybit V5 connector used for tests."""
+from typing import Any, Dict
+
+class HTTP:
+    """Dummy HTTP client for mocking."""
+    def get_tickers(self, category: str, symbol: str) -> Dict[str, Any]:
+        return {"result": {"symbol": symbol}}
+    def place_order(self, **kwargs) -> Dict[str, Any]:
+        return {"result": kwargs}
+    def amend_order(self, **kwargs) -> Dict[str, Any]:
+        return {"result": kwargs}
+    def cancel_order(self, **kwargs) -> Dict[str, Any]:
+        return {"result": {"orderId": kwargs.get("order_id", "")}}
+    def get_positions(self, **kwargs) -> Dict[str, Any]:
+        return {"result": {"list": [{"symbol": kwargs.get("symbol", "BTCUSDT"), "size": "0.0", "side": "Buy"}]}}
+    def get_wallet_balance(self) -> Dict[str, Any]:
+        return {"result": {"list": [{"coin": {"USDT": {"walletBalance": "0", "availableToWithdraw": "0"}}}]}}
+
 class BybitV5Connector:
-    """Minimal stub for Bybit V5 connector used in tests."""
-    def __init__(self, api_key="", api_secret="", testnet=True):
+    def __init__(self, api_key: str = None, api_secret: str = None, testnet: bool = True):
         self.api_key = api_key
         self.api_secret = api_secret
         self.testnet = testnet
@@ -8,43 +25,36 @@ class BybitV5Connector:
         self._initialized = False
 
     @property
-    def initialized(self):
+    def initialized(self) -> bool:
         return self._initialized
 
-    def initialize(self):
+    def initialize(self) -> None:
+        self.client = HTTP()
         self._initialized = True
 
-    # Synchronous methods
-    def get_market_data(self, symbol):
-        return {"symbol": symbol, "last_price": "0", "volume24h": "0"}
+    def get_market_data(self, symbol: str) -> Dict[str, Any]:
+        if not self._initialized:
+            raise ValueError("Connector not initialized")
+        data = self.client.get_tickers(category="linear", symbol=symbol)
+        return data.get("result", {})
 
-    def place_order(self, symbol, side, order_type, qty, price=None):
-        return {"order_id": "123456", "symbol": symbol, "status": "NEW"}
+    def place_order(self, **kwargs) -> Dict[str, Any]:
+        return self.client.place_order(**kwargs).get("result", {})
 
-    def modify_order(self, symbol, order_id, price=None):
-        return {"orderId": order_id, "symbol": symbol, "status": "MODIFIED"}
+    def modify_order(self, **kwargs) -> Dict[str, Any]:
+        return self.client.amend_order(**kwargs).get("result", {})
 
-    def cancel_order(self, order_id):
-        return {"orderId": order_id}
+    def cancel_order(self, **kwargs) -> Dict[str, Any]:
+        return self.client.cancel_order(**kwargs).get("result", {})
 
-    def get_positions(self, symbol):
-        return [{"symbol": symbol, "size": "0", "side": "Buy"}]
+    def get_positions(self, symbol: str) -> Any:
+        return self.client.get_positions(symbol=symbol).get("result", {}).get("list", [])
 
-    def get_balances(self):
-        return {"USDT": 0}
+    def get_balances(self) -> Dict[str, Any]:
+        data = self.client.get_wallet_balance().get("result", {}).get("list", [])
+        if data and isinstance(data[0], dict):
+            return {"USDT": data[0].get("coin", {}).get("USDT", {}).get("walletBalance", "0")}
+        return {}
 
-    def get_order_book(self, symbol):
-        return {"bids": [], "asks": []}
-
-    def get_recent_trades(self, symbol):
-        return []
-
-    # Async stubs
-    async def get_market_data_async(self, symbol):
-        return {"symbol": symbol, "last_price": "0"}
-
-    async def place_order_async(self, symbol, side, order_type, qty, price=None):
-        return {"order_id": "123"}
-
-    async def cancel_order_async(self, order_id):
-        return {"order_id": order_id}
+    def cancel_all_orders(self, symbol: str) -> None:
+        pass
