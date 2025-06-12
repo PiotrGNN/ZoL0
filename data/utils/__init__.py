@@ -30,9 +30,11 @@ def _import_all_modules_from_directory(directory: str, package: str) -> None:
             try:
                 module = importlib.import_module(f".{module_name}", package=package)
             except Exception as error:
-                raise ImportError(
-                    f"Nie udało się zaimportować modułu '{module_name}' z pakietu '{package}'."
-                ) from error
+                import logging
+                logging.warning(
+                    "Pomijam moduł '%s' z powodu błędu: %s", module_name, error
+                )
+                continue
             globals()[module_name] = module
             __all__.append(module_name)
 
@@ -52,9 +54,11 @@ def _import_all_subpackages(directory: str, package: str) -> None:
             try:
                 subpackage = importlib.import_module(f".{item}", package=package)
             except Exception as error:
-                raise ImportError(
-                    f"Nie udało się zaimportować podpakietu '{item}' z pakietu '{package}'."
-                ) from error
+                import logging
+                logging.warning(
+                    "Pomijam podpakiet '%s' z powodu błędu: %s", item, error
+                )
+                continue
             globals()[item] = subpackage
             __all__.append(item)
 

@@ -48,3 +48,8 @@ python_libs/*
 !python_libs/simplified_trading_engine.py
 !python_libs/simplified_strategy.py
 !python_libs/simplified_risk_manager.py
+!python_libs/model_tester.py
+!python_libs/portfolio_manager.py
+!python_libs/model_initializer.py
+!python_libs/simulated_bybit.py
+!python_libs/bybit_v5_connector.py
